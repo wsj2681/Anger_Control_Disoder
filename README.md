@@ -33,6 +33,7 @@ https://docs.popekim.com/ko/coding-standards/cpp
 ```
 -> 필요한 경우에 m을 붙인다 구분이 필요하다면 변수명을 다르게한다.
 -> 멤버 변수는 this->로 구분한다.
+-> 변수에 필요하다면 자료형을 간략하게 명시합니다. 
 ```
 * 15
 ```
@@ -60,6 +61,9 @@ https://docs.popekim.com/ko/coding-standards/cpp
 ## 이 외 규칙
 * GitHub 사용 시
 ```
+항상 GitDesktop을 실행할 때에 Pull할 것이 있는지 확인합니다.
+Commit은 오랫동안 쌓아두지 않도록 주의합니다.
+
 실험적인 코드를 추가 할 때는 개인 Branch를 추가하여 작업을 합니다.
 main Branch는 항상 컴파일이 되어야 하고 정상작동이 되어야 합니다.
 함수단위로 커밋을 실행합니다.
