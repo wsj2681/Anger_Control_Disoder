@@ -3,7 +3,13 @@
 ```
 DirectX12로 구현한 3D 1:1 PvP 복싱 게임입니다.
 ```
-
+## platform
+* Visual Studio 2017
+```
+visula Studio Release Version : 15.9.29
+SDK version : 10.0.18362.0
+플랫폼 도구 집합 : v141
+```
 ## SDK
 * DirectX12
 ```
@@ -30,7 +36,7 @@ https://docs.popekim.com/ko/coding-standards/cpp
 ```
 * 15
 ```
- 헤더파일을 인클루드 할 때 framework.h 는 cpp파일의 맨 최상단에 위치한다.
+헤더파일을 인클루드 할 때 framework.h 는 cpp파일의 맨 최상단에 위치한다.
 그 후에 해당 클래스의 헤더파일 등을 사용한다.
 ```
 * 31 클래스 안에서 멤버 변수와 메서드의 등장 순서는 다음을 따른다.
@@ -43,7 +49,7 @@ https://docs.popekim.com/ko/coding-standards/cpp
 
 * ASSERT(함수 인자 != nullptr, "인자값이 nullptr 입니다.")
 ```
-함수 인자를 받아 올때 그 인자가 내가 원하는 값이 아니라면 ASSERT 경고를 호출합니다.
+받아온 함수 인자가 내가 원하는 값이 아니라면 ASSERT 경고를 호출합니다.
 ```
 * HR( hResult 반환 함수 );
 ```
