@@ -73,6 +73,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Resource</Filter>
     </ClInclude>
+    <ClInclude Include="FBXLoader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WICTextureLoader12.cpp">
@@ -114,6 +115,7 @@
     <ClCompile Include="Scene.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="FBXLoader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Anger_Control_Disorder.rc">
