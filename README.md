@@ -6,9 +6,9 @@ DirectX12로 구현한 3D 1:1 PvP 복싱 게임입니다.
 ## platform
 * Visual Studio 2017
 ```
-visula Studio Release Version : 15.9.29
-SDK version : 10.0.18362.0
-플랫폼 도구 집합 : v141
+visula Studio Release Version : 16.8.2
+SDK version : 10.0
+플랫폼 도구 집합 : v142
 ```
 ## SDK
 * DirectX12
