@@ -40,3 +40,6 @@ using Microsoft::WRL::ComPtr;
 //사용자 정의 헤더 파일입니다.
 #include "MathHelper.h"
 #include "Defines.h"
+
+//TODO : 여러번 정의 해결
+UINT descriptorIncrementSize{ 0 };
