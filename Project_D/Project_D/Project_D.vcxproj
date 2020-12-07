@@ -141,21 +141,27 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="DiffusedVertex.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="Project_D.h" />
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="DiffusedVertex.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Project_D.cpp" />
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Vertex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Project_D.rc" />
