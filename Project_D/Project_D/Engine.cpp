@@ -1,5 +1,7 @@
 #include "framework.h"
 #include "Engine.h"
+#include "Scene.h"
+#include "Camera.h"
 
 bool Engine::OnInit(HINSTANCE hInstance, HWND hWnd)
 {
@@ -255,6 +257,12 @@ void Engine::CreateDepthStencilView()
 void Engine::BuildObjects()
 {
 	commandList->Reset(commandAllocator, nullptr);
+	
+	camera = new Camera();
+	
+
+	scene = new Scene();
+	scene->BuildObjects(this->device, this->commandList);
 
 	commandList->Close();
 	ID3D12CommandList* ppd3dCommandLists[] = { commandList };
@@ -311,14 +319,14 @@ void Engine::FrameAdvance()
 	commandList->OMSetRenderTargets(1, &renderTargetViewCPUDescriptorHandle, true, &depthStencilViewCPUDescriptorHandle);
 
 	//원하는 색상으로 렌더 타겟(뷰)을 지운다.
-	float pfClearColor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+	float pfClearColor[4] = { 0.6f, 0.0f, 0.7f, 1.0f };
 	commandList->ClearRenderTargetView(renderTargetViewCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, nullptr);
 
 	//원하는 값으로 깊이-스텐실(뷰)을 지운다.
 	commandList->ClearDepthStencilView(depthStencilViewCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	// 렌더링 코드는 이쪽에 추가한다.
-
+	scene->Render(commandList, camera);
 
 	//현재 렌더 타겟에 대한 렌더링이 끝나기를 기다린다. GPU가 렌더 타겟(버퍼)을 더 이상 사용하지 않으면 렌더 타겟
 	//의 상태는 프리젠트 상태(D3D12_RESOURCE_STATE_PRESENT)로 바뀔 것이다.

@@ -2,6 +2,10 @@
 
 #pragma once
 
+class Scene;
+class Camera;
+
+
 class Engine
 {
 public:
@@ -46,6 +50,9 @@ private:
 	ID3D12Debug* debugController = nullptr;
 #endif
 
+
+	Scene* scene = nullptr;
+	Camera* camera = nullptr;
 public:
 
 	bool OnInit(HINSTANCE hInstance, HWND hWnd);
