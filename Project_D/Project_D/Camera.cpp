@@ -25,7 +25,7 @@ Camera::Camera()
 	this->xm3LookatWorld = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	RCamera = nullptr ;
-	MappedCamera = nullptr ;
+	//MappedCamera = nullptr ;
 
 	//m_pPlayer = NULL;
 }
@@ -60,7 +60,7 @@ Camera::Camera(const Camera* pCamera)
 		this->xm3LookatWorld = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 		RCamera = nullptr;
-		MappedCamera = nullptr;
+		//MappedCamera = nullptr;
 
 		//m_pPlayer = NULL;
 	}
@@ -210,27 +210,27 @@ void Camera::Update(XMFLOAT3& xm3LookAt, float fTimeElapsed) { }
 //세이더 부분
 void Camera::CreateShaderVariables(ID3D12Device* Device, ID3D12GraphicsCommandList* CommandList)
 {
-	UINT ncbElementBytes = ((sizeof(VS_CB_CAMERA_INFO) + 255) & ~255); //256의 배수
-	//TODO : stdafx.cpp에 있는 함수 적용
-	//this->RCamera = ::CreateBufferResource(Device, CommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+	//UINT ncbElementBytes = ((sizeof(VS_CB_CAMERA_INFO) + 255) & ~255); //256의 배수
+	////TODO : stdafx.cpp에 있는 함수 적용
+	////this->RCamera = ::CreateBufferResource(Device, CommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
 
-	RCamera->Map(0, NULL, (void**)&(this->MappedCamera));
+	//RCamera->Map(0, NULL, (void**)&(this->MappedCamera));
 }
 
 void Camera::UpdateShaderVariables(ID3D12GraphicsCommandList* CommandList)
 {
-	XMFLOAT4X4 xm4UpdateView{};
-	XMStoreFloat4x4(&xm4UpdateView, XMMatrixTranspose(XMLoadFloat4x4(&xm4UpdateView)));
-	::memcpy(&this->MappedCamera->xm4View, &xm4UpdateView, sizeof(XMFLOAT4X4));
+	//XMFLOAT4X4 xm4UpdateView{};
+	//XMStoreFloat4x4(&xm4UpdateView, XMMatrixTranspose(XMLoadFloat4x4(&xm4UpdateView)));
+	//::memcpy(&this->MappedCamera->xm4View, &xm4UpdateView, sizeof(XMFLOAT4X4));
 
-	XMFLOAT4X4 xm4UpdateProjection{};
-	XMStoreFloat4x4(&xm4UpdateProjection, XMMatrixTranspose(XMLoadFloat4x4(&xm4UpdateProjection)));
-	::memcpy(&MappedCamera->xm4Projection, &xm4UpdateProjection, sizeof(XMFLOAT4X4));
+	//XMFLOAT4X4 xm4UpdateProjection{};
+	//XMStoreFloat4x4(&xm4UpdateProjection, XMMatrixTranspose(XMLoadFloat4x4(&xm4UpdateProjection)));
+	//::memcpy(&MappedCamera->xm4Projection, &xm4UpdateProjection, sizeof(XMFLOAT4X4));
 
-	::memcpy(&MappedCamera->xm3Position, &xm4UpdateProjection, sizeof(XMFLOAT3));
+	//::memcpy(&MappedCamera->xm3Position, &xm4UpdateProjection, sizeof(XMFLOAT3));
 
-	D3D12_GPU_VIRTUAL_ADDRESS GpuVirtualAddress = RCamera->GetGPUVirtualAddress();
-	CommandList->SetGraphicsRootConstantBufferView(1, GpuVirtualAddress);
+	//D3D12_GPU_VIRTUAL_ADDRESS GpuVirtualAddress = RCamera->GetGPUVirtualAddress();
+	//CommandList->SetGraphicsRootConstantBufferView(1, GpuVirtualAddress);
 }
 
 void Camera::ReleaseShaderVariables()

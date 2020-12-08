@@ -1,6 +1,5 @@
 #include "framework.h"
 #include "Scene.h"
-#include "Camera.h"
 
 void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {

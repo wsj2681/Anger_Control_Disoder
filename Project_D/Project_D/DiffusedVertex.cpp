@@ -1,5 +1,4 @@
 #include "framework.h"
-#include "Vertex.h"
 #include "DiffusedVertex.h"
 
 DiffusedVertex::DiffusedVertex(const XMFLOAT3& position, const XMFLOAT4& diffuse)

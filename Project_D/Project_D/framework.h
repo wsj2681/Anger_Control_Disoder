@@ -45,5 +45,5 @@ using Microsoft::WRL::ComPtr;
 #define FRAME_BUFFER_HEIGHT	1080
 
 //TODO : 여러번 정의 해결 - extern 사용
-extern UINT descriptorIncrementSize{ 0 };
-extern bool terrainTessellationWireFrame{ false };
+extern UINT descriptorIncrementSize;
+extern 

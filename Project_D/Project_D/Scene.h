@@ -1,6 +1,6 @@
 #pragma once
 
-class Camera;
+#include "Camera.h"
 
 class Scene
 {

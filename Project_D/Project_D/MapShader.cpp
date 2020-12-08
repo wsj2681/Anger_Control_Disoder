@@ -45,17 +45,17 @@ D3D12_SHADER_BYTECODE MapShader::CreateVertexShader(ID3DBlob** vertexShaderBlob)
 
 D3D12_SHADER_BYTECODE MapShader::CreateHullShader(ID3DBlob** hullShaderBlob)
 {
-	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "HSTerrainTessellation", "vs_5_1", hullShaderBlob);
+	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "HSTerrainTessellation", "hs_5_1", hullShaderBlob);
 }
 
 D3D12_SHADER_BYTECODE MapShader::CreateDomainShader(ID3DBlob** domainShaderBlob)
 {
-	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "DSTerrainTessellation", "vs_5_1", domainShaderBlob);
+	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "DSTerrainTessellation", "ds_5_1", domainShaderBlob);
 }
 
 D3D12_SHADER_BYTECODE MapShader::CreatePixelShader(ID3DBlob** pixelShaderBlob)
 {
-	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "PSTerrainTessellation", "vs_5_1", pixelShaderBlob);
+	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "PSTerrainTessellation", "ps_5_1", pixelShaderBlob);
 }
 
 void MapShader::CreateShader(ID3D12Device* device, ID3D12RootSignature* graphicsRootSignature)
@@ -108,7 +108,7 @@ void MapShader::Render(ID3D12GraphicsCommandList* commandList)
 	ASSERT(commandList, "Shader::Render commandList is nullptr");
 
 	if (graphicsRootSignature) commandList->SetGraphicsRootSignature(graphicsRootSignature);
-	if (pipelineStates) commandList->SetPipelineState((::terrainTessellationWireFrame) ? pipelineStates[1] : pipelineStates[0]);
+	if (pipelineStates) commandList->SetPipelineState(pipelineStates[0]);
 	if (descriptorHeap)commandList->SetDescriptorHeaps(1, &descriptorHeap);
 
 	// UpdateShaderVariables(commandList);
