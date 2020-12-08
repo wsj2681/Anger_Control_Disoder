@@ -155,7 +155,8 @@ void Scene::OnPreRender(ID3D12Device* pd3dDevice, ID3D12CommandQueue* pd3dComman
 
 void Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera)
 {
-	pCamera->SetViewportsAndScissorRects(pd3dCommandList);
+	//TODO : SetViewportsAndScissorRects 함수 생성
+	//pCamera->SetViewportsAndScissorRects(pd3dCommandList);
 	pCamera->UpdateShaderVariables(pd3dCommandList);
 
 	//TODO : Render

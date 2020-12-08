@@ -11,8 +11,8 @@ struct VS_CB_CAMERA_INFO
 class Camera
 {
 public:
-	Camera() = default;
-	Camera(const Camera*) = delete;
+	Camera();
+	Camera(const Camera*);
 	~Camera() = default;
 
 protected:
@@ -94,7 +94,7 @@ public:
 	void Rotate(float, float, float);
 
 	//갱신 함수 
-	void Update(XMFLOAT3&, float) { }
+	void Update(XMFLOAT3&, float);
 
 	//3인칭시 사용
 	//virtual void SetLookAt(XMFLOAT3& xmf3LookAt) { }
@@ -103,13 +103,4 @@ public:
 	virtual void ReleaseShaderVariables();
 	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* CommandList);
 
-};
-
-
-class SpaceShipCamera : public Camera
-{
-public:
-	SpaceShipCamera(Camera* pCamera);
-	virtual ~SpaceShipCamera() { }
-	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f);
 };
