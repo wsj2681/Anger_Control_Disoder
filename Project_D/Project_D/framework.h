@@ -41,6 +41,5 @@ using Microsoft::WRL::ComPtr;
 #include "MathHelper.h"
 #include "Defines.h"
 
-//TODO : 여러번 정의 해결 - extern 사용
-extern UINT descriptorIncrementSize{ 0 };
-extern bool terrainTessellationWireFrame{ false };
+//TODO : 여러번 정의 해결
+UINT descriptorIncrementSize{ 0 };

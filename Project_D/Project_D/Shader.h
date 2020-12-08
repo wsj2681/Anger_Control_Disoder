@@ -1,27 +1,5 @@
 #pragma once
 
-// temporary class
-//TODO : Camera
-class Camera;
-
-//TODO : Texture
-class Texture {
-public:
-	Texture() = default;
-	Texture(const Texture&) = delete;
-	Texture& operator=(const Texture&) = delete;
-	~Texture() = default;
-public:
-	int GetTextures() { return 0; }
-	UINT GetTextureType() { return 0; }
-	ID3D12Resource* GetResource(int index) { return nullptr; }
-	D3D12_SHADER_RESOURCE_VIEW_DESC GetShaderResourceViewDesc(int index) { return D3D12_SHADER_RESOURCE_VIEW_DESC(); }
-	int GetRootParameters() { return 0; }
-
-	void SetGpuDescriptorHandle(int index, D3D12_GPU_DESCRIPTOR_HANDLE srvGPUDescriptorNextHandle) {}
-	void SetRootParameterIndex(int index, int rootParameterIndex) {}
-};
-
 class Shader {
 public:
 	Shader() = default;
@@ -31,7 +9,7 @@ public:
 protected:
 	// variables
 	ID3D12PipelineState**		pipelineStates			{ nullptr };
-	int							nPipelineStates			{ 0 };
+	int							nPipelineState			{ 0 };
 	ID3D12DescriptorHeap*		descriptorHeap			{ nullptr };
 	ID3D12RootSignature*		graphicsRootSignature	{ nullptr };
 	// Renderer					renderer				{};
@@ -62,7 +40,7 @@ public:
 	virtual void CreateShaderResourceViews(ID3D12Device* device, Texture* texture, UINT descriptorHeapIndex, UINT rootParameterStartIndex);
 	virtual void CreateShader(ID3D12Device* device, ID3D12RootSignature* graphicsRootSignature);
 
-	D3D12_SHADER_BYTECODE CompileShaderFromFile(const wchar_t* fName, LPCSTR shaderName, LPCSTR shaderProfile, ID3DBlob** shaderBlob);
+	D3D12_SHADER_BYTECODE CompileShaderFromFile(WCHAR* fName, LPCSTR pszShaderName, LPCSTR pszShaderProfile, ID3DBlob** shaderBlob);
 
 	virtual void BuildObjects(ID3D12Device* device, ID3D12GraphicsCommandList* commandList);
 	virtual void AnimateObjects(float timeElapsed);
@@ -70,4 +48,5 @@ public:
 	virtual void ReleaseUploadBuffer();
 
 	virtual void Render(ID3D12GraphicsCommandList* commandList);
+	
 };

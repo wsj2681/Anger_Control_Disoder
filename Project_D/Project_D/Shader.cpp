@@ -1,4 +1,5 @@
 #include "framework.h"
+#include "Renderer.h"
 #include "Shader.h"
 
 Shader::~Shader()
@@ -6,7 +7,7 @@ Shader::~Shader()
 	SAFE_RELEASE(graphicsRootSignature);
 	SAFE_RELEASE(descriptorHeap);
 	if (pipelineStates)
-		for (int i = 0; i < nPipelineStates; ++i)
+		for (int i = 0; i < nPipelineState; ++i)
 			SAFE_RELEASE(pipelineStates[i]);
 }
 
@@ -194,7 +195,7 @@ void Shader::CreateShader(ID3D12Device* device, ID3D12RootSignature* graphicsRoo
 	ASSERT(device, "Shader::Render device is nullptr");
 	ASSERT(graphicsRootSignature, "Shader::Render graphicsRootSignature is nullptr");
 
-	this->graphicsRootSignature = graphicsRootSignature;
+	if (graphicsRootSignature) this->graphicsRootSignature = graphicsRootSignature;
 
 	ID3DBlob* vertexShaderBlob{ nullptr }, * pixelShaderBlob{ nullptr }, * geometryShaderBlob{ nullptr }, * hullShaderBlob{ nullptr }, * domainShaderBlob{ nullptr };
 
@@ -230,27 +231,13 @@ void Shader::CreateShader(ID3D12Device* device, ID3D12RootSignature* graphicsRoo
 	if (graphicsPipelinStateDesc.InputLayout.pInputElementDescs) delete[] graphicsPipelinStateDesc.InputLayout.pInputElementDescs;
 }
 
-D3D12_SHADER_BYTECODE Shader::CompileShaderFromFile(const wchar_t* fName, LPCSTR shaderName, LPCSTR shaderProfile, ID3DBlob** shaderBlob)
+D3D12_SHADER_BYTECODE Shader::CompileShaderFromFile(WCHAR* fName, LPCSTR pszShaderName, LPCSTR pszShaderProfile, ID3DBlob** shaderBlob)
 {
-	UINT compileFlags = 0;
-#if defined(_DEBUG)
-	compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-#endif
-
-	ID3DBlob* errorBlob{ nullptr };
-	HR(::D3DCompileFromFile(fName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, shaderName, shaderProfile, compileFlags, 0, shaderBlob, &errorBlob));
-
-	D3D12_SHADER_BYTECODE shaderByteCode;
-	shaderByteCode.BytecodeLength = (*shaderBlob)->GetBufferSize();
-	shaderByteCode.pShaderBytecode = (*shaderBlob)->GetBufferPointer();
-
-	return shaderByteCode;
+	return D3D12_SHADER_BYTECODE();
 }
 
 void Shader::BuildObjects(ID3D12Device* device, ID3D12GraphicsCommandList* commandList)
 {
-	ASSERT(device, "Shader::Render device is nullptr");
-	ASSERT(commandList, "Shader::Render commandList is nullptr");
 }
 
 void Shader::AnimateObjects(float timeElapsed)
