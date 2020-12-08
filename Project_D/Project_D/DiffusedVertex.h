@@ -8,10 +8,9 @@ public:
     DiffusedVertex(const XMFLOAT3& position, const XMFLOAT4& diffuse);
     DiffusedVertex(float x, float y, float z, const XMFLOAT4& diffuse);
     DiffusedVertex(float x, float y, float z, float r, float g, float b, float a);
-
+    virtual ~DiffusedVertex() = default;
 private:
 
     XMFLOAT4 diffuseColor{ 0.f, 0.f, 0.f, 0.f };
 
 };
-
