@@ -46,4 +46,3 @@ using Microsoft::WRL::ComPtr;
 
 //TODO : 여러번 정의 해결 - extern 사용
 extern UINT descriptorIncrementSize;
-extern 

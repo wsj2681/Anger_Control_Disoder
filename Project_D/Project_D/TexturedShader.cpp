@@ -24,7 +24,7 @@ D3D12_SHADER_BYTECODE TexturedShader::CreateVertexShader(ID3DBlob** vertexShader
 
 D3D12_SHADER_BYTECODE TexturedShader::CreatePixelShader(ID3DBlob** pixelShaderBlob)
 {
-	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "PSTextured", "vs_5_1", pixelShaderBlob);
+	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "PSTextured", "ps_5_1", pixelShaderBlob);
 }
 
 void TexturedShader::CreateShader(ID3D12Device* device, ID3D12RootSignature* graphicsRootSignature)

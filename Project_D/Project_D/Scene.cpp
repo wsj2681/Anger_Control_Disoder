@@ -1,6 +1,8 @@
 #include "framework.h"
 #include "Scene.h"
 
+UINT descriptorIncrementSize{};
+
 void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 
