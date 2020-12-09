@@ -4,13 +4,14 @@
 
 D3D12_INPUT_LAYOUT_DESC MapShader::CreateInputLayout()
 {
-	UINT nInputElementDescs = 4;
+	//UINT nInputElementDescs = 4;
+	UINT nInputElementDescs = 2;
 	D3D12_INPUT_ELEMENT_DESC* inputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
 
 	inputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
 	inputElementDescs[1] = { "COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
-	inputElementDescs[2] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
-	inputElementDescs[3] = { "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	//inputElementDescs[2] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 28, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	//inputElementDescs[3] = { "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 36, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
 
 	D3D12_INPUT_LAYOUT_DESC inputLayoutDesc;
 	inputLayoutDesc.pInputElementDescs = inputElementDescs;
@@ -40,22 +41,22 @@ D3D12_RASTERIZER_DESC MapShader::CreateRasterizerState()
 
 D3D12_SHADER_BYTECODE MapShader::CreateVertexShader(ID3DBlob** vertexShaderBlob)
 {
-	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "VSTerrainTessellation", "vs_5_1", vertexShaderBlob);
+	return Shader::CompileShaderFromFile(L"tempShaders.hlsl", "VSDiffused", "vs_5_1", vertexShaderBlob);
 }
 
-D3D12_SHADER_BYTECODE MapShader::CreateHullShader(ID3DBlob** hullShaderBlob)
-{
-	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "HSTerrainTessellation", "hs_5_1", hullShaderBlob);
-}
-
-D3D12_SHADER_BYTECODE MapShader::CreateDomainShader(ID3DBlob** domainShaderBlob)
-{
-	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "DSTerrainTessellation", "ds_5_1", domainShaderBlob);
-}
+//D3D12_SHADER_BYTECODE MapShader::CreateHullShader(ID3DBlob** hullShaderBlob)
+//{
+//	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "HSTerrainTessellation", "hs_5_1", hullShaderBlob);
+//}
+//
+//D3D12_SHADER_BYTECODE MapShader::CreateDomainShader(ID3DBlob** domainShaderBlob)
+//{
+//	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "DSTerrainTessellation", "ds_5_1", domainShaderBlob);
+//}
 
 D3D12_SHADER_BYTECODE MapShader::CreatePixelShader(ID3DBlob** pixelShaderBlob)
 {
-	return Shader::CompileShaderFromFile(L"Shaders.hlsl", "PSTerrainTessellation", "ps_5_1", pixelShaderBlob);
+	return Shader::CompileShaderFromFile(L"tempShaders.hlsl", "PSDiffused", "ps_5_1", pixelShaderBlob);
 }
 
 void MapShader::CreateShader(ID3D12Device* device, ID3D12RootSignature* graphicsRootSignature)
@@ -75,9 +76,9 @@ void MapShader::CreateShader(ID3D12Device* device, ID3D12RootSignature* graphics
 	::ZeroMemory(&graphicsPipelinStateDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	graphicsPipelinStateDesc.pRootSignature = graphicsRootSignature;
 	graphicsPipelinStateDesc.VS = CreateVertexShader(&vertexShaderBlob);
+	//graphicsPipelinStateDesc.HS = CreateHullShader(&hullShaderBlob);
+	//graphicsPipelinStateDesc.DS = CreateDomainShader(&domainShaderBlob);
 	graphicsPipelinStateDesc.PS = CreatePixelShader(&pixelShaderBlob);
-	graphicsPipelinStateDesc.HS = CreateHullShader(&hullShaderBlob);
-	graphicsPipelinStateDesc.DS = CreateDomainShader(&domainShaderBlob);
 	graphicsPipelinStateDesc.RasterizerState = CreateRasterizerState();
 	graphicsPipelinStateDesc.BlendState = CreateBlendState();
 	graphicsPipelinStateDesc.DepthStencilState = CreateDepthStencilState();
@@ -112,4 +113,9 @@ void MapShader::Render(ID3D12GraphicsCommandList* commandList)
 	if (descriptorHeap)commandList->SetDescriptorHeaps(1, &descriptorHeap);
 
 	// UpdateShaderVariables(commandList);
+}
+
+void MapShader::UpdateShaderVariable(ID3D12GraphicsCommandList* commandList, XMFLOAT4X4* world)
+{
+	Shader::UpdateShaderVariable(commandList, world);
 }

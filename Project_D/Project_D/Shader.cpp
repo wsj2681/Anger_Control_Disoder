@@ -1,4 +1,5 @@
 #include "framework.h"
+#include "Texture.h"
 #include "Shader.h"
 
 Shader::~Shader()
@@ -43,7 +44,7 @@ D3D12_RASTERIZER_DESC Shader::CreateRasterizerState()
 D3D12_DEPTH_STENCIL_DESC Shader::CreateDepthStencilState()
 {
 	D3D12_DEPTH_STENCIL_DESC depthStencilDesc;
-
+	::ZeroMemory(&depthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
 	depthStencilDesc.DepthEnable = true;
 	depthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 	depthStencilDesc.StencilEnable = false;
@@ -56,7 +57,7 @@ D3D12_DEPTH_STENCIL_DESC Shader::CreateDepthStencilState()
 D3D12_BLEND_DESC Shader::CreateBlendState()
 {
 	D3D12_BLEND_DESC blendDesc;
-
+	::ZeroMemory(&blendDesc, sizeof(D3D12_BLEND_DESC));
 	blendDesc.AlphaToCoverageEnable = false;
 	blendDesc.IndependentBlendEnable = false;
 	blendDesc.RenderTarget[0].BlendEnable = false;
@@ -274,4 +275,21 @@ void Shader::Render(ID3D12GraphicsCommandList* commandList)
 	if (descriptorHeap)commandList->SetDescriptorHeaps(1, &descriptorHeap);
 
 	// UpdateShaderVariables(commandList);
+}
+
+void Shader::UpdateShaderVariable(ID3D12GraphicsCommandList* commandList, XMFLOAT4X4* world)
+{
+	XMFLOAT4X4 fWorld{};
+	XMStoreFloat4x4(&fWorld, XMMatrixTranspose(XMLoadFloat4x4(world)));
+	commandList->SetGraphicsRoot32BitConstants(0, 16, &fWorld, 0);
+}
+
+void Shader::AddRef()
+{
+	++nRefers;
+}
+
+void Shader::Release()
+{
+	if (--nRefers <= 0) delete this;
 }

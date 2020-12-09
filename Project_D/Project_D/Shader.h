@@ -1,26 +1,6 @@
 #pragma once
 
-// temporary class
-//TODO : Camera
-class Camera;
-
-//TODO : Texture
-class Texture {
-public:
-	Texture() = default;
-	Texture(const Texture&) = delete;
-	Texture& operator=(const Texture&) = delete;
-	~Texture() = default;
-public:
-	int GetTextures() { return 0; }
-	UINT GetTextureType() { return 0; }
-	ID3D12Resource* GetResource(int index) { return nullptr; }
-	D3D12_SHADER_RESOURCE_VIEW_DESC GetShaderResourceViewDesc(int index) { return D3D12_SHADER_RESOURCE_VIEW_DESC(); }
-	int GetRootParameters() { return 0; }
-
-	void SetGpuDescriptorHandle(int index, D3D12_GPU_DESCRIPTOR_HANDLE srvGPUDescriptorNextHandle) {}
-	void SetRootParameterIndex(int index, int rootParameterIndex) {}
-};
+class Texture;
 
 class Shader {
 public:
@@ -28,6 +8,8 @@ public:
 	Shader(const Shader&) = delete;
 	Shader& operator=(const Shader&) = delete;
 	virtual ~Shader() = 0;
+private:
+	int nRefers{ 0 };
 protected:
 	// variables
 	ID3D12PipelineState**		pipelineStates			{ nullptr };
@@ -70,4 +52,9 @@ public:
 	virtual void ReleaseUploadBuffer();
 
 	virtual void Render(ID3D12GraphicsCommandList* commandList);
+
+	virtual void UpdateShaderVariable(ID3D12GraphicsCommandList* commandList, XMFLOAT4X4* world);
+
+	void AddRef();
+	void Release();
 };

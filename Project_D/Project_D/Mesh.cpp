@@ -46,3 +46,9 @@ void Mesh::Render(ID3D12GraphicsCommandList* commandList)
 		commandList->DrawInstanced(vertices, 1, offset, 0);
 	}
 }
+
+void Mesh::ReleaseUploadBuffers() {
+	//정점 버퍼를 위한 업로드 버퍼를 소멸시킨다.
+	if (vertexUploadBuffer) vertexUploadBuffer->Release();
+	vertexUploadBuffer = nullptr;
+};

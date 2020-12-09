@@ -1,4 +1,5 @@
 #include "framework.h"
+#include "Texture.h"
 #include "Scene.h"
 
 UINT descriptorIncrementSize{};

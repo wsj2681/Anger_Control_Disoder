@@ -30,6 +30,7 @@ using namespace std;
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 
+using namespace DirectX;
 using namespace DirectX::PackedVector;
 using Microsoft::WRL::ComPtr;
 
@@ -44,5 +45,4 @@ using Microsoft::WRL::ComPtr;
 #define FRAME_BUFFER_WIDTH	1920
 #define FRAME_BUFFER_HEIGHT	1080
 
-//TODO : 여러번 정의 해결 - extern 사용
 extern UINT descriptorIncrementSize;

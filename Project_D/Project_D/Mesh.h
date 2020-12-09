@@ -38,5 +38,6 @@ public:
 
 	virtual void Render(ID3D12GraphicsCommandList* commandList);
 
+	void ReleaseUploadBuffers();
 };
 
