@@ -69,21 +69,21 @@ public:
 
 
 
-	XMFLOAT3& GetPosition();
-	XMFLOAT3& GetLookAtPosition();
+	const XMFLOAT3& GetPosition();
+	const XMFLOAT3& GetLookAtPosition();
 
-	XMFLOAT3& GetRightVector();
-	XMFLOAT3& GetUpVector();
-	XMFLOAT3& GetLookVector();
+	const XMFLOAT3& GetRightVector();
+	const XMFLOAT3& GetUpVector();
+	const XMFLOAT3& GetLookVector();
 
-	float& GetPitch();
-	float& GetRoll();
-	float& GetYaw();
+	const float& GetPitch();
+	const float& GetRoll();
+	const float& GetYaw();
 
 
 	void SetOffset(XMFLOAT3);
 
-	XMFLOAT3& GetOffset();
+	const XMFLOAT3& GetOffset();
 
 	XMFLOAT4X4 GetViewMatrix();
 	XMFLOAT4X4 GetProjectionMatrix();

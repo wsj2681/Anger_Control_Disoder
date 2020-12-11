@@ -141,34 +141,34 @@ void Camera::SetOffset(XMFLOAT3 xm3Offset) {
 
 ///////////////////////////////////
 //getÇÔ¼ö
-XMFLOAT3& Camera::GetPosition() {
+const XMFLOAT3& Camera::GetPosition() {
 	return(this->xm3Position);
 }
 
-XMFLOAT3& Camera::GetLookAtPosition() {
+const XMFLOAT3& Camera::GetLookAtPosition() {
 	return(this->xm3LookatWorld);
 }
 
-XMFLOAT3& Camera::GetRightVector() {
+const XMFLOAT3& Camera::GetRightVector() {
 	return(xm3Right);
 }
-XMFLOAT3& Camera::GetUpVector() {
+const XMFLOAT3& Camera::GetUpVector() {
 	return(xm3Up);
 }
-XMFLOAT3& Camera::GetLookVector() {
+const XMFLOAT3& Camera::GetLookVector() {
 	return(xm3Look);
 }
 
-float& Camera::GetPitch() {
+const float& Camera::GetPitch() {
 	return(Pitch);
 }
-float& Camera::GetRoll() {
+const float& Camera::GetRoll() {
 	return(Roll);
 }
-float& Camera::GetYaw() {
+const float& Camera::GetYaw() {
 	return(Yaw);
 }
-XMFLOAT3& Camera::GetOffset() {
+const XMFLOAT3& Camera::GetOffset() {
 	return(xm3Offset);
 }
 
