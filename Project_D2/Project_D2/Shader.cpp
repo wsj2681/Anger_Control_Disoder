@@ -821,10 +821,10 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device* pd3dDevice,
 {
 	m_pBillboardTexture = new CTexture(7, RESOURCE_TEXTURE2D, 0, 1);
 
-	m_pBillboardTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Grass01.dds", RESOURCE_TEXTURE2D, 0);
-	m_pBillboardTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Grass02.dds", RESOURCE_TEXTURE2D, 1);
-	m_pBillboardTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Flower01.dds", RESOURCE_TEXTURE2D, 2);
-	m_pBillboardTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Flower02.dds", RESOURCE_TEXTURE2D, 3);
+	m_pBillboardTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/billboard1.dds", RESOURCE_TEXTURE2D, 0);
+	m_pBillboardTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/billboard2.dds", RESOURCE_TEXTURE2D, 1);
+	m_pBillboardTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/billboard3.dds", RESOURCE_TEXTURE2D, 2);
+	m_pBillboardTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/billboard4.dds", RESOURCE_TEXTURE2D, 3);
 	m_pBillboardTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Tree01.dds", RESOURCE_TEXTURE2D, 4);
 	m_pBillboardTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Tree02.dds", RESOURCE_TEXTURE2D, 5);
 	m_pBillboardTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Image/Tree03.dds", RESOURCE_TEXTURE2D, 6);
@@ -860,76 +860,76 @@ void CBillboardObjectsShader::BuildObjects(ID3D12Device* pd3dDevice,
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
-	//HeightMapTerrain* pTerrain = (HeightMapTerrain*)pContext;
+	HeightMapTerrain* pTerrain = (HeightMapTerrain*)pContext;
 
-	//int nTerrainWidth = int(pTerrain->GetWidth());
-	//int nTerrainLength = int(pTerrain->GetLength());
+	int nTerrainWidth = int(pTerrain->GetWidth());
+	int nTerrainLength = int(pTerrain->GetLength());
 
-	//XMFLOAT3 xmf3Scale = pTerrain->GetScale();
+	XMFLOAT3 xmf3Scale = pTerrain->GetScale();
 
-	//for (int nObjects = 0, z = 2; z <= 254; z++)
-	//{
-	//	for (int x = 2; x <= 254; x++)
-	//	{
-	//		BYTE nPixel = pRawFormatImage->GetRawImagePixel(x, z);
+	for (int nObjects = 0, z = 2; z <= 254; z++)
+	{
+		for (int x = 2; x <= 254; x++)
+		{
+			BYTE nPixel = pRawFormatImage->GetRawImagePixel(x, z);
 
-	//		float fyOffset = 0.0f;
-	//		XMFLOAT2 xmf2Size;
-	//		UINT nTexture = 0;
+			float fyOffset = 0.0f;
+			XMFLOAT2 xmf2Size;
+			UINT nTexture = 0;
 
-	//		switch (nPixel)
-	//		{
-	//		case 102:
-	//			xmf2Size = XMFLOAT2(8.0f, 8.0f);
-	//			fyOffset = 8.0f * 0.5f;
-	//			nTexture = 0;
-	//			break;
-	//		case 128:
-	//			xmf2Size = XMFLOAT2(8.0f, 8.0f);
-	//			fyOffset = 6.0f * 0.5f;
-	//			nTexture = 1;
-	//			break;
-	//		case 153:
-	//			xmf2Size = XMFLOAT2(8.0f, 16.0f);
-	//			fyOffset = 16.0f * 0.5f;
-	//			nTexture = 2;
-	//			break;
-	//		case 179:
-	//			xmf2Size = XMFLOAT2(8.0f, 16.0f);
-	//			fyOffset = 16.0f * 0.5f;
-	//			nTexture = 3;
-	//			break;
-	//		case 204:
-	//			xmf2Size = XMFLOAT2(24.0f, 36.0f);
-	//			fyOffset = 33.0f * 0.5f;
-	//			nTexture = 4;
-	//			break;
-	//		case 225:
-	//			xmf2Size = XMFLOAT2(24.0f, 36.0f);
-	//			fyOffset = 33.0f * 0.5f;
-	//			nTexture = 5;
-	//			break;
-	//		case 255:
-	//			xmf2Size = XMFLOAT2(16.0f, 46.0f);
-	//			fyOffset = 40.0f * 0.5f;
-	//			nTexture = 6;
-	//			break;
-	//		default:
-	//			break;
-	//		}
+			switch (nPixel)
+			{
+			case 102:
+				xmf2Size = XMFLOAT2(8.0f, 8.0f);
+				fyOffset = 8.0f * 0.5f;
+				nTexture = 0;
+				break;
+			case 128:
+				xmf2Size = XMFLOAT2(8.0f, 8.0f);
+				fyOffset = 6.0f * 0.5f;
+				nTexture = 1;
+				break;
+			case 153:
+				xmf2Size = XMFLOAT2(8.0f, 16.0f);
+				fyOffset = 16.0f * 0.5f;
+				nTexture = 2;
+				break;
+			case 179:
+				xmf2Size = XMFLOAT2(8.0f, 16.0f);
+				fyOffset = 16.0f * 0.5f;
+				nTexture = 3;
+				break;
+			case 204:
+				xmf2Size = XMFLOAT2(24.0f, 36.0f);
+				fyOffset = 33.0f * 0.5f;
+				nTexture = 4;
+				break;
+			case 225:
+				xmf2Size = XMFLOAT2(24.0f, 36.0f);
+				fyOffset = 33.0f * 0.5f;
+				nTexture = 5;
+				break;
+			case 255:
+				xmf2Size = XMFLOAT2(16.0f, 46.0f);
+				fyOffset = 40.0f * 0.5f;
+				nTexture = 6;
+				break;
+			default:
+				break;
+			}
 
-	//		if (fyOffset != 0.0f)
-	//		{
-	//			float xPosition = x * xmf3Scale.x;
-	//			float zPosition = z * xmf3Scale.z;
-	//			float fHeight = pTerrain->GetHeight(xPosition, zPosition);
-	//			pGeometryBillboardVertices[nObjects].m_xmf3Position = XMFLOAT3(xPosition, fHeight + fyOffset, zPosition);
-	//			//pGeometryBillboardVertices[nObjects].m_xmf3Position = XMFLOAT3(270,600,770);
-	//			pGeometryBillboardVertices[nObjects].m_xmf2Size = xmf2Size;
-	//			pGeometryBillboardVertices[nObjects++].m_nTexture = nTexture;
-	//		}
-	//	}
-	//}
+			if (fyOffset != 0.0f)
+			{
+				float xPosition = x * xmf3Scale.x;
+				float zPosition = z * xmf3Scale.z;
+				float fHeight = pTerrain->GetHeight(xPosition, zPosition);
+				pGeometryBillboardVertices[nObjects].m_xmf3Position = XMFLOAT3(xPosition, fHeight + fyOffset, zPosition);
+				//pGeometryBillboardVertices[nObjects].m_xmf3Position = XMFLOAT3(270,600,770);
+				pGeometryBillboardVertices[nObjects].m_xmf2Size = xmf2Size;
+				pGeometryBillboardVertices[nObjects++].m_nTexture = nTexture;
+			}
+		}
+	}
 
 	m_pGeometryBillboardMesh = new GeometryBillboardMesh(pd3dDevice, pd3dCommandList, pGeometryBillboardVertices, nBillboardObjects);
 
