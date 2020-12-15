@@ -443,7 +443,7 @@ void CGameFramework::BuildObjects()
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 	CAirplanePlayer *pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
 	
-	pAirplanePlayer->SetPosition(XMFLOAT3(1500.f, 900.f, 1500.f));
+	pAirplanePlayer->SetPosition(XMFLOAT3(0, 0.f, 0.f));
 
 	pAirplanePlayer->Rotate(230.f, 230.f, 0.f); 
 	m_pPlayer = pAirplanePlayer;

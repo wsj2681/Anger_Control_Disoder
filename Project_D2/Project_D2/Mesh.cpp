@@ -715,6 +715,8 @@ StadiumMesh::StadiumMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	m_nSlot = 0;
 	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
+	LoadObjFromFile();
+
 	m_pd3dVertexBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList,
 		&vertices, m_nStride * m_nVertices,
 		D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
@@ -727,7 +729,7 @@ StadiumMesh::StadiumMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 void StadiumMesh::LoadObjFromFile()
 {
-	FILE* file = fopen("stadium3.obj", "r");
+	FILE* file = fopen("Arena.obj", "r");
 
 	while (true)
 	{

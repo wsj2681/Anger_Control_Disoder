@@ -1,13 +1,16 @@
-﻿// Project_D2.cpp : 애플리케이션에 대한 진입점을 정의합니다.
+﻿// LabProject_02.cpp : 애플리케이션에 대한 진입점을 정의합니다.
 //
-
 #if defined(DEBUG) | defined(_DEBUG)
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
 
-#include "stdafx.h"
-#include "Project_D2.h"
+#include "framework.h"
+#include "LabProject_09.h"
 #include "GameFramework.h"
+
+//메모리 누수 잡기
+#define _CRTDBG_MAP_ALLOC
+#include <crtdbg.h>
 
 #define MAX_LOADSTRING 100
 
@@ -15,7 +18,7 @@
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
-CGameFramework gGameFramework;
+CGameFramework gGameFramework;                  // 게임 프레임워크
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -24,10 +27,14 @@ LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
-                     _In_opt_ HINSTANCE hPrevInstance,
-                     _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow)
+    _In_opt_ HINSTANCE hPrevInstance,
+    _In_ LPWSTR    lpCmdLine,
+    _In_ int       nCmdShow)
 {
+    //메모리 누수 잡기
+    //_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
+    //_CrtSetBreakAlloc(18);
+
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -35,20 +42,20 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
-    LoadStringW(hInstance, IDC_PROJECTD2, szWindowClass, MAX_LOADSTRING);
+    LoadStringW(hInstance, IDC_LABPROJECT09, szWindowClass, MAX_LOADSTRING);
     MyRegisterClass(hInstance);
 
     // 애플리케이션 초기화를 수행합니다:
-    if (!InitInstance (hInstance, nCmdShow))
+    if (!InitInstance(hInstance, nCmdShow))
     {
         return FALSE;
     }
-
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_PROJECTD2));
+    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT09));
 
     MSG msg;
 
-    while (true)
+    // 기본 메시지 루프입니다:
+    while (1)
     {
         if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
@@ -66,7 +73,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     }
     gGameFramework.OnDestroy();
 
-    return (int) msg.wParam;
+    return (int)msg.wParam;
 }
 
 
@@ -78,23 +85,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
-    WNDCLASSEXW wcex;
-
+    WNDCLASSEX wcex;
     wcex.cbSize = sizeof(WNDCLASSEX);
+    wcex.style = CS_HREDRAW | CS_VREDRAW;
+    wcex.lpfnWndProc = WndProc;
+    wcex.cbClsExtra = 0;
+    wcex.cbWndExtra = 0;
+    wcex.hInstance = hInstance;
+    wcex.hIcon = ::LoadIcon(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT09));
+    wcex.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+    wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+    wcex.lpszMenuName = NULL;//주 윈도우의 메뉴가 나타나지 않도록 한다.
+    wcex.lpszClassName = szWindowClass;
+    wcex.hIconSm = ::LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
-    wcex.style          = CS_HREDRAW | CS_VREDRAW;
-    wcex.lpfnWndProc    = WndProc;
-    wcex.cbClsExtra     = 0;
-    wcex.cbWndExtra     = 0;
-    wcex.hInstance      = hInstance;
-    wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_PROJECTD2));
-    wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
-    wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_PROJECTD2);
-    wcex.lpszClassName  = szWindowClass;
-    wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
-
-    return RegisterClassExW(&wcex);
+    return ::RegisterClassEx(&wcex);
 }
 
 //
@@ -110,18 +115,34 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
     hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
-
     RECT rc = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT };
     DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
-    AdjustWindowRect(&rc, dwStyle, FALSE);
-    HWND hMainWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
 
-    if (!hMainWnd) return(FALSE);
+    AdjustWindowRect(&rc, dwStyle, FALSE);
+
+    HWND hMainWnd = CreateWindow(
+        szWindowClass,
+        szTitle,
+        dwStyle,
+        CW_USEDEFAULT,
+        CW_USEDEFAULT,
+        rc.right - rc.left,
+        rc.bottom - rc.top,
+        NULL,
+        NULL,
+        hInstance,
+        NULL);
+
+    if (!hMainWnd)
+        return(FALSE);
 
     gGameFramework.OnCreate(hInstance, hMainWnd);
-
     ::ShowWindow(hMainWnd, nCmdShow);
     ::UpdateWindow(hMainWnd);
+
+#ifdef _WITH_SWAPCHAIN_FULLSCREEN_STATE
+    gGameFramework.ChangeSwapChainState();
+#endif
 
     return(TRUE);
 }
@@ -138,12 +159,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    int wmId, wmEvent;
-    PAINTSTRUCT ps;
-    HDC hdc;
-
-    switch (message)
-    {
+    switch (message) {
     case WM_SIZE:
     case WM_LBUTTONDOWN:
     case WM_LBUTTONUP:
@@ -153,25 +169,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
     case WM_KEYDOWN:
     case WM_KEYUP:
         gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
-        break;
-    case WM_COMMAND:
-        wmId = LOWORD(wParam);
-        wmEvent = HIWORD(wParam);
-        switch (wmId)
-        {
-        case IDM_ABOUT:
-            ::DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
-            break;
-        case IDM_EXIT:
-            ::DestroyWindow(hWnd);
-            break;
-        default:
-            return(::DefWindowProc(hWnd, message, wParam, lParam));
-        }
-        break;
-    case WM_PAINT:
-        hdc = ::BeginPaint(hWnd, &ps);
-        EndPaint(hWnd, &ps);
         break;
     case WM_DESTROY:
         ::PostQuitMessage(0);

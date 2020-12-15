@@ -219,4 +219,6 @@ public:
 	virtual ~Stadium();
 
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera = NULL);
+
+	void LoadMTLFile();
 };
