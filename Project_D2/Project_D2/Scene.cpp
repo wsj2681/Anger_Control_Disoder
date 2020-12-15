@@ -71,6 +71,7 @@ void Scene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd
 	BuildDefaultLightsAndMaterials();
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	stadium = new Stadium(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	XMFLOAT3 xmf3Scale(8.0f, 5.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.5f, 0.0f, 0.0f);
@@ -81,8 +82,8 @@ void Scene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd
 	m_pTerrain = new HeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Image/HeightMap.raw"), 257, 257, 257, 257, xmf3Scale, xmf4Color);
 #endif
 
-	m_pTerrainWater = new TerrainWater(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 257 * xmf3Scale.x, 257 * xmf3Scale.z);
-	m_pTerrainWater->SetPosition((257 * xmf3Scale.x * 0.5f), 320.0f, +(257 * xmf3Scale.z * 0.5f));
+	//m_pTerrainWater = new TerrainWater(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, 257 * xmf3Scale.x, 257 * xmf3Scale.z);
+	//m_pTerrainWater->SetPosition((257 * xmf3Scale.x * 0.5f), 320.0f, +(257 * xmf3Scale.z * 0.5f));
 
 	XMFLOAT3 xmf3Position = XMFLOAT3(150.f, 650.f, 800.f);
 
@@ -362,7 +363,7 @@ void Scene::ReleaseShaderVariables()
 void Scene::ReleaseUploadBuffers()
 {
 	if (m_pSkyBox) m_pSkyBox->ReleaseUploadBuffers();
-
+	if (stadium) stadium->ReleaseUploadBuffers();
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < m_nGameObjects; i++) m_ppGameObjects[i]->ReleaseUploadBuffers();
 }
@@ -380,6 +381,12 @@ bool Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, 
 
 bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
+	switch (wParam)
+	{
+	case 'a':
+		break;
+
+	}
 	return(false);
 }
 
@@ -411,11 +418,11 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 
-	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
+	//if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
 	//if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
-	if (m_pTerrainWater)m_pTerrainWater->Render(pd3dCommandList, pCamera);
-
-	for (int i = 0; i < m_nShaders; i++)  
-		if (m_ppShaders[i])  m_ppShaders[i]->Render(pd3dCommandList, pCamera); 
+	//if (m_pTerrainWater)m_pTerrainWater->Render(pd3dCommandList, pCamera);
+	if (stadium)stadium->Render(pd3dCommandList, pCamera);
+	//for (int i = 0; i < m_nShaders; i++)  
+		//if (m_ppShaders[i])  m_ppShaders[i]->Render(pd3dCommandList, pCamera); 
 }
 

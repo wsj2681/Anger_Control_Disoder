@@ -209,3 +209,21 @@ public:
 		GeometryBillboardVertex* pGeometryBillboardVertices, UINT nGeometryBillboardVertices);
 	virtual ~GeometryBillboardMesh();
 };
+
+class StadiumMesh : public Mesh
+{
+public:
+	StadiumMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual ~StadiumMesh() = default;
+
+	void LoadObjFromFile();
+
+private:
+
+	vector<unsigned int> vertexIndices, uvIndices, normalIndices;
+
+	vector<XMFLOAT3> vertices;
+	vector<XMFLOAT2> uvs;
+	vector<XMFLOAT3> normals;
+
+};

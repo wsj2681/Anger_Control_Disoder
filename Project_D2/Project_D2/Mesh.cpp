@@ -1,7 +1,7 @@
 //-----------------------------------------------------------------------------
 // File: CGameObject.cpp
 //-----------------------------------------------------------------------------
-
+#define _CRT_SECURE_NO_WARNINGS
 #include "stdafx.h"
 #include "Mesh.h"
 #include "RawFormatImage.h"
@@ -703,4 +703,83 @@ CCubeMeshTextured::CCubeMeshTextured(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 
 CCubeMeshTextured::~CCubeMeshTextured()
 {
+}
+
+StadiumMesh::StadiumMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+	: Mesh(pd3dDevice, pd3dCommandList)
+{
+
+	this->m_nVertices = sizeof(vertices);
+	this->m_nStride = sizeof(DiffusedVertex);
+	m_nOffset = 0;
+	m_nSlot = 0;
+	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	m_pd3dVertexBuffer = CreateBufferResource(pd3dDevice, pd3dCommandList,
+		&vertices, m_nStride * m_nVertices,
+		D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+		&m_pd3dVertexUploadBuffer);
+
+	m_d3dVertexBufferView.BufferLocation = m_pd3dVertexBuffer->GetGPUVirtualAddress();
+	m_d3dVertexBufferView.StrideInBytes = m_nStride;
+	m_d3dVertexBufferView.SizeInBytes = m_nStride * m_nVertices;
+}
+
+void StadiumMesh::LoadObjFromFile()
+{
+	FILE* file = fopen("stadium3.obj", "r");
+
+	while (true)
+	{
+		char lineHeader[128];
+
+		int res = fscanf(file, "%s", lineHeader);
+		if (res == EOF)
+			break;
+
+		if (strcmp(lineHeader, "v") == 0)
+		{
+			XMFLOAT3 vertex;
+			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
+			vertices.push_back(vertex);
+		}
+		else if (strcmp(lineHeader, "vt") == 0)
+		{
+			XMFLOAT2 uv;
+			fscanf(file, "%f %f\n", &uv.x, &uv.y);
+			uvs.push_back(uv);
+		}
+		else if (strcmp(lineHeader, "vn") == 0)
+		{
+			XMFLOAT3 normal;
+			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
+			normals.push_back(normal);
+		}
+		else if (strcmp(lineHeader, "f") == 0)
+		{
+			string vertex1, vertex2, vertex3;
+			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
+			int matches = fscanf(file, "%d/%d/%d%d/%d/%d%d/%d/%d\n",
+				&vertexIndex[0], &uvIndex[0], &normalIndex[0],
+				&vertexIndex[1], &uvIndex[1], &normalIndex[1],
+				&vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+
+			if (matches != 9)
+			{
+				printf("file error");
+				return;
+			}
+
+			vertexIndices.push_back(vertexIndex[0]);
+			vertexIndices.push_back(vertexIndex[1]);
+			vertexIndices.push_back(vertexIndex[2]);
+			uvIndices.push_back(uvIndex[0]);
+			uvIndices.push_back(uvIndex[1]);
+			uvIndices.push_back(uvIndex[2]);
+			normalIndices.push_back(normalIndex[0]);
+			normalIndices.push_back(normalIndex[1]);
+			normalIndices.push_back(normalIndex[2]);
+		}
+	}
+
 }

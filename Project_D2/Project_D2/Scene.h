@@ -80,7 +80,7 @@ public:
 	HeightMapTerrain					*m_pTerrain = NULL;
 	TerrainWater						*m_pTerrainWater = NULL;
 	Player								*m_pPlayer = NULL; 
-
+	Stadium* stadium = nullptr;
 	LIGHT								*m_pLights = NULL;
 	int									m_nLights = 0;
 

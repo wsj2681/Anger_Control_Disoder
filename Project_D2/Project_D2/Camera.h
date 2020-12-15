@@ -104,7 +104,7 @@ public:
 
 class CSpaceShipCamera : public Camera
 {
-public:
+public: 
 	CSpaceShipCamera(Camera *pCamera);
 	virtual ~CSpaceShipCamera() { }
 
