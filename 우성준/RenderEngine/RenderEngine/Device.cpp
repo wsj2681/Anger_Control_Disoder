@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "Device.h"
 
+
 Device::Device()
 {
 }
@@ -40,8 +41,12 @@ void Device::CreateDevice()
 		HR(D3D12CreateDevice(adapter, D3D_FEATURE_LEVEL_12_0, _uuidof(ID3D12Device), (void**)&device));
 	}
 
+	resourceHelper.SetCbvSrvDescriptorIncrementSize(device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV));
+	resourceHelper.SetRtvDescriptorIncrementSize(device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV));
+	resourceHelper.SetDsvDescriptorIncrementSize(device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_DSV));
+
 	HR(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), (void**)&fence));
-	for (UINT i = 0; i < 2; i++) 
+	for (UINT i = 0; i < 2; ++i) 
 		fenceValues[i] = 0;
 
 	fenceEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -79,4 +84,24 @@ ID3D12CommandQueue* Device::GetCommandQueue()
 ID3D12GraphicsCommandList* Device::GetCommandList()
 {
 	return this->commandList;
+}
+
+ID3D12Fence* Device::GetFence()
+{
+	return this->fence;
+}
+
+UINT64* Device::GetFenceValues()
+{
+	return nullptr;
+}
+
+UINT64 Device::GetFenceValue(int index)
+{
+	return this->fenceValues[index];
+}
+
+HANDLE Device::GetFenceEvent()
+{
+	return this->fenceEvent;
 }

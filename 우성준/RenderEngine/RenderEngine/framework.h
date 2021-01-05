@@ -72,3 +72,7 @@ using Microsoft::WRL::ComPtr;
 #define   HR(x) (x);
 #endif
 #endif
+
+#include "ResourceHelper.h"
+
+static ResourceHelper resourceHelper;

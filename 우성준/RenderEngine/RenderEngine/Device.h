@@ -26,10 +26,15 @@ public:
 
 	void CreateDevice();
 	void CreateCommander();
-
+	
 	ID3D12Device* GetDevice();
 	ID3D12CommandAllocator* GetCommandAllocator();
 	ID3D12CommandQueue* GetCommandQueue();
 	ID3D12GraphicsCommandList* GetCommandList();
+	
+	ID3D12Fence* GetFence();
+	UINT64* GetFenceValues();
+	UINT64 GetFenceValue(int index);
+	HANDLE GetFenceEvent();
 };
 
