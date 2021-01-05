@@ -51,6 +51,8 @@ public:
 	
 	void Render();
 
+	void WaitForGPUComlete();
+
 	ID3D12Resource** GetSwapChainBackBuffers();
 	ID3D12DescriptorHeap* GetRenderTargetDescHeap();
 
