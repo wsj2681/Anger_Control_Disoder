@@ -14,7 +14,7 @@ private:
 
 	ID3D12CommandAllocator* commandAllocator = nullptr;
 	ID3D12CommandQueue* commandQueue = nullptr;
-	ID3D12CommandList* commandList = nullptr;
+	ID3D12GraphicsCommandList* commandList = nullptr;
 
 	ID3D12Fence* fence = nullptr;
 	UINT64 fenceValues[2];
@@ -27,5 +27,8 @@ public:
 	void CreateDevice();
 	void CreateCommander();
 
+	ID3D12CommandAllocator* GetCommandAllocator();
+	ID3D12CommandQueue* GetCommandQueue();
+	ID3D12GraphicsCommandList* GetCommandList();
 };
 

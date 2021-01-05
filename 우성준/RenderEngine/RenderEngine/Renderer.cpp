@@ -2,10 +2,9 @@
 #include "Renderer.h"
 
 Renderer::Renderer(ID3D12CommandAllocator* commandAllocator, ID3D12CommandQueue* commandQueue, ID3D12GraphicsCommandList* commandList)
+	:commandAllocator(commandAllocator), commandQueue(commandQueue),commandList(commandList)
 {
-	this->commandAllocator = commandAllocator;
-	this->commandQueue = commandQueue;
-	this->commandList = commandList;
+
 }
 
 Renderer::~Renderer()
@@ -16,9 +15,15 @@ void Renderer::OnInit(HINSTANCE hInstance, HWND hWnd)
 {
 	this->hInstance = hInstance;
 	this->hWnd = hWnd;
+
+	CreateSwpaChain();
 }
 
 void Renderer::OnDestroy()
+{
+}
+
+void Renderer::CreateSwpaChain()
 {
 }
 

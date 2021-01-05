@@ -37,8 +37,10 @@ public:
 	void OnInit(HINSTANCE hInstance, HWND hWnd);
 	void OnDestroy();
 
-	void InitMultiSampleQualityLevels(ID3D12Device* device);
+	void CreateSwpaChain();
 
+	void InitMultiSampleQualityLevels(ID3D12Device* device);
+	
 	void Render();
 
 	void SetRenderTargetDescIncrementSize(UINT size);
