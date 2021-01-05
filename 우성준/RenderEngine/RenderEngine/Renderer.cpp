@@ -11,7 +11,7 @@ Renderer::~Renderer()
 {
 }
 
-void Renderer::OnInit(HINSTANCE hInstance, HWND hWnd)
+void Renderer::OnInit(HINSTANCE hInstance, HWND hWnd, ID3D12Device* device)
 {
 	this->hInstance = hInstance;
 	this->hWnd = hWnd;
@@ -19,13 +19,94 @@ void Renderer::OnInit(HINSTANCE hInstance, HWND hWnd)
 	CreateSwpaChain();
 }
 
+
 void Renderer::OnDestroy()
 {
 }
 
 void Renderer::CreateSwpaChain()
 {
+	IDXGIFactory4* factory4 = nullptr;
+	UINT nDXGIFactoryFlags = 0;
+	HR(::CreateDXGIFactory2(nDXGIFactoryFlags, __uuidof(IDXGIFactory4), (void**)&factory4));
+	
+	IDXGIAdapter1* pd3dAdapter = NULL;
 
+	for (UINT i = 0; DXGI_ERROR_NOT_FOUND != factory4->EnumAdapters1(i, &pd3dAdapter); i++)
+	{
+		DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
+		HR(pd3dAdapter->GetDesc1(&dxgiAdapterDesc));
+		if (dxgiAdapterDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) continue;
+	}
+
+	RECT rcClient;
+	::GetClientRect(hWnd, &rcClient);
+	clientWidth = rcClient.right - rcClient.left;
+	clientHeight = rcClient.bottom - rcClient.top;
+
+#ifdef _WITH_CREATE_SWAPCHAIN_FOR_HWND
+	DXGI_SWAP_CHAIN_DESC1 dxgiSwapChainDesc;
+	::ZeroMemory(&dxgiSwapChainDesc, sizeof(DXGI_SWAP_CHAIN_DESC1));
+	dxgiSwapChainDesc.Width = clientWidth;
+	dxgiSwapChainDesc.Height = clientHeight;
+	dxgiSwapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	dxgiSwapChainDesc.SampleDesc.Count = (Msaa4xEnable) ? 4 : 1;
+	dxgiSwapChainDesc.SampleDesc.Quality = (Msaa4xEnable) ? (Msaa4xQualityLevels - 1) : 0;
+	dxgiSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	dxgiSwapChainDesc.BufferCount = swapChainBuffers;
+	dxgiSwapChainDesc.Scaling = DXGI_SCALING_NONE;
+	dxgiSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	dxgiSwapChainDesc.AlphaMode = DXGI_ALPHA_MODE_UNSPECIFIED;
+	dxgiSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+	DXGI_SWAP_CHAIN_FULLSCREEN_DESC dxgiSwapChainFullScreenDesc;
+	::ZeroMemory(&dxgiSwapChainFullScreenDesc, sizeof(DXGI_SWAP_CHAIN_FULLSCREEN_DESC));
+	dxgiSwapChainFullScreenDesc.RefreshRate.Numerator = 60;
+	dxgiSwapChainFullScreenDesc.RefreshRate.Denominator = 1;
+	dxgiSwapChainFullScreenDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	dxgiSwapChainFullScreenDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	dxgiSwapChainFullScreenDesc.Windowed = TRUE;
+
+	HRESULT hResult = m_pdxgiFactory->CreateSwapChainForHwnd(commandQueue, m_hWnd, &dxgiSwapChainDesc, &dxgiSwapChainFullScreenDesc, NULL, (IDXGISwapChain1**)&m_pdxgiSwapChain);
+#else
+	DXGI_SWAP_CHAIN_DESC dxgiSwapChainDesc;
+	::ZeroMemory(&dxgiSwapChainDesc, sizeof(dxgiSwapChainDesc));
+	dxgiSwapChainDesc.BufferCount = swapChainBuffers;
+	dxgiSwapChainDesc.BufferDesc.Width = clientWidth;
+	dxgiSwapChainDesc.BufferDesc.Height = clientHeight;
+	dxgiSwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	dxgiSwapChainDesc.BufferDesc.RefreshRate.Numerator = 60;
+	dxgiSwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+	dxgiSwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+	dxgiSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+	dxgiSwapChainDesc.OutputWindow = hWnd;
+	dxgiSwapChainDesc.SampleDesc.Count = (Msaa4xEnable) ? 4 : 1;
+	dxgiSwapChainDesc.SampleDesc.Quality = (Msaa4xEnable) ? (Msaa4xQualityLevels - 1) : 0;
+	dxgiSwapChainDesc.Windowed = TRUE;
+	dxgiSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+	HRESULT h = factory4->CreateSwapChain(commandQueue, &dxgiSwapChainDesc, (IDXGISwapChain**)&swapChain);
+#endif
+	swapChainBufferIndex = swapChain->GetCurrentBackBufferIndex();
+
+	HR(factory4->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER));
+
+#ifndef _WITH_SWAPCHAIN_FULLSCREEN_STATE
+	//CreateRenderTargetViews();
+#endif
+}
+
+void Renderer::CreateRtvAndDsvDescHeap()
+{
+
+}
+
+void Renderer::CreateRenderTargetView()
+{
+}
+
+void Renderer::CreateDepthStencilView()
+{
 }
 
 void Renderer::InitMultiSampleQualityLevels(ID3D12Device* device)
@@ -51,16 +132,6 @@ void Renderer::Render()
 	commandList->Reset(commandAllocator, nullptr);
 
 
-}
-
-void Renderer::SetRenderTargetDescIncrementSize(UINT size)
-{
-	this->renderTargetDescIncremetSize = size;
-}
-
-UINT Renderer::GetRenderTargetDescIncrementSize()
-{
-	return this->renderTargetDescIncremetSize;
 }
 
 ID3D12Resource** Renderer::GetSwapChainBackBuffers()

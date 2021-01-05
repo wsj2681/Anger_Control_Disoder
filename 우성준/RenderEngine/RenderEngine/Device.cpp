@@ -61,6 +61,11 @@ void Device::CreateCommander()
 	HR(commandList->Close());
 }
 
+ID3D12Device* Device::GetDevice()
+{
+	return this->device;
+}
+
 ID3D12CommandAllocator* Device::GetCommandAllocator()
 {
 	return this->commandAllocator;
