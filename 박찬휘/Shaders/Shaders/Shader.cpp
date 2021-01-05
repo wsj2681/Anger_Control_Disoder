@@ -151,20 +151,67 @@ void Shader::CreateShaderResourceViews(ID3D12Device* device, Texture* texture, U
 
 void Shader::CreateShader(ID3D12Device* device, ID3D12RootSignature* graphicsRootSignature)
 {
+	ASSERT(device, "Shader::CreateShader device is nullptr");
+	ASSERT(graphicsRootSignature, "Shader::CreateShader graphicsRootSignature is nullptr");
 
+	this->graphicsRootSignature = graphicsRootSignature;
+	ID3D10Blob* vertexShaderBlob{ nullptr }, * pixelShaderBlob{ nullptr }, * geometryShaderBlob{ nullptr };
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC desc;
+	::ZeroMemory(&desc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
+	desc.pRootSignature = graphicsRootSignature;
+	desc.VS = CreateShaderByteCode(&vertexShaderBlob);
+	desc.PS = CreateShaderByteCode(&pixelShaderBlob);
+	desc.GS = CreateShaderByteCode(&geometryShaderBlob);
+	desc.RasterizerState = CreateRasterizerState();
+	desc.BlendState = CreateBlendState();
+	desc.DepthStencilState = CreateDepthStencilState();
+	desc.InputLayout = CreateInputLayout();
+	desc.SampleMask = UINT_MAX;
+	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	desc.NumRenderTargets = 1;
+	desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.DSVFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.SampleDesc.Count = 1;
+	desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+	
+	HR(device->CreateGraphicsPipelineState(&desc, __uuidof(ID3D12PipelineState), (void**)&pipelineStates[0]));
+
+	SAFE_RELEASE(vertexShaderBlob);
+	SAFE_RELEASE(pixelShaderBlob);
+	SAFE_RELEASE(geometryShaderBlob);
 }
 
 D3D12_SHADER_BYTECODE Shader::CompileShaderFromFile(const wchar_t* fName, LPCSTR shaderName, LPCSTR shaderProfile, ID3DBlob** shaderBlob)
 {
-	return D3D12_SHADER_BYTECODE();
+	UINT compileFlags{ 0 };
+#if defined(_DEBUG)
+	compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
+	ID3DBlob* errorBlob{ nullptr };
+	HR(::D3DCompileFromFile(fName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, shaderName, shaderProfile, compileFlags, 0, shaderBlob, &errorBlob));
+
+	D3D12_SHADER_BYTECODE shaderByteCode;
+	shaderByteCode.BytecodeLength = (*shaderBlob)->GetBufferSize();
+	shaderByteCode.pShaderBytecode = (*shaderBlob)->GetBufferPointer();
+
+	return shaderByteCode;
 }
 
-void Shader::BuildObjects(ID3D12Device* device, ID3D12GraphicsCommandList* commandList)
+D3D12_SHADER_BYTECODE Shader::ReadCompiledShaderFromFile(const wchar_t* fName, ID3DBlob** shaderBlob)
 {
+
+}
+
+void Shader::BuildObjects(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, LoadedModelInfo* modelInfo, void* context = nullptr)
+{
+	ASSERT(device, "Shader::BuildObject device is nullptr");
+	ASSERT(commandList, "Shader::BuildObject commandList is nullptr");
 }
 
 void Shader::AnimateObjects(float timeElapsed)
 {
+
 }
 
 void Shader::ReleaseObjects()
@@ -177,4 +224,11 @@ void Shader::ReleaseUploadBuffer()
 
 void Shader::Render(ID3D12GraphicsCommandList* commandList)
 {
+	ASSERT(commandList, "Shader::Render commandList is nullptr");
+
+	if (graphicsRootSignature) commandList->SetGraphicsRootSignature();
+	if (pipelineStates) commandList->SetPipelineState(pipelineStates[0]);
+	if (descHeap) commandList->SetDescriptorHeaps(1, &descHeap);
+
+	// UpdateShaderVariables(commandList);
 }
