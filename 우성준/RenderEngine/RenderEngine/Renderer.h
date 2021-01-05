@@ -18,6 +18,7 @@ private:
 	int clientWidth = 0;
 	int clientHeight = 0;
 
+	IDXGISwapChain3* swapChain = nullptr;
 	static const UINT swapChainBuffers = 2;
 	UINT swapChinBufferIndex = 0;
 

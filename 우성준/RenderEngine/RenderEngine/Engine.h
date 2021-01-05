@@ -21,5 +21,6 @@ public:
 
 	void OnInit(HINSTANCE hInstance, HWND hWnd);
 	void OnDestroy();
+	void Update();
 };
 
