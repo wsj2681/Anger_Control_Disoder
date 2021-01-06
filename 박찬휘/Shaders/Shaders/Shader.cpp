@@ -1,18 +1,18 @@
 #include "framework.h"
 #include "Shader.h"
 
+UINT descriptorIncrementSize;
+
 Shader::~Shader()
 {
-	SAFE_RELEASE(graphicsRootSignature);
 	SAFE_RELEASE(descHeap);
-	if (pipelineStates)
-		for (int i = 0; i < nPipelineState; ++i)
-			SAFE_RELEASE(pipelineStates[i]);
+	SAFE_RELEASE(pipelineState);
 }
 
 D3D12_INPUT_LAYOUT_DESC Shader::CreateInputLayout()
 {
 	D3D12_INPUT_LAYOUT_DESC desc;
+
 	desc.pInputElementDescs = nullptr;
 	desc.NumElements = 0;
 
@@ -22,17 +22,18 @@ D3D12_INPUT_LAYOUT_DESC Shader::CreateInputLayout()
 D3D12_RASTERIZER_DESC Shader::CreateRasterizerState()
 {
 	D3D12_RASTERIZER_DESC desc;
-	desc.AntialiasedLineEnable = false;
-	desc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+
+	desc.FillMode = D3D12_FILL_MODE_SOLID;
 	desc.CullMode = D3D12_CULL_MODE_BACK;
+	desc.FrontCounterClockwise = false;
 	desc.DepthBias = 0;
 	desc.DepthBiasClamp = 0.f;
-	desc.DepthClipEnable = true;
-	desc.FillMode = D3D12_FILL_MODE_SOLID;
-	desc.ForcedSampleCount = 0;
-	desc.FrontCounterClockwise = false;
-	desc.MultisampleEnable = false;
 	desc.SlopeScaledDepthBias = 0.f;
+	desc.DepthClipEnable = true;
+	desc.MultisampleEnable = false;
+	desc.AntialiasedLineEnable = false;
+	desc.ForcedSampleCount = 0;
+	desc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 
 	return desc;
 }
@@ -40,20 +41,21 @@ D3D12_RASTERIZER_DESC Shader::CreateRasterizerState()
 D3D12_DEPTH_STENCIL_DESC Shader::CreateDepthStencilState()
 {
 	D3D12_DEPTH_STENCIL_DESC desc;
-	desc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	desc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	desc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
-	desc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+
 	desc.DepthEnable = true;
-	desc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	desc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-	desc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	desc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	desc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
-	desc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	desc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
 	desc.StencilEnable = false;
 	desc.StencilReadMask = 0;
 	desc.StencilWriteMask = 0;
+	desc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	desc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	desc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	desc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	desc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	desc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	desc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	desc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
 
 	return desc;
 }
@@ -61,18 +63,19 @@ D3D12_DEPTH_STENCIL_DESC Shader::CreateDepthStencilState()
 D3D12_BLEND_DESC Shader::CreateBlendState()
 {
 	D3D12_BLEND_DESC desc;
+
 	desc.AlphaToCoverageEnable = false;
 	desc.IndependentBlendEnable = false;
 	desc.RenderTarget[0].BlendEnable = false;
-	desc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
-	desc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
-	desc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
-	desc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
-	desc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
 	desc.RenderTarget[0].LogicOpEnable = false;
-	desc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 	desc.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
-	desc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ZERO;
+	desc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
+	desc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	desc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	desc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO; desc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	desc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	desc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	desc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
 	return desc;
 }
@@ -98,8 +101,8 @@ void Shader::CreateDescriptorHeaps(ID3D12Device* device, int constantBufferViews
 
 	cbvCPUDescStartHandle = descHeap->GetCPUDescriptorHandleForHeapStart();
 	cbvGPUDescStartHandle = descHeap->GetGPUDescriptorHandleForHeapStart();
-	srvCPUDescStartHandle.ptr = static_cast<unsigned long long>(::descriptorIncrementSize) + constantBufferViews;
-	srvGPUDescStartHandle.ptr = static_cast<unsigned long long>(::descriptorIncrementSize) + constantBufferViews;
+	cbvCPUDescStartHandle.ptr = static_cast<unsigned long long>(::descriptorIncrementSize) + constantBufferViews;
+	cbvGPUDescStartHandle.ptr = static_cast<unsigned long long>(::descriptorIncrementSize) + constantBufferViews;
 
 	srvCPUDescNextHandle = srvCPUDescStartHandle;
 	srvGPUDescNextHandle = srvGPUDescStartHandle;
@@ -154,14 +157,13 @@ void Shader::CreateShader(ID3D12Device* device, ID3D12RootSignature* graphicsRoo
 	ASSERT(device, "Shader::CreateShader device is nullptr");
 	ASSERT(graphicsRootSignature, "Shader::CreateShader graphicsRootSignature is nullptr");
 
-	this->graphicsRootSignature = graphicsRootSignature;
-	ID3D10Blob* vertexShaderBlob{ nullptr }, * pixelShaderBlob{ nullptr }, * geometryShaderBlob{ nullptr };
+	ID3D10Blob* vertexBlob{ nullptr }, * pixelBlob{ nullptr }, * geometryBlob{ nullptr };
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC desc;
 	::ZeroMemory(&desc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	desc.pRootSignature = graphicsRootSignature;
-	desc.VS = CreateShaderByteCode(&vertexShaderBlob);
-	desc.PS = CreateShaderByteCode(&pixelShaderBlob);
-	desc.GS = CreateShaderByteCode(&geometryShaderBlob);
+	desc.VS = CreateShaderByteCode(&vertexBlob);
+	desc.PS = CreateShaderByteCode(&pixelBlob);
+	desc.GS = CreateShaderByteCode(&geometryBlob);
 	desc.RasterizerState = CreateRasterizerState();
 	desc.BlendState = CreateBlendState();
 	desc.DepthStencilState = CreateDepthStencilState();
@@ -170,15 +172,15 @@ void Shader::CreateShader(ID3D12Device* device, ID3D12RootSignature* graphicsRoo
 	desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
 	desc.NumRenderTargets = 1;
 	desc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-	desc.DSVFormat = DXGI_FORMAT_R8G8B8A8_UNORM;
+	desc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	desc.SampleDesc.Count = 1;
 	desc.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
 	
-	HR(device->CreateGraphicsPipelineState(&desc, __uuidof(ID3D12PipelineState), (void**)&pipelineStates[0]));
+	HR(device->CreateGraphicsPipelineState(&desc, __uuidof(ID3D12PipelineState), (void**)&pipelineState));
 
-	SAFE_RELEASE(vertexShaderBlob);
-	SAFE_RELEASE(pixelShaderBlob);
-	SAFE_RELEASE(geometryShaderBlob);
+	SAFE_RELEASE(vertexBlob);
+	SAFE_RELEASE(pixelBlob);
+	SAFE_RELEASE(geometryBlob);
 }
 
 D3D12_SHADER_BYTECODE Shader::CompileShaderFromFile(const wchar_t* fName, LPCSTR shaderName, LPCSTR shaderProfile, ID3DBlob** shaderBlob)
@@ -200,10 +202,35 @@ D3D12_SHADER_BYTECODE Shader::CompileShaderFromFile(const wchar_t* fName, LPCSTR
 
 D3D12_SHADER_BYTECODE Shader::ReadCompiledShaderFromFile(const wchar_t* fName, ID3DBlob** shaderBlob)
 {
+	UINT nReadBytes{ 0 };
 
+	ifstream in{ fName, ios::in | ios::ate | ios::binary };
+	nReadBytes = (int)in.tellg();
+	BYTE* byteCode = new BYTE[nReadBytes];
+	in.seekg(0);
+	in.read((char*)byteCode, nReadBytes);
+	in.close();
+
+	D3D12_SHADER_BYTECODE shaderByteCode{};
+
+	if (shaderBlob)
+	{
+		*shaderBlob = nullptr;
+		HR(D3DCreateBlob(nReadBytes, shaderBlob));
+		memcpy((*shaderBlob)->GetBufferPointer(), byteCode, nReadBytes);
+		shaderByteCode.BytecodeLength = (*shaderBlob)->GetBufferSize();
+		shaderByteCode.pShaderBytecode = (*shaderBlob)->GetBufferPointer();
+	}
+	else
+	{
+		shaderByteCode.BytecodeLength = nReadBytes;
+		shaderByteCode.pShaderBytecode = byteCode;
+	}
+
+	return shaderByteCode;
 }
 
-void Shader::BuildObjects(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, LoadedModelInfo* modelInfo, void* context = nullptr)
+void Shader::BuildObjects(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, LoadedModelInfo* modelInfo, void* context)
 {
 	ASSERT(device, "Shader::BuildObject device is nullptr");
 	ASSERT(commandList, "Shader::BuildObject commandList is nullptr");
@@ -226,8 +253,7 @@ void Shader::Render(ID3D12GraphicsCommandList* commandList)
 {
 	ASSERT(commandList, "Shader::Render commandList is nullptr");
 
-	if (graphicsRootSignature) commandList->SetGraphicsRootSignature();
-	if (pipelineStates) commandList->SetPipelineState(pipelineStates[0]);
+	if (pipelineState) commandList->SetPipelineState(pipelineState);
 	if (descHeap) commandList->SetDescriptorHeaps(1, &descHeap);
 
 	// UpdateShaderVariables(commandList);
