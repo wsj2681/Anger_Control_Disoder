@@ -1,4 +1,7 @@
 #pragma once
+
+class Device;
+
 class Renderer final
 {
 public:
@@ -43,16 +46,16 @@ public:
 	void OnDestroy();
 
 	void CreateSwpaChain();
-	void CreateRtvAndDsvDescHeap();
-	void CreateRenderTargetView();
-	void CreateDepthStencilView();
+	void CreateRtvAndDsvDescHeap(ID3D12Device* device);
+	void CreateRenderTargetView(ID3D12Device* device);
+	void CreateDepthStencilView(ID3D12Device* device);
 
 	void InitMultiSampleQualityLevels(ID3D12Device* device);
 	
 	void Render();
 
 	void WaitForGPUComlete();
-
+	void MoveToNextFrame();
 	ID3D12Resource** GetSwapChainBackBuffers();
 	ID3D12DescriptorHeap* GetRenderTargetDescHeap();
 

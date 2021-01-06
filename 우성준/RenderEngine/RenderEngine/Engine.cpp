@@ -26,4 +26,5 @@ void Engine::OnDestroy()
 
 void Engine::Update()
 {
+	renderer->Render();
 }
