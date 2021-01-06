@@ -5,11 +5,9 @@ public:
 	StandardShader(const StandardShader&) = delete;
 	StandardShader& operator=(const StandardShader&) = delete;
 	virtual ~StandardShader();
+protected:
+	GameObject** gameObject{ nullptr };
+	int nGameObject{ 0 };
 public:
-	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
-	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
-
-	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
-	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
-	virtual D3D12_SHADER_BYTECODE CreateGeometryShader();
+	virtual void BuildObject(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, LoadedModelInfo* modelInfo, void* context = nullptr);
 };

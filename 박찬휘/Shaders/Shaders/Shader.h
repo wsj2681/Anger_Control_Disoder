@@ -6,12 +6,10 @@ public:
 	Shader& operator=(const Shader&) = delete;
 	virtual ~Shader();
 protected:
-	ID3D12PipelineState* pipelineState{ nullptr };
+	ID3D12PipelineState** pipelineStates{ nullptr };
+	int nPipelineState{ 0 };
 	ID3D12DescriptorHeap* descHeap{ nullptr };
-
-	ID3DBlob* vertexShaderBlob{ nullptr };
-	ID3DBlob* pixelShaderBlob{ nullptr };
-	ID3DBlob* geometryShaderBlob{ nullptr };
+	ID3D12RootSignature* graphicsRootSignature{ nullptr };
 
 	D3D12_CPU_DESCRIPTOR_HANDLE cbvCPUDescStartHandle{};
 	D3D12_GPU_DESCRIPTOR_HANDLE cbvGPUDescStartHandle{};
