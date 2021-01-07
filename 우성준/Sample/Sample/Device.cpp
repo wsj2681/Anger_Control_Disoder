@@ -87,42 +87,42 @@ void Device::CreateCommander()
 	HR(commandList->Close());
 }
 
-ID3D12Device* Device::GetDX12Device()
+ID3D12Device*& Device::GetDX12Device()
 {
 	return this->device;
 }
 
-IDXGIFactory4* Device::GetDXGIFactory()
+IDXGIFactory4*& Device::GetDXGIFactory()
 {
 	return this->factory4;
 }
 
-ID3D12CommandAllocator* Device::GetCommandAllocator()
+ID3D12CommandAllocator*& Device::GetCommandAllocator()
 {
 	return this->commandAllocator;
 }
 
-ID3D12CommandQueue* Device::GetCommandQueue()
+ID3D12CommandQueue*& Device::GetCommandQueue()
 {
 	return this->commandQueue;
 }
 
-ID3D12GraphicsCommandList* Device::GetCommandList()
+ID3D12GraphicsCommandList*& Device::GetCommandList()
 {
 	return this->commandList;
 }
 
-ID3D12Fence* Device::GetFence()
+ID3D12Fence*& Device::GetFence()
 {
 	return this->fence;
 }
 
-UINT64 Device::GetFenceValue(int index)
+UINT64& Device::GetFenceValue(int index)
 {
 	return this->fenceValues[index];
 }
 
-HANDLE Device::GetFenceEvent()
+HANDLE& Device::GetFenceEvent()
 {
 	return this->fenceEvent;
 }
