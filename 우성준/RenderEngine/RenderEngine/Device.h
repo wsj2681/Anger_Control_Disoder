@@ -20,6 +20,10 @@ private:
 	UINT64 fenceValues[2];
 	HANDLE fenceEvent = nullptr;
 
+#if defined(_DEBUG)
+	ID3D12Debug* debugController = nullptr;
+#endif
+
 public:
 	void OnInit();
 	void OnDestroy();
@@ -31,7 +35,7 @@ public:
 	ID3D12CommandAllocator* GetCommandAllocator();
 	ID3D12CommandQueue* GetCommandQueue();
 	ID3D12GraphicsCommandList* GetCommandList();
-	
+	IDXGIFactory4* GetFactory();
 	ID3D12Fence* GetFence();
 	UINT64* GetFenceValues();
 	UINT64 GetFenceValue(int index);

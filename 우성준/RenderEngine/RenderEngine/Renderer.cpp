@@ -2,24 +2,24 @@
 #include "Renderer.h"
 #include "Device.h"
 
-Renderer::Renderer(ID3D12CommandAllocator* commandAllocator, ID3D12CommandQueue* commandQueue, ID3D12GraphicsCommandList* commandList)
-	:commandAllocator(commandAllocator), commandQueue(commandQueue),commandList(commandList)
+Renderer::Renderer()
 {
-
+	this->device = new Device();
+	this->device->OnInit();
 }
 
 Renderer::~Renderer()
 {
 }
 
-void Renderer::OnInit(HINSTANCE hInstance, HWND hWnd, ID3D12Device* device)
+void Renderer::OnInit(HINSTANCE hInstance, HWND hWnd)
 {
 	this->hInstance = hInstance;
 	this->hWnd = hWnd;
 
-	CreateRtvAndDsvDescHeap(device);
+	CreateRtvAndDsvDescHeap();
 	CreateSwpaChain();
-	CreateDepthStencilView(device);
+	CreateDepthStencilView();
 }
 
 
@@ -29,19 +29,6 @@ void Renderer::OnDestroy()
 
 void Renderer::CreateSwpaChain()
 {
-	IDXGIFactory4* factory4 = nullptr;
-	UINT nDXGIFactoryFlags = 0;
-	HR(::CreateDXGIFactory2(nDXGIFactoryFlags, __uuidof(IDXGIFactory4), (void**)&factory4));
-	
-	IDXGIAdapter1* pd3dAdapter = NULL;
-
-	for (UINT i = 0; DXGI_ERROR_NOT_FOUND != factory4->EnumAdapters1(i, &pd3dAdapter); i++)
-	{
-		DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
-		HR(pd3dAdapter->GetDesc1(&dxgiAdapterDesc));
-		if (dxgiAdapterDesc.Flags & DXGI_ADAPTER_FLAG_SOFTWARE) continue;
-	}
-
 	RECT rcClient;
 	::GetClientRect(hWnd, &rcClient);
 	clientWidth = rcClient.right - rcClient.left;
@@ -88,18 +75,18 @@ void Renderer::CreateSwpaChain()
 	dxgiSwapChainDesc.Windowed = TRUE;
 	dxgiSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	HRESULT h = factory4->CreateSwapChain(commandQueue, &dxgiSwapChainDesc, (IDXGISwapChain**)&swapChain);
+	HRESULT h = device->GetFactory()->CreateSwapChain(device->GetCommandList(), &dxgiSwapChainDesc, (IDXGISwapChain**)&swapChain);
 #endif
 	swapChainBufferIndex = swapChain->GetCurrentBackBufferIndex();
 
-	HR(factory4->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER));
+	HR(device->GetFactory()->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER));
 
 #ifndef _WITH_SWAPCHAIN_FULLSCREEN_STATE
 	//CreateRenderTargetViews();
 #endif
 }
 
-void Renderer::CreateRtvAndDsvDescHeap(ID3D12Device* device)
+void Renderer::CreateRtvAndDsvDescHeap()
 {
 	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
 	::ZeroMemory(&d3dDescriptorHeapDesc, sizeof(D3D12_DESCRIPTOR_HEAP_DESC));
@@ -107,26 +94,26 @@ void Renderer::CreateRtvAndDsvDescHeap(ID3D12Device* device)
 	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	d3dDescriptorHeapDesc.NodeMask = 0;
-	HR(device->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)&renderTargetDescHeap));
+	HR(this->device->GetDevice()->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)&renderTargetDescHeap));
 
 	d3dDescriptorHeapDesc.NumDescriptors = 1;
 	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	HR(device->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)&depthStencilDescHeap));
+	HR(this->device->GetDevice()->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)&depthStencilDescHeap));
 
 }
 
-void Renderer::CreateRenderTargetView(ID3D12Device* device)
+void Renderer::CreateRenderTargetView()
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE rtvCPUDescriptorHandle = renderTargetDescHeap->GetCPUDescriptorHandleForHeapStart();
 	for (UINT i = 0; i < swapChainBuffers; i++)
 	{
 		HR(swapChain->GetBuffer(i, __uuidof(ID3D12Resource), (void**)&swapChainBackBuffers[i]));
-		device->CreateRenderTargetView(swapChainBackBuffers[i], NULL, rtvCPUDescriptorHandle);
+		this->device->GetDevice()->CreateRenderTargetView(swapChainBackBuffers[i], NULL, rtvCPUDescriptorHandle);
 		rtvCPUDescriptorHandle.ptr += resourceHelper.GetRtvDescriptorIncrementSize();
 	}
 }
 
-void Renderer::CreateDepthStencilView(ID3D12Device* device)
+void Renderer::CreateDepthStencilView()
 {
 	D3D12_RESOURCE_DESC d3dResourceDesc;
 	d3dResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
@@ -154,7 +141,7 @@ void Renderer::CreateDepthStencilView(ID3D12Device* device)
 	d3dClearValue.DepthStencil.Depth = 1.0f;
 	d3dClearValue.DepthStencil.Stencil = 0;
 
-	HR(device->CreateCommittedResource(&d3dHeapProperties, D3D12_HEAP_FLAG_NONE, &d3dResourceDesc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &d3dClearValue, __uuidof(ID3D12Resource), (void**)&depthStencilBuffer));
+	HR(this->device->GetDevice()->CreateCommittedResource(&d3dHeapProperties, D3D12_HEAP_FLAG_NONE, &d3dResourceDesc, D3D12_RESOURCE_STATE_DEPTH_WRITE, &d3dClearValue, __uuidof(ID3D12Resource), (void**)&depthStencilBuffer));
 
 	D3D12_DEPTH_STENCIL_VIEW_DESC d3dDepthStencilViewDesc;
 	::ZeroMemory(&d3dDepthStencilViewDesc, sizeof(D3D12_DEPTH_STENCIL_VIEW_DESC));
@@ -163,18 +150,18 @@ void Renderer::CreateDepthStencilView(ID3D12Device* device)
 	d3dDepthStencilViewDesc.Flags = D3D12_DSV_FLAG_NONE;
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = depthStencilDescHeap->GetCPUDescriptorHandleForHeapStart();
-	device->CreateDepthStencilView(depthStencilBuffer, &d3dDepthStencilViewDesc, d3dDsvCPUDescriptorHandle);
+	this->device->GetDevice()->CreateDepthStencilView(depthStencilBuffer, &d3dDepthStencilViewDesc, d3dDsvCPUDescriptorHandle);
 
 }
 
-void Renderer::InitMultiSampleQualityLevels(ID3D12Device* device)
+void Renderer::InitMultiSampleQualityLevels()
 {
 	D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS MsaaQualityLevels;
 	MsaaQualityLevels.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
 	MsaaQualityLevels.SampleCount = 4;
 	MsaaQualityLevels.Flags = D3D12_MULTISAMPLE_QUALITY_LEVELS_FLAG_NONE;
 	MsaaQualityLevels.NumQualityLevels = 0;
-	device->CheckFeatureSupport(
+	this->device->GetDevice()->CheckFeatureSupport(
 		D3D12_FEATURE_MULTISAMPLE_QUALITY_LEVELS, 
 		&MsaaQualityLevels, 
 		sizeof(D3D12_FEATURE_DATA_MULTISAMPLE_QUALITY_LEVELS)
@@ -186,8 +173,8 @@ void Renderer::InitMultiSampleQualityLevels(ID3D12Device* device)
 
 void Renderer::Render()
 {
-	HR(commandAllocator->Reset());
-	HRESULT t = commandList->Reset(commandAllocator, nullptr);
+	HR(this->device->GetCommandAllocator()->Reset());
+	HRESULT t = this->device->GetCommandList()->Reset(this->device->GetCommandAllocator(), nullptr);
 	D3D12_RESOURCE_BARRIER d3dResourceBarrier;
 
 	::ZeroMemory(&d3dResourceBarrier, sizeof(D3D12_RESOURCE_BARRIER));
@@ -197,27 +184,27 @@ void Renderer::Render()
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	commandList->ResourceBarrier(1, &d3dResourceBarrier);
+	this->device->GetCommandList()->ResourceBarrier(1, &d3dResourceBarrier);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = renderTargetDescHeap->GetCPUDescriptorHandleForHeapStart();
 	d3dRtvCPUDescriptorHandle.ptr += (swapChainBufferIndex * resourceHelper.GetRtvDescriptorIncrementSize());
 
-	commandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, Colors::Black, 0, NULL);
+	this->device->GetCommandList()->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, Colors::Black, 0, NULL);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = depthStencilDescHeap->GetCPUDescriptorHandleForHeapStart();
-	commandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
+	this->device->GetCommandList()->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 
-	commandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
+	this->device->GetCommandList()->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;
 	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-	commandList->ResourceBarrier(1, &d3dResourceBarrier);
+	this->device->GetCommandList()->ResourceBarrier(1, &d3dResourceBarrier);
 
-	HRESULT h = commandList->Close();
+	HRESULT h = this->device->GetCommandList()->Close();
 
-	ID3D12CommandList* ppd3dCommandLists[] = { commandList };
-	commandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+	ID3D12CommandList* ppd3dCommandLists[] = { this->device->GetCommandList() };
+	this->device->GetCommandQueue()->ExecuteCommandLists(1, ppd3dCommandLists);
 
 	swapChain->Present(0, 0);
 }

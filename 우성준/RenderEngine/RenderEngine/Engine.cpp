@@ -1,5 +1,4 @@
 #include "framework.h"
-#include "Device.h"
 #include "Renderer.h"
 #include "Engine.h"
 
@@ -13,11 +12,9 @@ Engine::~Engine()
 
 void Engine::OnInit(HINSTANCE hInstance, HWND hWnd)
 {
-	this->device = new Device();
-	device->OnInit();
-	
-	this->renderer = new Renderer(device->GetCommandAllocator(), device->GetCommandQueue(), device->GetCommandList());
-	renderer->OnInit(hInstance, hWnd, device->GetDevice());
+
+	this->renderer = new Renderer();
+	renderer->OnInit(hInstance, hWnd);
 }
 
 void Engine::OnDestroy()

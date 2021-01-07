@@ -37,6 +37,7 @@ using namespace std;
 
 #ifdef _DEBUG
 #include <dxgidebug.h>
+#include <d3d12sdklayers.h>
 #endif
 
 using namespace DirectX;

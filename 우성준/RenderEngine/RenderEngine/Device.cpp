@@ -23,6 +23,16 @@ void Device::OnDestroy()
 void Device::CreateDevice()
 {
 	UINT factoryFlags = 0;
+
+#if defined(_DEBUG)
+	HR(D3D12GetDebugInterface(__uuidof(ID3D12Debug), (void**)&this->debugController));
+	if (debugController)
+	{
+		debugController->EnableDebugLayer();
+	}
+	factoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
+#endif
+
 	HR(::CreateDXGIFactory2(factoryFlags, __uuidof(IDXGIFactory4), (void**)&factory4));
 
 	IDXGIAdapter1* adapter = nullptr;
@@ -84,6 +94,11 @@ ID3D12CommandQueue* Device::GetCommandQueue()
 ID3D12GraphicsCommandList* Device::GetCommandList()
 {
 	return this->commandList;
+}
+
+IDXGIFactory4* Device::GetFactory()
+{
+	return this->factory4;
 }
 
 ID3D12Fence* Device::GetFence()

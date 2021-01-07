@@ -14,7 +14,6 @@ public:
 
 private:
 
-	Device* device;
 	Renderer* renderer;
 
 public:

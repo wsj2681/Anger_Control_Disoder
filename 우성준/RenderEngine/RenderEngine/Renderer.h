@@ -5,10 +5,7 @@ class Device;
 class Renderer final
 {
 public:
-	Renderer() = default;
-	Renderer(ID3D12CommandAllocator* commandAllocator,
-			ID3D12CommandQueue* commandQueue, 
-			ID3D12GraphicsCommandList* commandList);
+	Renderer();
 	Renderer(const Renderer&) = delete;
 	Renderer& operator=(const Renderer&) = delete;
 	~Renderer();
@@ -34,23 +31,19 @@ private:
 	bool Msaa4xEnable = false;
 	UINT Msaa4xQualityLevels = 0;
 
-	ID3D12CommandAllocator* commandAllocator = nullptr;
-	ID3D12CommandQueue* commandQueue = nullptr;
-	ID3D12GraphicsCommandList* commandList = nullptr;
-
-
+	Device* device = nullptr;
 
 public:
 
-	void OnInit(HINSTANCE hInstance, HWND hWnd, ID3D12Device* device);
+	void OnInit(HINSTANCE hInstance, HWND hWnd);
 	void OnDestroy();
 
 	void CreateSwpaChain();
-	void CreateRtvAndDsvDescHeap(ID3D12Device* device);
-	void CreateRenderTargetView(ID3D12Device* device);
-	void CreateDepthStencilView(ID3D12Device* device);
+	void CreateRtvAndDsvDescHeap();
+	void CreateRenderTargetView();
+	void CreateDepthStencilView();
 
-	void InitMultiSampleQualityLevels(ID3D12Device* device);
+	void InitMultiSampleQualityLevels();
 	
 	void Render();
 
