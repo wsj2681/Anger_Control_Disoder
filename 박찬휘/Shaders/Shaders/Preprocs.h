@@ -45,6 +45,7 @@
 #endif
 
 #define SAFE_RELEASE(x) if(x) x->Release();
+#define RELEASE_UPLOADBUFFERS(x) if((x)) (x)->ReleaseUploadBuffers();
 
 #define ASPECT_RATIO (float(CLIENT_BUFFER_WIDTH) / float(CLIENT_BUFFER_HEIGHT))
 #define RANDOM_COLOR XMFLOAT4(rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX))
