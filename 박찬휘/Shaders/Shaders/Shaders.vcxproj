@@ -141,15 +141,19 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="MathHelper.h" />
+    <ClInclude Include="ObjectShader.h" />
     <ClInclude Include="Preprocs.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Shaders.h" />
+    <ClInclude Include="StandardShader.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ObjectShader.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Shaders.cpp" />
+    <ClCompile Include="StandardShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Shaders.rc" />
@@ -157,6 +161,14 @@
   <ItemGroup>
     <Image Include="Shaders.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Light.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Shaders.hlsl">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
