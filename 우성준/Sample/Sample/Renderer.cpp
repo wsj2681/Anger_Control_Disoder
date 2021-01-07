@@ -12,10 +12,10 @@ bool Renderer::OnInit()
 {
 	device = new Device();
 
-	CreateSwpaChain();
 	CreateRtvAndDsvDescHeap();
-	CreateDepthStencilView();
 	InitMultiSampleQualityLevels();
+	CreateSwapChain();
+	CreateDepthStencilView();
 
 	return true;
 }
@@ -30,7 +30,7 @@ void Renderer::OnDestroy()
 	}
 }
 
-void Renderer::CreateSwpaChain()
+void Renderer::CreateSwapChain()
 {
 	RECT rcClient;
 	::GetClientRect(hWnd, &rcClient);
@@ -85,7 +85,7 @@ void Renderer::CreateSwpaChain()
 	HR(device->GetDXGIFactory()->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER));
 
 #ifndef _WITH_SWAPCHAIN_FULLSCREEN_STATE
-	//CreateRenderTargetViews();
+	CreateRenderTargetViews();
 #endif
 }
 
@@ -97,11 +97,11 @@ void Renderer::CreateRtvAndDsvDescHeap()
 	descriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	descriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	descriptorHeapDesc.NodeMask = 0;
-	HR(this->device->GetDX12Device()->CreateDescriptorHeap(&descriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)&renderTargetDescHeap));
+	HRESULT h = this->device->GetDX12Device()->CreateDescriptorHeap(&descriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)&renderTargetDescHeap);
 
 	descriptorHeapDesc.NumDescriptors = 1;
 	descriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	HR(this->device->GetDX12Device()->CreateDescriptorHeap(&descriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)&depthStencilDescHeap));
+	HRESULT hh = this->device->GetDX12Device()->CreateDescriptorHeap(&descriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)&depthStencilDescHeap);
 
 }
 
@@ -179,7 +179,8 @@ void Renderer::InitMultiSampleQualityLevels()
 void Renderer::Render()
 {
 	HR(this->device->GetCommandAllocator()->Reset());
-	HRESULT t = this->device->GetCommandList()->Reset(this->device->GetCommandAllocator(), nullptr);
+	HR(this->device->GetCommandList()->Reset(this->device->GetCommandAllocator(), nullptr));
+	
 	D3D12_RESOURCE_BARRIER resourceBarrier;
 	::ZeroMemory(&resourceBarrier, sizeof(D3D12_RESOURCE_BARRIER));
 	resourceBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
@@ -188,7 +189,6 @@ void Renderer::Render()
 	resourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
 	resourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	resourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-
 	this->device->GetCommandList()->ResourceBarrier(1, &resourceBarrier);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = renderTargetDescHeap->GetCPUDescriptorHandleForHeapStart();
@@ -216,7 +216,7 @@ void Renderer::Render()
 
 	WaitForGPUComplete();
 
-	swapChain->Present(0, 0);
+	HR(swapChain->Present(0, 0));
 
 	MoveToNextFrame();
 
@@ -226,11 +226,11 @@ void Renderer::MoveToNextFrame()
 {
 	swapChainBufferIndex = swapChain->GetCurrentBackBufferIndex();
 	const UINT64 nFenceValue = device->GetFenceValue(swapChainBufferIndex) + 1;
-	HRESULT hResult = device->GetCommandQueue()->Signal(device->GetFence(), nFenceValue);
+	HR(device->GetCommandQueue()->Signal(device->GetFence(), nFenceValue));
 
 	if (device->GetFence()->GetCompletedValue() < nFenceValue)
 	{
-		hResult = device->GetFence()->SetEventOnCompletion(nFenceValue, device->GetFenceEvent());
+		HR(device->GetFence()->SetEventOnCompletion(nFenceValue, device->GetFenceEvent()));
 		::WaitForSingleObject(device->GetFenceEvent(), INFINITE);
 	}
 }
@@ -238,11 +238,11 @@ void Renderer::MoveToNextFrame()
 void Renderer::WaitForGPUComplete()
 {
 	const UINT64 nFenceValue = device->GetFenceValue(swapChainBufferIndex) + 1;
-	HRESULT hResult = device->GetCommandQueue()->Signal(device->GetFence(), nFenceValue);
+	HR(device->GetCommandQueue()->Signal(device->GetFence(), nFenceValue));
 
 	if (device->GetFence()->GetCompletedValue() < nFenceValue)
 	{
-		hResult = device->GetFence()->SetEventOnCompletion(nFenceValue, device->GetFenceEvent());
+		HR(device->GetFence()->SetEventOnCompletion(nFenceValue, device->GetFenceEvent()));
 		::WaitForSingleObject(device->GetFenceEvent(), INFINITE);
 	}
 }

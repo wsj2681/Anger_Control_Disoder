@@ -40,7 +40,7 @@ private:
 
 	bool OnInit();
 
-	void CreateSwpaChain();
+	void CreateSwapChain();
 	void CreateRtvAndDsvDescHeap();
 	void CreateRenderTargetViews();
 	void CreateDepthStencilView();

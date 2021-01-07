@@ -37,16 +37,16 @@ public:
 	
 public:/* Get */
 
-	ID3D12Device* GetDX12Device();
-	IDXGIFactory4* GetDXGIFactory();
+	ID3D12Device*& GetDX12Device();
+	IDXGIFactory4*& GetDXGIFactory();
 
-	ID3D12CommandAllocator* GetCommandAllocator();
-	ID3D12CommandQueue* GetCommandQueue();
-	ID3D12GraphicsCommandList* GetCommandList();
+	ID3D12CommandAllocator*& GetCommandAllocator();
+	ID3D12CommandQueue*& GetCommandQueue();
+	ID3D12GraphicsCommandList*& GetCommandList();
 
-	ID3D12Fence* GetFence();
-	UINT64 GetFenceValue(int index);
-	HANDLE GetFenceEvent();
+	ID3D12Fence*& GetFence();
+	UINT64& GetFenceValue(int index);
+	HANDLE& GetFenceEvent();
 
 };
 
