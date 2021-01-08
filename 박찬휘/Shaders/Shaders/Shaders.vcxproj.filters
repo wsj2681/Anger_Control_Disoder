@@ -1,73 +1,119 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="소스 파일">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="Shader">
+      <UniqueIdentifier>{d33ef6f6-18f9-4980-bf4c-5aeafde9aaa9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일">
+    <Filter Include="Header Files">
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
     </Filter>
-    <Filter Include="리소스 파일">
+    <Filter Include="Test Files">
+      <UniqueIdentifier>{281f51f6-4c79-4b1b-8e3b-c3044e2020c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{209855ae-e134-4763-892e-eaaf7a139cf6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Shaders.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Preprocs.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MathHelper.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="StandardShader.h">
-      <Filter>헤더 파일</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ObjectShader.h">
-      <Filter>소스 파일</Filter>
+      <Filter>Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardShader.h">
+      <Filter>Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders.h" />
+    <ClInclude Include="DDSTextureLoader12.h">
+      <Filter>Test Files</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>Test Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader12.h">
+      <Filter>Test Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>Test Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceHelper.h">
+      <Filter>Test Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Test Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Renderer.h">
+      <Filter>Test Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Shaders.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="Shader.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="StandardShader.cpp">
-      <Filter>헤더 파일</Filter>
+      <Filter>Shader</Filter>
     </ClCompile>
     <ClCompile Include="ObjectShader.cpp">
-      <Filter>헤더 파일</Filter>
+      <Filter>Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardShader.cpp">
+      <Filter>Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Shaders.cpp" />
+    <ClCompile Include="DDSTextureLoader12.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader12.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourceHelper.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Renderer.cpp">
+      <Filter>Test Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Shaders.rc">
-      <Filter>리소스 파일</Filter>
+      <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
-      <Filter>리소스 파일</Filter>
+      <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Shaders.ico">
-      <Filter>리소스 파일</Filter>
+      <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
   <ItemGroup>

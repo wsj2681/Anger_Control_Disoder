@@ -1,10 +1,11 @@
-﻿// framework.h : 필요한 외부 헤더파일을 정의합니다.
+﻿// header.h: 표준 시스템 포함 파일
+// 또는 프로젝트 특정 포함 파일이 들어 있는 포함 파일입니다.
+//
 
 #pragma once
 
 #include "targetver.h"
-#define WIN32_LEAN_AND_MEAN
-
+#define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용을 Windows 헤더에서 제외합니다.
 // Windows 헤더 파일
 #include <windows.h>
 
@@ -13,6 +14,8 @@
 #include <malloc.h>
 #include <memory.h>
 #include <tchar.h>
+#include <wrl.h>
+#include <shellapi.h>
 
 //C++ 관련 헤더 파일입니다.
 #include <string>
@@ -27,10 +30,19 @@ using namespace std;
 #include <d3d12.h>
 #include <dxgi1_4.h>
 #include <D3Dcompiler.h>
+#include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 
+#include <Mmsystem.h>
+
+#ifdef _DEBUG
+#include <dxgidebug.h>
+#include <d3d12sdklayers.h>
+#endif
+
+using namespace DirectX;
 using namespace DirectX::PackedVector;
 using Microsoft::WRL::ComPtr;
 
@@ -38,12 +50,19 @@ using Microsoft::WRL::ComPtr;
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 
+#pragma comment(lib, "dxguid.lib")
+
 //사용자 정의 헤더 파일입니다.
 #include "MathHelper.h"
 #include "Preprocs.h"
+#include "d3dx12.h"
 
-#define FRAME_BUFFER_WIDTH	1920
-#define FRAME_BUFFER_HEIGHT	1080
+#define FRAME_BUFFER_WIDTH		1080
+#define FRAME_BUFFER_HEIGHT		720
+
+#include "ResourceHelper.h"
+
+static ResourceHelper gResourceHelper;
 
 extern UINT descriptorIncrementSize;
 

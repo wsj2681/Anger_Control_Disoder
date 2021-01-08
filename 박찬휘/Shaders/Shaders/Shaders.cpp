@@ -2,6 +2,7 @@
 //
 
 #include "framework.h"
+#include "Engine.h"
 #include "Shaders.h"
 
 #define MAX_LOADSTRING 100
@@ -10,6 +11,7 @@
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+Engine engine;
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -43,13 +45,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MSG msg;
 
     // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    // while (GetMessage(&msg, nullptr, 0, 0))
+    while(true)
     {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        if (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            if (msg.message == WM_QUIT) break;
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+            else
+                engine.Update();
         }
+        engine.OnDestroy();
     }
 
     return (int) msg.wParam;
@@ -97,18 +107,19 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+   RECT rc = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT };
+   DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
+   AdjustWindowRect(&rc, dwStyle, false);
+   HWND hWnd = CreateWindowW(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left , rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
 
-   if (!hWnd)
-   {
-      return FALSE;
-   }
+   if (!hWnd) return false;
+
+   engine.OnInit(hInstance, hWnd);
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
 
-   return TRUE;
+   return true;
 }
 
 //
