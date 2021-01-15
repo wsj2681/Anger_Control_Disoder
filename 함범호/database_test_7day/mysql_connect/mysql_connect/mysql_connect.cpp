@@ -46,18 +46,47 @@ int main() {
 
 
 		}
-		
-		const char* query = "select *from all";
+		//printf("%d에러 : %s, %d\n");
+		const char* query = "select * from membertbl";
 		int state = 0;
 
-		state = mysql_query(connection, query);
-		if (state == 0) {
-			sql_result = mysql_store_result(connection);	// Result set에 저장
-			while ((sql_row = mysql_fetch_row(sql_result)) != NULL) // Result set 에서 1개씩 배열에 가져옴
-			{
-				printf("%s %s %s %s\n", sql_row[0], sql_row[1], sql_row[2],  sql_row[3]);	// 저장된 배열을 출력
+		const char* Update = "update membertbl set ";
+		const char* Deletedatabase = "delete from membertbl where";
+		
+		int UserSelect = 0;
+
+		if (UserSelect == 0) {
+			state = mysql_query(connection, query);
+			if (state == 0) {
+				sql_result = mysql_store_result(connection);	// Result set에 저장
+				while ((sql_row = mysql_fetch_row(sql_result)) != NULL) // Result set 에서 1개씩 배열에 가져옴
+				{
+					printf("%s %s %s %s\n", sql_row[0], sql_row[1], sql_row[2], sql_row[3]);	// 저장된 배열을 출력
+				}
+				mysql_free_result(sql_result); // Result set 해제
 			}
-			mysql_free_result(sql_result); // Result set 해제
+		}
+		else if (UserSelect == 1) {
+			state = mysql_query(connection, Update);
+			if (state == 0) {
+				sql_result = mysql_store_result(connection);	// Result set에 저장
+				while ((sql_row = mysql_fetch_row(sql_result)) != NULL) // Result set 에서 1개씩 배열에 가져옴
+				{
+					printf("%s %s %s %s\n", sql_row[0], sql_row[1], sql_row[2], sql_row[3]);	// 저장된 배열을 출력
+				}
+				mysql_free_result(sql_result); // Result set 해제
+			}
+		}
+		else if (UserSelect == 2) {
+			state = mysql_query(connection, Deletedatabase);
+			if (state == 0) {
+				sql_result = mysql_store_result(connection);	// Result set에 저장
+				while ((sql_row = mysql_fetch_row(sql_result)) != NULL) // Result set 에서 1개씩 배열에 가져옴
+				{
+					printf("%s %s %s %s\n", sql_row[0], sql_row[1], sql_row[2], sql_row[3]);	// 저장된 배열을 출력
+				}
+				mysql_free_result(sql_result); // Result set 해제
+			}
 		}
 		
 		mysql_close(connection); //db서버 종료
