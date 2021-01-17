@@ -59,7 +59,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
-            engine.Update();
+            engine.FrameAdvance();
         }
     }
     engine.OnDestroy();
@@ -116,7 +116,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
     if (!hMainWnd) return(FALSE);
 
-   engine.OnInit(hInstance, hMainWnd);
+   engine.OnCreate(hInstance, hMainWnd);
 
    ShowWindow(hMainWnd, nCmdShow);
    UpdateWindow(hMainWnd);

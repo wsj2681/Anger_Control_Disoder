@@ -45,8 +45,15 @@ using namespace DirectX::PackedVector;
 
 using Microsoft::WRL::ComPtr;
 
-#define FRAME_BUFFER_WIDTH		640
-#define FRAME_BUFFER_HEIGHT		480
+#define FRAME_BUFFER_WIDTH		1280
+#define FRAME_BUFFER_HEIGHT		720
+
+#define DIR_FORWARD				0x01
+#define DIR_BACKWARD			0x02
+#define DIR_LEFT				0x04
+#define DIR_RIGHT				0x08
+#define DIR_UP					0x10
+#define DIR_DOWN				0x20
 
 #pragma comment(lib, "d3dcompiler.lib")
 #pragma comment(lib, "d3d12.lib")
@@ -74,6 +81,8 @@ using Microsoft::WRL::ComPtr;
 #endif
 #endif
 
-#include "ResourceHelper.h"
+extern UINT gnCbvSrvDescriptorIncrementSize;
 
-static ResourceHelper resourceHelper;
+extern ID3D12Resource* CreateBufferResource(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, void* pData, UINT nBytes, D3D12_HEAP_TYPE d3dHeapType = D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, ID3D12Resource * *ppd3dUploadBuffer = NULL);
+extern ID3D12Resource* CreateTextureResourceFromDDSFile(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, wchar_t* pszFileName, ID3D12Resource * *ppd3dUploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+extern ID3D12Resource* CreateTextureResourceFromWICFile(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, wchar_t* pszFileName, ID3D12Resource * *ppd3dUploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);

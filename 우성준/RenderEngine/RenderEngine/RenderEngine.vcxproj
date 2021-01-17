@@ -141,23 +141,22 @@
   <ItemGroup>
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
-    <ClInclude Include="Device.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="MainScene.h" />
     <ClInclude Include="RenderEngine.h" />
-    <ClInclude Include="Renderer.h" />
     <ClInclude Include="Resource.h" />
-    <ClInclude Include="ResourceHelper.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Timer.h" />
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DDSTextureLoader12.cpp" />
-    <ClCompile Include="Device.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="framework.cpp" />
+    <ClCompile Include="MainScene.cpp" />
     <ClCompile Include="RenderEngine.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="ResourceHelper.cpp" />
+    <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
   </ItemGroup>
   <ItemGroup>
