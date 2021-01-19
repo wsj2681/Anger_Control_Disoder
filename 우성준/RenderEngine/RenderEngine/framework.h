@@ -45,6 +45,8 @@ using namespace DirectX::PackedVector;
 
 using Microsoft::WRL::ComPtr;
 
+#include <fbxsdk.h>
+
 #define FRAME_BUFFER_WIDTH		1280
 #define FRAME_BUFFER_HEIGHT		720
 
@@ -80,6 +82,8 @@ using Microsoft::WRL::ComPtr;
 #define   HR(x) (x);
 #endif
 #endif
+
+#define SAFE_RELEASE(x) if((x)) (x)->Release();
 
 extern UINT gnCbvSrvDescriptorIncrementSize;
 
