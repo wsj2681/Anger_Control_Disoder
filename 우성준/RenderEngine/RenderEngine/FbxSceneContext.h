@@ -2,6 +2,8 @@
 #include "framework.h"
 #include "Shader.h"
 #include "Mesh.h"
+#include "Shader.h"
+
 
 class CFbxRenderInfo
 {
@@ -57,7 +59,7 @@ void RenderFbxMesh(ID3D12GraphicsCommandList* pd3dCommandList, FbxMesh* pfbxMesh
 		int nSkinDeformers = pfbxMesh->GetDeformerCount(FbxDeformer::eSkin);
 		if (nSkinDeformers == 0) fbxmtxTransform = fbxmtxWorld * fbxmtxNodeToRoot * fbxmtxGeometryOffset;
 
-		CGameObject::UpdateShaderVariable(pd3dCommandList, &fbxmtxTransform);
+		Object::UpdateShaderVariable(pd3dCommandList, &fbxmtxTransform);
 
 		CFbxRenderInfo* pFbxRenderInfo = (CFbxRenderInfo*)pfbxMesh->GetUserDataPtr();
 		if (pFbxRenderInfo->m_pShader) pFbxRenderInfo->m_pShader->Render(pd3dCommandList, NULL);
@@ -103,12 +105,12 @@ void CreateMeshFromFbxNodeHierarchy(ID3D12Device* pd3dDevice, ID3D12GraphicsComm
 			}
 
 			CFbxRenderInfo* pFbxRenderInfo = new CFbxRenderInfo();
-			pFbxRenderInfo->m_pMesh = new CMeshFromFbx(pd3dDevice, pd3dCommandList, nVertices, nIndices, pnIndices);
+			pFbxRenderInfo->m_pMesh = new MeshFromFbx(pd3dDevice, pd3dCommandList, nVertices, nIndices, pnIndices);
 			int nSkinDeformers = pfbxMesh->GetDeformerCount(FbxDeformer::eSkin);
 			if (nSkinDeformers > 0)
-				pFbxRenderInfo->m_pShader = new CFbxSkinnedModelShader();
+				pFbxRenderInfo->m_pShader = new FbxSkinnedModelShader();
 			else
-				pFbxRenderInfo->m_pShader = new CFbxModelShader();
+				pFbxRenderInfo->m_pShader = new FbxModelShader();
 			pFbxRenderInfo->m_pShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 
 			pfbxMesh->SetUserDataPtr(pFbxRenderInfo);
