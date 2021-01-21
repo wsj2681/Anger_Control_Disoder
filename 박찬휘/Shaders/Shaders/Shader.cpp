@@ -1,4 +1,5 @@
 #include "framework.h"
+#include "Texture.h"
 #include "Shader.h"
 
 UINT descriptorIncrementSize;
@@ -132,8 +133,8 @@ void Shader::CreateShaderResourceViews(ID3D12Device* device, Texture* texture, U
 	srvCPUDescNextHandle.ptr = (static_cast<unsigned long long>(::descriptorIncrementSize) * descriptorHeapIndex);
 	srvGPUDescNextHandle.ptr = (static_cast<unsigned long long>(::descriptorIncrementSize) * descriptorHeapIndex);
 
-	int textures = texture->GetTextures();
-	UINT textureType = texture->GetTextureType();
+	int textures = texture->GetNTextures();
+	TextureType textureType = texture->GetTextureType();
 
 	for (int i = 0; i < textures; ++i)
 	{

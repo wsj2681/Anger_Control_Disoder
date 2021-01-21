@@ -1,5 +1,7 @@
 #pragma once
 
+class Texture;
+
 class Shader
 {
 public:
