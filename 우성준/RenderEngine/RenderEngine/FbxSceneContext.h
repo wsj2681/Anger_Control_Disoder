@@ -159,7 +159,7 @@ void ReleaseUploadBufferFromFbxNodeHierarchy(FbxNode* pfbxNode)
 	for (int i = 0; i < nChilds; i++) ReleaseUploadBufferFromFbxNodeHierarchy(pfbxNode->GetChild(i));
 }
 
-FbxScene* LoadFbxSceneFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, FbxManager* pfbxSdkManager, char* pstrFbxFileName)
+FbxScene* LoadFbxSceneFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, FbxManager* pfbxSdkManager, const char* pstrFbxFileName)
 {
 	FbxScene* pfbxScene = NULL;
 

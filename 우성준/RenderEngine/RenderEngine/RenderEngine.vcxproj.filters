@@ -76,6 +76,9 @@
     <ClInclude Include="RenderEngine.h">
       <Filter>Main</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="framework.cpp">
@@ -116,6 +119,9 @@
     </ClCompile>
     <ClCompile Include="RenderEngine.cpp">
       <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
