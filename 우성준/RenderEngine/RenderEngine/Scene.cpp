@@ -37,7 +37,7 @@ ID3D12RootSignature* Scene::CreateGraphicsRootSignature(ID3D12Device* device)
 	D3D12_ROOT_PARAMETER rootParameters[2];
 
 
-/*	TODO : Create Object and Shader
+	//TODO : Create Object and Shader
 	D3D12_ROOT_SIGNATURE_FLAGS rootSignatureFlags = 
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | 
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | 
@@ -51,13 +51,13 @@ ID3D12RootSignature* Scene::CreateGraphicsRootSignature(ID3D12Device* device)
 	rootSignatureDesc.NumStaticSamplers = 0;
 	rootSignatureDesc.pStaticSamplers = NULL;
 	rootSignatureDesc.Flags = rootSignatureFlags;
-*/
+
 	ID3DBlob* signatureBlob = nullptr;
 	ID3DBlob* errorBlob = nullptr;
 
-	//TODO : 
-	//D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
-	//pd3dDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(), pd3dSignatureBlob->GetBufferSize(), __uuidof(ID3D12RootSignature), (void**)&pd3dGraphicsRootSignature);
+	TODO : 
+	D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
+	device->CreateRootSignature(0, signatureBlob->GetBufferPointer(), signatureBlob->GetBufferSize(), __uuidof(ID3D12RootSignature), (void**)&graphicsRootSignature);
 
 	SAFE_RELEASE(signatureBlob);
 	SAFE_RELEASE(errorBlob);

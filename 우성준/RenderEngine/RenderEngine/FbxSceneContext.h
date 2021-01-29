@@ -5,11 +5,11 @@
 #include "Shader.h"
 
 
-class CFbxRenderInfo
+class FbxRenderInfo
 {
 public:
-	CFbxRenderInfo() { }
-	~CFbxRenderInfo();
+	FbxRenderInfo() { }
+	~FbxRenderInfo();
 
 public:
 	Shader* m_pShader = NULL;
@@ -27,7 +27,7 @@ void AnimateFbxMesh(FbxMesh* pfbxMesh, FbxTime& fbxCurrentTime)
 		int nSkinDeformers = pfbxMesh->GetDeformerCount(FbxDeformer::eSkin);
 		if (nSkinDeformers > 0) ::ComputeSkinDeformation(pfbxMesh, fbxCurrentTime, pfbxv4Vertices, nVertices);
 
-		CFbxRenderInfo* pFbxRenderInfo = (CFbxRenderInfo*)pfbxMesh->GetUserDataPtr();
+		FbxRenderInfo* pFbxRenderInfo = (FbxRenderInfo*)pfbxMesh->GetUserDataPtr();
 		if (pFbxRenderInfo->m_pMesh)
 		{
 			for (int i = 0; i < nVertices; i++) pFbxRenderInfo->m_pMesh->m_pxmf4MappedPositions[i] = XMFLOAT4((float)pfbxv4Vertices[i][0], (float)pfbxv4Vertices[i][1], (float)pfbxv4Vertices[i][2], 1.0f);
@@ -61,7 +61,7 @@ void RenderFbxMesh(ID3D12GraphicsCommandList* pd3dCommandList, FbxMesh* pfbxMesh
 
 		Object::UpdateShaderVariable(pd3dCommandList, &fbxmtxTransform);
 
-		CFbxRenderInfo* pFbxRenderInfo = (CFbxRenderInfo*)pfbxMesh->GetUserDataPtr();
+		FbxRenderInfo* pFbxRenderInfo = (FbxRenderInfo*)pfbxMesh->GetUserDataPtr();
 		if (pFbxRenderInfo->m_pShader) pFbxRenderInfo->m_pShader->Render(pd3dCommandList, NULL);
 		if (pFbxRenderInfo->m_pMesh) pFbxRenderInfo->m_pMesh->Render(pd3dCommandList);
 	}
@@ -104,7 +104,7 @@ void CreateMeshFromFbxNodeHierarchy(ID3D12Device* pd3dDevice, ID3D12GraphicsComm
 				for (int j = 0; j < nPolygonSize; j++) pnIndices[k++] = pfbxMesh->GetPolygonVertex(i, j);
 			}
 
-			CFbxRenderInfo* pFbxRenderInfo = new CFbxRenderInfo();
+			FbxRenderInfo* pFbxRenderInfo = new FbxRenderInfo();
 			pFbxRenderInfo->m_pMesh = new MeshFromFbx(pd3dDevice, pd3dCommandList, nVertices, nIndices, pnIndices);
 			int nSkinDeformers = pfbxMesh->GetDeformerCount(FbxDeformer::eSkin);
 			if (nSkinDeformers > 0)
@@ -131,9 +131,9 @@ void ReleaseMeshFromFbxNodeHierarchy(FbxNode* pfbxNode)
 		FbxMesh* pfbxMesh = pfbxNode->GetMesh();
 		if (pfbxMesh)
 		{
-			CFbxRenderInfo* pFbxRenderInfo = (CFbxRenderInfo*)pfbxMesh->GetUserDataPtr();
+			FbxRenderInfo* pFbxRenderInfo = (FbxRenderInfo*)pfbxMesh->GetUserDataPtr();
 			if (pFbxRenderInfo->m_pMesh) pFbxRenderInfo->m_pMesh->Release();
-			if (pFbxRenderInfo->m_pShader) pFbxRenderInfo->m_pShader->Release();
+			//if (pFbxRenderInfo->m_pShader) pFbxRenderInfo->m_pShader->Release();
 		}
 	}
 
@@ -149,7 +149,7 @@ void ReleaseUploadBufferFromFbxNodeHierarchy(FbxNode* pfbxNode)
 		FbxMesh* pfbxMesh = pfbxNode->GetMesh();
 		if (pfbxMesh)
 		{
-			CFbxRenderInfo* pFbxRenderInfo = (CFbxRenderInfo*)pfbxMesh->GetUserDataPtr();
+			FbxRenderInfo* pFbxRenderInfo = (FbxRenderInfo*)pfbxMesh->GetUserDataPtr();
 			if (pFbxRenderInfo->m_pMesh) pFbxRenderInfo->m_pMesh->ReleaseUploadBuffers();
 			if (pFbxRenderInfo->m_pShader) pFbxRenderInfo->m_pShader->ReleaseUploadBuffers();
 		}
