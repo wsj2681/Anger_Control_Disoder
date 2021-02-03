@@ -108,11 +108,16 @@ void CGameObject::Release()
 
 void CGameObject::Animate(float fTimeElapsed)
 {
+
 	if (m_pAnimationController)
 	{
-		m_pAnimationController->AdvanceTime(fTimeElapsed);	
+		m_pAnimationController->AdvanceTime(fTimeElapsed);
 		FbxTime fbxCurrentTime = m_pAnimationController->GetCurrentTime();
 		::AnimateFbxNodeHierarchy(m_pfbxScene->GetRootNode(), fbxCurrentTime);
+	}
+	else
+	{
+		::AnimateFbxNodeHierarchy(m_pfbxScene->GetRootNode(), FbxTime(0));
 	}
 }
 
@@ -121,7 +126,14 @@ void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 	OnPrepareRender();
 
 	FbxAMatrix fbxf4x4World = ::XmFloat4x4MatrixToFbxMatrix(m_xmf4x4World);
-	if (m_pfbxScene) ::RenderFbxNodeHierarchy(pd3dCommandList, m_pfbxScene->GetRootNode(), m_pAnimationController->GetCurrentTime(), fbxf4x4World);
+
+	if (m_pfbxScene)
+	{
+		if (isAnimation)
+			::RenderFbxNodeHierarchy(pd3dCommandList, m_pfbxScene->GetRootNode(), m_pAnimationController->GetCurrentTime(), fbxf4x4World);
+		else
+			::RenderFbxNodeHierarchy(pd3dCommandList, m_pfbxScene->GetRootNode(), FbxTime(0), fbxf4x4World);
+	}
 }
 
 void CGameObject::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -244,7 +256,7 @@ CAngrybotObject::CAngrybotObject(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	m_pfbxScene = pfbxScene;
 	if (!m_pfbxScene)
 	{
-		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/ring.fbx");
+		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager,  nullptr);
 		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
 	}
 	m_pAnimationController = new CAnimationController(m_pfbxScene);
@@ -254,3 +266,17 @@ CAngrybotObject::~CAngrybotObject()
 {
 }
 
+RingObject::RingObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene)
+{
+	m_pfbxScene = pfbxScene;
+	if (!m_pfbxScene)
+	{
+		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/ring.fbx");
+		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
+	}
+	m_pAnimationController = nullptr;
+}
+
+RingObject::~RingObject()
+{
+}

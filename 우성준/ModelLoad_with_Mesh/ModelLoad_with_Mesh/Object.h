@@ -103,6 +103,7 @@ public:
 
 public:
 	void SetAnimationStack(int nAnimationStack) { m_pAnimationController->SetAnimationStack(m_pfbxScene, nAnimationStack); }
+	bool isAnimation = false;
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -112,5 +113,13 @@ class CAngrybotObject : public CGameObject
 public:
 	CAngrybotObject(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, FbxManager *pfbxSdkManager, FbxScene *pfbxScene);
 	virtual ~CAngrybotObject();
+	bool isAnimation = true;
 };
 
+class RingObject : public CGameObject
+{
+public:
+	RingObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene);
+	virtual ~RingObject();
+	bool isAnimation = false;
+};

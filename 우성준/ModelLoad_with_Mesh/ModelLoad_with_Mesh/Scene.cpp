@@ -22,10 +22,11 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 
 
-	m_ppGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
-	m_ppGameObjects[0]->SetAnimationStack(0);
-	m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
+	m_ppGameObjects[0] = new RingObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
+	//m_ppGameObjects[0]->SetAnimationStack(0);
+	//m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
 	m_ppGameObjects[0]->SetPosition(150.0f, 0.0f, 150.0f);
+	m_ppGameObjects[0]->SetScale(0.5f, 0.5f, 0.5f);
 
 	//m_ppGameObjects[1] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
 	//m_ppGameObjects[1]->SetAnimationStack(0);
@@ -124,17 +125,6 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	switch (nMessageID)
 	{
 	case WM_KEYDOWN:
-		switch (wParam)
-		{
-		case 'W': m_ppGameObjects[0]->MoveForward(+3.0f); break;
-		case 'S': m_ppGameObjects[0]->MoveForward(-3.0f); break;
-		case 'A': m_ppGameObjects[0]->MoveStrafe(-3.0f); break;
-		case 'D': m_ppGameObjects[0]->MoveStrafe(+3.0f); break;
-		case 'Q': m_ppGameObjects[0]->MoveUp(+3.0f); break;
-		case 'R': m_ppGameObjects[0]->MoveUp(-3.0f); break;
-		default:
-			break;
-		}
 		break;
 	default:
 		break;

@@ -57,6 +57,7 @@ void CPlayer::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
 {
 	if (dwDirection)
 	{
+		SetAnimationStack(0);
 		XMFLOAT3 xmf3Shift = XMFLOAT3(0, 0, 0);
 		if (dwDirection & DIR_FORWARD) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, fDistance);
 		if (dwDirection & DIR_BACKWARD) xmf3Shift = Vector3::Add(xmf3Shift, m_xmf3Look, -fDistance);
@@ -242,7 +243,7 @@ CAngrybotPlayer::CAngrybotPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	m_pfbxScene = pfbxScene;
 	if (!m_pfbxScene)
 	{
-		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/Angrybot.fbx");
+		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/Angrybot2.fbx");
 		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
 	}
 
@@ -252,7 +253,7 @@ CAngrybotPlayer::CAngrybotPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
-	SetPosition(XMFLOAT3(0.0f, 0.0f, -60.0f));
+	SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
 }
 
 CAngrybotPlayer::~CAngrybotPlayer()
