@@ -16,7 +16,7 @@
 #define DIR_DOWN					0x20
 
 class CShader;
-
+class ParticleMesh;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 class CAnimationController 
@@ -104,6 +104,11 @@ public:
 public:
 	void SetAnimationStack(int nAnimationStack) { m_pAnimationController->SetAnimationStack(m_pfbxScene, nAnimationStack); }
 	bool isAnimation = false;
+
+	ParticleMesh* mesh = nullptr;
+	CShader* shader = nullptr;
+	virtual void setMesh(ParticleMesh* mesh) { this->mesh = mesh; }
+	virtual void setShader(CShader* shader) { this->shader = shader; }
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,4 +127,18 @@ public:
 	RingObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene);
 	virtual ~RingObject();
 	bool isAnimation = false;
+};
+
+class Particle : public CGameObject
+{
+public:
+	Particle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene);
+	virtual ~Particle();
+	bool isAnimation = false;
+
+	ParticleMesh* mesh = nullptr;
+	CShader* shader = nullptr;
+	virtual void setMesh(ParticleMesh* mesh) { this->mesh = mesh; }
+	virtual void setShader(CShader* shader) { this->shader = shader; }
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 };

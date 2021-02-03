@@ -61,3 +61,9 @@ public:
 	void SetAnimationStack(int nAnimationStack);
 };
 
+class Particle : public Object
+{
+public:
+	Particle() = default;
+	virtual ~Particle() = default;
+};

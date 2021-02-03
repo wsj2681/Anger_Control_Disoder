@@ -28,6 +28,18 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppGameObjects[0]->SetPosition(150.0f, 0.0f, 150.0f);
 	m_ppGameObjects[0]->SetScale(0.5f, 0.5f, 0.5f);
 
+	particles = new CGameObject * [particleCount];
+	
+	CShader* particleShader = new ParticleShader();
+	ParticleMesh* mesh = new ParticleMesh(pd3dDevice, pd3dCommandList);
+	for (int i = 0; i < 10; ++i)
+	{
+		particles[i] = new Particle(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
+		particles[i]->SetPosition(150.f + (i * 10), 0.f, 0.f);
+		particles[i]->setMesh(mesh);
+		particles[i]->setShader(particleShader);
+	}
+
 	//m_ppGameObjects[1] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
 	//m_ppGameObjects[1]->SetAnimationStack(0);
 	//m_ppGameObjects[1]->m_pAnimationController->SetPosition(0, 0.75f);
@@ -52,12 +64,27 @@ void CScene::ReleaseObjects()
 		delete[] m_ppShaders;
 	}
 
+	if (particleShaders)
+	{
+		for (int i = 0; i < particleShaderCount; ++i)
+		{
+			particleShaders[i]->ReleaseShaderVariables();
+			particleShaders[i]->ReleaseObjects();
+			particleShaders[i]->Release();
+		}
+		delete[] particleShaders;
+	}
+
 	if (m_ppGameObjects)
 	{
 		for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Release();
 		delete[] m_ppGameObjects;
 	}
-
+	if (particles)
+	{
+		for (int i = 0; i < particleCount; i++) if (particles[i]) particles[i]->Release();
+		delete[] particles;
+	}
 	ReleaseShaderVariables();
 }
 
@@ -112,7 +139,9 @@ void CScene::ReleaseShaderVariables()
 void CScene::ReleaseUploadBuffers()
 {
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->ReleaseUploadBuffers();
+	for (int i = 0; i < particleShaderCount; ++i) particleShaders[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < m_nGameObjects; i++) m_ppGameObjects[i]->ReleaseUploadBuffers();
+	for (int i = 0; i < particleCount; ++i)particles[i]->ReleaseUploadBuffers();
 }
 
 bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -161,7 +190,12 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 			m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 		}
 	}
-
+	for (int i = 0; i < particleCount; ++i)
+	{
+		if (particles[i])
+			particles[i]->Render(pd3dCommandList, pCamera);
+	}
+	for (int i = 0; i < particleShaderCount; ++i)if (particleShaders[i])particleShaders[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 }
 

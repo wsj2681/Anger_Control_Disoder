@@ -126,13 +126,17 @@ void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pC
 	OnPrepareRender();
 
 	FbxAMatrix fbxf4x4World = ::XmFloat4x4MatrixToFbxMatrix(m_xmf4x4World);
-
+	
 	if (m_pfbxScene)
 	{
 		if (isAnimation)
 			::RenderFbxNodeHierarchy(pd3dCommandList, m_pfbxScene->GetRootNode(), m_pAnimationController->GetCurrentTime(), fbxf4x4World);
 		else
 			::RenderFbxNodeHierarchy(pd3dCommandList, m_pfbxScene->GetRootNode(), FbxTime(0), fbxf4x4World);
+	}
+	else
+	{
+		
 	}
 }
 
@@ -279,4 +283,17 @@ RingObject::RingObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3d
 
 RingObject::~RingObject()
 {
+}
+
+Particle::Particle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene)
+{
+}
+
+Particle::~Particle()
+{
+}
+
+void Particle::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	this->mesh->Render(pd3dCommandList);
 }

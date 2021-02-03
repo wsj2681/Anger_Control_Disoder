@@ -46,4 +46,10 @@ public:
 
 	int									m_nShaders = 0;
 	CShader								**m_ppShaders = NULL;
+
+	int particleCount = 10;
+	CGameObject** particles = nullptr;
+
+	int particleShaderCount = 0;
+	CShader** particleShaders = nullptr;
 };

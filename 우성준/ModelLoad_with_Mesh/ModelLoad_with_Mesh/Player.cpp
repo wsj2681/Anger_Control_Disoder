@@ -253,7 +253,7 @@ CAngrybotPlayer::CAngrybotPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
-	SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	SetPosition(XMFLOAT3(0.0f, 0.0f, -60.0f));
 }
 
 CAngrybotPlayer::~CAngrybotPlayer()
