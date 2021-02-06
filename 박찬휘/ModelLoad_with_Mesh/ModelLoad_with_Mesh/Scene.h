@@ -1,0 +1,74 @@
+//-----------------------------------------------------------------------------
+// File: Scene.h
+//-----------------------------------------------------------------------------
+
+#pragma once
+
+#include "Shader.h"
+#include "Player.h"
+
+class CTexture;
+class ParticleMesh;
+
+class CScene
+{
+public:
+    CScene();
+    ~CScene();
+
+	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
+
+	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+
+	void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, FbxManager *pfbxSdkManager, FbxScene *pfbxScene);
+	void ReleaseObjects();
+
+	ID3D12RootSignature *CreateGraphicsRootSignature(ID3D12Device *pd3dDevice);
+	ID3D12RootSignature *GetGraphicsRootSignature() { return(m_pd3dGraphicsRootSignature); }
+
+	bool ProcessInput(UCHAR *pKeysBuffer);
+    void AnimateObjects(float fTimeElapsed);
+    void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
+
+	void ReleaseUploadBuffers();
+
+	static D3D12_GPU_DESCRIPTOR_HANDLE CreateShaderResourceViews(ID3D12Device* pd3dDevice, CTexture* pTexture, UINT nRootParameter, bool bAutoIncrement);
+
+	CPlayer								*m_pPlayer = NULL;
+
+	CTexture* pTexture = NULL;
+
+protected:
+	ID3D12RootSignature					*m_pd3dGraphicsRootSignature = NULL;
+
+	static ID3D12DescriptorHeap* m_pd3dCbvSrvDescriptorHeap;
+
+	static D3D12_CPU_DESCRIPTOR_HANDLE	m_d3dCbvCPUDescriptorStartHandle;
+	static D3D12_GPU_DESCRIPTOR_HANDLE	m_d3dCbvGPUDescriptorStartHandle;
+	static D3D12_CPU_DESCRIPTOR_HANDLE	m_d3dSrvCPUDescriptorStartHandle;
+	static D3D12_GPU_DESCRIPTOR_HANDLE	m_d3dSrvGPUDescriptorStartHandle;
+
+	static D3D12_CPU_DESCRIPTOR_HANDLE	m_d3dCbvCPUDescriptorNextHandle;
+	static D3D12_GPU_DESCRIPTOR_HANDLE	m_d3dCbvGPUDescriptorNextHandle;
+	static D3D12_CPU_DESCRIPTOR_HANDLE	m_d3dSrvCPUDescriptorNextHandle;
+	static D3D12_GPU_DESCRIPTOR_HANDLE	m_d3dSrvGPUDescriptorNextHandle;
+
+public:
+
+	int									m_nGameObjects = 0;
+	CGameObject							**m_ppGameObjects = NULL;
+
+	float								m_fElapsedTime = 0.0f;
+
+	int									m_nShaders = 0;
+	CShader								**m_ppShaders = NULL;
+
+	int particleCount = 10;
+	CGameObject** particles = nullptr;
+
+	int particleShaderCount = 0;
+	CShader** particleShaders = nullptr;
+};
