@@ -15,6 +15,8 @@
 #define DIR_UP						0x10
 #define DIR_DOWN					0x20
 
+
+
 class CShader;
 class ParticleMesh;
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +88,7 @@ public:
 
 	XMFLOAT3 GetPosition();
 	XMFLOAT3 GetLook();
+	void SetLook(const XMFLOAT3& look);
 	XMFLOAT3 GetUp();
 	XMFLOAT3 GetRight();
 
@@ -109,6 +112,7 @@ public:
 	CShader* shader = nullptr;
 	virtual void setMesh(ParticleMesh* mesh) { this->mesh = mesh; }
 	virtual void setShader(CShader* shader) { this->shader = shader; }
+	virtual void RandomMove() {}
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,4 +145,15 @@ public:
 	virtual void setMesh(ParticleMesh* mesh) { this->mesh = mesh; }
 	virtual void setShader(CShader* shader) { this->shader = shader; }
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+};
+
+class BallObject : public CGameObject
+{
+public:
+	BallObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene);
+	virtual ~BallObject();
+	bool isAnimation = false;
+
+public:
+	virtual void RandomMove();
 };

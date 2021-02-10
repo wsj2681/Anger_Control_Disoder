@@ -7,6 +7,9 @@
 #include "Shader.h"
 #include "Scene.h"
 
+default_random_engine dre;
+uniform_int_distribution<> uid(0, 1);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 CAnimationController::CAnimationController(FbxScene *pfbxScene)
@@ -201,6 +204,13 @@ XMFLOAT3 CGameObject::GetLook()
 	return(Vector3::Normalize(XMFLOAT3(m_xmf4x4World._31, m_xmf4x4World._32, m_xmf4x4World._33)));
 }
 
+void CGameObject::SetLook(const XMFLOAT3& look)
+{
+	this->m_xmf4x4World._31 = look.x;
+	this->m_xmf4x4World._32 = look.y;
+	this->m_xmf4x4World._33 = look.z;
+}
+
 XMFLOAT3 CGameObject::GetUp()
 {
 	return(Vector3::Normalize(XMFLOAT3(m_xmf4x4World._21, m_xmf4x4World._22, m_xmf4x4World._23)));
@@ -296,4 +306,27 @@ Particle::~Particle()
 void Particle::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
 {
 	this->mesh->Render(pd3dCommandList);
+}
+
+BallObject::BallObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene)
+{
+	m_pfbxScene = pfbxScene;
+	if (!m_pfbxScene)
+	{
+		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/cube.fbx");
+		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
+	}
+	m_pAnimationController = nullptr;
+}
+
+
+BallObject::~BallObject()
+{
+}
+
+void BallObject::RandomMove()
+{
+
+	this->SetLook(XMFLOAT3(uid(dre), uid(dre), uid(dre)));
+	this->MoveForward();
 }
