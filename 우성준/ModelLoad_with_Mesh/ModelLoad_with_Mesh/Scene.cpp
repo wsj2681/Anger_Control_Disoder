@@ -17,32 +17,19 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 {
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
-	m_nGameObjects = 10;
+	m_nGameObjects = 2;
 	m_ppGameObjects = new CGameObject*[m_nGameObjects];
 
-
-
 	m_ppGameObjects[0] = new RingObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
-	//m_ppGameObjects[0]->SetAnimationStack(0);
-	//m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
 	m_ppGameObjects[0]->SetPosition(150.0f, 0.0f, 150.0f);
 	m_ppGameObjects[0]->SetScale(0.5f, 0.5f, 0.5f);
 
-	for (int i = 1; i < 10; ++i)
+	for (int i = 1; i < 2; ++i)
 	{
-		m_ppGameObjects[i] = new BallObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
-		//m_ppGameObjects[0]->SetAnimationStack(0);
-		//m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
+		m_ppGameObjects[i] = new ParticleObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
 		m_ppGameObjects[i]->SetPosition(150.0f + i * 30, 0.0f, 150.0f);
-		m_ppGameObjects[i]->SetScale(300.f, 300.f, 300.f);
+		m_ppGameObjects[i]->SetScale(100.f, 100.f, 100.f);
 	}
-
-
-	//m_ppGameObjects[1] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
-	//m_ppGameObjects[1]->SetAnimationStack(0);
-	//m_ppGameObjects[1]->m_pAnimationController->SetPosition(0, 0.75f);
-	//m_ppGameObjects[1]->SetPosition(-150.0f, 0.0f, 250.0f);
-	//m_ppGameObjects[1]->Rotate(0.0f, 90.0f, 0.0f);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -62,27 +49,12 @@ void CScene::ReleaseObjects()
 		delete[] m_ppShaders;
 	}
 
-	/*if (particleShaders)
-	{
-		for (int i = 0; i < particleShaderCount; ++i)
-		{
-			particleShaders[i]->ReleaseShaderVariables();
-			particleShaders[i]->ReleaseObjects();
-			particleShaders[i]->Release();
-		}
-		delete[] particleShaders;
-	}*/
-
 	if (m_ppGameObjects)
 	{
 		for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Release();
 		delete[] m_ppGameObjects;
 	}
-	//if (particles)
-	//{
-	//	for (int i = 0; i < particleCount; i++) if (particles[i]) particles[i]->Release();
-	//	delete[] particles;
-	//}
+
 	ReleaseShaderVariables();
 }
 
@@ -136,10 +108,10 @@ void CScene::ReleaseShaderVariables()
 
 void CScene::ReleaseUploadBuffers()
 {
+
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->ReleaseUploadBuffers();
-	//for (int i = 0; i < particleShaderCount; ++i) particleShaders[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < m_nGameObjects; i++) m_ppGameObjects[i]->ReleaseUploadBuffers();
-	//for (int i = 0; i < particleCount; ++i)particles[i]->ReleaseUploadBuffers();
+	
 }
 
 bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -169,7 +141,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	m_fElapsedTime = fTimeElapsed;
 
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
-	for (int i = 1; i < 10; ++i)
+	for (int i = 1; i < m_nGameObjects; ++i)
 	{
 		if (m_ppGameObjects[i])
 			m_ppGameObjects[i]->RandomMove();
@@ -193,12 +165,6 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 			m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 		}
 	}
-	//for (int i = 0; i < particleCount; ++i)
-	//{
-	//	if (particles[i])
-	//		particles[i]->Render(pd3dCommandList, pCamera);
-	//}
-	//for (int i = 0; i < particleShaderCount; ++i)if (particleShaders[i])particleShaders[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 }
 

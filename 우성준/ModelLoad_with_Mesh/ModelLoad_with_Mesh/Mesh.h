@@ -3,16 +3,7 @@
 //-----------------------------------------------------------------------------
 
 #pragma once
-class Vertex
-{
-protected:
-	XMFLOAT3 position{ 0.f, 0.f, 0.f };
 
-public:
-	Vertex() {};
-	Vertex(const XMFLOAT3& position) { this->position = position; }
-	~Vertex() {};
-};
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 class CMeshFromFbx
@@ -53,20 +44,4 @@ public:
 	virtual void ReleaseUploadBuffers();
 
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList);
-};
-
-class ParticleMesh : public CMeshFromFbx
-{
-public:
-	ParticleMesh() = default;
-	ParticleMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
-	virtual ~ParticleMesh();
-
-protected:
-	ID3D12Resource* m_pd3dVertexBuffer = nullptr;
-	ID3D12Resource* m_pd3dVertexUploadBuffer = nullptr;
-	D3D12_VERTEX_BUFFER_VIEW m_d3dVertexBufferView;
-
-
-
 };

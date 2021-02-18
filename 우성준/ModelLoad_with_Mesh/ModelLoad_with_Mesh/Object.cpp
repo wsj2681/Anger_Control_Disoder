@@ -295,20 +295,7 @@ RingObject::~RingObject()
 {
 }
 
-Particle::Particle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene)
-{
-}
-
-Particle::~Particle()
-{
-}
-
-void Particle::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
-{
-	this->mesh->Render(pd3dCommandList);
-}
-
-BallObject::BallObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene)
+ParticleObject::ParticleObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene)
 {
 	m_pfbxScene = pfbxScene;
 	if (!m_pfbxScene)
@@ -319,12 +306,11 @@ BallObject::BallObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3d
 	m_pAnimationController = nullptr;
 }
 
-
-BallObject::~BallObject()
+ParticleObject::~ParticleObject()
 {
 }
 
-void BallObject::RandomMove()
+void ParticleObject::RandomMove()
 {
 
 	this->SetLook(XMFLOAT3(uid(dre), uid(dre), uid(dre)));

@@ -318,31 +318,3 @@ D3D12_SHADER_BYTECODE CFbxSkinnedModelShader::CreatePixelShader()
 {
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSFbxSkinnedModel", "ps_5_1", &m_pd3dPixelShaderBlob));
 }
-
-ParticleShader::ParticleShader()
-{
-}
-
-ParticleShader::~ParticleShader()
-{
-}
-
-D3D12_INPUT_LAYOUT_DESC ParticleShader::CreateInputLayout()
-{
-	return CFbxModelShader::CreateInputLayout();
-}
-
-D3D12_RASTERIZER_DESC ParticleShader::CreateRasterizerState()
-{
-	return CFbxModelShader::CreateRasterizerState();
-}
-
-D3D12_SHADER_BYTECODE ParticleShader::CreateVertexShader()
-{
-	return CFbxModelShader::CreateVertexShader();
-}
-
-D3D12_SHADER_BYTECODE ParticleShader::CreatePixelShader()
-{
-	return CFbxModelShader::CreatePixelShader();
-}
