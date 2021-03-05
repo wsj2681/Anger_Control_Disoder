@@ -34,7 +34,6 @@ struct SRVROOTARGUMENTINFO
 class Texture final
 {
 public:
-	Texture() = default;
 	Texture(int textures = 1, UINT textureType = RESOURCE_TEXTURE2D, int samplers = 0);
 	Texture(const Texture&) = delete;
 	Texture& operator=(const Texture&) = delete;
@@ -42,8 +41,10 @@ public:
 
 private:
 	UINT texturType = RESOURCE_TEXTURE2D;
+
 	int textureCount = 0;
 	ID3D12Resource** textures = nullptr;
+
 	ID3D12Resource** textureUploadBuffers = nullptr;
 	
 	SRVROOTARGUMENTINFO* rootArgumentInfos = nullptr;

@@ -274,8 +274,6 @@ void Engine::BuildObjects()
 {
 	commandList->Reset(commandAllocator, nullptr);
 
-	CreateShaderVariables();
-
 	commandList->Close();
 	ID3D12CommandList* commandLists[] = { commandList };
 	commandQueue->ExecuteCommandLists(1, commandLists);
@@ -320,7 +318,6 @@ void Engine::FrameAdvance()
 	commandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
 	//m_pScene->OnPrepareRender(commandList);
-	UpdateShaderVariables();
 	//m_pScene->Render(commandList, m_pCamera);
 
 #ifdef _WITH_PLAYER_TOP

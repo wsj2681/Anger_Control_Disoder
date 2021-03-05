@@ -1,4 +1,9 @@
 #pragma once
+#include "Shader.h"
+#include "Object.h"
+#include "Mesh.h"
+
+
 class Scene
 {
 public:

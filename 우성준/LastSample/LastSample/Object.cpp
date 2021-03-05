@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "Object.h"
 #include "Shader.h"
+#include "Mesh.h"
 
 Texture::Texture(int textures, UINT textureType, int samplers)
 {

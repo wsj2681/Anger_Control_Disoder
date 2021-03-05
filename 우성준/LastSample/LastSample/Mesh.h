@@ -115,3 +115,16 @@ public:
 
 };
 
+class DiffusedMesh : public Mesh
+{
+public:
+	DiffusedMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) : Mesh(pd3dDevice, pd3dCommandList) {}
+	virtual ~DiffusedMesh() = default;
+};
+
+class CubeMesh : public Mesh
+{
+public:
+	CubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth = 2.0f, float fHeight = 2.0f, float fDepth = 2.0f);
+	virtual ~CubeMesh() = default;
+};
