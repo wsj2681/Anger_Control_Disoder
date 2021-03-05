@@ -107,10 +107,6 @@ public:
 	void SetAnimationStack(int nAnimationStack) { m_pAnimationController->SetAnimationStack(m_pfbxScene, nAnimationStack); }
 	bool isAnimation = false;
 
-	ParticleMesh* mesh = nullptr;
-	CShader* shader = nullptr;
-	virtual void setMesh(ParticleMesh* mesh) { this->mesh = mesh; }
-	virtual void setShader(CShader* shader) { this->shader = shader; }
 	virtual void RandomMove() {}
 };
 
