@@ -4,6 +4,8 @@
 #define FRAME_BUFFER_HEIGHT		720
 
 class Scene;
+class Camera;
+
 
 class Engine final
 {
@@ -53,6 +55,8 @@ private:
 
 	//Scene
 	Scene* scene = nullptr;
+	Camera* camera = nullptr;
+
 
 public:
 	bool OnCreate(HINSTANCE hInstance, HWND hMainWnd);

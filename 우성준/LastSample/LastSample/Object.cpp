@@ -146,3 +146,65 @@ D3D12_SHADER_RESOURCE_VIEW_DESC Texture::GetShaderResourceViewDesc(int nIndex)
 void Texture::ReleaseUploadBuffers()
 {
 }
+
+void Object::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(CB_GAMEOBJECT_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	cbGameObject = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	cbGameObject->Map(0, NULL, (void**)&cbMappedGameObject);
+}
+
+void Object::ReleaseShaderVariables()
+{
+	if (cbGameObject)
+	{
+		cbGameObject->Unmap(0, NULL);
+		cbGameObject->Release();
+	}
+	if (material) material->ReleaseShaderVariables();
+}
+
+void Object::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	XMStoreFloat4x4(&cbMappedGameObject->world, XMMatrixTranspose(XMLoadFloat4x4(&world)));
+}
+
+void Object::Animate(float fTimeElapsed)
+{
+}
+
+void Object::Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera)
+{
+	if (material)
+	{
+		if (material->GetShader())
+		{
+			material->GetShader()->Render(pd3dCommandList, pCamera);
+			material->GetShader()->UpdateShaderVariables(pd3dCommandList);
+
+			UpdateShaderVariables(pd3dCommandList);
+		}
+
+		if (material->GetTextrue())
+		{
+			material->GetTextrue()->UpdateShaderVariables(pd3dCommandList);
+		}
+	}
+
+	pd3dCommandList->SetGraphicsRootDescriptorTable(2, m_d3dCbvGPUDescriptorHandle);
+
+	if (mesh)
+	{
+		mesh->Render(pd3dCommandList);
+	}
+
+}
+
+void Object::SetPosition(float x, float y, float z)
+{
+}
+
+void Object::SetPosition(XMFLOAT3 xmf3Position)
+{
+}

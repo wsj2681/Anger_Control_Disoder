@@ -1,6 +1,7 @@
 #include "framework.h"
 #include "Engine.h"
 #include "Scene.h"
+#include "Camera.h"
 
 bool Engine::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
@@ -275,7 +276,10 @@ void Engine::BuildObjects()
 {
 	commandList->Reset(commandAllocator, nullptr);
 
+	this->scene = new Scene();
+	scene->BuildObjects(device, commandList);
 
+	
 
 	commandList->Close();
 	ID3D12CommandList* commandLists[] = { commandList };

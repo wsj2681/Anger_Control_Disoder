@@ -1,4 +1,6 @@
 #pragma once
+#include "Shader.h"
+#include "Mesh.h"
 
 struct CB_GAMEOBJECT_INFO
 {
@@ -65,5 +67,92 @@ public:
 	UINT GetTextureType() { return textureType; }
 	UINT GetTextureType(int nIndex) { return resourceType[nIndex]; }
 
+};
+
+class Material final
+{
+public:
+	Material() = default;
+	Material(const Material&) = delete;
+	Material& operator=(const Material&) = delete;
+	virtual ~Material() = default;
+
+private:
+	Texture* texture = nullptr;
+	Shader* shader = nullptr;
+	XMFLOAT4 albedo{ 1.f, 1.f, 1.f, 1.f };
+public:
+
+	void SetAlbedo(XMFLOAT4 albedo) { this->albedo = albedo; }
+	void SetShader(Shader* shader) { this->shader = shader; }
+	void SetTexrue(Texture* texture) { this->texture = texture; }
+
+	Texture* GetTextrue() { return texture; }
+	Shader* GetShader() { return shader; }
+	XMFLOAT4 GetAlbedo() { return albedo; }
+
+	void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+	{
+		if (texture)
+		{
+			texture->UpdateShaderVariables(pd3dCommandList);
+		}
+	}
+	void ReleaseShaderVariables() {}
+
+	void ReleaseUploadBuffers() {}
+
+};
+
+
+class Object
+{
+public:
+	Object() = default;
+	Object(const Object&) = delete;
+	Object& operator=(const Object&) = delete;
+	virtual ~Object() = default;
+
+protected:
+	XMFLOAT4X4 world;
+
+	ID3D12Resource* cbGameObject = nullptr;
+	CB_GAMEOBJECT_INFO* cbMappedGameObject = nullptr;
+
+	Mesh* mesh = nullptr;
+	Material* material = nullptr;
+	D3D12_GPU_DESCRIPTOR_HANDLE m_d3dCbvGPUDescriptorHandle;
+
+public:
+
+	void SetMesh(Mesh* mesh) { this->mesh = mesh; }
+	void SetShader(Shader* shader) 
+	{
+		if (!this->material)
+		{
+			Material* mat = new Material();
+			SetMaterial(mat);
+		}
+		if (material)
+		{
+			material->SetShader(shader);
+		}
+	}
+	void SetMaterial(Material* material) { this->material = material; }
+
+	void SetCbvGPUDescriptorHandle(D3D12_GPU_DESCRIPTOR_HANDLE d3dCbvGPUDescriptorHandle) { m_d3dCbvGPUDescriptorHandle = d3dCbvGPUDescriptorHandle; }
+	void SetCbvGPUDescriptorHandlePtr(UINT64 nCbvGPUDescriptorHandlePtr) { m_d3dCbvGPUDescriptorHandle.ptr = nCbvGPUDescriptorHandlePtr; }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetCbvGPUDescriptorHandle() { return(m_d3dCbvGPUDescriptorHandle); }
+
+	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
+
+	virtual void Animate(float fTimeElapsed);
+	virtual void OnPrepareRender() { }
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera = NULL);
+
+	void SetPosition(float x, float y, float z);
+	void SetPosition(XMFLOAT3 xmf3Position);
 
 };
