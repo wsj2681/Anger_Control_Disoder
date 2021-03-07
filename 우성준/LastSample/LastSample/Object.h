@@ -1,5 +1,12 @@
 #pragma once
 
+#define DIR_FORWARD					0x01
+#define DIR_BACKWARD				0x02
+#define DIR_LEFT					0x04
+#define DIR_RIGHT					0x08
+#define DIR_UP						0x10
+#define DIR_DOWN					0x20
+
 #define RESOURCE_TEXTURE2D			0x01
 #define RESOURCE_TEXTURE2D_ARRAY	0x02	//[]
 #define RESOURCE_TEXTURE2DARRAY		0x03
@@ -10,7 +17,8 @@ class Object;
 class Texture;
 class Material;
 class Shader;
-
+class Mesh;
+class CubeMesh;
 struct CB_GAMEOBJECT_INFO
 {
 	XMFLOAT4X4 world;
@@ -71,6 +79,14 @@ public:
 
 };
 
+#define MATERIAL_ALBEDO_MAP			0x01
+#define MATERIAL_SPECULAR_MAP		0x02
+#define MATERIAL_NORMAL_MAP			0x04
+#define MATERIAL_METALLIC_MAP		0x08
+#define MATERIAL_EMISSION_MAP		0x10
+#define MATERIAL_DETAIL_ALBEDO_MAP	0x20
+#define MATERIAL_DETAIL_NORMAL_MAP	0x40
+
 class Material final
 {
 public:
@@ -108,7 +124,29 @@ public:
 
 protected:
 
+	XMFLOAT4X4 world;
+
+	Mesh* mesh = nullptr;
+
+	Material* material = nullptr;
+
+	Shader* shader = nullptr;
+
+	ID3D12Resource* cbObject = nullptr;
+	CB_GAMEOBJECT_INFO* cbMappedObject = nullptr;
+
 public:
+
+	virtual void SetMesh(Mesh* mesh);
+	virtual void SetMaterial(Material* material) {}
+	virtual void SetShader(Shader* shader);
+
+	virtual void SetPosition(XMFLOAT3 position) {}
+
+
+	virtual void Animate(float eTime) {}
+	virtual void Render(ID3D12GraphicsCommandList* commandList);
+
 
 };
 

@@ -3,6 +3,8 @@
 #define FRAME_BUFFER_WIDTH		1080
 #define FRAME_BUFFER_HEIGHT		720
 
+class Scene;
+
 class Engine final
 {
 public:
@@ -48,6 +50,9 @@ private:
 
 	FbxManager* fbxSdkManager = nullptr;
 	FbxScene* fbxScene = nullptr;
+
+	//Scene
+	Scene* scene = nullptr;
 
 public:
 	bool OnCreate(HINSTANCE hInstance, HWND hMainWnd);

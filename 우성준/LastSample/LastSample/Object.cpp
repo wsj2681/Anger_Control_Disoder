@@ -115,3 +115,23 @@ void Material::ReleaseShaderVariables()
 void Material::ReleaseUploadBuffers()
 {
 }
+
+void Object::SetMesh(Mesh* mesh)
+{
+}
+
+void Object::SetShader(Shader* shader)
+{
+}
+
+void Object::Render(ID3D12GraphicsCommandList* commandList)
+{
+	if (mesh)
+	{
+		if (shader)
+		{
+			shader->Render(commandList, nullptr);
+		}
+		mesh->Render(commandList);
+	}
+}

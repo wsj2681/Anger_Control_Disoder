@@ -1,5 +1,6 @@
 #include "framework.h"
 #include "Engine.h"
+#include "Scene.h"
 
 bool Engine::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
@@ -273,6 +274,8 @@ void Engine::ChangeSwapChainState()
 void Engine::BuildObjects()
 {
 	commandList->Reset(commandAllocator, nullptr);
+
+
 
 	commandList->Close();
 	ID3D12CommandList* commandLists[] = { commandList };
