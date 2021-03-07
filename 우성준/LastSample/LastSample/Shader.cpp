@@ -185,6 +185,7 @@ D3D12_RASTERIZER_DESC CubeShader::CreateRasterizerState()
     return d3dRasterizerDesc;
 }
 
+
 D3D12_SHADER_BYTECODE CubeShader::CreateVertexShader()
 {
     return Shader::CompileShaderFromFile(L"Shader.hlsl", "VSCube", "vs_5_1", &vertexShaderBlob);
