@@ -131,6 +131,7 @@ public:
 		if (!this->material)
 		{
 			Material* mat = new Material();
+			mat->SetShader(shader);
 			SetMaterial(mat);
 		}
 		if (material)

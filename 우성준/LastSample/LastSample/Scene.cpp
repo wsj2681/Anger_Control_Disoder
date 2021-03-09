@@ -6,13 +6,14 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 {
 	graphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 	
-	Object* obj = new Object();
+	objects = new Object*[1];
 	Shader* shader = new CubeShader();
 	Mesh* mesh = new CubeMesh(pd3dDevice, pd3dCommandList);
 
 	shader->CreateShader(pd3dDevice, pd3dCommandList, graphicsRootSignature);
 
-	objects[0] = obj;
+	objects[0]->SetMesh(mesh);
+	objects[0]->SetShader(shader);
 }
 
 void Scene::ReleaseObjects()
