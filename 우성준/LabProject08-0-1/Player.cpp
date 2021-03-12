@@ -348,9 +348,10 @@ BoxingPlayer::BoxingPlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 	m_pShader->CreateCbvSrvDescriptorHeaps(pd3dDevice, 0, 1); //Mi24(1)
 
 	CAngrybotObject* pGameObject = new CAngrybotObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
+
 	pGameObject->SetScale(0.1, 0.1, 0.1);
 	SetChild(pGameObject);
-
+	
 	PrepareAnimate();
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);

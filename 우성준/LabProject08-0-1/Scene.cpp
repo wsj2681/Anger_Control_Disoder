@@ -79,19 +79,28 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	//m_ppShaders[0] = pObjectsShader;
 
-	m_nGameObjects = 1;
-	m_ppGameObjects = new CGameObject * [m_nGameObjects];
+	m_nGameObjects = 0;
+	//m_ppGameObjects = new CGameObject * [m_nGameObjects];
 
-	m_ppGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
-	m_ppGameObjects[0]->SetAnimationStack(0);
-	/*
+	//m_ppGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
+	//m_ppGameObjects[0]->SetAnimationStack(0);
 	
+	
+	/* Animation Set Number
+	0. airbone 1. airboneLand 
+	2. Attack01 3. Attack02 4. Attack03 5. Attack04 6. Attack05 7. Attack06 8. Attack07 9. Attack08 10. Attack09 11. Attack10
+	12. AttackRM01 13. AttackRM02 14. AttackRM03 15. AttackRM04 16. AttackRM05 17. AttackRM06 18. AttackRM07 19. AttackRM08 20. AttackRM09
+	21. BlockHit 22. BlockIdle
+	23. Combo2Hit01 24. Combo2Hit02 25. Combo2Hit03 26. Combo2Hit04 27. Combo2Hit05
+	28. Combo3Hit01 29. Combo3Hit02 30. Combo3Hit03
+	31. Combo4Hit01 32. Combo4Hit02
+	33. Death01 34. Death01GetUp 35. Death02 36. Death02GetUp
 
 
 	*/
-	m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
-	m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
-	m_ppGameObjects[0]->SetPosition(150.0f, 0.0f, 150.0f);
+	//m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
+	//m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
+	//m_ppGameObjects[0]->SetPosition(150.0f, 0.0f, 150.0f);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }

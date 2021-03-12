@@ -308,6 +308,7 @@ void CGameFramework::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM
 void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+	//if (m_pPlayer)m_pPlayer->GetChild()->SetAnimationStack(22);
 	switch (nMessageID)
 	{
 		case WM_KEYUP:
@@ -327,6 +328,21 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 					ChangeSwapChainState();
 					break;
 				case VK_F5:
+					break;
+				case '1':
+					if (m_pPlayer)m_pPlayer->GetChild()->SetAnimationStack(22); // idle
+					break;
+				case '2':
+					if (m_pPlayer)m_pPlayer->GetChild()->SetAnimationStack(2); // attack01
+					break;
+				case '3':
+					if (m_pPlayer)m_pPlayer->GetChild()->SetAnimationStack(3); //attack02
+					break;
+				case '4':
+					if (m_pPlayer)m_pPlayer->GetChild()->SetAnimationStack(23); // combo2hit01
+					break;
+				case '5':
+					if (m_pPlayer)m_pPlayer->GetChild()->SetAnimationStack(32); // combo4hit02
 					break;
 				default:
 					break;
@@ -419,6 +435,7 @@ void CGameFramework::BuildObjects()
 	pAirplanePlayer->SetPosition(XMFLOAT3(10.0f, 0.0f, 0.0f));
 	m_pScene->m_pPlayer = m_pPlayer = pAirplanePlayer;
 	m_pCamera = m_pPlayer->GetCamera();
+	m_pPlayer->GetChild()->SetAnimationStack(22);
 
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -448,10 +465,10 @@ void CGameFramework::ProcessInput()
 	if (!bProcessedByScene)
 	{
 		DWORD dwDirection = 0;
-		if (pKeysBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
-		if (pKeysBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
-		if (pKeysBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
-		if (pKeysBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
+		if (pKeysBuffer['w'] & 0xF0) dwDirection |= DIR_FORWARD;
+		if (pKeysBuffer['s'] & 0xF0) dwDirection |= DIR_BACKWARD;
+		if (pKeysBuffer['a'] & 0xF0) dwDirection |= DIR_LEFT;
+		if (pKeysBuffer['d'] & 0xF0) dwDirection |= DIR_RIGHT;
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
 
