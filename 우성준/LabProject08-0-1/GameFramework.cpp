@@ -417,7 +417,6 @@ void CGameFramework::BuildObjects()
 
 	BoxingPlayer* pAirplanePlayer = new BoxingPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pfbxSdkManager, m_pfbxScene);
 	pAirplanePlayer->SetPosition(XMFLOAT3(10.0f, 0.0f, 0.0f));
-
 	m_pScene->m_pPlayer = m_pPlayer = pAirplanePlayer;
 	m_pCamera = m_pPlayer->GetCamera();
 
