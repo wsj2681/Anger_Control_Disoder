@@ -1027,7 +1027,7 @@ CAngrybotObject::CAngrybotObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	m_pfbxScene = pfbxScene;
 	if (!m_pfbxScene)
 	{
-		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/Angrybot.fbx");
+		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/angrybot.fbx");
 		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
 	}
 	m_pAnimationController = new CAnimationController(m_pfbxScene);

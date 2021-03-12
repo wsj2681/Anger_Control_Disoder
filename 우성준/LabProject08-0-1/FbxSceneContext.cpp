@@ -526,12 +526,12 @@ FbxScene *LoadFbxSceneFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 
 	FbxGeometryConverter fbxGeomConverter(pfbxSdkManager);
 	fbxGeomConverter.Triangulate(pfbxScene, true);
-//	fbxGeomConverter.SplitMeshesPerMaterial(pfbxScene, true);
+	//fbxGeomConverter.SplitMeshesPerMaterial(pfbxScene, false);
 
-//	FbxAxisSystem fbxSceneAxisSystem = pfbxScene->GetGlobalSettings().GetAxisSystem();
-//	FbxAxisSystem fbxDirectXAxisSystem(FbxAxisSystem::eDirectX);
-//	if (fbxSceneAxisSystem != fbxDirectXAxisSystem) fbxDirectXAxisSystem.ConvertScene(pfbxScene);
-//	fbxSceneAxisSystem = pfbxScene->GetGlobalSettings().GetAxisSystem();
+	//FbxAxisSystem fbxSceneAxisSystem = pfbxScene->GetGlobalSettings().GetAxisSystem();
+	//FbxAxisSystem fbxDirectXAxisSystem(FbxAxisSystem::eDirectX);
+	//if (fbxSceneAxisSystem != fbxDirectXAxisSystem) fbxDirectXAxisSystem.ConvertScene(pfbxScene);
+	//	fbxSceneAxisSystem = pfbxScene->GetGlobalSettings().GetAxisSystem();
 
 	FbxSystemUnit fbxSceneSystemUnit = pfbxScene->GetGlobalSettings().GetSystemUnit();
 	if (fbxSceneSystemUnit.GetScaleFactor() != 1.0) FbxSystemUnit::cm.ConvertScene(pfbxScene);

@@ -101,4 +101,18 @@ public:
 	virtual void OnPrepareRender();
 };
 
+class BoxingPlayer : public CPlayer
+{
+public:
+	BoxingPlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene);
+	virtual ~BoxingPlayer();
 
+private:
+
+	virtual void PrepareAnimate();
+	virtual void Animate(float fTimeElapsed, XMFLOAT4X4* pxmf4x4Parent);
+
+public:
+	virtual void OnPrepareRender();
+	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
+};

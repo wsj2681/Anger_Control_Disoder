@@ -84,6 +84,12 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_ppGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
 	m_ppGameObjects[0]->SetAnimationStack(0);
+	/*
+	
+
+
+	*/
+	m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
 	m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
 	m_ppGameObjects[0]->SetPosition(150.0f, 0.0f, 150.0f);
 
