@@ -72,6 +72,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Program Files\Autodesk\FBX\FBX SDK\2019.0\include;C:\Program Files\Autodesk\FBX\FBX SDK\2019.0\include\fbxsdk;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Program Files\Autodesk\FBX\FBX SDK\2019.0\lib\vs2015\x64\debug;C:\Program Files\Autodesk\FBX\FBX SDK\2019.0\include;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -96,6 +98,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>libfbxsdk-md.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
