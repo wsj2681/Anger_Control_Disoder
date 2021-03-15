@@ -76,6 +76,12 @@ FbxAMatrix XmFloat4x4MatrixToFbxMatrix(XMFLOAT4X4& xmf4x4Source)
 	return(fbxmtxResult);
 }
 
+FbxNode* FindModelHand(FbxNode* pfbxNode)
+{
+	
+	return nullptr;
+}
+
 void MatrixScale(FbxAMatrix& fbxmtxSrcMatrix, double pValue)
 {
 	for (int i = 0; i < 4; i++)
@@ -385,17 +391,50 @@ void AnimateFbxMesh(FbxMesh *pfbxMesh, FbxTime& fbxCurrentTime)
 	}
 }
 
-void AnimateFbxNodeHierarchy(FbxNode *pfbxNode, FbxTime& fbxCurrentTime)
+void AnimateFbxNodeHierarchy(FbxNode* pfbxNode, FbxTime& fbxCurrentTime)
 {
-	FbxNodeAttribute *pfbxNodeAttribute = pfbxNode->GetNodeAttribute();
+	FbxNodeAttribute* pfbxNodeAttribute = pfbxNode->GetNodeAttribute();
 	if (pfbxNodeAttribute && (pfbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh))
 	{
-		FbxMesh *pfbxMesh = pfbxNode->GetMesh();
+		FbxMesh* pfbxMesh = pfbxNode->GetMesh();
+		cout << pfbxNode->GetName() << endl;
+		if (pfbxNode)
+		{
+			if ((pfbxNode->GetName(), "LFinger02") == 0)
+			{
+				cout <<" 11"<<endl;
+			}
+		}
 		AnimateFbxMesh(pfbxMesh, fbxCurrentTime);
 	}
-
+	//cout << pfbxNode->GetName() << endl;
 	int nChilds = pfbxNode->GetChildCount();
-	for (int i = 0; i < nChilds; i++) AnimateFbxNodeHierarchy(pfbxNode->GetChild(i), fbxCurrentTime);
+	for (int i = 0; i < nChilds; i++)
+	{
+		AnimateFbxNodeHierarchy(pfbxNode->GetChild(i), fbxCurrentTime);
+
+
+		//cout << pfbxNode->GetChild(i)->GetName() << endl;
+		//if (strcmp(pfbxNode->GetChild(i)->GetName(), "RHand") == 0)
+		//{
+		//	FbxNodeAttribute* a = pfbxNode->GetChild(i)->GetNodeAttribute();
+		//	if (a && (a->GetAttributeType() == FbxNodeAttribute::eMesh))
+		//	{
+		//		FbxMesh* mesh = pfbxNode->GetChild(i)->GetMesh();
+		//		int nVertices = mesh->GetControlPointsCount();
+		//		FbxVector4* pfbxv4Vertices = new FbxVector4[nVertices];
+		//		::memcpy(pfbxv4Vertices, mesh->GetControlPoints(), nVertices * sizeof(FbxVector4));
+
+		//		for (int i = 0; i < nVertices; ++i)
+		//		{
+		//			cout << pfbxv4Vertices[i].mData[0] << " - "
+		//				<< pfbxv4Vertices[i].mData[1] << " - "
+		//				<< pfbxv4Vertices[i].mData[2] << " - "
+		//				<< pfbxv4Vertices[i].mData[3] << endl;
+		//		}
+		//	}
+		//}
+	}
 }
 
 void RenderFbxMesh(ID3D12GraphicsCommandList *pd3dCommandList, FbxMesh *pfbxMesh, FbxAMatrix& fbxmtxNodeToRoot, FbxAMatrix& fbxmtxGeometryOffset, FbxAMatrix fbxmtxWorld)

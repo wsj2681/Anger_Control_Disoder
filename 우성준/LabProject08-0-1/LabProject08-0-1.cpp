@@ -4,7 +4,9 @@
 #include "stdafx.h"
 #include "LabProject08-0-1.h"
 #include "GameFramework.h"
-
+#if defined(DEBUG) | defined(_DEBUG)
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#endif
 #define MAX_LOADSTRING 100
 
 HINSTANCE						ghAppInstance;
