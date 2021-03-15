@@ -276,6 +276,7 @@ public:
 	void SetMaterial(int nMaterial, CMaterial *pMaterial);
 
 	void SetChild(CGameObject *pChild);
+	CMesh* GetMesh();
 	CGameObject* GetChild() { return this->m_pChild; }
 	virtual void BuildMaterials(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList) { }
 

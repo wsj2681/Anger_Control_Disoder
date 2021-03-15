@@ -354,6 +354,11 @@ void CGameObject::SetChild(CGameObject *pChild)
 	}
 }
 
+CMesh* CGameObject::GetMesh()
+{
+	return m_pMesh;
+}
+
 void CGameObject::SetMesh(CMesh *pMesh)
 {
 	if (m_pMesh) m_pMesh->Release();

@@ -20,6 +20,11 @@
 #define VERTEXT_NORMAL_DETAIL			(VERTEXT_POSITION | VERTEXT_NORMAL | VERTEXT_TEXTURE_COORD0 | VERTEXT_TEXTURE_COORD1)
 #define VERTEXT_NORMAL_TANGENT__DETAIL	(VERTEXT_POSITION | VERTEXT_NORMAL | VERTEXT_TANGENT | VERTEXT_TEXTURE_COORD0 | VERTEXT_TEXTURE_COORD1)
 
+#define MESH_NONE		0x00
+#define MESH_PLAYER		0x01
+#define MESH_GROUND		0x02
+#define MESH_PARTICLE	0x03
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 class CMesh
@@ -39,6 +44,7 @@ protected:
 	char							m_pstrMeshName[256] = { 0 };
 
 	UINT							m_nType = 0x00;
+	UINT							m_meshType{ MESH_NONE };
 
 	XMFLOAT3						m_xmf3AABBCenter = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3						m_xmf3AABBExtents = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -48,9 +54,11 @@ protected:
 	UINT							m_nSlot = 0;
 	UINT							m_nOffset = 0;
 
+	bool							m_bCheckCollision{ true };
+	bool							m_bApplyGravity{ true };
 protected:
 	int								m_nVertices = 0;
-
+	
 	XMFLOAT3						*m_pxmf3Positions = NULL;
 
 	ID3D12Resource					*m_pd3dPositionBuffer = NULL;
@@ -67,9 +75,22 @@ protected:
 
 public:
 	UINT GetType() { return(m_nType); }
+	const UINT& GetMeshType() const;
+	const bool& GetCheckCollision() const;
+	const bool& GetApplyGravity() const;
+	const XMFLOAT3& GetAABBCenter() const;
+	const XMFLOAT3& GetAABBExtents() const;
+
+	void SetMeshType(const UINT& meshType);
+	void SetCheckCollision(const bool& checkCollision);
+	void SetApplyGravity(const bool& applyGravity);
+	void SetAABBCenter(const XMFLOAT3& center);
+	void SetAABBExtents(const XMFLOAT3& extents);
 
 	virtual void ReleaseUploadBuffers();
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet);
+	virtual bool AABBCollision(CMesh* mesh);
+	virtual void WorksGravity(const bool& works);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
