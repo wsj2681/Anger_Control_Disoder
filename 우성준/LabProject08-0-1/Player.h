@@ -104,6 +104,7 @@ public:
 class BoxingPlayer : public CPlayer
 {
 public:
+	BoxingPlayer() {}
 	BoxingPlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene);
 	virtual ~BoxingPlayer();
 
@@ -115,4 +116,12 @@ private:
 public:
 	virtual void OnPrepareRender();
 	virtual CCamera* ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
+};
+
+class AnotherBoxingPlayer : public BoxingPlayer
+{
+public:
+	AnotherBoxingPlayer() {}
+	AnotherBoxingPlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene);
+	virtual ~AnotherBoxingPlayer();
 };

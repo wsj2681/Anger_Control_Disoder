@@ -442,6 +442,7 @@ void CGameFramework::BuildObjects()
 	m_pScene->m_pPlayer = m_pPlayer = pAirplanePlayer;
 	m_pCamera = m_pPlayer->GetCamera();
 	m_pPlayer->GetChild()->SetAnimationStack(22);
+	m_pPlayer->SetPosition({ 0.f, 0.f, 0.f });
 
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };

@@ -79,10 +79,11 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	//m_ppShaders[0] = pObjectsShader;
 
-	m_nGameObjects = 0;
-	//m_ppGameObjects = new CGameObject * [m_nGameObjects];
+	m_nGameObjects = 1;
+	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 
-	//m_ppGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
+	m_ppGameObjects[0] = new MapObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
+	m_ppGameObjects[0]->SetScale(0.1, 0.1, 0.1);
 	//m_ppGameObjects[0]->SetAnimationStack(0);
 	
 	
@@ -98,9 +99,11 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 
 	*/
-	//m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
-	//m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
-	//m_ppGameObjects[0]->SetPosition(150.0f, 0.0f, 150.0f);
+	m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
+	m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
+	m_ppGameObjects[0]->SetPosition(0.0f, 0.0f, 0.0f);
+
+	//map = new MapObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -366,6 +369,7 @@ void CScene::ReleaseUploadBuffers()
 
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < m_nGameObjects; i++) m_ppGameObjects[i]->ReleaseUploadBuffers();
+	if(map)map->ReleaseUploadBuffers();
 }
 
 bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
@@ -427,9 +431,9 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 
-	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
-
+	//if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
+	if (map) map->Render(pd3dCommandList, pCamera);
 }
 

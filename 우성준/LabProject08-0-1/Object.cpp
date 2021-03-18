@@ -1030,6 +1030,20 @@ CAngrybotObject::CAngrybotObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	{
 		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/BoxingComplete.fbx");
 		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
+		
+		//https://m.blog.naver.com/PostView.nhn?blogId=lifeisforu&logNo=80105469431&proxyReferer=https:%2F%2Fwww.google.com%2F
+		//https://twinmotionhelp.epicgames.com/s/question/0D52L0000427oFZ/how-to-apply-material-to-separated-object-in-fbx-file?language=ko
+		for (int i = 0; i < m_pfbxScene->GetMaterialCount(); ++i)
+		{
+			auto material = m_pfbxScene->GetMaterial(i);
+			material->sDiffuse;
+			SetMaterial(m_pfbxScene->GetMaterialCount(), nullptr);
+			FbxProperty prop;
+			//prop.
+			FbxSurfacePhong* phong = dynamic_cast<FbxSurfacePhong*>(material);
+			//material.get 여기서 Emmisive, Ambiant, Specular, Albedo 값 다 자겨와야함
+		}
+		//auto texture = m_pfbxScene->GetTEx
 	}
 	m_pAnimationController = new CAnimationController(m_pfbxScene);
 }
@@ -1143,4 +1157,19 @@ void CAnimationSet::SetCallbackKey(int nKeyIndex, float fKeyTime, void* pData)
 {
 	m_pCallbackKeys[nKeyIndex].m_fTime = fKeyTime;
 	m_pCallbackKeys[nKeyIndex].m_pCallbackData = pData;
+}
+
+MapObject::MapObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene)
+{
+	m_pfbxScene = pfbxScene;
+	if (!m_pfbxScene)
+	{
+		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/boxingring.fbx");
+		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
+	}
+	m_pAnimationController = new CAnimationController(m_pfbxScene);
+}
+
+MapObject::~MapObject()
+{
 }

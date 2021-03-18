@@ -559,7 +559,18 @@ FbxScene *LoadFbxSceneFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 
 	int nFileFormatMajor, nFileFormatMinor, nFileFormatRevision;
 	pfbxImporter->GetFileVersion(nFileFormatMajor, nFileFormatMinor, nFileFormatRevision);
+	/*
+	
+	pfbxScene->GetMaterial();
+	http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html?url=cpp_ref/class_fbx_surface_material.html,topicNumber=cpp_ref_class_fbx_surface_material_html6c782589-a5ab-4f11-b40f-7050c9601e3e
 
+	*/
+	/*
+	
+	pfbxScene->GetTexture();
+	http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html?url=cpp_ref/class_fbx_texture.html,topicNumber=cpp_ref_class_fbx_texture_html2e6cab53-4075-4c0d-b74c-db3a8e3b7aec
+	
+	*/
 	pfbxScene = FbxScene::Create(pfbxSdkManager, " ");
 	bool bStatus = pfbxImporter->Import(pfbxScene);
 
