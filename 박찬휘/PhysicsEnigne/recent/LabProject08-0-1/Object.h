@@ -15,6 +15,7 @@
 #define DIR_UP						0x10
 #define DIR_DOWN					0x20
 
+class BoxCollider;
 class CShader;
 class CStandardShader;
 
@@ -269,6 +270,7 @@ public:
 	CGameObject 					*m_pSibling = NULL;
 	CAnimationController* m_pAnimationController = NULL;
 
+	BoxCollider* colliders{ nullptr };
 
 	void SetMesh(CMesh *pMesh);
 	void SetShader(CShader *pShader);

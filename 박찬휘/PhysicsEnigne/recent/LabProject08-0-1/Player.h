@@ -23,7 +23,7 @@ protected:
 	float           			m_fRoll;
 
 	XMFLOAT3					m_xmf3Velocity;
-	XMFLOAT3     				m_xmf3Gravity;
+	XMFLOAT3     				m_xmf3Gravity{ XMFLOAT3(0.f, 9.8f, 0.f) };
 	float           			m_fMaxVelocityXZ;
 	float           			m_fMaxVelocityY;
 	float           			m_fFriction;
