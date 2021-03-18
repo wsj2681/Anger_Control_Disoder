@@ -470,6 +470,7 @@ void CStandardMesh::Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubS
 
 CMeshFromFbx::CMeshFromFbx(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, int nVertices, int nIndices, int* pnIndices)
 {
+	//TODO 캐릭터의 크기를 알아보기
 	m_nVertices = nVertices;
 	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
