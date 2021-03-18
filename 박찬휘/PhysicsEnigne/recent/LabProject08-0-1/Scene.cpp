@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 
 #include "stdafx.h"
+#include "Collider.h"
 #include "Scene.h"
 
 CScene::CScene()
@@ -69,28 +70,24 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	BuildDefaultLightsAndMaterials();
 
 	CCubeMesh* groundMesh = new CCubeMesh(pd3dDevice, pd3dCommandList, 100.0f, 1.0f, 100.0f, 0.0f, -100.0f);
-	groundMesh->SetMeshType(MESH_GROUND);
 	m_nGameObjects = 1;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
-	
-
-	CGameObject* ground = new CGameObject();
-	ground->SetMesh(groundMesh);
 
 	m_nShaders = 1;
 	m_ppShaders = new CShader*[m_nShaders];
 
-	CObjectsShader *pObjectsShader = new CObjectsShader();
+	m_ppGameObjects[0] = new CGameObject();
+	m_ppGameObjects[0]->SetMesh(groundMesh);
+
+	CObjectsShader* pObjectsShader = new CObjectsShader();
 	pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, NULL);
 
-	ground->SetShader(pObjectsShader);
-
-	m_ppGameObjects[0] = ground;
+	m_ppGameObjects[0]->SetShader(pObjectsShader);
 
 	m_ppShaders[0] = pObjectsShader;
 	
-
+	
 	
 	/* Animation Set Number
 	0. airbone 1. airboneLand 
@@ -435,24 +432,18 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 
 	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
 
-	CheckCollision(m_pPlayer, m_ppGameObjects);
-
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 }
 
-void CScene::CheckCollision(CPlayer* player, CGameObject** object)
+void CScene::CheckCollision()
 {
-	CMesh* objectMesh{};
-	for (int i = 0; i < m_nGameObjects; ++i) {
-		objectMesh = m_ppGameObjects[i]->GetMesh();
-		//if (objectMesh->AABBCollision(player->GetMesh()) == true) {
-		//	player->GetMesh()->WorksGravity(false);
-		//}
-		//else {
-		//	player->GetMesh()->WorksGravity(true);
-		//}
-		player->GetMesh()->WorksGravity(true);
-	}
-}
+	bool bCheck = false;
+	// 1. player -> obj
+	XMFLOAT3 playerPos = m_pPlayer->colliders->GetPosition();
+	XMFLOAT3 objPos = m_ppGameObjects[0]->colliders->GetPosition();
+	if (playerPos.x <= objPos.x)
+		bCheck = true;
+	// 2. obj -> obj
 
+}

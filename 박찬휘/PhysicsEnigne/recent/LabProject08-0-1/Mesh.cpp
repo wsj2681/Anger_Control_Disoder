@@ -31,56 +31,6 @@ CMesh::~CMesh()
 	if (m_pxmf3Positions) delete[] m_pxmf3Positions;
 }
 
-const UINT& CMesh::GetMeshType() const
-{
-	return this->m_meshType;
-}
-
-const bool& CMesh::GetCheckCollision() const
-{
-	return this->m_bCheckCollision;
-}
-
-const bool& CMesh::GetApplyGravity() const
-{
-	return this->m_bApplyGravity;
-}
-
-const XMFLOAT3& CMesh::GetAABBCenter() const
-{
-	return this->m_xmf3AABBCenter;
-}
-
-const XMFLOAT3& CMesh::GetAABBExtents() const
-{
-	return this->m_xmf3AABBExtents;
-}
-
-void CMesh::SetMeshType(const UINT& meshType)
-{
-	this->m_meshType = meshType;
-}
-
-void CMesh::SetCheckCollision(const bool& checkCollision)
-{
-	this->m_bCheckCollision = checkCollision;
-}
-
-void CMesh::SetApplyGravity(const bool& applyGravity)
-{
-	this->m_bApplyGravity = applyGravity;
-}
-
-void CMesh::SetAABBCenter(const XMFLOAT3& center)
-{
-	this->m_xmf3AABBCenter = center;
-}
-
-void CMesh::SetAABBExtents(const XMFLOAT3& extents)
-{
-	this->m_xmf3AABBExtents = extents;
-}
-
 void CMesh::ReleaseUploadBuffers()
 {
 	if (m_pd3dPositionUploadBuffer) m_pd3dPositionUploadBuffer->Release();
@@ -112,32 +62,6 @@ void CMesh::Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet)
 	{
 		pd3dCommandList->DrawInstanced(m_nVertices, 1, m_nOffset, 0);
 	}
-}
-
-bool CMesh::AABBCollision(CMesh* mesh)
-{
-	XMFLOAT3 aMin = XMFLOAT3(this->m_xmf3AABBCenter.x - this->m_xmf3AABBExtents.x,
-							 this->m_xmf3AABBCenter.y - this->m_xmf3AABBExtents.y,
-							 this->m_xmf3AABBCenter.z - this->m_xmf3AABBExtents.z);
-	XMFLOAT3 aMax = XMFLOAT3(this->m_xmf3AABBCenter.x + this->m_xmf3AABBExtents.x,
-							 this->m_xmf3AABBCenter.y + this->m_xmf3AABBExtents.y,
-							 this->m_xmf3AABBCenter.z + this->m_xmf3AABBExtents.z);
-	XMFLOAT3 bMin = XMFLOAT3(mesh->m_xmf3AABBCenter.x - mesh->m_xmf3AABBExtents.x,
-							 mesh->m_xmf3AABBCenter.y - mesh->m_xmf3AABBExtents.y,
-							 mesh->m_xmf3AABBCenter.z - mesh->m_xmf3AABBExtents.z);
-	XMFLOAT3 bMax = XMFLOAT3(mesh->m_xmf3AABBCenter.x + mesh->m_xmf3AABBExtents.x,
-							 mesh->m_xmf3AABBCenter.y + mesh->m_xmf3AABBExtents.y,
-							 mesh->m_xmf3AABBCenter.z + mesh->m_xmf3AABBExtents.z);
-	if (aMax.x >= bMin.x || aMax.y >= bMin.y || aMax.z >= bMin.z)
-		return true;
-	if (aMin.x <= bMax.x || aMin.y <= bMax.y || aMin.z <= bMax.z)
-		return true;
-	return false;
-}
-
-void CMesh::WorksGravity(const bool& works)
-{
-	m_pxmf3Positions->y -= 9.8f;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -240,9 +164,6 @@ CCubeMesh::CCubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 
 	for (i = 0; i < 36; ++i)
 	pVertices[i] = CDiffusedVertex(m_pxmf3Positions[i], RANDOM_COLOR);
-
-	m_xmf3AABBCenter = XMFLOAT3(fxPosition + fWidth / 2, fyPosition + fHeight / 2, fzPosition + fDepth / 2);
-	m_xmf3AABBExtents = XMFLOAT3(fWidth / 2, fHeight / 2, fDepth / 2);
 
 	m_pd3dPositionBuffer = ::CreateBufferResource(
 		pd3dDevice,
