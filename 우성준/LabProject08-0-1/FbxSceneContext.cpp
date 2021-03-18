@@ -397,7 +397,7 @@ void AnimateFbxNodeHierarchy(FbxNode* pfbxNode, FbxTime& fbxCurrentTime)
 	if (pfbxNodeAttribute && (pfbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh))
 	{
 		FbxMesh* pfbxMesh = pfbxNode->GetMesh();
-		cout << pfbxNode->GetName() << endl;
+		//cout << pfbxNode->GetName() << endl;
 		if (pfbxNode)
 		{
 			if ((pfbxNode->GetName(), "LFinger02") == 0)

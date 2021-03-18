@@ -16,4 +16,3 @@ extern XMFLOAT4X4 FbxMatrixToXmFloat4x4Matrix(FbxAMatrix* pfbxmtxSource);
 extern FbxAMatrix XmFloat4x4MatrixToFbxMatrix(XMFLOAT4X4& xmf4x4Source);
 
 extern FbxNode* FindModelHand(FbxNode* pfbxNode);
-extern 
