@@ -398,13 +398,13 @@ void AnimateFbxNodeHierarchy(FbxNode* pfbxNode, FbxTime& fbxCurrentTime)
 	{
 		FbxMesh* pfbxMesh = pfbxNode->GetMesh();
 		//cout << pfbxNode->GetName() << endl;
-		if (pfbxNode)
-		{
-			if ((pfbxNode->GetName(), "LFinger02") == 0)
-			{
-				cout <<" 11"<<endl;
-			}
-		}
+		//if (pfbxNode)
+		//{
+		//	if ((pfbxNode->GetName(), "LFinger02") == 0)
+		//	{
+		//		cout <<" 11"<<endl;
+		//	}
+		//}
 		AnimateFbxMesh(pfbxMesh, fbxCurrentTime);
 	}
 	//cout << pfbxNode->GetName() << endl;
@@ -477,7 +477,9 @@ void CreateMeshFromFbxNodeHierarchy(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	{
 		FbxMesh *pfbxMesh = pfbxNode->GetMesh();
 		if (pfbxMesh)
-		{
+		{	
+			cout << pfbxNode->GetNameOnly() << " - " << pfbxNode->GetName() <<endl;
+			
 			int nVertices = pfbxMesh->GetControlPointsCount();
 
 			int nIndices = 0;

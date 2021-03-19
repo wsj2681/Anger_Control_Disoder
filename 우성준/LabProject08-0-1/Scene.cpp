@@ -21,6 +21,9 @@ void CScene::BuildDefaultLightsAndMaterials()
 
 	m_xmf4GlobalAmbient = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
 
+	// TODO : 여기서 fbxScene에서 루트노드부터 돌면서 라이트 이름의 노드를 검색하고. 그 노드의 메쉬 컨트롤포인트를 가져와 그곳으로 좌표를 정한다.
+
+
 	m_pLights[0].m_bEnable = true;
 	m_pLights[0].m_nType = POINT_LIGHT;
 	m_pLights[0].m_fRange = 1000.0f;
@@ -39,6 +42,7 @@ void CScene::BuildDefaultLightsAndMaterials()
 	m_pLights[1].m_xmf3Position = XMFLOAT3(-50.0f, 20.0f, -5.0f);
 	m_pLights[1].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	m_pLights[1].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[1].m_xmf3Direction = ringPosition;
 	m_pLights[1].m_fFalloff = 8.0f;
 	m_pLights[1].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
 	m_pLights[1].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
@@ -83,7 +87,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 
 	m_ppGameObjects[0] = new MapObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
-	m_ppGameObjects[0]->SetScale(0.1, 0.1, 0.1);
+	m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
 	//m_ppGameObjects[0]->SetAnimationStack(0);
 	
 	
@@ -412,6 +416,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
 	
+	//TODO : 라이트는 링 위를 바라보아야 한다.
 	if (m_pLights)
 	{
 		m_pLights[1].m_xmf3Position = m_pPlayer->GetPosition();

@@ -90,5 +90,6 @@ private:
 
 	FbxManager* m_pfbxSdkManager = NULL;
 	FbxScene* m_pfbxScene = NULL;
+
 };
 
