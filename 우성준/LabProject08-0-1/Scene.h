@@ -85,5 +85,5 @@ public:
 	LIGHTS								*m_pcbMappedLights = NULL;
 
 	//TODO : ¸µ À§ ÁÂÇ¥
-	XMFLOAT4 ringPosition;
+	XMFLOAT3 ringPosition;
 };
