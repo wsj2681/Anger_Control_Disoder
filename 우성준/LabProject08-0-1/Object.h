@@ -403,3 +403,6 @@ public:
 };
 
 //TODO :파티클 시스템 https://copynull.tistory.com/290
+//TODO : UI 시스템
+
+//TODO: 최적화 방법 - 오브젝트를 불러올때 시간 줄이기. 현재 2분 소요됨

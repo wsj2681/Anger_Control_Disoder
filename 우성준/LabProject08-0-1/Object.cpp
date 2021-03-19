@@ -477,7 +477,7 @@ void CGameObject::ReleaseUploadBuffers()
 	if (m_pChild) m_pChild->ReleaseUploadBuffers();
 }
 
-void CGameObject::UpdateTransform(XMFLOAT4X4 *pxmf4x4Parent)
+void CGameObject::UpdateTransform (XMFLOAT4X4 *pxmf4x4Parent)
 {
 	m_xmf4x4World = (pxmf4x4Parent) ? Matrix4x4::Multiply(m_xmf4x4Transform, *pxmf4x4Parent) : m_xmf4x4Transform;
 
@@ -1058,20 +1058,20 @@ CAngrybotObject::CAngrybotObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 		//auto texture = m_pfbxScene->GetTEx
 	}
 
-	CMaterial* material = new CMaterial();
-	CTexture* texture = new CTexture(7, RESOURCE_TEXTURE2D, 0, 7);
-	material->SetTexture(texture);
-	SetMaterial(0, material);
-	FILE* file = NULL;
-	fopen_s(&file, "model/textures/Player.tif", "rb");
+	//CMaterial* material = new CMaterial();
+	//CTexture* texture = new CTexture(7, RESOURCE_TEXTURE2D, 0, 7);
+	//material->SetTexture(texture);
+	//SetMaterial(0, material);
+	//FILE* file = NULL;
+	//fopen_s(&file, "model/textures/Player.tif", "rb");
 
-	if (texture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, NULL, file, material->m_pShader, 0))
-	{
-		material->SetMaterialType(MATERIAL_ALBEDO_MAP);
-	}
-	material->m_xmf4AlbedoColor = { 1.f, 1.f, 1.f, 1.f };
-	material->m_fGlossiness = 0.5f;
-	material->m_xmf4AmbientColor = { 0.f, 0.f, 0.f, 1.f };
+	//if (texture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, NULL, file, material->m_pShader, 0))
+	//{
+	//	material->SetMaterialType(MATERIAL_ALBEDO_MAP);
+	//}
+	//material->m_xmf4AlbedoColor = { 1.f, 1.f, 1.f, 1.f };
+	//material->m_fGlossiness = 0.5f;
+	//material->m_xmf4AmbientColor = { 0.f, 0.f, 0.f, 1.f };
 
 	m_pAnimationController = new CAnimationController(m_pfbxScene);
 }
@@ -1195,7 +1195,7 @@ MapObject::MapObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCo
 
 	if (!m_pfbxScene)
 	{
-		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/boxingring.fbx");
+		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/Arena.fbx");
 		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
 		
 
