@@ -1,7 +1,7 @@
 #pragma once
 
 extern void AnimateFbxMesh(FbxMesh* pfbxMesh, FbxTime& fbxCurrentTime);
-extern void AnimateFbxNodeHierarchy(FbxNode* pfbxNode, FbxTime& fbxCurrentTime);
+extern void AnimateFbxNodeHierarchy(FbxNode* pfbxNode, FbxTime& fbxCurrentTime, BoundingOrientedBox& obb, const XMFLOAT4X4& world);
 
 extern void RenderFbxMesh(ID3D12GraphicsCommandList* pd3dCommandList, FbxMesh* pfbxMesh, FbxAMatrix& fbxmtxNodeToRoot, FbxAMatrix& fbxmtxGeometryOffset, FbxAMatrix fbxmtxWorld);
 extern void RenderFbxNodeHierarchy(ID3D12GraphicsCommandList* pd3dCommandList, FbxNode* pfbxNode, FbxTime& fbxCurrentTime, FbxAMatrix& fbxmtxWorld);

@@ -69,11 +69,18 @@ protected:
 	ID3D12Resource					**m_ppd3dSubSetIndexUploadBuffers = NULL;
 	D3D12_INDEX_BUFFER_VIEW			*m_pd3dSubSetIndexBufferViews = NULL;
 
+	BoundingOrientedBox	obb;
+
 public:
+
 	UINT GetType() { return(m_nType); }
 
 	virtual void ReleaseUploadBuffers();
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet);
+
+	virtual void SetOBB(const BoundingOrientedBox& obb);
+
+	virtual const BoundingOrientedBox& GetOBB() const;
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -199,6 +206,7 @@ protected:
 	ID3D12Resource* m_pd3dIndexUploadBuffer = NULL;
 	D3D12_INDEX_BUFFER_VIEW			m_d3dIndexBufferView;
 
+	BoundingOrientedBox	obb{};
 public:
 	XMFLOAT4* m_pxmf4MappedPositions = NULL;
 
@@ -206,4 +214,8 @@ public:
 	virtual void ReleaseUploadBuffers();
 
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList);
+
+	virtual void SetOBB(const BoundingOrientedBox& obb);
+
+	virtual BoundingOrientedBox& GetOBB();
 };

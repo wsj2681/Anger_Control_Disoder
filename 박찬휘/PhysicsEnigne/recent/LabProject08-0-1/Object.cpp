@@ -399,7 +399,8 @@ void CGameObject::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 	{
 		m_pAnimationController->AdvanceTime(fTimeElapsed);
 		FbxTime fbxCurrentTime = m_pAnimationController->GetCurrentTime();
-		::AnimateFbxNodeHierarchy(m_pfbxScene->GetRootNode(), fbxCurrentTime);
+		::AnimateFbxNodeHierarchy(m_pfbxScene->GetRootNode(), fbxCurrentTime, obb, m_xmf4x4World);
+		
 	}
 }
 
@@ -607,6 +608,16 @@ int CGameObject::FindReplicatedTexture(_TCHAR* pstrTextureName, D3D12_GPU_DESCRI
 	if (m_pChild) if ((nParameterIndex = m_pChild->FindReplicatedTexture(pstrTextureName, pd3dSrvGpuDescriptorHandle)) > 0) return(nParameterIndex);
 
 	return(nParameterIndex);
+}
+
+BoundingOrientedBox& CGameObject::GetOBB()
+{
+	return obb;
+}
+
+void CGameObject::SetOBB(const BoundingOrientedBox& obb)
+{
+	this->obb = obb;
 }
 
 void CGameObject::LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, CGameObject *pParent, FILE *pInFile, CShader *pShader)

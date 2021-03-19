@@ -64,6 +64,16 @@ void CMesh::Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet)
 	}
 }
 
+const BoundingOrientedBox& CMesh::GetOBB() const
+{
+	return obb;
+}
+
+void CMesh::SetOBB(const BoundingOrientedBox& obb)
+{
+	this->obb = obb;
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 
@@ -644,4 +654,14 @@ void CMeshFromFbx::Render(ID3D12GraphicsCommandList* pd3dCommandList)
 
 	pd3dCommandList->IASetIndexBuffer(&m_d3dIndexBufferView);
 	pd3dCommandList->DrawIndexedInstanced(m_nIndices, 1, 0, 0, 0);
+}
+
+void CMeshFromFbx::SetOBB(const BoundingOrientedBox& obb)
+{
+	this->obb = obb;
+}
+
+BoundingOrientedBox& CMeshFromFbx::GetOBB()
+{
+	return obb;
 }

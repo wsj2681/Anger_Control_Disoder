@@ -377,25 +377,30 @@ void AnimateFbxMesh(FbxMesh *pfbxMesh, FbxTime& fbxCurrentTime)
 
 		CFbxRenderInfo *pFbxRenderInfo = (CFbxRenderInfo *)pfbxMesh->GetUserDataPtr();
 		if (pFbxRenderInfo->m_pMesh)
-		{
 			for (int i = 0; i < nVertices; i++) pFbxRenderInfo->m_pMesh->m_pxmf4MappedPositions[i] = XMFLOAT4((float)pfbxv4Vertices[i][0], (float)pfbxv4Vertices[i][1], (float)pfbxv4Vertices[i][2], 1.0f);
-		}
 
 		delete[] pfbxv4Vertices;
 	}
 }
 
-void AnimateFbxNodeHierarchy(FbxNode *pfbxNode, FbxTime& fbxCurrentTime)
+void AnimateFbxNodeHierarchy(FbxNode *pfbxNode, FbxTime& fbxCurrentTime, BoundingOrientedBox& obb, const XMFLOAT4X4& world)
 {
 	FbxNodeAttribute *pfbxNodeAttribute = pfbxNode->GetNodeAttribute();
 	if (pfbxNodeAttribute && (pfbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh))
 	{
 		FbxMesh *pfbxMesh = pfbxNode->GetMesh();
 		AnimateFbxMesh(pfbxMesh, fbxCurrentTime);
+		CFbxRenderInfo* pFbxRenderInfo = (CFbxRenderInfo*)pfbxMesh->GetUserDataPtr();
+		if (pFbxRenderInfo->m_pMesh) {
+			if (pfbxNode->GetName() == "ExportModel") {
+				pFbxRenderInfo->m_pMesh->GetOBB().Transform(obb, XMLoadFloat4x4(&world));
+				XMStoreFloat4(&pFbxRenderInfo->m_pMesh->GetOBB().Orientation, XMQuaternionNormalize(XMLoadFloat4(&pFbxRenderInfo->m_pMesh->GetOBB().Orientation)));
+			}
+		}
 	}
 
 	int nChilds = pfbxNode->GetChildCount();
-	for (int i = 0; i < nChilds; i++) AnimateFbxNodeHierarchy(pfbxNode->GetChild(i), fbxCurrentTime);
+	for (int i = 0; i < nChilds; i++) AnimateFbxNodeHierarchy(pfbxNode->GetChild(i), fbxCurrentTime, obb, world);
 }
 
 void RenderFbxMesh(ID3D12GraphicsCommandList *pd3dCommandList, FbxMesh *pfbxMesh, FbxAMatrix& fbxmtxNodeToRoot, FbxAMatrix& fbxmtxGeometryOffset, FbxAMatrix fbxmtxWorld)

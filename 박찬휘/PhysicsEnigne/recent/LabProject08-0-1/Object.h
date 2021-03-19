@@ -252,6 +252,9 @@ public:
 	CGameObject(int nMaterials);
     virtual ~CGameObject();
 
+protected:
+	//BoxCollider* colliders{ nullptr };
+	BoundingOrientedBox obb{};
 public:
 	char							m_pstrFrameName[64];
 
@@ -270,7 +273,7 @@ public:
 	CGameObject 					*m_pSibling = NULL;
 	CAnimationController* m_pAnimationController = NULL;
 
-	BoxCollider* colliders{ nullptr };
+	CGameObject* collidedObject{ nullptr };
 
 	void SetMesh(CMesh *pMesh);
 	void SetShader(CShader *pShader);
@@ -322,7 +325,9 @@ public:
 	int FindReplicatedTexture(_TCHAR* pstrTextureName, D3D12_GPU_DESCRIPTOR_HANDLE* pd3dSrvGpuDescriptorHandle);
 
 	UINT GetMeshType() { return((m_pMesh) ? m_pMesh->GetType() : 0x00); }
-
+	
+	BoundingOrientedBox& GetOBB();
+	void SetOBB(const BoundingOrientedBox& obb);
 public:
 	void LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, CGameObject *pParent, FILE *pInFile, CShader *pShader);
 
