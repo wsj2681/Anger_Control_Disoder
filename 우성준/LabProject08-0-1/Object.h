@@ -401,3 +401,5 @@ public:
 	MapObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene);
 	virtual ~MapObject();
 };
+
+//TODO :파티클 시스템 https://copynull.tistory.com/290

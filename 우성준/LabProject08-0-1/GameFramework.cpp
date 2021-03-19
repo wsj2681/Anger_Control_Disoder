@@ -350,6 +350,12 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				case '5':
 					if (m_pPlayer)m_pPlayer->GetChild()->SetAnimationStack(32); // combo4hit02
 					break;
+				case 'W': m_pPlayer->MoveForward(+1.0f); break;
+				case 'S': m_pPlayer->MoveForward(-1.0f); break;
+				case 'A': m_pPlayer->MoveStrafe(-1.0f); break;
+				case 'D': m_pPlayer->MoveStrafe(+1.0f); break;
+				case 'Q': m_pPlayer->MoveUp(+1.0f); break;
+				case 'R': m_pPlayer->MoveUp(-1.0f); break;
 				default:
 					break;
 			}
@@ -381,8 +387,9 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 			OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
             break;
         case WM_KEYDOWN:
-        case WM_KEYUP:
 			OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+        case WM_KEYUP:
+			//OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 			break;
 	}
 	return(0);
@@ -499,7 +506,7 @@ void CGameFramework::ProcessInput()
 				else
 					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
 			}
-			if (dwDirection) m_pPlayer->Move(dwDirection, 1.25f, true);
+			if (dwDirection) m_pPlayer->MovetoDWORD(dwDirection, 1.25f, true);
 		}
 	}
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());

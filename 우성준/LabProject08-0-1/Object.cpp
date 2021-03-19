@@ -1031,8 +1031,20 @@ CAngrybotObject::CAngrybotObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/BoxingComplete.fbx");
 		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
 		
-		//https://m.blog.naver.com/PostView.nhn?blogId=lifeisforu&logNo=80105469431&proxyReferer=https:%2F%2Fwww.google.com%2F
-		//https://twinmotionhelp.epicgames.com/s/question/0D52L0000427oFZ/how-to-apply-material-to-separated-object-in-fbx-file?language=ko
+		//this->m_nMaterials = 1;
+		//this->m_ppMaterials = new CMaterial*[m_nMaterials];
+		//m_ppMaterials[0]->m_xmf4AlbedoColor = { 1.f, 1.f, 1.f,1.f };
+		//m_ppMaterials[0]->m_xmf4EmissiveColor = { 0.f, 0.f, 0.f, 1.f };
+		//m_ppMaterials[0]->m_fGlossiness = 0.5f;
+
+		//int textureCount = m_pfbxScene->GetTextureCount();
+		//for (int i = 0; i < textureCount; ++i)
+		//{
+		//	string texture = m_pfbxScene->GetTexture(i)->GetName();
+		//}
+
+		////https://m.blog.naver.com/PostView.nhn?blogId=lifeisforu&logNo=80105469431&proxyReferer=https:%2F%2Fwww.google.com%2F
+		////https://twinmotionhelp.epicgames.com/s/question/0D52L0000427oFZ/how-to-apply-material-to-separated-object-in-fbx-file?language=ko
 		//for (int i = 0; i < m_pfbxScene->GetMaterialCount(); ++i)
 		//{
 		//	auto material = m_pfbxScene->GetMaterial(i);
@@ -1043,8 +1055,24 @@ CAngrybotObject::CAngrybotObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 		//	FbxSurfacePhong* phong = dynamic_cast<FbxSurfacePhong*>(material);
 		//	//material.get 여기서 Emmisive, Ambiant, Specular, Albedo 값 다 자겨와야함
 		//}
-		////auto texture = m_pfbxScene->GetTEx
+		//auto texture = m_pfbxScene->GetTEx
 	}
+
+	CMaterial* material = new CMaterial();
+	CTexture* texture = new CTexture(7, RESOURCE_TEXTURE2D, 0, 7);
+	material->SetTexture(texture);
+	SetMaterial(0, material);
+	FILE* file = NULL;
+	fopen_s(&file, "model/textures/Player.tif", "rb");
+
+	if (texture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, NULL, file, material->m_pShader, 0))
+	{
+		material->SetMaterialType(MATERIAL_ALBEDO_MAP);
+	}
+	material->m_xmf4AlbedoColor = { 1.f, 1.f, 1.f, 1.f };
+	material->m_fGlossiness = 0.5f;
+	material->m_xmf4AmbientColor = { 0.f, 0.f, 0.f, 1.f };
+
 	m_pAnimationController = new CAnimationController(m_pfbxScene);
 }
 
@@ -1162,10 +1190,15 @@ void CAnimationSet::SetCallbackKey(int nKeyIndex, float fKeyTime, void* pData)
 MapObject::MapObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene)
 {
 	m_pfbxScene = pfbxScene;
+
+	
+
 	if (!m_pfbxScene)
 	{
 		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/boxingring.fbx");
 		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
+		
+
 	}
 	m_pAnimationController = new CAnimationController(m_pfbxScene);
 }
