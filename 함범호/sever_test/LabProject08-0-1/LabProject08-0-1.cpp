@@ -1,12 +1,14 @@
 ﻿// LabProject08-0-1.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
+
+
 #include "stdafx.h"
 #include "LabProject08-0-1.h"
 #include "GameFramework.h"
 
 //sever
-#include "ClientSever.h"
+#include "Sever.h"
 
 
 #if defined(DEBUG) | defined(_DEBUG)
@@ -25,6 +27,10 @@ BOOL InitInstance(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
 
+///////////////SEVER///////////////////////////
+SOCKET sock;
+
+
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
@@ -41,33 +47,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	hAccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT0801));
 
-	///////////////Severconnet//////////////////////////////////////
-
-	int retval = 0;
-
-	WSADATA wsa;
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-		return 1;
-
-	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-
-	/*if (sock == INVALID_SOCKET)
-		err_quit("socket()");*/
-
-	SOCKADDR_IN server_sock_addr;
-	ZeroMemory(&server_sock_addr, sizeof(server_sock_addr));
-	server_sock_addr.sin_family = AF_INET;
-	server_sock_addr.sin_addr.S_un.S_addr = inet_addr(SERVERIP);
-	server_sock_addr.sin_port = ntohs(SERVERPORT);
-
-	retval = connect(sock, (sockaddr*)&server_sock_addr, sizeof(server_sock_addr));
-
-	/*if (retval == SOCKET_ERROR)
-		err_quit("connect()");*/
-
-	//준비 완료 상태
-	retval = send(sock, (char*)"Ready", sizeof("Ready"), 0);
-	//////////////////////////////////////////////////////////////
+	
 
 
 	while (1)

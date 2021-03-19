@@ -5,9 +5,7 @@
 
 
 
-// Thread 
-static int idIndex = 0;
-int threadCount = 0;
+
 
 
 
@@ -100,11 +98,13 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	getpeername(client_sock, (SOCKADDR*)&client_addr, &client_addr_len);
 
 	retval = recv(client_sock, (char*)GameReady, sizeof(GameReady), 0);
-	/*if (retval == SOCKET_ERROR)
-	{
-		err_quit("Ready Error()");
-	}*/
+	cout << GameReady << "받기 완료" << endl;
 
+
+
+	char GameOk[7] = "GameOk";
+
+	retval = send(client_sock, (char*)GameOk, sizeof(GameOk), 0);
 
 	return 0;
 }

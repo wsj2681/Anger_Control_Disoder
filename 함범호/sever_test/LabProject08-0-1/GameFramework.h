@@ -7,10 +7,43 @@
 #include "Player.h"
 #include "Scene.h"
 
+////SEVER////
+#include "Sever.h"
+
 class CGameFramework
 {
 public:
-	CGameFramework();
+	CGameFramework()
+	{
+		m_pdxgiFactory = NULL;
+		m_pdxgiSwapChain = NULL;
+		m_pd3dDevice = NULL;
+
+		for (int i = 0; i < m_nSwapChainBuffers; i++) m_ppd3dSwapChainBackBuffers[i] = NULL;
+		m_nSwapChainBufferIndex = 0;
+
+		m_pd3dCommandAllocator = NULL;
+		m_pd3dCommandQueue = NULL;
+		m_pd3dCommandList = NULL;
+
+		m_pd3dRtvDescriptorHeap = NULL;
+		m_pd3dDsvDescriptorHeap = NULL;
+
+		gnRtvDescriptorIncrementSize = 0;
+		gnDsvDescriptorIncrementSize = 0;
+
+		m_hFenceEvent = NULL;
+		m_pd3dFence = NULL;
+		for (int i = 0; i < m_nSwapChainBuffers; i++) m_nFenceValues[i] = 0;
+
+		m_nWndClientWidth = FRAME_BUFFER_WIDTH;
+		m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
+
+		m_pScene = NULL;
+		m_pPlayer = NULL;
+
+		_tcscpy_s(m_pszFrameRate, _T("LabProject ("));
+	}
 	~CGameFramework();
 
 	bool OnCreate(HINSTANCE hInstance, HWND hMainWnd);
@@ -90,5 +123,7 @@ private:
 
 	FbxManager* m_pfbxSdkManager = NULL;
 	FbxScene* m_pfbxScene = NULL;
+
+	Sever *server= NULL;
 };
 

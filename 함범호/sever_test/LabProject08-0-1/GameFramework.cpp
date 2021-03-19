@@ -5,37 +5,7 @@
 #include "stdafx.h"
 #include "GameFramework.h"
 
-CGameFramework::CGameFramework()
-{
-	m_pdxgiFactory = NULL;
-	m_pdxgiSwapChain = NULL;
-	m_pd3dDevice = NULL;
-
-	for (int i = 0; i < m_nSwapChainBuffers; i++) m_ppd3dSwapChainBackBuffers[i] = NULL;
-	m_nSwapChainBufferIndex = 0;
-
-	m_pd3dCommandAllocator = NULL;
-	m_pd3dCommandQueue = NULL;
-	m_pd3dCommandList = NULL;
-
-	m_pd3dRtvDescriptorHeap = NULL;
-	m_pd3dDsvDescriptorHeap = NULL;
-
-	gnRtvDescriptorIncrementSize = 0;
-	gnDsvDescriptorIncrementSize = 0;
-
-	m_hFenceEvent = NULL;
-	m_pd3dFence = NULL;
-	for (int i = 0; i < m_nSwapChainBuffers; i++) m_nFenceValues[i] = 0;
-
-	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
-	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
-
-	m_pScene = NULL;
-	m_pPlayer = NULL;
-
-	_tcscpy_s(m_pszFrameRate, _T("LabProject ("));
-}
+int i = 0;
 
 CGameFramework::~CGameFramework()
 {
@@ -432,6 +402,9 @@ void CGameFramework::BuildObjects()
 {
 	CreateFbxSdkManager();
 
+	/////SERVER///
+	server = new Sever();
+
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
 	m_pScene = new CScene();
@@ -545,6 +518,14 @@ void CGameFramework::MoveToNextFrame()
 
 void CGameFramework::FrameAdvance()
 {    
+	
+	
+	if (i == 0) {
+		server->Sever_send();
+		server->Sever_recv();
+		++i;
+	}
+
 	m_GameTimer.Tick(0.0f);
 	
 	ProcessInput();
