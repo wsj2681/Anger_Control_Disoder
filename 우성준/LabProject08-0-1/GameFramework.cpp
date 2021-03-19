@@ -350,12 +350,6 @@ void CGameFramework::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPA
 				case '5':
 					if (m_pPlayer)m_pPlayer->GetChild()->SetAnimationStack(32); // combo4hit02
 					break;
-				case 'W': m_pPlayer->MoveForward(+1.0f); break;
-				case 'S': m_pPlayer->MoveForward(-1.0f); break;
-				case 'A': m_pPlayer->MoveStrafe(-1.0f); break;
-				case 'D': m_pPlayer->MoveStrafe(+1.0f); break;
-				case 'Q': m_pPlayer->MoveUp(+1.0f); break;
-				case 'R': m_pPlayer->MoveUp(-1.0f); break;
 				default:
 					break;
 			}
@@ -389,7 +383,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
         case WM_KEYDOWN:
 			OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
         case WM_KEYUP:
-			//OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+			OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 			break;
 	}
 	return(0);
@@ -479,10 +473,10 @@ void CGameFramework::ProcessInput()
 	if (!bProcessedByScene)
 	{
 		DWORD dwDirection = 0;
-		if (pKeysBuffer['w'] & 0xF0) dwDirection |= DIR_FORWARD;
-		if (pKeysBuffer['s'] & 0xF0) dwDirection |= DIR_BACKWARD;
-		if (pKeysBuffer['a'] & 0xF0) dwDirection |= DIR_LEFT;
-		if (pKeysBuffer['d'] & 0xF0) dwDirection |= DIR_RIGHT;
+		if (pKeysBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
+		if (pKeysBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
+		if (pKeysBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
+		if (pKeysBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
 
@@ -506,7 +500,7 @@ void CGameFramework::ProcessInput()
 				else
 					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
 			}
-			if (dwDirection) m_pPlayer->MovetoDWORD(dwDirection, 1.25f, true);
+			if (dwDirection) m_pPlayer->Move(dwDirection, 1.25f, true);
 		}
 	}
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
