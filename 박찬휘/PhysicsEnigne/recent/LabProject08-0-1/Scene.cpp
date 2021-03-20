@@ -69,8 +69,8 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	BuildDefaultLightsAndMaterials();
 
-	float sizeX{ 100.0f }, sizeY{ 1.0f }, sizeZ{ 100.0f };
-	float posX{ 0.0f }, posY{ -100.0f }, posZ{ 0.0f };
+	float sizeX{ 10000.0f }, sizeY{ 1.0f }, sizeZ{ 10000.0f };
+	float posX{ 0.0f }, posY{ 0.0f }, posZ{ 0.0f };
 	CCubeMesh* groundMesh = new CCubeMesh(pd3dDevice, pd3dCommandList, sizeX, sizeY, sizeZ, posX, posY, posZ);
 	BoundingOrientedBox tempBox(XMFLOAT3(posX / 2, posY, posZ / 2), XMFLOAT3(sizeX, sizeY, sizeZ), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 	groundMesh->SetOBB(tempBox);
@@ -83,6 +83,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppGameObjects[0] = new CGameObject();
 	m_ppGameObjects[0]->SetMesh(groundMesh);
 	m_ppGameObjects[0]->bMovable = false;
+	m_ppGameObjects[0]->SetPosition(0.f, 0.f, 0.f);
 
 	CObjectsShader* pObjectsShader = new CObjectsShader();
 	pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -467,15 +468,22 @@ void CScene::CheckCollision()
 
 	for (int i = 0; i < m_nGameObjects; ++i)
 	{
+		printf("m_ppGameObjects[%d]->GetOBB().Intersects(m_pPlayer->GetOBB()) == %d\n", i, m_ppGameObjects[i]->GetOBB().Intersects(m_pPlayer->GetOBB()));
 		//if (m_pPlayer->GetOBB().Intersects(m_ppGameObjects[i]->GetOBB()))
 		if (m_ppGameObjects[i]->GetOBB().Intersects(m_pPlayer->GetOBB()))
+		{
 			m_pPlayer->collidedObject = m_ppGameObjects[i];
+
+		}
 
 		for (int j = 0; j < i; ++j)
 		{
 			if (m_ppGameObjects[i] != nullptr && m_ppGameObjects[j] != nullptr) {
 				if (m_ppGameObjects[i]->GetOBB().Intersects(m_ppGameObjects[j]->GetOBB()))
+				{
 					m_ppGameObjects[i]->collidedObject = m_ppGameObjects[j];
+					m_ppGameObjects[j]->collidedObject = m_ppGameObjects[i];
+				}
 			}
 		}
 	}

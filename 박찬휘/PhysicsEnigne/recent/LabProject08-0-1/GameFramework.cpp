@@ -435,13 +435,13 @@ void CGameFramework::BuildObjects()
 	pAirplanePlayer->SetPosition(XMFLOAT3(0.0f, 100.0f, 0.0f));*/
 
 	BoxingPlayer* pAirplanePlayer = new BoxingPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pfbxSdkManager, m_pfbxScene);
-	pAirplanePlayer->SetPosition(XMFLOAT3(0.0f, 10.0f, 0.0f));
+	pAirplanePlayer->SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
 
 	m_pScene->m_pPlayer = m_pPlayer = pAirplanePlayer;
 	//m_pScene->m_pPlayer->bMovable = true;
 	m_pCamera = m_pPlayer->GetCamera();
 	m_pPlayer->GetChild()->SetAnimationStack(22);
-
+	m_pPlayer->SetPosition(XMFLOAT3(0.f, 10.f, 0.f));
 	printf("Player[%p] : %d\n", m_pPlayer, m_pPlayer->bMovable);
 	
 

@@ -388,14 +388,13 @@ void AnimateFbxNodeHierarchy(FbxNode *pfbxNode, FbxTime& fbxCurrentTime, Boundin
 	FbxNodeAttribute *pfbxNodeAttribute = pfbxNode->GetNodeAttribute();
 	if (pfbxNodeAttribute && (pfbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh))
 	{
-		FbxMesh *pfbxMesh = pfbxNode->GetMesh();
+		FbxMesh* pfbxMesh = pfbxNode->GetMesh();
 		AnimateFbxMesh(pfbxMesh, fbxCurrentTime);
 		CFbxRenderInfo* pFbxRenderInfo = (CFbxRenderInfo*)pfbxMesh->GetUserDataPtr();
-		if (pFbxRenderInfo->m_pMesh) {
-			if (pfbxNode->GetName() == "ExportModel") {
-				pFbxRenderInfo->m_pMesh->GetOBB().Transform(obb, XMLoadFloat4x4(&world));
-				XMStoreFloat4(&pFbxRenderInfo->m_pMesh->GetOBB().Orientation, XMQuaternionNormalize(XMLoadFloat4(&pFbxRenderInfo->m_pMesh->GetOBB().Orientation)));
-			}
+		if (strcmp(pfbxNode->GetName(), "ExportModel") == 0)
+		{
+			pFbxRenderInfo->m_pMesh->GetOBB().Transform(obb, XMLoadFloat4x4(&world));
+			XMStoreFloat4(&pFbxRenderInfo->m_pMesh->GetOBB().Orientation, XMQuaternionNormalize(XMLoadFloat4(&pFbxRenderInfo->m_pMesh->GetOBB().Orientation)));
 		}
 	}
 

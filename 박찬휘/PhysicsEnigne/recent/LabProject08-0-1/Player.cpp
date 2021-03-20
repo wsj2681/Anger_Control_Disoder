@@ -73,14 +73,18 @@ void CPlayer::Move(DWORD dwDirection, float fDistance, bool bUpdateVelocity)
 
 void CPlayer::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
 {
-	if (bUpdateVelocity)
+	if (this->bMovable)
 	{
-		m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, xmf3Shift);
-	}
-	else
-	{
-		m_xmf3Position = Vector3::Add(m_xmf3Position, xmf3Shift);
-		m_pCamera->Move(xmf3Shift);
+
+		if (bUpdateVelocity)
+		{
+			m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, xmf3Shift);
+		}
+		else
+		{
+			m_xmf3Position = Vector3::Add(m_xmf3Position, xmf3Shift);
+			m_pCamera->Move(xmf3Shift);
+		}
 	}
 }
 
@@ -220,6 +224,7 @@ CCamera *CPlayer::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
 
 void CPlayer::OnPrepareRender()
 {
+
 	m_xmf4x4Transform._11 = m_xmf3Right.x; m_xmf4x4Transform._12 = m_xmf3Right.y; m_xmf4x4Transform._13 = m_xmf3Right.z;
 	m_xmf4x4Transform._21 = m_xmf3Up.x; m_xmf4x4Transform._22 = m_xmf3Up.y; m_xmf4x4Transform._23 = m_xmf3Up.z;
 	m_xmf4x4Transform._31 = m_xmf3Look.x; m_xmf4x4Transform._32 = m_xmf3Look.y; m_xmf4x4Transform._33 = m_xmf3Look.z;
@@ -416,6 +421,7 @@ void BoxingPlayer::PrepareAnimate()
 
 void BoxingPlayer::Animate(float fTimeElapsed, XMFLOAT4X4* pxmf4x4Parent)
 {
+
 	CPlayer::Animate(fTimeElapsed, pxmf4x4Parent);
 }
 

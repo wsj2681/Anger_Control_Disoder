@@ -64,7 +64,7 @@ void CMesh::Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet)
 	}
 }
 
-const BoundingOrientedBox& CMesh::GetOBB() const
+BoundingOrientedBox& CMesh::GetOBB()
 {
 	return obb;
 }
