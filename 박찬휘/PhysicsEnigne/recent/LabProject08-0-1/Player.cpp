@@ -400,7 +400,6 @@ BoxingPlayer::BoxingPlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 	pGameObject->SetScale(0.1, 0.1, 0.1);
 	SetChild(pGameObject);
 	
-	
 	PrepareAnimate();
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);

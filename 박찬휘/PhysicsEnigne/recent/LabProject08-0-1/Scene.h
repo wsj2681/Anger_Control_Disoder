@@ -62,7 +62,7 @@ public:
     void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
 
 	void CheckCollision();
-
+	DWORD ApplyGravity();
 	void ReleaseUploadBuffers();
 
 	CPlayer								*m_pPlayer = NULL;
@@ -85,7 +85,4 @@ public:
 
 	ID3D12Resource						*m_pd3dcbLights = NULL;
 	LIGHTS								*m_pcbMappedLights = NULL;
-
-	CCubeMesh*		groundMesh		{nullptr};
-	CObjectsShader* pObjectsShader	{nullptr};
 };

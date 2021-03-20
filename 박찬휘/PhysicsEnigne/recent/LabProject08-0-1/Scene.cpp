@@ -69,8 +69,10 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	BuildDefaultLightsAndMaterials();
 
-	CCubeMesh* groundMesh = new CCubeMesh(pd3dDevice, pd3dCommandList, 100.0f, 1.0f, 100.0f, 0.0f, -100.0f);
-	BoundingOrientedBox tempBox(XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(4.0f, 1.0f,4.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+	float sizeX{ 100.0f }, sizeY{ 1.0f }, sizeZ{ 100.0f };
+	float posX{ 0.0f }, posY{ -100.0f }, posZ{ 0.0f };
+	CCubeMesh* groundMesh = new CCubeMesh(pd3dDevice, pd3dCommandList, sizeX, sizeY, sizeZ, posX, posY, posZ);
+	BoundingOrientedBox tempBox(XMFLOAT3(posX / 2, posY, posZ / 2), XMFLOAT3(sizeX, sizeY, sizeZ), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 	groundMesh->SetOBB(tempBox);
 	m_nGameObjects = 1;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
@@ -80,6 +82,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_ppGameObjects[0] = new CGameObject();
 	m_ppGameObjects[0]->SetMesh(groundMesh);
+	m_ppGameObjects[0]->bMovable = false;
 
 	CObjectsShader* pObjectsShader = new CObjectsShader();
 	pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -88,8 +91,6 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppGameObjects[0]->SetShader(pObjectsShader);
 
 	m_ppShaders[0] = pObjectsShader;
-	
-	
 	
 	/* Animation Set Number
 	0. airbone 1. airboneLand 
@@ -106,6 +107,13 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	//m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
 	//m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
 	//m_ppGameObjects[0]->SetPosition(150.0f, 0.0f, 150.0f);
+	
+	printf("nGameObject : %d | ", m_nGameObjects);
+
+	for (int i = 0; i < m_nGameObjects; ++i) {
+		if (m_ppGameObjects[i])
+			printf("GameObject[%p] : %d\n", m_ppGameObjects[i], m_ppGameObjects[i]->bMovable);
+	}
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -385,12 +393,12 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
-		case 'W': m_ppGameObjects[0]->MoveForward(+1.0f); break;
-		case 'S': m_ppGameObjects[0]->MoveForward(-1.0f); break;
-		case 'A': m_ppGameObjects[0]->MoveStrafe(-1.0f); break;
-		case 'D': m_ppGameObjects[0]->MoveStrafe(+1.0f); break;
-		case 'Q': m_ppGameObjects[0]->MoveUp(+1.0f); break;
-		case 'R': m_ppGameObjects[0]->MoveUp(-1.0f); break;
+		//case 'W': m_ppGameObjects[0]->MoveForward(+1.0f); break;
+		//case 'S': m_ppGameObjects[0]->MoveForward(-1.0f); break;
+		//case 'A': m_ppGameObjects[0]->MoveStrafe(-1.0f); break;
+		//case 'D': m_ppGameObjects[0]->MoveStrafe(+1.0f); break;
+		//case 'Q': m_ppGameObjects[0]->MoveUp(+1.0f); break;
+		//case 'R': m_ppGameObjects[0]->MoveUp(-1.0f); break;
 		default:
 			break;
 		}
@@ -435,40 +443,90 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 
 	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
-
-	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
-	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
+	
+	ApplyGravity();
+	
+	for (int i = 0; i < m_nGameObjects; ++i) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
+	for (int i = 0; i < m_nShaders; ++i) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 }
 
 void CScene::CheckCollision()
 {
+	for (int i = 0; i < m_nGameObjects; ++i) {
+		if (m_ppGameObjects[i])
+			printf("GameObject[%d] : %d\n", i, m_ppGameObjects[i]->bMovable);
+	}
+
 	m_pPlayer->collidedObject = nullptr;
 
 	for (int i = 0; i < m_nGameObjects; ++i)
-		m_ppGameObjects[i]->collidedObject = nullptr;
+	{
+		if (m_ppGameObjects[i] != nullptr)
+			m_ppGameObjects[i]->collidedObject = nullptr;
+	}	
 
 	for (int i = 0; i < m_nGameObjects; ++i)
 	{
-		if (m_pPlayer->GetOBB().Intersects(m_ppGameObjects[i]->GetOBB()))
+		//if (m_pPlayer->GetOBB().Intersects(m_ppGameObjects[i]->GetOBB()))
+		if (m_ppGameObjects[i]->GetOBB().Intersects(m_pPlayer->GetOBB()))
 			m_pPlayer->collidedObject = m_ppGameObjects[i];
 
 		for (int j = 0; j < i; ++j)
 		{
-			if (m_ppGameObjects[i]->GetOBB().Intersects(m_ppGameObjects[j]->GetOBB()))
-				m_ppGameObjects[i]->collidedObject = m_ppGameObjects[j];
+			if (m_ppGameObjects[i] != nullptr && m_ppGameObjects[j] != nullptr) {
+				if (m_ppGameObjects[i]->GetOBB().Intersects(m_ppGameObjects[j]->GetOBB()))
+					m_ppGameObjects[i]->collidedObject = m_ppGameObjects[j];
+			}
 		}
 	}
 
 	if (m_pPlayer->collidedObject)
 	{
-		// 충돌됨!
+		printf("플레이어 충돌됨\n");
+		if (m_pPlayer->bMovable) {
+			printf("막힘\n");
+			m_pPlayer->bMovable = false;
+		}
 	}
+	else
+		if (!m_pPlayer->bMovable) {
+			m_pPlayer->bMovable = true;
+		}
 	
 	for (int i = 0; i < m_nGameObjects; ++i)
 	{
-		if (m_ppGameObjects[i]->collidedObject)
-		{
-			// 충돌됨!
+		if (m_ppGameObjects[i]) {
+			if (m_ppGameObjects[i]->collidedObject)
+			{
+				printf("오브젝트 [%d] 충돌됨\n", i);
+			}
 		}
 	}
+}
+
+DWORD CScene::ApplyGravity()
+{
+	if (m_pPlayer->bMovable == true)
+	{
+		if (m_pPlayer->collidedObject == nullptr)
+		{
+			printf("%p : 플레이어 하강\n", this);
+			return VK_NEXT;
+			
+		}
+	}
+
+	for (int i = 0; i < m_nGameObjects; ++i)
+	{
+		if (m_ppGameObjects[i]->bMovable == true)
+		{
+			if (m_ppGameObjects[i]->collidedObject == nullptr)
+			{
+				printf("%p : 하강\n", this);
+				return VK_NEXT;
+				
+			}
+		}
+	}
+	return 0;
 }

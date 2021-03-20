@@ -274,6 +274,7 @@ public:
 	CAnimationController* m_pAnimationController = NULL;
 
 	CGameObject* collidedObject{ nullptr };
+	bool bMovable{ true };
 
 	void SetMesh(CMesh *pMesh);
 	void SetShader(CShader *pShader);
@@ -288,7 +289,7 @@ public:
 	virtual void PrepareAnimate() { }
 	virtual void Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent=NULL);
 
-	virtual void OnPrepareRender() { }
+	virtual void OnPrepareRender();
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
 
 	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
@@ -328,6 +329,7 @@ public:
 	
 	BoundingOrientedBox& GetOBB();
 	void SetOBB(const BoundingOrientedBox& obb);
+	void SetOBB(const float& posX, const float& posY, const float& posZ);
 public:
 	void LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, CGameObject *pParent, FILE *pInFile, CShader *pShader);
 

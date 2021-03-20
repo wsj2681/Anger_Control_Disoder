@@ -431,17 +431,19 @@ void CGameFramework::BuildObjects()
 	m_pScene = new CScene();
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_pfbxSdkManager, m_pfbxScene);
 
-	CPlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
+	/*CPlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
+	pAirplanePlayer->SetPosition(XMFLOAT3(0.0f, 100.0f, 0.0f));*/
+
+	BoxingPlayer* pAirplanePlayer = new BoxingPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pfbxSdkManager, m_pfbxScene);
 	pAirplanePlayer->SetPosition(XMFLOAT3(0.0f, 10.0f, 0.0f));
 
-	/*BoxingPlayer* pAirplanePlayer = new BoxingPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pfbxSdkManager, m_pfbxScene);
-	pAirplanePlayer->SetPosition(XMFLOAT3(0.0f, 10.0f, 0.0f));*/
-
-	CMesh* m1 = new CCubeMesh(m_pd3dDevice, m_pd3dCommandList, 50.f, 50.f, 30.f, 0.f, 10.f);
-	pAirplanePlayer->SetMesh(m1);
 	m_pScene->m_pPlayer = m_pPlayer = pAirplanePlayer;
+	//m_pScene->m_pPlayer->bMovable = true;
 	m_pCamera = m_pPlayer->GetCamera();
-	//m_pPlayer->GetChild()->SetAnimationStack(22);
+	m_pPlayer->GetChild()->SetAnimationStack(22);
+
+	printf("Player[%p] : %d\n", m_pPlayer, m_pPlayer->bMovable);
+	
 
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -471,10 +473,10 @@ void CGameFramework::ProcessInput()
 	if (!bProcessedByScene)
 	{
 		DWORD dwDirection = 0;
-		if (pKeysBuffer['w'] & 0xF0) dwDirection |= DIR_FORWARD;
-		if (pKeysBuffer['s'] & 0xF0) dwDirection |= DIR_BACKWARD;
-		if (pKeysBuffer['a'] & 0xF0) dwDirection |= DIR_LEFT;
-		if (pKeysBuffer['d'] & 0xF0) dwDirection |= DIR_RIGHT;
+		if (pKeysBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
+		if (pKeysBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
+		if (pKeysBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
+		if (pKeysBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
 
@@ -500,6 +502,10 @@ void CGameFramework::ProcessInput()
 			}
 			if (dwDirection) m_pPlayer->Move(dwDirection, 1.25f, true);
 		}
+		// 중력 적용
+		dwDirection = m_pScene->ApplyGravity();
+		if (dwDirection && m_pPlayer->bMovable) m_pPlayer->Move(dwDirection, 1.25f, true);
+		
 	}
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }

@@ -402,6 +402,12 @@ void CGameObject::Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent)
 		::AnimateFbxNodeHierarchy(m_pfbxScene->GetRootNode(), fbxCurrentTime, obb, m_xmf4x4World);
 		
 	}
+
+	if (m_pMesh)
+	{
+		m_pMesh->GetOBB().Transform(obb, XMLoadFloat4x4(&m_xmf4x4World));
+		XMStoreFloat4(&obb.Orientation, XMQuaternionNormalize(XMLoadFloat4(&obb.Orientation)));
+	}
 }
 
 CGameObject *CGameObject::FindFrame(char *pstrFrameName)
@@ -413,6 +419,11 @@ CGameObject *CGameObject::FindFrame(char *pstrFrameName)
 	if (m_pChild) if (pFrameObject = m_pChild->FindFrame(pstrFrameName)) return(pFrameObject);
 
 	return(NULL);
+}
+
+void CGameObject::OnPrepareRender()
+{
+	
 }
 
 void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
@@ -618,6 +629,10 @@ BoundingOrientedBox& CGameObject::GetOBB()
 void CGameObject::SetOBB(const BoundingOrientedBox& obb)
 {
 	this->obb = obb;
+}
+
+void CGameObject::SetOBB(const float& posX, const float& posY, const float& posZ)
+{
 }
 
 void CGameObject::LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, CGameObject *pParent, FILE *pInFile, CShader *pShader)
