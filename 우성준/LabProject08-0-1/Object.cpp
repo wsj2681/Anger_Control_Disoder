@@ -1031,20 +1031,29 @@ CAngrybotObject::CAngrybotObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/BoxingComplete.fbx");
 		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
 	}
+	cout << "Angrybot Scene Create Ok\n";
 
 	//머터리얼 값 추출 성공 by FbxSceneImport-> displayMaterial
 	for (int i = 0; i < m_pfbxScene->GetGeometryCount(); ++i)
 	{
+		cout << "여기 " << i << endl;
 		FbxGeometry* geometry = m_pfbxScene->GetGeometry(i);
 		FbxNode* node = nullptr;
 		int materialCount = 0;
+		cout << "지오메트리 가져오기 " << i << endl;
 
 		if (geometry)
 		{
 			node = geometry->GetNode();
+			cout << "지오메트리에서 노드 가져오기 " << i << endl;
 			if (node)
 			{
 				materialCount = node->GetMaterialCount();
+				cout << "머터리얼 갯수 가져오기 " << i << endl;
+				m_ppMaterials = new CMaterial * [materialCount];
+				cout << "머터리얼 배열 생성 완료 " << i << endl;
+				for (int t = 0; t < materialCount; ++t) m_ppMaterials[t] = NULL;
+				cout << "Materials = " << materialCount << endl;
 			}
 		}
 
@@ -1056,30 +1065,39 @@ CAngrybotObject::CAngrybotObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 
 			for (int j = 0; j < materialCount; ++j)
 			{
+				CMaterial* mat = new CMaterial();
+				this->SetMaterial(j, mat);
 				FbxSurfaceMaterial* material = node->GetMaterial(j);
 
 				if (material->GetClassId().Is(FbxSurfacePhong::ClassId))
 				{
 					double3 = ((FbxSurfacePhong*)material)->Ambient;
 					XMFLOAT4 ambient = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4AmbientColor = ambient;
 					double3 = ((FbxSurfacePhong*)material)->Diffuse;
 					XMFLOAT4 diffuse = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4AlbedoColor = diffuse;
 					double3 = ((FbxSurfacePhong*)material)->Specular;
 					XMFLOAT4 specular = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4SpecularColor = specular;
 					double3 = ((FbxSurfacePhong*)material)->Emissive;
 					XMFLOAT4 emmisive = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
-
+					mat->m_xmf4EmissiveColor = emmisive;
 				}
 				else if (material->GetClassId().Is(FbxSurfaceLambert::ClassId))
 				{
 					double3 = ((FbxSurfacePhong*)material)->Ambient;
 					XMFLOAT4 ambient = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4AmbientColor = ambient;
 					double3 = ((FbxSurfacePhong*)material)->Diffuse;
 					XMFLOAT4 diffuse = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4AlbedoColor = diffuse;
 					double3 = ((FbxSurfacePhong*)material)->Specular;
 					XMFLOAT4 specular = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4SpecularColor = specular;
 					double3 = ((FbxSurfacePhong*)material)->Emissive;
 					XMFLOAT4 emmisive = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4EmissiveColor = emmisive;
 				}
 
 
@@ -1087,19 +1105,19 @@ CAngrybotObject::CAngrybotObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 		}
 
 	}
+	cout << "Material Import Ok\n";
 
-	for (int i = 0; i < m_pfbxScene->GetTextureCount(); ++i)
-	{
-		FbxTexture* texture = m_pfbxScene->GetTexture(i);
-		FbxFileTexture* fileTexture = FbxCast<FbxFileTexture>(texture);
-		FbxProceduralTexture* proTexture = FbxCast<FbxProceduralTexture>(texture);
-
-		if (fileTexture)
-		{
-			cout << fileTexture->GetFileName();
-		}
-
-	}
+	//TODO : Texture Thinking
+	//for (int i = 0; i < m_pfbxScene->GetTextureCount(); ++i)
+	//{
+	//	FbxTexture* texture = m_pfbxScene->GetTexture(i);
+	//	FbxFileTexture* fileTexture = FbxCast<FbxFileTexture>(texture);
+	//	FbxProceduralTexture* proTexture = FbxCast<FbxProceduralTexture>(texture);
+	//	if (fileTexture)
+	//	{
+	//		cout << fileTexture->GetFileName();
+	//	}
+	//}
 	m_pAnimationController = new CAnimationController(m_pfbxScene);
 }
 

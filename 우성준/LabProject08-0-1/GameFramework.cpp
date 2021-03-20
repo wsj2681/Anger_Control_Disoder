@@ -436,15 +436,17 @@ void CGameFramework::BuildObjects()
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
 	m_pScene = new CScene();
-	BoxingPlayer* pAirplanePlayer = new BoxingPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pfbxSdkManager, m_pfbxScene);
-	
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_pfbxSdkManager, m_pfbxScene);
+	cout << "Scene Build Ok\n";
 
+	BoxingPlayer* pAirplanePlayer = new BoxingPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pfbxSdkManager, m_pfbxScene);
 	pAirplanePlayer->SetPosition(XMFLOAT3(10.0f, 0.0f, 0.0f));
 	m_pScene->m_pPlayer = m_pPlayer = pAirplanePlayer;
 	m_pCamera = m_pPlayer->GetCamera();
 	m_pPlayer->GetChild()->SetAnimationStack(22);
 	m_pPlayer->SetPosition({ 0.f, 0.f, 0.f });
+
+	cout << "Player Build Ok\n";
 
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };

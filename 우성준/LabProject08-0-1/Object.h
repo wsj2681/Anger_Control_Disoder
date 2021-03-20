@@ -406,3 +406,16 @@ public:
 //TODO : UI 시스템
 
 //TODO: 최적화 방법 - 오브젝트를 불러올때 시간 줄이기. 현재 2분 소요됨
+
+	/* TODO
+
+	pfbxScene->GetMaterial();
+	http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html?url=cpp_ref/class_fbx_surface_material.html,topicNumber=cpp_ref_class_fbx_surface_material_html6c782589-a5ab-4f11-b40f-7050c9601e3e
+
+	*/
+	/*
+
+	pfbxScene->GetTexture();
+	http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html?url=cpp_ref/class_fbx_texture.html,topicNumber=cpp_ref_class_fbx_texture_html2e6cab53-4075-4c0d-b74c-db3a8e3b7aec
+
+	*/
