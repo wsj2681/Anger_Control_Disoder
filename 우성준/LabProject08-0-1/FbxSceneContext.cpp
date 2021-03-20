@@ -479,7 +479,7 @@ void CreateMeshFromFbxNodeHierarchy(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 		if (pfbxMesh)
 		{	
 			cout << pfbxNode->GetNameOnly() << " - " << pfbxNode->GetName() <<endl;
-			if(pfbxNode->GetMesh()->GetControlPointsCount())
+			if (pfbxNode->GetMesh()->GetControlPointsCount()) {}
 				// 컨트롤포인트를 알면 그 좌표를 월드변환된 곳에 라이트를 쏘아올린다.
 				// 같은 방법으로 벽에 바운딩박스를 만든다.
 

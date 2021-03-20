@@ -1030,49 +1030,76 @@ CAngrybotObject::CAngrybotObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	{
 		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/BoxingComplete.fbx");
 		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
-		
-		//this->m_nMaterials = 1;
-		//this->m_ppMaterials = new CMaterial*[m_nMaterials];
-		//m_ppMaterials[0]->m_xmf4AlbedoColor = { 1.f, 1.f, 1.f,1.f };
-		//m_ppMaterials[0]->m_xmf4EmissiveColor = { 0.f, 0.f, 0.f, 1.f };
-		//m_ppMaterials[0]->m_fGlossiness = 0.5f;
-
-		//int textureCount = m_pfbxScene->GetTextureCount();
-		//for (int i = 0; i < textureCount; ++i)
-		//{
-		//	string texture = m_pfbxScene->GetTexture(i)->GetName();
-		//}
-
-		////https://m.blog.naver.com/PostView.nhn?blogId=lifeisforu&logNo=80105469431&proxyReferer=https:%2F%2Fwww.google.com%2F
-		////https://twinmotionhelp.epicgames.com/s/question/0D52L0000427oFZ/how-to-apply-material-to-separated-object-in-fbx-file?language=ko
-		//for (int i = 0; i < m_pfbxScene->GetMaterialCount(); ++i)
-		//{
-		//	auto material = m_pfbxScene->GetMaterial(i);
-		//	material->sDiffuse;
-		//	SetMaterial(m_pfbxScene->GetMaterialCount(), nullptr);
-		//	FbxProperty prop;
-		//	//prop.
-		//	FbxSurfacePhong* phong = dynamic_cast<FbxSurfacePhong*>(material);
-		//	//material.get 여기서 Emmisive, Ambiant, Specular, Albedo 값 다 자겨와야함
-		//}
-		//auto texture = m_pfbxScene->GetTEx
 	}
 
-	//CMaterial* material = new CMaterial();
-	//CTexture* texture = new CTexture(7, RESOURCE_TEXTURE2D, 0, 7);
-	//material->SetTexture(texture);
-	//SetMaterial(0, material);
-	//FILE* file = NULL;
-	//fopen_s(&file, "model/textures/Player.tif", "rb");
+	//머터리얼 값 추출 성공 by FbxSceneImport-> displayMaterial
+	for (int i = 0; i < m_pfbxScene->GetGeometryCount(); ++i)
+	{
+		FbxGeometry* geometry = m_pfbxScene->GetGeometry(i);
+		FbxNode* node = nullptr;
+		int materialCount = 0;
 
-	//if (texture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, NULL, file, material->m_pShader, 0))
-	//{
-	//	material->SetMaterialType(MATERIAL_ALBEDO_MAP);
-	//}
-	//material->m_xmf4AlbedoColor = { 1.f, 1.f, 1.f, 1.f };
-	//material->m_fGlossiness = 0.5f;
-	//material->m_xmf4AmbientColor = { 0.f, 0.f, 0.f, 1.f };
+		if (geometry)
+		{
+			node = geometry->GetNode();
+			if (node)
+			{
+				materialCount = node->GetMaterialCount();
+			}
+		}
 
+		if (materialCount > 0)
+		{
+			FbxPropertyT<FbxDouble3> double3;
+			FbxPropertyT<FbxDouble> double1;
+			FbxColor theColor;
+
+			for (int j = 0; j < materialCount; ++j)
+			{
+				FbxSurfaceMaterial* material = node->GetMaterial(j);
+
+				if (material->GetClassId().Is(FbxSurfacePhong::ClassId))
+				{
+					double3 = ((FbxSurfacePhong*)material)->Ambient;
+					XMFLOAT4 ambient = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					double3 = ((FbxSurfacePhong*)material)->Diffuse;
+					XMFLOAT4 diffuse = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					double3 = ((FbxSurfacePhong*)material)->Specular;
+					XMFLOAT4 specular = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					double3 = ((FbxSurfacePhong*)material)->Emissive;
+					XMFLOAT4 emmisive = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+
+				}
+				else if (material->GetClassId().Is(FbxSurfaceLambert::ClassId))
+				{
+					double3 = ((FbxSurfacePhong*)material)->Ambient;
+					XMFLOAT4 ambient = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					double3 = ((FbxSurfacePhong*)material)->Diffuse;
+					XMFLOAT4 diffuse = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					double3 = ((FbxSurfacePhong*)material)->Specular;
+					XMFLOAT4 specular = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					double3 = ((FbxSurfacePhong*)material)->Emissive;
+					XMFLOAT4 emmisive = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+				}
+
+
+			}
+		}
+
+	}
+
+	for (int i = 0; i < m_pfbxScene->GetTextureCount(); ++i)
+	{
+		FbxTexture* texture = m_pfbxScene->GetTexture(i);
+		FbxFileTexture* fileTexture = FbxCast<FbxFileTexture>(texture);
+		FbxProceduralTexture* proTexture = FbxCast<FbxProceduralTexture>(texture);
+
+		if (fileTexture)
+		{
+			cout << fileTexture->GetFileName();
+		}
+
+	}
 	m_pAnimationController = new CAnimationController(m_pfbxScene);
 }
 

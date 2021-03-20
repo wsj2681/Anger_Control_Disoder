@@ -83,11 +83,12 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	//m_ppShaders[0] = pObjectsShader;
 
-	m_nGameObjects = 1;
-	m_ppGameObjects = new CGameObject * [m_nGameObjects];
+	//맵 오브젝트 주석
+	//m_nGameObjects = 1;
+	//m_ppGameObjects = new CGameObject * [m_nGameObjects];
 
-	m_ppGameObjects[0] = new MapObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
-	m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
+	//m_ppGameObjects[0] = new MapObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
+	//m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
 	//m_ppGameObjects[0]->SetAnimationStack(0);
 	
 	
@@ -103,9 +104,9 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 
 	*/
-	m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
-	m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
-	m_ppGameObjects[0]->SetPosition(0.0f, 0.0f, 0.0f);
+	//m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
+	//m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
+	//m_ppGameObjects[0]->SetPosition(0.0f, 0.0f, 0.0f);
 
 	//map = new MapObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
 
