@@ -402,6 +402,17 @@ public:
 	virtual ~MapObject();
 };
 
+class Boxing : public CGameObject
+{
+public:
+	Boxing(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
+	virtual ~Boxing();
+
+public:
+	virtual void OnPrepareAnimate();
+	virtual void Animate(float fTimeElapsed);
+};
+
 //TODO :파티클 시스템 https://copynull.tistory.com/290
 //TODO : UI 시스템
 
