@@ -3,6 +3,9 @@
 #include "stdafx.h"
 #include "Sever.h"
 
+#include "Object.h"
+#include "Player.h"
+
 Sever::Sever()
 {
 	
@@ -28,16 +31,33 @@ Sever::Sever()
 void Sever::Sever_send()
 {
 	//준비완료 보내기
-	retval = send(sock, (char*)"Ready", sizeof("Ready"), 0);
-	cout << "보내기완료" << endl;
-	
+	if (send_count == 0) {
+		retval = send(sock, (char*)"Ready", sizeof("Ready"), 0);
+		cout << "보내기완료" << endl;
+		++send_count;
+	}
+	else {
+		player.player_world = cplayer->m_xmf4x4World;
+
+		retval = send(sock, (char*)&player, sizeof(player), 0);
+
+
+	}
 }
 
 void Sever::Sever_recv()
 {
 	//준비완료 받기
-	retval = recv(sock, (char*)Save_Data, sizeof BUFSIZE, 0);
-	cout << Save_Data <<"받기완료" << endl;
+	if (recv_count == 0) {
+		retval = recv(sock, (char*)Save_Data, sizeof BUFSIZE, 0);
+		cout << Save_Data << "받기완료" << endl;
+		++recv_count;
+	}
+	else {
+	
+	
+	}
+
 
 }
 

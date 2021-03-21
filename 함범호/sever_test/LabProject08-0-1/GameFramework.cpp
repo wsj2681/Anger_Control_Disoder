@@ -405,6 +405,8 @@ void CGameFramework::BuildObjects()
 	/////SERVER///
 	server = new Sever();
 
+	////////////////////////
+
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
 	m_pScene = new CScene();
@@ -416,6 +418,11 @@ void CGameFramework::BuildObjects()
 	m_pCamera = m_pPlayer->GetCamera();
 	m_pPlayer->GetChild()->SetAnimationStack(22);
 	m_pPlayer->SetPosition({ 0.f, 0.f, 0.f });
+
+	/////SERVER///
+	server->cplayer = m_pPlayer;
+
+	////////////////////////
 
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -519,13 +526,16 @@ void CGameFramework::MoveToNextFrame()
 void CGameFramework::FrameAdvance()
 {    
 	
-	
+	/////////////////server////////////////
 	if (i == 0) {
 		server->Sever_send();
 		server->Sever_recv();
 		++i;
 	}
 
+	server->Sever_send();
+
+	///////////////////////////////////////
 	m_GameTimer.Tick(0.0f);
 	
 	ProcessInput();

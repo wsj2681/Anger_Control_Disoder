@@ -95,8 +95,19 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	char buf[2];
 	char GameReady[6];
 	ZeroMemory(&buf, sizeof(buf));
+	
+	Player_world player;
+	
+	
+	
+	
+	
 	getpeername(client_sock, (SOCKADDR*)&client_addr, &client_addr_len);
 
+
+
+
+	////송수신/////////////////////////////////////
 	retval = recv(client_sock, (char*)GameReady, sizeof(GameReady), 0);
 	cout << GameReady << "받기 완료" << endl;
 
@@ -105,6 +116,14 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	char GameOk[7] = "GameOk";
 
 	retval = send(client_sock, (char*)GameOk, sizeof(GameOk), 0);
+	///////////////////////////
+
+	while (true) {
+		retval = recv(client_sock, (char*)&player, sizeof(player), 0);
+		cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
+
+	}
+
 
 	return 0;
 }
