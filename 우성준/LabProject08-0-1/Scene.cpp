@@ -84,14 +84,12 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	//m_ppShaders[0] = pObjectsShader;
 
 	//맵 오브젝트 주석
-	//m_nGameObjects = 1;
-	//m_ppGameObjects = new CGameObject * [m_nGameObjects];
+	m_nGameObjects = 1;
+	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 
-	//m_ppGameObjects[0] = new MapObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
-	//m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
-	//m_ppGameObjects[0]->SetAnimationStack(0);
-	
-	
+	m_ppGameObjects[0] = new TextureObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	m_ppGameObjects[0]->SetPosition(0.f, 0.f, 0.f);
+	m_ppGameObjects[0]->SetScale(100.f, 0.f, 100.f);
 	/* Animation Set Number
 	0. airbone 1. airboneLand 
 	2. Attack01 3. Attack02 4. Attack03 5. Attack04 6. Attack05 7. Attack06 8. Attack07 9. Attack08 10. Attack09 11. Attack10

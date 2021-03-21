@@ -1132,9 +1132,11 @@ CAngrybotObject::CAngrybotObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	//	}
 	//}
 
-	m_ppMaterials[0]->m_pTexture = new CTexture(7, RESOURCE_TEXTURE2D, 0, 7);
+	//pfbxScene->GetRootNode();
 
-	m_ppMaterials[0]->m_pTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Model/Textures/test.dds", RESOURCE_TEXTURE2D, 0);
+	//m_ppMaterials[0]->m_pTexture = new CTexture(7, RESOURCE_TEXTURE2D, 0, 7);
+
+	//m_ppMaterials[0]->m_pTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Model/Textures/test.dds", RESOURCE_TEXTURE2D, 0);
 
 	m_pAnimationController = new CAnimationController(m_pfbxScene);
 }
@@ -1285,4 +1287,35 @@ void Boxing::OnPrepareAnimate()
 void Boxing::Animate(float fTimeElapsed)
 {
 	CGameObject::Animate(fTimeElapsed);
+}
+
+TextureObject::TextureObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+{
+	CTexturedRectMesh* pSkyBoxMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 20.0f, 20.0f, 20.0f);
+	SetMesh(pSkyBoxMesh);
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	CTexture* pSkyBoxTexture = new CTexture(1, RESOURCE_TEXTURE_CUBE, 0, 1);
+	pSkyBoxTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Model/Textures/test1.dds", RESOURCE_TEXTURE2D, 0);
+	//	pSkyBoxTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"SkyBox/SkyBox_1.dds", RESOURCE_TEXTURE_CUBE, 0);
+
+	CStandardShader* pSkyBoxShader = new CStandardShader();
+	pSkyBoxShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	pSkyBoxShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	pSkyBoxShader->CreateCbvSrvDescriptorHeaps(pd3dDevice, 0, 1);
+	pSkyBoxShader->CreateShaderResourceViews(pd3dDevice, pSkyBoxTexture, 0, PARAMETER_SKYBOX_CUBE_TEXTURE);
+	m_nMaterials = 1;
+	this->m_ppMaterials = new CMaterial * [m_nMaterials];
+	m_ppMaterials[0] = NULL;
+	CMaterial* pSkyBoxMaterial = new CMaterial();
+	pSkyBoxMaterial->SetTexture(pSkyBoxTexture);
+	pSkyBoxMaterial->SetShader(pSkyBoxShader);
+
+	SetMaterial(0, pSkyBoxMaterial);
+}
+
+TextureObject::~TextureObject()
+{
 }
