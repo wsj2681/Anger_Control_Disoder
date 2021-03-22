@@ -5,7 +5,40 @@
 #include "stdafx.h"
 #include "GameFramework.h"
 
+
 int i = 0;
+
+CGameFramework::CGameFramework()
+{
+	m_pdxgiFactory = NULL;
+	m_pdxgiSwapChain = NULL;
+	m_pd3dDevice = NULL;
+
+	for (int i = 0; i < m_nSwapChainBuffers; i++) m_ppd3dSwapChainBackBuffers[i] = NULL;
+	m_nSwapChainBufferIndex = 0;
+
+	m_pd3dCommandAllocator = NULL;
+	m_pd3dCommandQueue = NULL;
+	m_pd3dCommandList = NULL;
+
+	m_pd3dRtvDescriptorHeap = NULL;
+	m_pd3dDsvDescriptorHeap = NULL;
+
+	gnRtvDescriptorIncrementSize = 0;
+	gnDsvDescriptorIncrementSize = 0;
+
+	m_hFenceEvent = NULL;
+	m_pd3dFence = NULL;
+	for (int i = 0; i < m_nSwapChainBuffers; i++) m_nFenceValues[i] = 0;
+
+	m_nWndClientWidth = FRAME_BUFFER_WIDTH;
+	m_nWndClientHeight = FRAME_BUFFER_HEIGHT;
+
+	m_pScene = NULL;
+	m_pPlayer = NULL;
+
+	_tcscpy_s(m_pszFrameRate, _T("LabProject ("));
+}
 
 CGameFramework::~CGameFramework()
 {
@@ -351,6 +384,7 @@ LRESULT CALLBACK CGameFramework::OnProcessingWindowMessage(HWND hWnd, UINT nMess
 			OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);
             break;
         case WM_KEYDOWN:
+			OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
         case WM_KEYUP:
 			OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 			break;
@@ -403,14 +437,16 @@ void CGameFramework::BuildObjects()
 	CreateFbxSdkManager();
 
 	/////SERVER///
-	server = new Sever();
+	server = new Server();
 
 	////////////////////////
+
 
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
 	m_pScene = new CScene();
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_pfbxSdkManager, m_pfbxScene);
+	cout << "Scene Build Ok\n";
 
 	BoxingPlayer* pAirplanePlayer = new BoxingPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pfbxSdkManager, m_pfbxScene);
 	pAirplanePlayer->SetPosition(XMFLOAT3(10.0f, 0.0f, 0.0f));
@@ -419,10 +455,11 @@ void CGameFramework::BuildObjects()
 	m_pPlayer->GetChild()->SetAnimationStack(22);
 	m_pPlayer->SetPosition({ 0.f, 0.f, 0.f });
 
-	/////SERVER///
+	////server//////////////
 	server->cplayer = m_pPlayer;
-
-	////////////////////////
+	
+	/// /////////////////////////////
+	cout << "Player Build Ok\n";
 
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -452,10 +489,10 @@ void CGameFramework::ProcessInput()
 	if (!bProcessedByScene)
 	{
 		DWORD dwDirection = 0;
-		if (pKeysBuffer['w'] & 0xF0) dwDirection |= DIR_FORWARD;
-		if (pKeysBuffer['s'] & 0xF0) dwDirection |= DIR_BACKWARD;
-		if (pKeysBuffer['a'] & 0xF0) dwDirection |= DIR_LEFT;
-		if (pKeysBuffer['d'] & 0xF0) dwDirection |= DIR_RIGHT;
+		if (pKeysBuffer[VK_UP] & 0xF0) dwDirection |= DIR_FORWARD;
+		if (pKeysBuffer[VK_DOWN] & 0xF0) dwDirection |= DIR_BACKWARD;
+		if (pKeysBuffer[VK_LEFT] & 0xF0) dwDirection |= DIR_LEFT;
+		if (pKeysBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
 
@@ -525,17 +562,18 @@ void CGameFramework::MoveToNextFrame()
 
 void CGameFramework::FrameAdvance()
 {    
-	
-	/////////////////server////////////////
-	if (i == 0) {
-		server->Sever_send();
-		server->Sever_recv();
-		++i;
-	}
 
-	server->Sever_send();
+	/////////////////server////////////////
+	//if (i == 0) {
+		server->Server_send();
+		server->Server_recv();
+		//++i;
+	//}
+
+	//server->Server_send();
 
 	///////////////////////////////////////
+
 	m_GameTimer.Tick(0.0f);
 	
 	ProcessInput();
@@ -559,7 +597,7 @@ void CGameFramework::FrameAdvance()
 	d3dRtvCPUDescriptorHandle.ptr += (m_nSwapChainBufferIndex * gnRtvDescriptorIncrementSize);
 
 	float pfClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	m_pd3dCommandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, Colors::LightGray, 0, NULL);
+	m_pd3dCommandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, Colors::Gray, 0, NULL);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = m_pd3dDsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
@@ -571,6 +609,7 @@ void CGameFramework::FrameAdvance()
 #ifdef _WITH_PLAYER_TOP
 	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 #endif
+
 	if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;

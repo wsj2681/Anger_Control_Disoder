@@ -60,7 +60,7 @@
     <ClInclude Include="FbxSceneContext.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Sever.h">
+    <ClInclude Include="Server.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,7 +104,7 @@
     <ClCompile Include="FbxSceneContext.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Sever.cpp">
+    <ClCompile Include="Server.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
