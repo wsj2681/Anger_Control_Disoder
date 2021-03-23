@@ -27,6 +27,8 @@ using namespace std;
 #include <fstream>
 #include <vector>
 
+#include <conio.h>
+
 /////direct x 전용 헤더
 #include <d3d12.h>
 #include <dxgi1_4.h>
