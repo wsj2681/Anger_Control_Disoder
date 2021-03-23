@@ -431,17 +431,17 @@ void CGameFramework::BuildObjects()
 	m_pScene = new CScene();
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList, m_pfbxSdkManager, m_pfbxScene);
 
-	/*CPlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
-	pAirplanePlayer->SetPosition(XMFLOAT3(0.0f, 100.0f, 0.0f));*/
+	CPlayer* pAirplanePlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature());
+	pAirplanePlayer->SetPosition(XMFLOAT3(0.0f, 100.0f, 0.0f));
 
-	BoxingPlayer* pAirplanePlayer = new BoxingPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pfbxSdkManager, m_pfbxScene);
-	pAirplanePlayer->SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));
+	/*BoxingPlayer* pAirplanePlayer = new BoxingPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pfbxSdkManager, m_pfbxScene);
+	pAirplanePlayer->SetPosition(XMFLOAT3(0.0f, 0.0f, 0.0f));*/
 
 	m_pScene->m_pPlayer = m_pPlayer = pAirplanePlayer;
-	//m_pScene->m_pPlayer->bMovable = true;
+	// m_pScene->m_pPlayer->bMovable = true;
 	m_pCamera = m_pPlayer->GetCamera();
-	m_pPlayer->GetChild()->SetAnimationStack(22);
-	m_pPlayer->SetPosition(XMFLOAT3(0.f, 10.f, 0.f));
+	// m_pPlayer->GetChild()->SetAnimationStack(22);
+	// m_pPlayer->SetPosition(XMFLOAT3(0.f, 10.f, 0.f));
 	printf("Player[%p] : %d\n", m_pPlayer, m_pPlayer->bMovable);
 	
 
@@ -504,7 +504,7 @@ void CGameFramework::ProcessInput()
 		}
 		// 중력 적용
 		dwDirection = m_pScene->ApplyGravity();
-		if (dwDirection && m_pPlayer->bMovable) m_pPlayer->Move(dwDirection, 1.25f, true);
+		if (dwDirection && m_pPlayer->bMovable) m_pPlayer->Move(dwDirection, 0.0f, true);
 		
 	}
 	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());

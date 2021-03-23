@@ -83,7 +83,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppGameObjects[0] = new CGameObject();
 	m_ppGameObjects[0]->SetMesh(groundMesh);
 	m_ppGameObjects[0]->bMovable = false;
-	m_ppGameObjects[0]->SetPosition(0.f, 0.f, 0.f);
+	m_ppGameObjects[0]->SetPosition(0.f, -100.f, 0.f);
 
 	CObjectsShader* pObjectsShader = new CObjectsShader();
 	pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);

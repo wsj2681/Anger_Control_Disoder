@@ -1,12 +1,14 @@
 //-----------------------------------------------------------------------------
 // File: Scene.h
 //-----------------------------------------------------------------------------
-
 #pragma once
 
 #include "Shader.h"
 #include "Player.h"
 
+//-------------------------------
+// Lights
+//-------------------------------
 #define MAX_LIGHTS			16 
 
 #define POINT_LIGHT			1
@@ -36,7 +38,23 @@ struct LIGHTS
 	XMFLOAT4				m_xmf4GlobalAmbient;
 	int						m_nLights;
 };
+//-------------------------------
 
+//-------------------------------
+// Ground Area
+//-------------------------------
+#define GROUND_X_MIN		-100
+#define GROUND_X_MAX		100
+#define GROUND_Y_MIN		0
+#define GROUND_Y_MAX		100
+#define GROUND_Z_MIN		-100
+#define GROUND_Z_MAX		100
+//-------------------------------
+
+
+//-------------------------------
+// Scene
+//-------------------------------
 class CScene
 {
 public:
