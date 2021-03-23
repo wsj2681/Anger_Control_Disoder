@@ -27,11 +27,11 @@ CScene::~CScene()
 
 void CScene::BuildDefaultLightsAndMaterials()
 {
-	m_nLights = 6;
+	m_nLights = 9;
 	m_pLights = new LIGHT[m_nLights];
 	::ZeroMemory(m_pLights, sizeof(LIGHT) * m_nLights);
 
-	m_xmf4GlobalAmbient = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
+	m_xmf4GlobalAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
 
 	m_pLights[0].m_bEnable = true;
 	m_pLights[0].m_nType = POINT_LIGHT;
@@ -41,6 +41,7 @@ void CScene::BuildDefaultLightsAndMaterials()
 	m_pLights[0].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
 	m_pLights[0].m_xmf3Position = XMFLOAT3(230.0f, 330.0f, 480.0f);
 	m_pLights[0].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
+
 	m_pLights[1].m_bEnable = true;
 	m_pLights[1].m_nType = SPOT_LIGHT;
 	m_pLights[1].m_fRange = 500.0f;
@@ -53,12 +54,14 @@ void CScene::BuildDefaultLightsAndMaterials()
 	m_pLights[1].m_fFalloff = 8.0f;
 	m_pLights[1].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
 	m_pLights[1].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+
 	m_pLights[2].m_bEnable = true;
 	m_pLights[2].m_nType = DIRECTIONAL_LIGHT;
 	m_pLights[2].m_xmf4Ambient = XMFLOAT4(0.3f, 0.3f, 0.3f, 1.0f);
 	m_pLights[2].m_xmf4Diffuse = XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 	m_pLights[2].m_xmf4Specular = XMFLOAT4(0.4f, 0.4f, 0.4f, 0.0f);
 	m_pLights[2].m_xmf3Direction = XMFLOAT3(1.0f, 0.0f, 0.0f);
+
 	m_pLights[3].m_bEnable = true;
 	m_pLights[3].m_nType = SPOT_LIGHT;
 	m_pLights[3].m_fRange = 600.0f;
@@ -71,6 +74,7 @@ void CScene::BuildDefaultLightsAndMaterials()
 	m_pLights[3].m_fFalloff = 8.0f;
 	m_pLights[3].m_fPhi = (float)cos(XMConvertToRadians(90.0f));
 	m_pLights[3].m_fTheta = (float)cos(XMConvertToRadians(30.0f));
+
 	m_pLights[4].m_bEnable = true;
 	m_pLights[4].m_nType = POINT_LIGHT;
 	m_pLights[4].m_fRange = 200.0f;
@@ -95,10 +99,10 @@ void CScene::BuildDefaultLightsAndMaterials()
 	m_pLights[6].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
 	m_pLights[6].m_xmf4Diffuse = XMFLOAT4(1.f, 1.0f, 1.0f, 1.0f);
 	m_pLights[6].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[6].m_xmf3Position = XMFLOAT3(420.0f, 10.f, 750.0f);
+	m_pLights[6].m_xmf3Position = XMFLOAT3(0.0f, 50.f, 0.0f);
 	m_pLights[6].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 
-	m_pLights[7].m_bEnable = true;
+	m_pLights[7].m_bEnable = false;
 	m_pLights[7].m_nType = POINT_LIGHT;
 	m_pLights[7].m_fRange = 1000.0f;
 	m_pLights[7].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
@@ -107,13 +111,14 @@ void CScene::BuildDefaultLightsAndMaterials()
 	m_pLights[7].m_xmf3Position = XMFLOAT3(400.0f, 10.f, 700.0f);
 	m_pLights[7].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 
-	m_pLights[8].m_bEnable = true;
+	m_pLights[8].m_bEnable = false;
 	m_pLights[8].m_nType = POINT_LIGHT;
-	m_pLights[8].m_fRange = 1000.0f;
+	m_pLights[8].m_fRange = 100000.0f;
 	m_pLights[8].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
 	m_pLights[8].m_xmf4Diffuse = XMFLOAT4(1.f, 1.0f, 1.0f, 1.0f);
 	m_pLights[8].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[8].m_xmf3Position = XMFLOAT3(410.0f, 10.f, 735.0f);
+	m_pLights[8].m_xmf3Position = XMFLOAT3(410.0f, 30.f, 735.0f);
+	m_pLights[8].m_xmf3Direction;
 	m_pLights[8].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 }
 
@@ -121,17 +126,18 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 {
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
+
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 0, 76); //SuperCobra(17), Gunship(2), Player:Mi24(1), Angrybot()
 
 	CMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-
+	
+	BuildDefaultLightsAndMaterials();
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
-	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
+	//XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
+	//XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
-	BuildDefaultLightsAndMaterials();
 
 	m_nHierarchicalGameObjects = 1;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
@@ -142,7 +148,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	CAnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, pAnimationCallbackHandler);
 	//m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
-	m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, 0, 735.0f);
+	m_ppHierarchicalGameObjects[0]->SetPosition(0.0f, 0, 0.0f);
 
 	
 	//CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/BoxingComplete.bin", NULL);
@@ -155,14 +161,14 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 		if (pAngrybotModel) delete pAngrybotModel;
 	
 
-	m_nShaders = 1;
+	m_nShaders = 0;
 	m_ppShaders = new CShader*[m_nShaders];
 
 	CEthanObjectsShader *pEthanObjectsShader = new CEthanObjectsShader();
 	CLoadedModelInfo *pEthanModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Ethan.bin", NULL);
 	pEthanObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pEthanModel, m_pTerrain);
 
-	m_ppShaders[0] = pEthanObjectsShader;
+	//m_ppShaders[0] = nullptr;
 
 	if (pEthanModel) delete pEthanModel;
 
