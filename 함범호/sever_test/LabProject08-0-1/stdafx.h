@@ -4,7 +4,8 @@
 //
 
 #pragma once
-#define _WINSOCK_DEPRECATED_NO_WARNINGS 
+
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
 // Windows 헤더 파일:
 #include <windows.h>
@@ -24,12 +25,12 @@
 #include <fstream>
 #include <vector>
 
-
 /////////////SEVER///////////
 #include <winsock2.h>
 #pragma comment(lib, "ws2_32")
 
 /////////////////////////////
+
 using namespace std;
 
 #include <d3d12.h>

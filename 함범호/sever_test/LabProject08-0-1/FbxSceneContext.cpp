@@ -397,43 +397,13 @@ void AnimateFbxNodeHierarchy(FbxNode* pfbxNode, FbxTime& fbxCurrentTime)
 	if (pfbxNodeAttribute && (pfbxNodeAttribute->GetAttributeType() == FbxNodeAttribute::eMesh))
 	{
 		FbxMesh* pfbxMesh = pfbxNode->GetMesh();
-		//cout << pfbxNode->GetName() << endl;
-		if (pfbxNode)
-		{
-			if ((pfbxNode->GetName(), "LFinger02") == 0)
-			{
-				cout <<" 11"<<endl;
-			}
-		}
 		AnimateFbxMesh(pfbxMesh, fbxCurrentTime);
 	}
-	//cout << pfbxNode->GetName() << endl;
+
 	int nChilds = pfbxNode->GetChildCount();
 	for (int i = 0; i < nChilds; i++)
 	{
 		AnimateFbxNodeHierarchy(pfbxNode->GetChild(i), fbxCurrentTime);
-
-
-		//cout << pfbxNode->GetChild(i)->GetName() << endl;
-		//if (strcmp(pfbxNode->GetChild(i)->GetName(), "RHand") == 0)
-		//{
-		//	FbxNodeAttribute* a = pfbxNode->GetChild(i)->GetNodeAttribute();
-		//	if (a && (a->GetAttributeType() == FbxNodeAttribute::eMesh))
-		//	{
-		//		FbxMesh* mesh = pfbxNode->GetChild(i)->GetMesh();
-		//		int nVertices = mesh->GetControlPointsCount();
-		//		FbxVector4* pfbxv4Vertices = new FbxVector4[nVertices];
-		//		::memcpy(pfbxv4Vertices, mesh->GetControlPoints(), nVertices * sizeof(FbxVector4));
-
-		//		for (int i = 0; i < nVertices; ++i)
-		//		{
-		//			cout << pfbxv4Vertices[i].mData[0] << " - "
-		//				<< pfbxv4Vertices[i].mData[1] << " - "
-		//				<< pfbxv4Vertices[i].mData[2] << " - "
-		//				<< pfbxv4Vertices[i].mData[3] << endl;
-		//		}
-		//	}
-		//}
 	}
 }
 
@@ -477,7 +447,12 @@ void CreateMeshFromFbxNodeHierarchy(ID3D12Device *pd3dDevice, ID3D12GraphicsComm
 	{
 		FbxMesh *pfbxMesh = pfbxNode->GetMesh();
 		if (pfbxMesh)
-		{
+		{	
+			cout << pfbxNode->GetNameOnly() << " - " << pfbxNode->GetName() <<endl;
+			//if (pfbxNode->GetMesh()->GetControlPointsCount()) {}
+				// 컨트롤포인트를 알면 그 좌표를 월드변환된 곳에 라이트를 쏘아올린다.
+				// 같은 방법으로 벽에 바운딩박스를 만든다.
+
 			int nVertices = pfbxMesh->GetControlPointsCount();
 
 			int nIndices = 0;
@@ -559,18 +534,6 @@ FbxScene *LoadFbxSceneFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 
 	int nFileFormatMajor, nFileFormatMinor, nFileFormatRevision;
 	pfbxImporter->GetFileVersion(nFileFormatMajor, nFileFormatMinor, nFileFormatRevision);
-	/*
-	
-	pfbxScene->GetMaterial();
-	http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html?url=cpp_ref/class_fbx_surface_material.html,topicNumber=cpp_ref_class_fbx_surface_material_html6c782589-a5ab-4f11-b40f-7050c9601e3e
-
-	*/
-	/*
-	
-	pfbxScene->GetTexture();
-	http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html?url=cpp_ref/class_fbx_texture.html,topicNumber=cpp_ref_class_fbx_texture_html2e6cab53-4075-4c0d-b74c-db3a8e3b7aec
-	
-	*/
 	pfbxScene = FbxScene::Create(pfbxSdkManager, " ");
 	bool bStatus = pfbxImporter->Import(pfbxScene);
 

@@ -21,13 +21,16 @@ void CScene::BuildDefaultLightsAndMaterials()
 
 	m_xmf4GlobalAmbient = XMFLOAT4(0.15f, 0.15f, 0.15f, 1.0f);
 
+	// TODO : 여기서 fbxScene에서 루트노드부터 돌면서 라이트 이름의 노드를 검색하고. 그 노드의 메쉬 컨트롤포인트를 가져와 그곳으로 좌표를 정한다.
+
+
 	m_pLights[0].m_bEnable = true;
 	m_pLights[0].m_nType = POINT_LIGHT;
 	m_pLights[0].m_fRange = 1000.0f;
-	m_pLights[0].m_xmf4Ambient = XMFLOAT4(0.1f, 0.0f, 0.0f, 1.0f);
-	m_pLights[0].m_xmf4Diffuse = XMFLOAT4(0.8f, 0.0f, 0.0f, 1.0f);
+	m_pLights[0].m_xmf4Ambient = XMFLOAT4(0.1f, 1.0f, 1.0f, 1.0f);
+	m_pLights[0].m_xmf4Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	m_pLights[0].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[0].m_xmf3Position = XMFLOAT3(30.0f, 30.0f, 30.0f);
+	m_pLights[0].m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_pLights[0].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_pLights[0].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 	m_pLights[1].m_bEnable = true;
@@ -39,6 +42,7 @@ void CScene::BuildDefaultLightsAndMaterials()
 	m_pLights[1].m_xmf3Position = XMFLOAT3(-50.0f, 20.0f, -5.0f);
 	m_pLights[1].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 1.0f);
 	m_pLights[1].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[1].m_xmf3Direction = ringPosition;
 	m_pLights[1].m_fFalloff = 8.0f;
 	m_pLights[1].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
 	m_pLights[1].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
@@ -79,14 +83,13 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	//m_ppShaders[0] = pObjectsShader;
 
+	//맵 오브젝트 주석
 	m_nGameObjects = 1;
 	m_ppGameObjects = new CGameObject * [m_nGameObjects];
 
-	m_ppGameObjects[0] = new MapObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
-	m_ppGameObjects[0]->SetScale(0.1, 0.1, 0.1);
-	//m_ppGameObjects[0]->SetAnimationStack(0);
-	
-	
+	m_ppGameObjects[0] = new TextureObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	m_ppGameObjects[0]->SetPosition(0.f, 0.f, 0.f);
+	m_ppGameObjects[0]->SetScale(100.f, 0.f, 100.f);
 	/* Animation Set Number
 	0. airbone 1. airboneLand 
 	2. Attack01 3. Attack02 4. Attack03 5. Attack04 6. Attack05 7. Attack06 8. Attack07 9. Attack08 10. Attack09 11. Attack10
@@ -99,9 +102,9 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 
 	*/
-	m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
-	m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
-	m_ppGameObjects[0]->SetPosition(0.0f, 0.0f, 0.0f);
+	//m_ppGameObjects[0]->SetScale(0.5, 0.5, 0.5);
+	//m_ppGameObjects[0]->m_pAnimationController->SetPosition(0, 0.0f);
+	//m_ppGameObjects[0]->SetPosition(0.0f, 0.0f, 0.0f);
 
 	//map = new MapObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pfbxSdkManager, pfbxScene);
 
@@ -384,12 +387,12 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
-		case 'W': m_ppGameObjects[0]->MoveForward(+1.0f); break;
+		/*case 'W': m_ppGameObjects[0]->MoveForward(+1.0f); break;
 		case 'S': m_ppGameObjects[0]->MoveForward(-1.0f); break;
 		case 'A': m_ppGameObjects[0]->MoveStrafe(-1.0f); break;
 		case 'D': m_ppGameObjects[0]->MoveStrafe(+1.0f); break;
 		case 'Q': m_ppGameObjects[0]->MoveUp(+1.0f); break;
-		case 'R': m_ppGameObjects[0]->MoveUp(-1.0f); break;
+		case 'R': m_ppGameObjects[0]->MoveUp(-1.0f); break;*/
 		default:
 			break;
 		}
@@ -412,10 +415,13 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
 	
+	//TODO : 라이트는 링 위를 바라보아야 한다.
 	if (m_pLights)
 	{
 		m_pLights[1].m_xmf3Position = m_pPlayer->GetPosition();
+		m_pLights[1].m_xmf3Position.z += 10.f;
 		m_pLights[1].m_xmf3Direction = m_pPlayer->GetLookVector();
+		m_pLights[1].m_xmf3Direction.z += 1.f;
 	}
 }
 

@@ -477,7 +477,7 @@ void CGameObject::ReleaseUploadBuffers()
 	if (m_pChild) m_pChild->ReleaseUploadBuffers();
 }
 
-void CGameObject::UpdateTransform(XMFLOAT4X4 *pxmf4x4Parent)
+void CGameObject::UpdateTransform (XMFLOAT4X4 *pxmf4x4Parent)
 {
 	m_xmf4x4World = (pxmf4x4Parent) ? Matrix4x4::Multiply(m_xmf4x4Transform, *pxmf4x4Parent) : m_xmf4x4Transform;
 
@@ -718,9 +718,9 @@ CGameObject *CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, I
 
 	int nFrame = 0, nTextures = 0;
 
-	CGameObject *pGameObject = NULL;
+	CGameObject* pGameObject = NULL;
 
-	for ( ; ; )
+	for (; ; )
 	{
 		nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pInFile);
 		nReads = (UINT)::fread(pstrToken, sizeof(char), nStrLength, pInFile);
@@ -752,9 +752,22 @@ CGameObject *CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, I
 		}
 		else if (!strcmp(pstrToken, "<Mesh>:"))
 		{
-			CStandardMesh *pMesh = new CStandardMesh(pd3dDevice, pd3dCommandList);
+			CStandardMesh* pMesh = new CStandardMesh(pd3dDevice, pd3dCommandList);
 			pMesh->LoadMeshFromFile(pd3dDevice, pd3dCommandList, pInFile);
 			pGameObject->SetMesh(pMesh);
+		}
+		else if (!strcmp(pstrToken, "<SkinningInfo>:"))
+		{
+			CSkinnedMesh* pSkinnedMesh = new CSkinnedMesh(pd3dDevice, pd3dCommandList);
+			pSkinnedMesh->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+			pSkinnedMesh->LoadSkinInfoFromFile(pd3dDevice, pd3dCommandList, pInFile);
+
+			nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pInFile);
+			nReads = (UINT)::fread(pstrToken, sizeof(char), nStrLength, pInFile); //<Mesh>:
+			pSkinnedMesh->LoadMeshFromFile(pd3dDevice, pd3dCommandList, pInFile);
+
+			pGameObject->SetMesh(pSkinnedMesh);
 		}
 		else if (!strcmp(pstrToken, "<Materials>:"))
 		{
@@ -768,11 +781,11 @@ CGameObject *CGameObject::LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, I
 			{
 				for (int i = 0; i < nChilds; i++)
 				{
-					CGameObject *pChild = CGameObject::LoadFrameHierarchyFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, pGameObject, pInFile, pShader);
+					CGameObject* pChild = CGameObject::LoadFrameHierarchyFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, pGameObject, pInFile, pShader);
 					if (pChild) pGameObject->SetChild(pChild);
 #ifdef _WITH_DEBUG_FRAME_HIERARCHY
 					TCHAR pstrDebug[256] = { 0 };
-					_stprintf_s(pstrDebug, 256, _T("(Frame: %p) (Parent: %p)\n"), pChild, pGameObject);
+					_stprintf_s(pstrDebug, 256, "(Frame: %p) (Parent: %p)\n"), pChild, pGameObject);
 					OutputDebugString(pstrDebug);
 #endif
 				}
@@ -1030,21 +1043,101 @@ CAngrybotObject::CAngrybotObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	{
 		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/BoxingComplete.fbx");
 		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
-		
-		//https://m.blog.naver.com/PostView.nhn?blogId=lifeisforu&logNo=80105469431&proxyReferer=https:%2F%2Fwww.google.com%2F
-		//https://twinmotionhelp.epicgames.com/s/question/0D52L0000427oFZ/how-to-apply-material-to-separated-object-in-fbx-file?language=ko
-		//for (int i = 0; i < m_pfbxScene->GetMaterialCount(); ++i)
-		//{
-		//	auto material = m_pfbxScene->GetMaterial(i);
-		//	material->sDiffuse;
-		//	SetMaterial(m_pfbxScene->GetMaterialCount(), nullptr);
-		//	FbxProperty prop;
-		//	//prop.
-		//	FbxSurfacePhong* phong = dynamic_cast<FbxSurfacePhong*>(material);
-		//	//material.get 여기서 Emmisive, Ambiant, Specular, Albedo 값 다 자겨와야함
-		//}
-		////auto texture = m_pfbxScene->GetTEx
 	}
+	cout << "Angrybot Scene Create Ok\n";
+
+	//머터리얼 값 추출 성공 by FbxSceneImport-> displayMaterial
+	for (int i = 0; i < m_pfbxScene->GetGeometryCount(); ++i)
+	{
+		cout << "여기 " << i << endl;
+		FbxGeometry* geometry = m_pfbxScene->GetGeometry(i);
+		FbxNode* node = nullptr;
+		int materialCount = 0;
+		cout << "지오메트리 가져오기 " << i << endl;
+
+		if (geometry)
+		{
+			node = geometry->GetNode();
+			cout << "지오메트리에서 노드 가져오기 " << i << endl;
+			if (node)
+			{
+				materialCount = node->GetMaterialCount();
+				cout << "머터리얼 갯수 가져오기 " << i << endl;
+				m_ppMaterials = new CMaterial * [materialCount];
+				cout << "머터리얼 배열 생성 완료 " << i << endl;
+				for (int t = 0; t < materialCount; ++t) m_ppMaterials[t] = NULL;
+				cout << "Materials = " << materialCount << endl;
+			}
+		}
+
+		if (materialCount > 0)
+		{
+			FbxPropertyT<FbxDouble3> double3;
+			FbxPropertyT<FbxDouble> double1;
+			FbxColor theColor;
+
+			for (int j = 0; j < materialCount; ++j)
+			{
+				CMaterial* mat = new CMaterial();
+				this->SetMaterial(j, mat);
+				FbxSurfaceMaterial* material = node->GetMaterial(j);
+
+				if (material->GetClassId().Is(FbxSurfacePhong::ClassId))
+				{
+					double3 = ((FbxSurfacePhong*)material)->Ambient;
+					XMFLOAT4 ambient = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4AmbientColor = ambient;
+					double3 = ((FbxSurfacePhong*)material)->Diffuse;
+					XMFLOAT4 diffuse = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4AlbedoColor = diffuse;
+					double3 = ((FbxSurfacePhong*)material)->Specular;
+					XMFLOAT4 specular = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4SpecularColor = specular;
+					double3 = ((FbxSurfacePhong*)material)->Emissive;
+					XMFLOAT4 emmisive = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4EmissiveColor = emmisive;
+				}
+				else if (material->GetClassId().Is(FbxSurfaceLambert::ClassId))
+				{
+					double3 = ((FbxSurfacePhong*)material)->Ambient;
+					XMFLOAT4 ambient = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4AmbientColor = ambient;
+					double3 = ((FbxSurfacePhong*)material)->Diffuse;
+					XMFLOAT4 diffuse = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4AlbedoColor = diffuse;
+					double3 = ((FbxSurfacePhong*)material)->Specular;
+					XMFLOAT4 specular = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4SpecularColor = specular;
+					double3 = ((FbxSurfacePhong*)material)->Emissive;
+					XMFLOAT4 emmisive = { (float)double3.Get()[0], (float)double3.Get()[1], (float)double3.Get()[2], 1.f };
+					mat->m_xmf4EmissiveColor = emmisive;
+				}
+
+
+			}
+		}
+
+	}
+	cout << "Material Import Ok\n";
+
+	//TODO : Texture Thinking
+	//for (int i = 0; i < m_pfbxScene->GetTextureCount(); ++i)
+	//{
+	//	FbxTexture* texture = m_pfbxScene->GetTexture(i);
+	//	FbxFileTexture* fileTexture = FbxCast<FbxFileTexture>(texture);
+	//	FbxProceduralTexture* proTexture = FbxCast<FbxProceduralTexture>(texture);
+	//	if (fileTexture)
+	//	{
+	//		cout << fileTexture->GetFileName();
+	//	}
+	//}
+
+	//pfbxScene->GetRootNode();
+
+	//m_ppMaterials[0]->m_pTexture = new CTexture(7, RESOURCE_TEXTURE2D, 0, 7);
+
+	//m_ppMaterials[0]->m_pTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Model/Textures/test.dds", RESOURCE_TEXTURE2D, 0);
+
 	m_pAnimationController = new CAnimationController(m_pfbxScene);
 }
 
@@ -1162,14 +1255,67 @@ void CAnimationSet::SetCallbackKey(int nKeyIndex, float fKeyTime, void* pData)
 MapObject::MapObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene)
 {
 	m_pfbxScene = pfbxScene;
+
+	
+
 	if (!m_pfbxScene)
 	{
-		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/boxingring.fbx");
+		m_pfbxScene = ::LoadFbxSceneFromFile(pd3dDevice, pd3dCommandList, pfbxSdkManager, "Model/Arena.fbx");
 		::CreateMeshFromFbxNodeHierarchy(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, m_pfbxScene->GetRootNode());
+		
+
 	}
 	m_pAnimationController = new CAnimationController(m_pfbxScene);
 }
 
 MapObject::~MapObject()
+{
+}
+
+Boxing::Boxing(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+{
+}
+
+Boxing::~Boxing()
+{
+}
+
+void Boxing::OnPrepareAnimate()
+{
+}
+
+void Boxing::Animate(float fTimeElapsed)
+{
+	CGameObject::Animate(fTimeElapsed);
+}
+
+TextureObject::TextureObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+{
+	CTexturedRectMesh* pSkyBoxMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList, 20.0f, 20.0f, 20.0f);
+	SetMesh(pSkyBoxMesh);
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	CTexture* pSkyBoxTexture = new CTexture(1, RESOURCE_TEXTURE_CUBE, 0, 1);
+	pSkyBoxTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"Model/Textures/test1.dds", RESOURCE_TEXTURE2D, 0);
+	//	pSkyBoxTexture->LoadTextureFromDDSFile(pd3dDevice, pd3dCommandList, L"SkyBox/SkyBox_1.dds", RESOURCE_TEXTURE_CUBE, 0);
+
+	CStandardShader* pSkyBoxShader = new CStandardShader();
+	pSkyBoxShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	pSkyBoxShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	pSkyBoxShader->CreateCbvSrvDescriptorHeaps(pd3dDevice, 0, 1);
+	pSkyBoxShader->CreateShaderResourceViews(pd3dDevice, pSkyBoxTexture, 0, PARAMETER_SKYBOX_CUBE_TEXTURE);
+	m_nMaterials = 1;
+	this->m_ppMaterials = new CMaterial * [m_nMaterials];
+	m_ppMaterials[0] = NULL;
+	CMaterial* pSkyBoxMaterial = new CMaterial();
+	pSkyBoxMaterial->SetTexture(pSkyBoxTexture);
+	pSkyBoxMaterial->SetShader(pSkyBoxShader);
+
+	SetMaterial(0, pSkyBoxMaterial);
+}
+
+TextureObject::~TextureObject()
 {
 }

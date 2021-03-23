@@ -1,16 +1,9 @@
 ﻿// LabProject08-0-1.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
-
-
 #include "stdafx.h"
 #include "LabProject08-0-1.h"
 #include "GameFramework.h"
-
-//sever
-#include "Sever.h"
-
-
 #if defined(DEBUG) | defined(_DEBUG)
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
 #endif
@@ -27,10 +20,6 @@ BOOL InitInstance(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
 
-///////////////SEVER///////////////////////////
-SOCKET sock;
-
-
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
 	UNREFERENCED_PARAMETER(hPrevInstance);
@@ -46,9 +35,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	if (!InitInstance(hInstance, nCmdShow)) return(FALSE);
 
 	hAccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT0801));
-
-	
-
 
 	while (1)
 	{

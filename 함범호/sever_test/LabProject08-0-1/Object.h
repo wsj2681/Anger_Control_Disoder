@@ -377,6 +377,13 @@ public:
 	virtual void Animate(float fTimeElapsed, XMFLOAT4X4 *pxmf4x4Parent = NULL);
 };
 
+class TextureObject : public CGameObject
+{
+public:
+	TextureObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
+	virtual ~TextureObject();
+};
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 class CSkyBox : public CGameObject
@@ -401,3 +408,32 @@ public:
 	MapObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, FbxManager* pfbxSdkManager, FbxScene* pfbxScene);
 	virtual ~MapObject();
 };
+
+class Boxing : public CGameObject
+{
+public:
+	Boxing(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
+	virtual ~Boxing();
+
+public:
+	virtual void OnPrepareAnimate();
+	virtual void Animate(float fTimeElapsed);
+};
+
+//TODO :파티클 시스템 https://copynull.tistory.com/290
+//TODO : UI 시스템
+
+//TODO: 최적화 방법 - 오브젝트를 불러올때 시간 줄이기. 현재 2분 소요됨
+
+	/* TODO
+
+	pfbxScene->GetMaterial();
+	http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html?url=cpp_ref/class_fbx_surface_material.html,topicNumber=cpp_ref_class_fbx_surface_material_html6c782589-a5ab-4f11-b40f-7050c9601e3e
+
+	*/
+	/*
+
+	pfbxScene->GetTexture();
+	http://docs.autodesk.com/FBX/2014/ENU/FBX-SDK-Documentation/index.html?url=cpp_ref/class_fbx_texture.html,topicNumber=cpp_ref_class_fbx_texture_html2e6cab53-4075-4c0d-b74c-db3a8e3b7aec
+
+	*/

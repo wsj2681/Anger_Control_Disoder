@@ -122,6 +122,15 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		retval = recv(client_sock, (char*)&player, sizeof(player), 0);
 		cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
 
+		player.player_world._41 += 0.1f;
+		player.player_world._42 += 0.1f;
+		player.player_world._43 += 0.1f;
+
+		//값보내기
+		retval = send(client_sock, (char*)&player, sizeof(player), 0);
+		cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
+
+
 	}
 
 
