@@ -81,12 +81,12 @@ void CScene::BuildDefaultLightsAndMaterials()
 	m_pLights[4].m_xmf4Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 	m_pLights[4].m_xmf4Diffuse = XMFLOAT4(0.8f, 0.3f, 0.3f, 1.0f);
 	m_pLights[4].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[4].m_xmf3Position = XMFLOAT3(600.0f, 250.0f, 700.0f);
+	m_pLights[4].m_xmf3Position = XMFLOAT3(0.0f, 300.0f, 0.0f);
 	m_pLights[4].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 
 	m_pLights[5].m_bEnable = true;
 	m_pLights[5].m_nType = POINT_LIGHT;
-	m_pLights[5].m_fRange = 1000.0f;
+	m_pLights[5].m_fRange = 100000.0f;
 	m_pLights[5].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
 	m_pLights[5].m_xmf4Diffuse = XMFLOAT4(1.f, 1.0f, 1.0f, 1.0f);
 	m_pLights[5].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
@@ -95,23 +95,23 @@ void CScene::BuildDefaultLightsAndMaterials()
 
 	m_pLights[6].m_bEnable = true;
 	m_pLights[6].m_nType = POINT_LIGHT;
-	m_pLights[6].m_fRange = 1000.0f;
+	m_pLights[6].m_fRange = 100000.0f;
 	m_pLights[6].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
 	m_pLights[6].m_xmf4Diffuse = XMFLOAT4(1.f, 1.0f, 1.0f, 1.0f);
 	m_pLights[6].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[6].m_xmf3Position = XMFLOAT3(0.0f, 50.f, 0.0f);
+	m_pLights[6].m_xmf3Position = XMFLOAT3(250.0f, 50.f, 440.0f);
 	m_pLights[6].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 
-	m_pLights[7].m_bEnable = false;
+	m_pLights[7].m_bEnable = true;
 	m_pLights[7].m_nType = POINT_LIGHT;
-	m_pLights[7].m_fRange = 1000.0f;
+	m_pLights[7].m_fRange = 100000.0f;
 	m_pLights[7].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
 	m_pLights[7].m_xmf4Diffuse = XMFLOAT4(1.f, 1.0f, 1.0f, 1.0f);
 	m_pLights[7].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[7].m_xmf3Position = XMFLOAT3(400.0f, 10.f, 700.0f);
+	m_pLights[7].m_xmf3Position = XMFLOAT3(-270.0f, 250.f, 340.0f);
 	m_pLights[7].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 
-	m_pLights[8].m_bEnable = false;
+	m_pLights[8].m_bEnable = true;
 	m_pLights[8].m_nType = POINT_LIGHT;
 	m_pLights[8].m_fRange = 100000.0f;
 	m_pLights[8].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
@@ -142,7 +142,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_nHierarchicalGameObjects = 1;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
 
-	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena.bin", NULL);
+	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
 	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	CAnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
