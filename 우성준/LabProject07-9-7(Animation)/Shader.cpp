@@ -594,7 +594,7 @@ void CEthanObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsC
 			m_ppObjects[nObjects]->m_pSkinnedAnimationController->SetTrackSpeed(0, ((nObjects % 4) + 1) * 0.25f);
 			m_ppObjects[nObjects]->m_pSkinnedAnimationController->SetTrackPosition(0, (nObjects % 10) * 0.35f);
 			XMFLOAT3 xmf3Position = XMFLOAT3(fxPitch*x + 290.0f, 0.0f, 750.0f + fzPitch * z);
-			xmf3Position.y = pTerrain->GetHeight(xmf3Position.x, xmf3Position.z);
+			xmf3Position.y = 0;//pTerrain->GetHeight(xmf3Position.x, xmf3Position.z);
 			m_ppObjects[nObjects++]->SetPosition(xmf3Position);
 		}
     }

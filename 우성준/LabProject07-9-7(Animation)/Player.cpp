@@ -143,7 +143,7 @@ void CPlayer::Rotate(float x, float y, float z)
 
 void CPlayer::Update(float fTimeElapsed)
 {
-	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, m_xmf3Gravity);
+	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, XMFLOAT3());
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
 	float fMaxVelocityXZ = m_fMaxVelocityXZ;
 	if (fLength > m_fMaxVelocityXZ)
@@ -169,7 +169,7 @@ void CPlayer::Update(float fTimeElapsed)
 	fLength = Vector3::Length(m_xmf3Velocity);
 	float fDeceleration = (m_fFriction * fTimeElapsed);
 	if (fDeceleration > fLength) fDeceleration = fLength;
-	m_xmf3Velocity = Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
+	m_xmf3Velocity = XMFLOAT3();//Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
 }
 
 CCamera *CPlayer::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
@@ -357,7 +357,8 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	SetChild(pAngrybotModel->m_pModelRootObject, true);
 
 	m_pSkinnedAnimationController = new CAnimationController(pd3dDevice, pd3dCommandList, 1, pAngrybotModel);
-	m_pSkinnedAnimationController->SetTrackAnimationSet(0, 9);
+
+	m_pSkinnedAnimationController->SetTrackAnimationSet(0, 5);
 
 	//m_pSkinnedAnimationController->SetCallbackKeys(1, 2);
 #ifdef _WITH_SOUND_RESOURCE
@@ -378,7 +379,7 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	SetCameraUpdatedContext(pContext);
 
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
-	SetPosition(XMFLOAT3(310.0f, pTerrain->GetHeight(310.0f, 590.0f), 590.0f));
+	SetPosition(XMFLOAT3(310.0f, 0/*pTerrain->GetHeight(310.0f, 590.0f)*/, 590.0f));
 
 	if (pAngrybotModel) delete pAngrybotModel;
 }
@@ -463,7 +464,7 @@ void CTerrainPlayer::OnCameraUpdateCallback(float fTimeElapsed)
 	XMFLOAT3 xmf3CameraPosition = m_pCamera->GetPosition();
 	int z = (int)(xmf3CameraPosition.z / xmf3Scale.z);
 	bool bReverseQuad = ((z % 2) != 0);
-	float fHeight = pTerrain->GetHeight(xmf3CameraPosition.x, xmf3CameraPosition.z, bReverseQuad) + 5.0f;
+	float fHeight = 0; //pTerrain->GetHeight(xmf3CameraPosition.x, xmf3CameraPosition.z, bReverseQuad) + 5.0f;
 	if (xmf3CameraPosition.y <= fHeight)
 	{
 		xmf3CameraPosition.y = fHeight;
@@ -479,7 +480,7 @@ void CTerrainPlayer::OnCameraUpdateCallback(float fTimeElapsed)
 void CTerrainPlayer::Update(float fTimeElapsed)
 {
 	CPlayer::Update(fTimeElapsed);
-
+	// TODO : 애니메이션 셋 할때 이쪽으로 와서 한다. 
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
-	SetTrackAnimationSet(0, ::IsZero(fLength) ? 0 : 1);
+	SetTrackAnimationSet(0, ::IsZero(fLength) ? 0 : 4);
 }

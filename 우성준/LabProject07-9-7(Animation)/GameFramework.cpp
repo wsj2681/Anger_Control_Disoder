@@ -404,7 +404,7 @@ void CGameFramework::BuildObjects()
 
 #ifdef _WITH_TERRAIN_PLAYER
 	CTerrainPlayer *pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->m_pTerrain);
-	pPlayer->SetScale(XMFLOAT3(10.f, 10.f, 10.f ));
+	//pPlayer->SetScale(XMFLOAT3(10.f, 10.f, 10.f ));
 #else
 	CAirplanePlayer *pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), NULL);
 	pPlayer->SetPosition(XMFLOAT3(425.0f, 240.0f, 640.0f));
@@ -447,6 +447,8 @@ void CGameFramework::ProcessInput()
 		if (pKeysBuffer[VK_RIGHT] & 0xF0) dwDirection |= DIR_RIGHT;
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
+		if (pKeysBuffer['A'] & 0xF0)
+			dwDirection |= 0x00;
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;

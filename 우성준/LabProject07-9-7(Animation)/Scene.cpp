@@ -82,12 +82,39 @@ void CScene::BuildDefaultLightsAndMaterials()
 
 	m_pLights[5].m_bEnable = true;
 	m_pLights[5].m_nType = POINT_LIGHT;
-	m_pLights[5].m_fRange = 200.0f;
-	m_pLights[5].m_xmf4Ambient = XMFLOAT4(1.f, 0.2f, 0.2f, 1.0f);
-	m_pLights[5].m_xmf4Diffuse = XMFLOAT4(0.8f, 0.3f, 0.3f, 1.0f);
+	m_pLights[5].m_fRange = 1000.0f;
+	m_pLights[5].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
+	m_pLights[5].m_xmf4Diffuse = XMFLOAT4(1.f, 1.0f, 1.0f, 1.0f);
 	m_pLights[5].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[5].m_xmf3Position = XMFLOAT3(310.0f, 226.0f, 590.0f);
+	m_pLights[5].m_xmf3Position = XMFLOAT3(410.0f, 10.f, 735.0f);
 	m_pLights[5].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
+
+	m_pLights[6].m_bEnable = true;
+	m_pLights[6].m_nType = POINT_LIGHT;
+	m_pLights[6].m_fRange = 1000.0f;
+	m_pLights[6].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
+	m_pLights[6].m_xmf4Diffuse = XMFLOAT4(1.f, 1.0f, 1.0f, 1.0f);
+	m_pLights[6].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
+	m_pLights[6].m_xmf3Position = XMFLOAT3(420.0f, 10.f, 750.0f);
+	m_pLights[6].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
+
+	m_pLights[7].m_bEnable = true;
+	m_pLights[7].m_nType = POINT_LIGHT;
+	m_pLights[7].m_fRange = 1000.0f;
+	m_pLights[7].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
+	m_pLights[7].m_xmf4Diffuse = XMFLOAT4(1.f, 1.0f, 1.0f, 1.0f);
+	m_pLights[7].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
+	m_pLights[7].m_xmf3Position = XMFLOAT3(400.0f, 10.f, 700.0f);
+	m_pLights[7].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
+
+	m_pLights[8].m_bEnable = true;
+	m_pLights[8].m_nType = POINT_LIGHT;
+	m_pLights[8].m_fRange = 1000.0f;
+	m_pLights[8].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
+	m_pLights[8].m_xmf4Diffuse = XMFLOAT4(1.f, 1.0f, 1.0f, 1.0f);
+	m_pLights[8].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
+	m_pLights[8].m_xmf3Position = XMFLOAT3(410.0f, 10.f, 735.0f);
+	m_pLights[8].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 }
 
 void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
@@ -98,34 +125,35 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 
 	CMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	BuildDefaultLightsAndMaterials();
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
-	m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
+	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
+	BuildDefaultLightsAndMaterials();
 
 	m_nHierarchicalGameObjects = 1;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
 
-	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/BoxingComplete.bin", NULL);
+	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena.bin", NULL);
 	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
-	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 9);
+	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	CAnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
-	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(2, pAnimationCallbackHandler);
-	m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
-	m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
-	if (pAngrybotModel) delete pAngrybotModel;
+	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, pAnimationCallbackHandler);
+	//m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
+	m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, 0, 735.0f);
 
-	{
-		m_nGameObjects = 1;
-		m_ppGameObjects = new CGameObject * [m_nGameObjects];
-		CLoadedModelInfo* sandbag = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/circle.bin", NULL);
-		m_ppGameObjects[0] = new SandBag(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, sandbag, NULL);
-		m_ppGameObjects[0]->SetPosition(405.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
-		m_ppGameObjects[0]->SetScale(10.f, 10.f, 10.f);
-	}
+	
+	//CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/BoxingComplete.bin", NULL);
+	//m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
+	//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	//CAnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
+	//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(2, pAnimationCallbackHandler);
+	////m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
+	//m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
+		if (pAngrybotModel) delete pAngrybotModel;
+	
 
 	m_nShaders = 1;
 	m_ppShaders = new CShader*[m_nShaders];
@@ -525,13 +553,13 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		case VK_RETURN:
 			break;
 		case '1':
-			m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
+			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
 			break;
 		case '2':
-			m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
+			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
 			break;
 		case '3':
-			m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 3);
+			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 3);
 			break;
 		case VK_F9:
 			break;
@@ -589,7 +617,7 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 		{
 			m_ppHierarchicalGameObjects[i]->Animate(m_fElapsedTime);
 			
-			m_ppHierarchicalGameObjects[i]->SetTrackAnimationSet(0, 9);
+			m_ppHierarchicalGameObjects[i]->SetTrackAnimationSet(0, 0);
 			if (!m_ppHierarchicalGameObjects[i]->m_pSkinnedAnimationController) m_ppHierarchicalGameObjects[i]->UpdateTransform(NULL);
 			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
 		}
