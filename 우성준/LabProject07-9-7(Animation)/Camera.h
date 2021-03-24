@@ -44,6 +44,8 @@ protected:
 	ID3D12Resource					*m_pd3dcbCamera = NULL;
 	VS_CB_CAMERA_INFO				*m_pcbMappedCamera = NULL;
 
+	
+
 public:
 	CCamera();
 	CCamera(CCamera *pCamera);
