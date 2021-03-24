@@ -156,7 +156,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	//XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
 
-	m_nHierarchicalGameObjects = 3;
+	m_nHierarchicalGameObjects = 4;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
 
 	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
@@ -183,6 +183,13 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[2]->SetScale(texScale.x, texScale.y, texScale.z);
 	m_ppHierarchicalGameObjects[2]->SetPosition(0.0f, 12.f, 30.0f);
 
+	CLoadedModelInfo* red = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/hp.bin", NULL);
+	m_ppHierarchicalGameObjects[3] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, red, 1);
+	m_ppHierarchicalGameObjects[3]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	CAnimationCallbackHandler* redAnimation = new CSoundCallbackHandler();
+	m_ppHierarchicalGameObjects[3]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, redAnimation);
+	m_ppHierarchicalGameObjects[3]->SetScale(texScale.x, texScale.y, texScale.z);
+	m_ppHierarchicalGameObjects[3]->SetPosition(0.0f, 12.f, -30.0f);
 
 	//조명 벡터 만들었다.
 	lightsCount = 38;

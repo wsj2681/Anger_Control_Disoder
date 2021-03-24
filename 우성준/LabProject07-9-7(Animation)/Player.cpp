@@ -351,10 +351,15 @@ void CSoundCallbackHandler::HandleCallback(void *pCallbackData)
 
 CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext)
 {
-	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
 	CLoadedModelInfo *pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/boxingComplete.bin", NULL);
 	SetChild(pAngrybotModel->m_pModelRootObject, true);
+
+	this->head = FindFrame("Head");
+	this->rHand = FindFrame("RHand");
+	this->lHand = FindFrame("LHand");
+
+	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
 	m_pSkinnedAnimationController = new CAnimationController(pd3dDevice, pd3dCommandList, 1, pAngrybotModel);
 
@@ -381,9 +386,7 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
 	SetPosition(XMFLOAT3(0.f, 10.f/*pTerrain->GetHeight(310.0f, 590.0f)*/, 0.0f));
 
-	this->head = FindFrame("Head");
-	this->rHand = FindFrame("RHand");
-	this->lHand = FindFrame("LHand");
+
 	if (pAngrybotModel) delete pAngrybotModel;
 }
 
@@ -428,7 +431,8 @@ CCamera *CTerrainPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityY(400.0f);
 			m_pCamera = OnChangeCamera(THIRD_PERSON_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.25f);
-			m_pCamera->SetOffset(XMFLOAT3(0.0f, 25.0f, -50.0f));
+			
+			m_pCamera->SetOffset(XMFLOAT3(5.0f, 20.0f, -30.0f));
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
@@ -436,7 +440,7 @@ CCamera *CTerrainPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 		default:
 			break;
 	}
-	m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, m_pCamera->GetOffset()));
+	m_pCamera->SetPosition(Vector3::Add(head->GetPosition(), m_pCamera->GetOffset()));
 	Update(fTimeElapsed);
 
 	return(m_pCamera);
@@ -475,7 +479,7 @@ void CTerrainPlayer::OnCameraUpdateCallback(float fTimeElapsed)
 		if (m_pCamera->GetMode() == THIRD_PERSON_CAMERA)
 		{
 			CThirdPersonCamera *p3rdPersonCamera = (CThirdPersonCamera *)m_pCamera;
-			p3rdPersonCamera->SetLookAt(GetPosition());
+			p3rdPersonCamera->SetLookAt(head->GetPosition()); //머리 바라보기
 		}
 	}
 }
