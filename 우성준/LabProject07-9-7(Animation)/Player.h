@@ -35,6 +35,8 @@ protected:
 
 	CCamera						*m_pCamera = NULL;
 
+	
+
 public:
 	CPlayer();
 	virtual ~CPlayer();
@@ -83,6 +85,13 @@ public:
 	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed) { return(NULL); }
 	virtual void OnPrepareRender();
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera = NULL);
+
+
+public:
+
+	CGameObject* head = NULL;
+	CGameObject* rHand = NULL;
+	CGameObject* lHand = NULL;
 };
 
 class CAirplanePlayer : public CPlayer
@@ -125,7 +134,7 @@ public:
 	virtual void OnPlayerUpdateCallback(float fTimeElapsed);
 	virtual void OnCameraUpdateCallback(float fTimeElapsed);
 
-	CGameObject* head = NULL;
+	
 
 	virtual void Update(float fTimeElapsed);
 };

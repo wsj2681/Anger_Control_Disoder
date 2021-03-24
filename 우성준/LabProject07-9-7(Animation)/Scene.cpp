@@ -156,7 +156,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	//XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
 
-	m_nHierarchicalGameObjects = 1;
+	m_nHierarchicalGameObjects = 2;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
 
 	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
@@ -166,6 +166,14 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, pAnimationCallbackHandler);
 	//m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
 	m_ppHierarchicalGameObjects[0]->SetPosition(0.0f, 0, 0.0f);
+
+	CLoadedModelInfo* circle = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/circle.bin", NULL);
+	m_ppHierarchicalGameObjects[1] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, circle, 1);
+	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	CAnimationCallbackHandler* circleAnimation = new CSoundCallbackHandler();
+	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, circleAnimation);
+	m_ppHierarchicalGameObjects[1]->SetScale(3.f, 5.f, 3.f);
+	m_ppHierarchicalGameObjects[1]->SetPosition(0.0f, 12.f, 0.0f);
 
 	//조명 벡터 만들었다.
 	lightsCount = 38;
@@ -622,9 +630,13 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 	if (m_pLights)
 	{
-		m_pLights[1].m_xmf3Position = m_pPlayer->GetPosition();
+		m_pLights[1].m_xmf3Position = XMFLOAT3(m_pPlayer->head->GetPosition().x, m_pPlayer->head->GetPosition().y, m_pPlayer->head->GetPosition().z + 0.4f);
 		m_pLights[1].m_xmf3Direction = m_pPlayer->GetLookVector();
 	}
+	//cout << m_pPlayer->head->GetPosition().x << " / " << m_pPlayer->head->GetPosition().y << " / " << m_pPlayer->head->GetPosition().z << "\t";
+	//cout << m_pPlayer->lHand->GetPosition().x << " / " << m_pPlayer->lHand->GetPosition().y << " / " << m_pPlayer->lHand->GetPosition().z << "\t"; 
+	//cout << m_pPlayer->rHand->GetPosition().x << " / " << m_pPlayer->rHand->GetPosition().y << " / " << m_pPlayer->rHand->GetPosition().z << endl;
+
 }
 
 void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
