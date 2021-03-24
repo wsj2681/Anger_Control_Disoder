@@ -120,4 +120,7 @@ public:
 
 	int lightsCount = 0;
 	vector<CGameObject*> lights;
+
+
+	XMFLOAT3 texScale{ 1.f, 1.f, 1.f };
 };

@@ -674,29 +674,32 @@ void CGameObject::Animate(float fTimeElapsed)
 
 void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
-	if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->UpdateShaderVariables(pd3dCommandList);
-
-	if (m_pMesh)
+	if (this->isActive)
 	{
-		UpdateShaderVariable(pd3dCommandList, &m_xmf4x4World);
+		if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->UpdateShaderVariables(pd3dCommandList);
 
-		if (m_nMaterials > 0)
+		if (m_pMesh)
 		{
-			for (int i = 0; i < m_nMaterials; i++)
-			{
-				if (m_ppMaterials[i])
-				{
-					if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
-					m_ppMaterials[i]->UpdateShaderVariable(pd3dCommandList);
-				}
+			UpdateShaderVariable(pd3dCommandList, &m_xmf4x4World);
 
-				m_pMesh->Render(pd3dCommandList, i);
+			if (m_nMaterials > 0)
+			{
+				for (int i = 0; i < m_nMaterials; i++)
+				{
+					if (m_ppMaterials[i])
+					{
+						if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
+						m_ppMaterials[i]->UpdateShaderVariable(pd3dCommandList);
+					}
+
+					m_pMesh->Render(pd3dCommandList, i);
+				}
 			}
 		}
-	}
 
-	if (m_pSibling) m_pSibling->Render(pd3dCommandList, pCamera);
-	if (m_pChild) m_pChild->Render(pd3dCommandList, pCamera);
+		if (m_pSibling) m_pSibling->Render(pd3dCommandList, pCamera);
+		if (m_pChild) m_pChild->Render(pd3dCommandList, pCamera);
+	}
 }
 
 void CGameObject::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -751,7 +754,8 @@ void CGameObject::SetPosition(XMFLOAT3 xmf3Position)
 
 void CGameObject::SetScale(float x, float y, float z)
 {
-	XMMATRIX mtxScale = XMMatrixScaling(x, y, z);
+	scale = { x,y,z };
+	XMMATRIX mtxScale = XMMatrixScaling(scale.x, scale.y, scale.z);
 	m_xmf4x4ToParent = Matrix4x4::Multiply(mtxScale, m_xmf4x4ToParent);
 
 	UpdateTransform(NULL);

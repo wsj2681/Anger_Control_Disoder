@@ -345,6 +345,8 @@ public:
 	CGameObject 					*m_pParent = NULL;
 	CGameObject 					*m_pChild = NULL;
 	CGameObject 					*m_pSibling = NULL;
+	XMFLOAT3 scale{ 1.f, 1.f,1.f };
+	bool isActive = true;
 
 	void SetMesh(CMesh *pMesh);
 	void SetShader(CShader *pShader);
@@ -378,7 +380,6 @@ public:
 	void SetPosition(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);
 	void SetScale(float x, float y, float z);
-
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
 	void MoveForward(float fDistance = 1.0f);
