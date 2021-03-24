@@ -125,6 +125,8 @@ public:
 	virtual void OnPlayerUpdateCallback(float fTimeElapsed);
 	virtual void OnCameraUpdateCallback(float fTimeElapsed);
 
+	CGameObject* head = NULL;
+
 	virtual void Update(float fTimeElapsed);
 };
 

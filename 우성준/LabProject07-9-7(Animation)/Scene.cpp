@@ -38,16 +38,16 @@ void CScene::BuildDefaultLightsAndMaterials()
 	//for (int i = 0; i < m_nLights; ++i)
 	//{
 	//	m_pLights[i].m_bEnable = true;
-	//	m_pLights[i].m_nType = SPOT_LIGHT;
+	//	m_pLights[i].m_nType = DIRECTIONAL_LIGHT;
 	//	m_pLights[i].m_fRange = 300.0f;
 	//	m_pLights[i].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
 	//	m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 0.5f);
 	//	m_pLights[i].m_xmf4Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
 	//	m_pLights[i].m_xmf3Position = lights[i]->GetPosition();
-	//	m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
+	//	//m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
 	//	m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	// 	m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
-	//	m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+	// 	//m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
+	//	//m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 	//}
 
 	m_pLights[0].m_bEnable = true;
