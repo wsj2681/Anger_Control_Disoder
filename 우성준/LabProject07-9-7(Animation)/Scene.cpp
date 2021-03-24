@@ -175,7 +175,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[1]->SetScale(3.f, 5.f, 3.f);
 	m_ppHierarchicalGameObjects[1]->SetPosition(0.0f, 12.f, 0.0f);
 
-	CLoadedModelInfo* texbox = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/TextureBox.bin", NULL);
+	CLoadedModelInfo* texbox = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", NULL);
 	m_ppHierarchicalGameObjects[2] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, texbox, 1);
 	m_ppHierarchicalGameObjects[2]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	CAnimationCallbackHandler* texboxAnimation = new CSoundCallbackHandler();
@@ -689,9 +689,9 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
 		}
 	}
-	m_ppHierarchicalGameObjects[2]->SetScale(texScale.x+= 0.01f, texScale.y += 0.001f, texScale.z += 0.001f);
+	m_ppHierarchicalGameObjects[2]->SetScale(texScale.x+= 0.001f, texScale.y += 0.001f, texScale.z += 0.001f);
 
-	if (texScale.x > 5.f)
+	if (texScale.x > 1.1f)
 	{
 		m_ppHierarchicalGameObjects[2]->isActive = false;
 		
