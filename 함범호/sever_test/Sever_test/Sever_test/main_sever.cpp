@@ -133,8 +133,12 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		
 		cout << "---------------------------------------------" << endl;
 
-		//월드좌표계 초기화 시키면 가능할것같다.
-		other_player.player_world = NULL;
+		////월드좌표계 초기화
+		XMStoreFloat4x4(&other_player.player_world, XMMatrixIdentity());
+
+
+		
+
 
 		//서버에서 직접 키보드 입력 받기 
 		if (_kbhit()) {        //키보드 입력 확인 (true / false)

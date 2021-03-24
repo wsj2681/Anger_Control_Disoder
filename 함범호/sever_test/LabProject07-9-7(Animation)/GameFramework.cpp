@@ -400,10 +400,14 @@ void CGameFramework::BuildObjects()
 
 
 
+#ifdef _WITH_SERVER_CONNECT
 	/////SERVER///
 	server = new Server();
 
 	////////////////////////
+#endif // _WITH_SERVER_CONNECT
+
+	
 
 
 
@@ -423,10 +427,15 @@ void CGameFramework::BuildObjects()
 	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
 	m_pCamera = m_pPlayer->GetCamera();
 
+
+#ifdef _WITH_SERVER_CONNECT
 	////server//////////////
 	server->cplayer = m_pPlayer;
 	server->cscene = m_pScene;
 	/// /////////////////////////////
+#endif // _WITH_SERVER_CONNECT
+
+	
 
 
 	m_pd3dCommandList->Close();
@@ -531,7 +540,7 @@ void CGameFramework::MoveToNextFrame()
 void CGameFramework::FrameAdvance()
 {    
 
-
+#ifdef _WITH_SERVER_CONNECT
 	/////////////////server////////////////
 	//if (i == 0) {
 	server->Server_send();
@@ -542,6 +551,9 @@ void CGameFramework::FrameAdvance()
 	//server->Server_send();
 
 	///////////////////////////////////////
+#endif // _WITH_SERVER_CONNECT
+
+	
 
 	m_GameTimer.Tick(30.0f);
 	
