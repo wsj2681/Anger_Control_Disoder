@@ -27,11 +27,28 @@ CScene::~CScene()
 
 void CScene::BuildDefaultLightsAndMaterials()
 {
+	//m_nLights = lightsCount;
 	m_nLights = 9;
 	m_pLights = new LIGHT[m_nLights];
 	::ZeroMemory(m_pLights, sizeof(LIGHT) * m_nLights);
 
 	m_xmf4GlobalAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
+
+	// 스포트라이트 쉐이더 오류
+	//for (int i = 0; i < m_nLights; ++i)
+	//{
+	//	m_pLights[i].m_bEnable = true;
+	//	m_pLights[i].m_nType = SPOT_LIGHT;
+	//	m_pLights[i].m_fRange = 300.0f;
+	//	m_pLights[i].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
+	//	m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 0.5f);
+	//	m_pLights[i].m_xmf4Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	//	m_pLights[i].m_xmf3Position = lights[i]->GetPosition();
+	//	m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
+	//	m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	// 	m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
+	//	m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+	//}
 
 	m_pLights[0].m_bEnable = true;
 	m_pLights[0].m_nType = POINT_LIGHT;
@@ -131,7 +148,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 
 	CMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	
-	BuildDefaultLightsAndMaterials();
+	
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -150,7 +167,19 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	//m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
 	m_ppHierarchicalGameObjects[0]->SetPosition(0.0f, 0, 0.0f);
 
+	//조명 벡터 만들었다.
+	lightsCount = 38;
 	
+	char name[30];
+	lights.push_back(m_ppHierarchicalGameObjects[0]->FindFrame("light"));
+	for (int i = 1; i < lightsCount; ++i)
+	{
+		sprintf(name, "light%d", i);
+		lights.push_back(m_ppHierarchicalGameObjects[0]->FindFrame(name));
+	}
+
+	BuildDefaultLightsAndMaterials();
+
 	//CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/BoxingComplete.bin", NULL);
 	//m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
 	//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
