@@ -152,6 +152,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="GameFramework.h" />
+    <ClInclude Include="HPBar.h" />
     <ClInclude Include="LabProject07-9-7(Animation).h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Object.h" />
@@ -168,6 +169,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="GameFramework.cpp" />
+    <ClCompile Include="HPBar.cpp" />
     <ClCompile Include="LabProject07-9-7(Animation).cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Object.cpp" />

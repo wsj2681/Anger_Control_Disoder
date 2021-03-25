@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 
 #include "stdafx.h"
+#include "HPBar.h"
 #include "Scene.h"
 
 ID3D12DescriptorHeap *CScene::m_pd3dCbvSrvDescriptorHeap = NULL;
@@ -183,6 +184,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	XMFLOAT4 orientation = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 	m_ppHierarchicalGameObjects[1]->SetOBB(center, extents, orientation);
 	m_ppHierarchicalGameObjects[1]->bCheckCollision = true;
+	m_ppHierarchicalGameObjects[1]->bHittable = true;
 
 	//조명 벡터 만들었다.
 	lightsCount = 38;
@@ -205,6 +207,14 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	////m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
 	//m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
 		if (pAngrybotModel) delete pAngrybotModel;
+	
+	//----------------------------------------
+	// UI 오브젝트 선언
+	//----------------------------------------
+	XMFLOAT2 position{ XMFLOAT2(0.f, 0.f) };
+	float width{ 100.f }, height{ 5.f };
+	HPBar hpbar = HPBar(position, width, height);
+	//XMFLOAT3 vec = m_pPlayer->GetPosition();
 	
 
 	m_nShaders = 0;

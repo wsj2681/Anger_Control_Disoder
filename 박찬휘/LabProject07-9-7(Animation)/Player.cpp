@@ -232,8 +232,8 @@ void CPlayer::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamer
 {
 	DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
 	if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
-	printf("obb.Center(%lf,%lf,%lf) | ", obb.Center.x, obb.Center.y, obb.Center.z);
-	printf("obb.Extents(%lf,%lf,%lf)\n", obb.Extents.x, obb.Extents.y, obb.Extents.z);
+	//printf("obb.Center(%lf,%lf,%lf) | ", obb.Center.x, obb.Center.y, obb.Center.z);
+	//printf("obb.Extents(%lf,%lf,%lf)\n", obb.Extents.x, obb.Extents.y, obb.Extents.z);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
