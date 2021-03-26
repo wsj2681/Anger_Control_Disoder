@@ -21,10 +21,9 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
-	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
 	virtual D3D12_BLEND_DESC CreateBlendState();
 	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
-
+	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
 
@@ -53,7 +52,7 @@ protected:
 	ID3DBlob							*m_pd3dPixelShaderBlob = NULL;
 
 	ID3D12PipelineState*				m_pd3dPipelineState = NULL;
-	ID3D12PipelineState* uiPipelineState{ nullptr };
+	//ID3D12PipelineState*				uiPipelineState{ nullptr };
 
 	D3D12_GRAPHICS_PIPELINE_STATE_DESC	m_d3dPipelineStateDesc;
 
@@ -81,6 +80,21 @@ class CSkyBoxShader : public CShader
 public:
 	CSkyBoxShader();
 	virtual ~CSkyBoxShader();
+
+	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
+	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+class UIShader : public CShader
+{
+public:
+	UIShader() = default;
+	virtual ~UIShader() = default;
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
 	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();

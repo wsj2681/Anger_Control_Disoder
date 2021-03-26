@@ -120,6 +120,9 @@ public:
 	ID3D12Resource						*m_pd3dcbLights = NULL;
 	LIGHTS								*m_pcbMappedLights = NULL;
 
+	//HPBar bar1;
+	//HPBar bar2;
+
 	int lightsCount = 0;
 	vector<CGameObject*> lights;
 };

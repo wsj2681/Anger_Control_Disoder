@@ -11,6 +11,7 @@ cbuffer cbCameraInfo : register(b1)
 	matrix					gmtxView : packoffset(c0);
 	matrix					gmtxProjection : packoffset(c4);
 	float3					gvCameraPosition : packoffset(c8);
+	matrix					gmtxOrtho : packoffset(c12);
 };
 
 cbuffer cbGameObjectInfo : register(b2)
@@ -34,13 +35,13 @@ cbuffer cbGameObjectInfo : register(b2)
 #define MATERIAL_DETAIL_ALBEDO_MAP	0x20
 #define MATERIAL_DETAIL_NORMAL_MAP	0x40
 
-Texture2D gtxtAlbedoTexture : register(t6);
-Texture2D gtxtSpecularTexture : register(t7);
-Texture2D gtxtNormalTexture : register(t8);
-Texture2D gtxtMetallicTexture : register(t9);
-Texture2D gtxtEmissionTexture : register(t10);
-Texture2D gtxtDetailAlbedoTexture : register(t11);
-Texture2D gtxtDetailNormalTexture : register(t12);
+Texture2D gtxtAlbedoTexture : register(t0);
+Texture2D gtxtSpecularTexture : register(t1);
+Texture2D gtxtNormalTexture : register(t2);
+Texture2D gtxtMetallicTexture : register(t3);
+Texture2D gtxtEmissionTexture : register(t4);
+Texture2D gtxtDetailAlbedoTexture : register(t5);
+Texture2D gtxtDetailNormalTexture : register(t6);
 
 SamplerState gssWrap : register(s0);
 
@@ -111,12 +112,12 @@ float4 PSStandard(VS_STANDARD_OUTPUT input) : SV_TARGET
 #define MAX_VERTEX_INFLUENCES			4
 #define SKINNED_ANIMATION_BONES			128
 
-cbuffer cbBoneOffsets : register(b7)
+cbuffer cbBoneOffsets : register(b4)
 {
 	float4x4 gpmtxBoneOffsets[SKINNED_ANIMATION_BONES];
 };
 
-cbuffer cbBoneTransforms : register(b8)
+cbuffer cbBoneTransforms : register(b5)
 {
 	float4x4 gpmtxBoneTransforms[SKINNED_ANIMATION_BONES];
 };
@@ -170,8 +171,8 @@ VS_STANDARD_OUTPUT VSSkinnedAnimationStandard(VS_SKINNED_STANDARD_INPUT input)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-Texture2D gtxtTerrainBaseTexture : register(t1);
-Texture2D gtxtTerrainDetailTexture : register(t2);
+Texture2D gtxtTerrainBaseTexture : register(t7);
+Texture2D gtxtTerrainDetailTexture : register(t8);
 
 struct VS_TERRAIN_INPUT
 {
@@ -234,7 +235,7 @@ VS_SKYBOX_CUBEMAP_OUTPUT VSSkyBox(VS_SKYBOX_CUBEMAP_INPUT input)
 	return(output);
 }
 
-TextureCube gtxtSkyCubeTexture : register(t13);
+TextureCube gtxtSkyCubeTexture : register(t9);
 SamplerState gssClamp : register(s1);
 
 float4 PSSkyBox(VS_SKYBOX_CUBEMAP_OUTPUT input) : SV_TARGET
@@ -244,7 +245,44 @@ float4 PSSkyBox(VS_SKYBOX_CUBEMAP_OUTPUT input) : SV_TARGET
 	return(cColor);
 }
 
-Texture2D gtxtTexture : register(t0);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
+Texture2D<float4> gtxUI : register(t10);
+
+cbuffer UI_INFO : register(b6)
+{
+	float uv1 : packoffset(c0);
+	float uv2 : packoffset(c4);
+	int hp : packoffset(c8);
+	int enemyHp : packoffset(c12);
+};
+
+struct VS_UI_INPUT
+{
+	float3 position : POSITION;
+};
+
+struct VS_UI_OUTPUT
+{
+	float4 position : SV_POSITION;
+	float2 uv : TEXCOORD;
+};
+
+VS_UI_OUTPUT VSUI(VS_UI_INPUT input)
+{
+	VS_UI_OUTPUT output;
+
+	output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxGameObject), gmtxView), gmtxOrtho);
+
+	return output;
+}
+
+float4 PSUI(VS_UI_OUTPUT input) : SV_TARGET
+{
+	float4 color = gtxUI.Sample(gssWrap, input.uv);
+}
+
+Texture2D gtxtTexture : register(t11);
 
 struct VS_TEXTURED_INPUT
 {
