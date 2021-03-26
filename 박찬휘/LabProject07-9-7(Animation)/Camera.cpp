@@ -6,6 +6,7 @@ CCamera::CCamera()
 {
 	m_xmf4x4View = Matrix4x4::Identity();
 	m_xmf4x4Projection = Matrix4x4::Identity();
+	m_xmf4x4OrthoProjection = Matrix4x4::Identity();
 	m_d3dViewport = { 0, 0, FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT, 0.0f, 1.0f };
 	m_d3dScissorRect = { 0, 0, FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT };
 	m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -32,6 +33,7 @@ CCamera::CCamera(CCamera *pCamera)
 	{
 		m_xmf4x4View = Matrix4x4::Identity();
 		m_xmf4x4Projection = Matrix4x4::Identity();
+		m_xmf4x4OrthoProjection = Matrix4x4::Identity();
 		m_d3dViewport = { 0, 0, FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT, 0.0f, 1.0f };
 		m_d3dScissorRect = { 0, 0, FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT };
 		m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -126,6 +128,10 @@ void CCamera::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 
 	::memcpy(&m_pcbMappedCamera->m_xmf3Position, &m_xmf3Position, sizeof(XMFLOAT3));
 
+	XMFLOAT4X4 xmf4x4Ortho;
+	XMStoreFloat4x4(&xmf4x4Ortho, XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4OrthoProjection)));
+	::memcpy(&m_pcbMappedCamera->m_xmf4x4Ortho, &xmf4x4Ortho, sizeof(XMFLOAT4X4));
+
 	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbCamera->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(0, d3dGpuVirtualAddress);
 }
@@ -143,6 +149,26 @@ void CCamera::SetViewportsAndScissorRects(ID3D12GraphicsCommandList *pd3dCommand
 {
 	pd3dCommandList->RSSetViewports(1, &m_d3dViewport);
 	pd3dCommandList->RSSetScissorRects(1, &m_d3dScissorRect);
+}
+
+XMFLOAT4X4 CCamera::CalcOrtho()
+{
+	float fFar{ 1.f };	// 원근 투영과는 다르게 월드의 Z를 반영하지 않음
+	float fNear{ 0.f }; // 그래서 고정값
+
+	float w = 2.f / m_xmf4x4Projection._11;
+	float h = 2.f / m_xmf4x4Projection._22;
+	float a = 1.f; // 1.f / (fFar - fNear);
+	float b = 0.f; // -fNear * a;
+
+	XMFLOAT4X4 temp = XMFLOAT4X4(
+		w, 0, 0, 0,
+		0, h, 0, 0,
+		0, 0, a, 0,
+		0, 0, b, 1
+	);
+
+	return temp;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////

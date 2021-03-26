@@ -10,6 +10,7 @@ struct VS_CB_CAMERA_INFO
 {
 	XMFLOAT4X4						m_xmf4x4View;
 	XMFLOAT4X4						m_xmf4x4Projection;
+	XMFLOAT4X4						m_xmf4x4Ortho;
 	XMFLOAT3						m_xmf3Position;
 };
 
@@ -35,6 +36,7 @@ protected:
 
 	XMFLOAT4X4						m_xmf4x4View;
 	XMFLOAT4X4						m_xmf4x4Projection;
+	XMFLOAT4X4						m_xmf4x4OrthoProjection;
 
 	D3D12_VIEWPORT					m_d3dViewport;
 	D3D12_RECT						m_d3dScissorRect;
@@ -102,6 +104,8 @@ public:
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) { }
 	virtual void Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed) { }
 	virtual void SetLookAt(XMFLOAT3& xmf3LookAt) { }
+
+	XMFLOAT4X4 CalcOrtho();
 };
 
 class CSpaceShipCamera : public CCamera
