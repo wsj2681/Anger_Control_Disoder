@@ -35,7 +35,7 @@ protected:
 	float roll = 0.f;
 	float yaw = 0.f;
 
-	DWORD cameraMode;
+	DWORD cameraMode = 0x00;
 
 	XMFLOAT3 lookAtWorld{ 0.f, 0.f, 0.f };
 	XMFLOAT3 offset{ 0.f, 0.f, 0.f };
@@ -72,7 +72,7 @@ public:
 	Player* GetPlayer();
 	void SetPlayer(Player* player);
 
-	DWORD GetMOde();
+	DWORD GetMode();
 	void SetMode(DWORD mode);
 
 	const XMFLOAT3& GetPosition();

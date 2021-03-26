@@ -113,6 +113,15 @@
     <ClInclude Include="Camera.h">
       <Filter>소스 파일\05 Camera</Filter>
     </ClInclude>
+    <ClInclude Include="FirstPersonCamera.h">
+      <Filter>소스 파일\05 Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SpaceShipCamera.h">
+      <Filter>소스 파일\05 Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdPersonCamera.h">
+      <Filter>소스 파일\05 Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AngryControlDisorder.rc">
@@ -168,6 +177,15 @@
       <Filter>소스 파일\06 Light</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일\05 Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="FirstPersonCamera.cpp">
+      <Filter>소스 파일\05 Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SpaceShipCamera.cpp">
+      <Filter>소스 파일\05 Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdPersonCamera.cpp">
       <Filter>소스 파일\05 Camera</Filter>
     </ClCompile>
   </ItemGroup>

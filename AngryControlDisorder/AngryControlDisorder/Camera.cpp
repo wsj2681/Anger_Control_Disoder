@@ -125,7 +125,7 @@ void Camera::SetPlayer(Player* player)
 	this->player = player;
 }
 
-DWORD Camera::GetMOde()
+DWORD Camera::GetMode()
 {
 	return this->cameraMode;
 }
