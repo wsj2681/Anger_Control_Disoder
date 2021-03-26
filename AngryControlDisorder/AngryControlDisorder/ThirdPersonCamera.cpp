@@ -28,12 +28,12 @@ void ThirdPersonCamera::Rotate(float fPitch, float fYaw, float fRoll)
 
 void ThirdPersonCamera::Update(const XMFLOAT3& lookAt, float eTime)
 {
-	if (player->head)
+	if (player)
 	{
 		XMFLOAT4X4 xmf4x4Rotate = Matrix4x4::Identity();
-		XMFLOAT3 xmf3Right = player/*->head->GetRight();*/->GetRightVector();
-		XMFLOAT3 xmf3Up = player->/*head->GetUp();*/GetUpVector();
-		XMFLOAT3 xmf3Look = player->/*head->GetLook();*/GetLookVector();
+		XMFLOAT3 xmf3Right = player->GetRightVector();
+		XMFLOAT3 xmf3Up = player->GetUpVector();
+		XMFLOAT3 xmf3Look = player->GetLookVector();
 		xmf4x4Rotate._11 = xmf3Right.x; xmf4x4Rotate._21 = xmf3Up.x; xmf4x4Rotate._31 = xmf3Look.x;
 		xmf4x4Rotate._12 = xmf3Right.y; xmf4x4Rotate._22 = xmf3Up.y; xmf4x4Rotate._32 = xmf3Look.y;
 		xmf4x4Rotate._13 = xmf3Right.z; xmf4x4Rotate._23 = xmf3Up.z; xmf4x4Rotate._33 = xmf3Look.z;
