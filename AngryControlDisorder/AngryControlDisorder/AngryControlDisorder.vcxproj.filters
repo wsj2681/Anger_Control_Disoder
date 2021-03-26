@@ -122,6 +122,9 @@
     <ClInclude Include="ThirdPersonCamera.h">
       <Filter>소스 파일\05 Camera</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\04 Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AngryControlDisorder.rc">
@@ -187,6 +190,9 @@
     </ClCompile>
     <ClCompile Include="ThirdPersonCamera.cpp">
       <Filter>소스 파일\05 Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\04 Player</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

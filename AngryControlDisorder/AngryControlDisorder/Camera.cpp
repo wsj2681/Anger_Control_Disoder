@@ -235,7 +235,7 @@ void Camera::SetYaw(float yaw)
 
 const XMFLOAT3& Camera::GetOffset()
 {
-	this->offset;
+	return this->offset;
 }
 
 void Camera::SetOffset(const XMFLOAT3& offset)

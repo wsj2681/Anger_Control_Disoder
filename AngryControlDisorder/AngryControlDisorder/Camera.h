@@ -1,4 +1,5 @@
 #pragma once
+#include "Player.h"
 
 #define ASPECT_RATIO				(float(FRAME_BUFFER_WIDTH) / float(FRAME_BUFFER_HEIGHT))
 
