@@ -23,14 +23,33 @@ void UIObject::Update()
 	// Update
 }
 
-void UIObject::Render(ID3D12GraphicsCommandList* commandList, ID3D12DescriptorHeap* descriptorHeap, ID3D12PipelineState* uiPipelineState)
+void UIObject::Render(ID3D12GraphicsCommandList* commandList, ID3D12DescriptorHeap* descriptorHeap, ID3D12PipelineState* uiPipelineState, D3D12_GPU_DESCRIPTOR_HANDLE srvHandle)
 {
 	// Render
 	commandList->ClearDepthStencilView(descriptorHeap->GetCPUDescriptorHandleForHeapStart(), D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 	commandList->SetPipelineState(uiPipelineState);
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
-	commandList->IASetVertexBuffers(0, 1, &uiVertexBufferView[frameIndex]);
+	commandList->IASetVertexBuffers(0, 1, &uiVertexBufferView[3]);
+	commandList->SetGraphicsRootDescriptorTable(1, srvHandle);
+	commandList->DrawInstanced(4, 8, 0, 0);
+
+
 }
+
+//void UIObject::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+//{
+//	if (m_nTextureType == RESOURCE_TEXTURE2D_ARRAY)
+//	{
+//		pd3dCommandList->SetGraphicsRootDescriptorTable(m_pRootArgumentInfos[0].m_nRootParameterIndex, m_pRootArgumentInfos[0].m_d3dSrvGpuDescriptorHandle);
+//	}
+//	else
+//	{
+//		for (int i = 0; i < m_nTextures; i++)
+//		{
+//			pd3dCommandList->SetGraphicsRootDescriptorTable(m_pRootArgumentInfos[i].m_nRootParameterIndex, m_pRootArgumentInfos[i].m_d3dSrvGpuDescriptorHandle);
+//		}
+//	}
+//}
 
 HPBar::HPBar()
 {
@@ -72,7 +91,7 @@ void HPBar::Update()
 	UIObject::Update();
 }
 
-void HPBar::Render()
+void HPBar::Render(ID3D12GraphicsCommandList* commandList, ID3D12DescriptorHeap* descriptorHeap, ID3D12PipelineState* uiPipelineState, D3D12_GPU_DESCRIPTOR_HANDLE srvHandle)
 {
-	UIObject::Render();
+	UIObject::Render(commandList, descriptorHeap, uiPipelineState, srvHandle);
 }
