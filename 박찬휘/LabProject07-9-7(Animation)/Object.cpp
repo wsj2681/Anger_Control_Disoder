@@ -588,11 +588,21 @@ BoundingOrientedBox& CGameObject::GetOBB()
 	return obb;
 }
 
+unsigned int& CGameObject::GetHP()
+{
+	return hp;
+}
+
 void CGameObject::SetOBB(const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation)
 {
 	obb.Center = center;
 	obb.Extents = extents;
 	obb.Orientation = orientation;
+}
+
+void CGameObject::SetHP(const unsigned int& hp)
+{
+	this->hp = hp;
 }
 
 void CGameObject::SetMesh(CMesh *pMesh)
@@ -686,7 +696,7 @@ void CGameObject::Animate(float fTimeElapsed)
 
 void CGameObject::OnPrepareRender()
 {
-	obb.Center = this->GetPosition();
+	obb.Center = GetPosition();
 }
 
 void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)

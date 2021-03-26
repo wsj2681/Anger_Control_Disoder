@@ -323,6 +323,7 @@ private:
 	int								m_nReferences = 0;
 protected:
 	BoundingOrientedBox obb{};
+	unsigned int hp{ 100 };
 public:
 	void AddRef();
 	void Release();
@@ -348,9 +349,12 @@ public:
 	CGameObject 					*m_pSibling = NULL;
 
 	bool bCheckCollision{ false };
+	bool bHittable{ false };
 	
 	BoundingOrientedBox& GetOBB();
+	unsigned int& GetHP();
 	void SetOBB(const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation);
+	void SetHP(const unsigned int& hp);
 
 	void SetMesh(CMesh *pMesh);
 	void SetShader(CShader *pShader);
