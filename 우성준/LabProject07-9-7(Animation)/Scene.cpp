@@ -27,30 +27,30 @@ CScene::~CScene()
 
 void CScene::BuildDefaultLightsAndMaterials()
 {
-	//m_nLights = lightsCount;
-	m_nLights = 9;
+	m_nLights = lightsCount;
+	//m_nLights = 9;
 	m_pLights = new LIGHT[m_nLights];
 	::ZeroMemory(m_pLights, sizeof(LIGHT) * m_nLights);
 
 	m_xmf4GlobalAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
 
 	// 스포트라이트 쉐이더 오류
-	//for (int i = 0; i < m_nLights; ++i)
-	//{
-	//	m_pLights[i].m_bEnable = true;
-	//	m_pLights[i].m_nType = DIRECTIONAL_LIGHT;
-	//	m_pLights[i].m_fRange = 300.0f;
-	//	m_pLights[i].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
-	//	m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 0.5f);
-	//	m_pLights[i].m_xmf4Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
-	//	m_pLights[i].m_xmf3Position = lights[i]->GetPosition();
-	//	//m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
-	//	m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	// 	//m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
-	//	//m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
-	//}
+	for (int i = 0; i < m_nLights; ++i)
+	{
+		m_pLights[i].m_bEnable = true;
+		m_pLights[i].m_nType = DIRECTIONAL_LIGHT;
+		m_pLights[i].m_fRange = 300.0f;
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
+		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 0.5f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+		m_pLights[i].m_xmf3Position = lights[i]->GetPosition();
+		//m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	 	//m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
+		//m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+	}
 
-	m_pLights[0].m_bEnable = true;
+	/*m_pLights[0].m_bEnable = true;
 	m_pLights[0].m_nType = POINT_LIGHT;
 	m_pLights[0].m_fRange = 300.0f;
 	m_pLights[0].m_xmf4Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
@@ -136,7 +136,7 @@ void CScene::BuildDefaultLightsAndMaterials()
 	m_pLights[8].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
 	m_pLights[8].m_xmf3Position = XMFLOAT3(410.0f, 30.f, 735.0f);
 	m_pLights[8].m_xmf3Direction;
-	m_pLights[8].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
+	m_pLights[8].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);*/
 }
 
 void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
@@ -156,7 +156,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	//XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
 
-	m_nHierarchicalGameObjects = 3;
+	m_nHierarchicalGameObjects = 4;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
 
 	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
@@ -175,7 +175,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[1]->SetScale(3.f, 5.f, 3.f);
 	m_ppHierarchicalGameObjects[1]->SetPosition(0.0f, 12.f, 0.0f);
 
-	CLoadedModelInfo* texbox = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/TextureBox.bin", NULL);
+	CLoadedModelInfo* texbox = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", NULL);
 	m_ppHierarchicalGameObjects[2] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, texbox, 1);
 	m_ppHierarchicalGameObjects[2]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	CAnimationCallbackHandler* texboxAnimation = new CSoundCallbackHandler();
@@ -183,6 +183,13 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[2]->SetScale(texScale.x, texScale.y, texScale.z);
 	m_ppHierarchicalGameObjects[2]->SetPosition(0.0f, 12.f, 30.0f);
 
+	CLoadedModelInfo* red = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/hp.bin", NULL);
+	m_ppHierarchicalGameObjects[3] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, red, 1);
+	m_ppHierarchicalGameObjects[3]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	CAnimationCallbackHandler* redAnimation = new CSoundCallbackHandler();
+	m_ppHierarchicalGameObjects[3]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, redAnimation);
+	m_ppHierarchicalGameObjects[3]->SetScale(texScale.x, texScale.y, texScale.z);
+	m_ppHierarchicalGameObjects[3]->SetPosition(0.0f, 12.f, -30.0f);
 
 	//조명 벡터 만들었다.
 	lightsCount = 38;
@@ -689,13 +696,14 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
 		}
 	}
-	m_ppHierarchicalGameObjects[2]->SetScale(texScale.x+= 0.01f, texScale.y += 0.001f, texScale.z += 0.001f);
 
-	if (texScale.x > 5.f)
+	if (texScale.x > 1.1f)
 	{
-		m_ppHierarchicalGameObjects[2]->isActive = false;
-		
+		m_ppHierarchicalGameObjects[2]->SetScale(texScale.x -= 0.001f, texScale.y -= 0.001f, texScale.z -= 0.001f);
 	}
-
+	if (texScale.x < 1.1f)
+	{
+		m_ppHierarchicalGameObjects[2]->SetScale(texScale.x += 0.001f, texScale.y += 0.001f, texScale.z += 0.001f);
+	}
 }
 
