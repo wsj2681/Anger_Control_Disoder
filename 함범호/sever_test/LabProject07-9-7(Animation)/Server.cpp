@@ -35,10 +35,16 @@ void Server::Server_send()
 	if (send_count == 0) {
 		retval = send(sock, (char*)"Ready", sizeof("Ready"), 0);
 		cout << "보내기완료" << endl;
+
 		++send_count;
 	}
 	else {
+		retval = send(sock, (char*)&id, sizeof(id), 0);
+
+		//cout << "thread_id = " << id.thread_id << endl;
+
 		player.player_world = cplayer->m_xmf4x4World;
+		cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
 
 		retval = send(sock, (char*)&player, sizeof(player), 0);
 
@@ -52,17 +58,22 @@ void Server::Server_recv()
 	if (recv_count == 0) {
 		retval = recv(sock, (char*)Save_Data, sizeof BUFSIZE, 0);
 		cout << Save_Data << "받기완료" << endl;
+
+		cout << "thread_id = " << id.thread_id << endl;
+		retval = recv(sock, (char*)&id, sizeof(id), 0);
+		cout << "thread_id = " << id.thread_id << endl;
+		
 		++recv_count;
 	}
 	else {
 		retval = recv(sock, (char*)&other_player, sizeof(other_player), 0);
-		//cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
+		//cout << other_player.player_world._41 << " " << other_player.player_world._42 << " " << other_player.player_world._43 << endl;
 
-		save_world.player_world =  cscene->m_ppHierarchicalGameObjects[0]->m_xmf4x4World;
+		//save_world.player_world =  cscene->m_ppHierarchicalGameObjects[0]->m_xmf4x4World;
 		
-		player_position.x = save_world.player_world._41 + other_player.player_world._41;
-		player_position.y = save_world.player_world._42 + other_player.player_world._42;
-		player_position.z = save_world.player_world._43 + other_player.player_world._43;
+		player_position.x =  other_player.player_world._41;
+		player_position.y =  other_player.player_world._42;
+		player_position.z =  other_player.player_world._43;
 
 		cscene->m_ppHierarchicalGameObjects[0]->SetPosition(player_position.x, player_position.y, player_position.z); 
 

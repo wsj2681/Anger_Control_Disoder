@@ -23,6 +23,14 @@ struct Player_world {
 };
 #pragma pack(pop)
 
+#pragma pack(push,1)
+struct Thread_id {
+
+	char thread_id = 0;
+
+};
+#pragma pack(pop)
+
 class CPlayer;
 
 class CScene;
@@ -46,6 +54,7 @@ public:
 
 	XMFLOAT3 player_position;
 
+	Thread_id id;
 
 	int send_count = 0;
 	int recv_count = 0;
