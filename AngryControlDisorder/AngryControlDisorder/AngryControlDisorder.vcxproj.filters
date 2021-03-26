@@ -110,7 +110,9 @@
     <ClInclude Include="light.h">
       <Filter>소스 파일\06 Light</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h" />
+    <ClInclude Include="Camera.h">
+      <Filter>소스 파일\05 Camera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AngryControlDisorder.rc">
@@ -166,7 +168,7 @@
       <Filter>소스 파일\06 Light</Filter>
     </ClCompile>
     <ClCompile Include="Camera.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\05 Camera</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
