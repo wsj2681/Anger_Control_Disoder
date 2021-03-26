@@ -2,6 +2,7 @@
 
 class Mesh;
 class Material;
+class Texture;
 class Shader;
 class Camera;
 

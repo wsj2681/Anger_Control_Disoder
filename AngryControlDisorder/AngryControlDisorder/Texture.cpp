@@ -2,8 +2,10 @@
 #include "Texture.h"
 
 Texture::Texture(int nTextureResources, UINT nResourceType, int nSamplers)
-	:textureCount(nTextureResources), textureType(nResourceType), samplers(nSamplers)
 {
+	textureCount = nTextureResources;
+	textureType = nResourceType;
+	samplers = nSamplers;
 	if (textureCount > 0)
 	{
 		rootArgumentInfos = new SRVROOTARGUMENTINFO[textureCount];

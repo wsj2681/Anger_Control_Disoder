@@ -12,7 +12,7 @@
 
 
 
-
+CRITICAL_SECTION cs;
 // ThreadFunction
 DWORD WINAPI PlayerThread(LPVOID arg);
 
@@ -22,6 +22,7 @@ static int idIndex = 0;
 HANDLE hThread[MAXTHREAD];
 int threadCount = 0;
 
+Thread_id id;
 
 
 
@@ -60,7 +61,7 @@ int main()
 
 	cout << "**** 서버 시작 ****" << endl;
 
-
+	InitializeCriticalSection(&cs);
 
 	while (true)
 	{
@@ -82,7 +83,7 @@ int main()
 		CloseHandle(i);
 
 
-
+	DeleteCriticalSection(&cs);
 	closesocket(listen_sock);
 
 	WSACleanup();
@@ -105,9 +106,11 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	Player_world player;
 
 	Player_world other_player;
-	
+	char thread_count = 0;
 	char keyboard;
 	
+	////쓰레드 카운터
+	//++thread_count;
 
 
 
@@ -120,53 +123,81 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 
 	char GameOk[7] = "GameOk";
 	retval = send(client_sock, (char*)GameOk, sizeof(GameOk), 0);
+	cout << GameOk << "전송 완료" << endl;
+
+	//id.thread_id =thread_count;
+
+	
+
+	retval = send(client_sock, (char*)&id, sizeof(id), 0);
 	///////////////////////////
 
+	
+
 	while (true) {
+
+		//EnterCriticalSection(&cs);
+		
+		retval = recv(client_sock, (char*)&id, sizeof(id), 0);
+		cout << "thread_id = "<<id.thread_id << endl;
+		cout << "thread_count = " << thread_count << endl;
+		
 		retval = recv(client_sock, (char*)&player, sizeof(player), 0);
-		cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
-
-		/*player.player_world._41 += 0.1f;
-		player.player_world._42 += 0.1f;
-		player.player_world._43 += 0.1f;*/
-
+		cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
 		
-		cout << "---------------------------------------------" << endl;
-
-		//월드좌표계 초기화 시키면 가능할것같다.
-		other_player.player_world = NULL;
-
-		//서버에서 직접 키보드 입력 받기 
-		if (_kbhit()) {        //키보드 입력 확인 (true / false)
-			keyboard = _getch();      // 방향키 입력시 224 00이 들어오게 되기에 앞에 있는 값 224를 없앰
-			if (keyboard == -32) {    // -32로 입력되면
-				keyboard = _getch();  // 새로 입력값을 판별하여 상하좌우 출력
-				switch (keyboard) {
-				case LEFT:
-					other_player.player_world._41 -= 1.0f;
-					printf("왼쪽으로 이동\n");
-					break;
-				case RIGHT:
-					other_player.player_world._41 += 1.0f;
-					printf("오른쪽으로 이동\n");
-					break;
-				case UP:
-					other_player.player_world._43 += 1.0f;
-					printf("위로 이동\n");
-					break;
-				case DOWN:
-					other_player.player_world._43 -= 1.0f;
-					printf("아래로 이동\n");
-					break;
-				}
-			}
-		}
-
-		//값보내기
 		retval = send(client_sock, (char*)&other_player, sizeof(other_player), 0);
-		cout << other_player.player_world._41 << " " << other_player.player_world._42 << " " << other_player.player_world._43 << endl;
 		
-		cout << "---------------------------------------------" << endl;
+
+		/*if (id.thread_id == 0) {
+			retval = recv(client_sock, (char*)&player, sizeof(player), 0);
+			cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
+			retval = send(client_sock, (char*)&other_player, sizeof(other_player), 0);
+		}
+		else if (id.thread_id == 1) {
+			
+			retval = recv(client_sock, (char*)&other_player, sizeof(other_player), 0);
+			cout << other_player.player_world._41 << ", " << other_player.player_world._42 << ", " << other_player.player_world._43 << endl;
+
+			retval = send(client_sock, (char*)&player, sizeof(player), 0);
+		}*/
+
+		//LeaveCriticalSection(&cs);
+		
+
+		//////월드좌표계 초기화
+		//XMStoreFloat4x4(&other_player.player_world, XMMatrixIdentity());
+
+		////서버에서 직접 키보드 입력 받기 
+		//if (_kbhit()) {        //키보드 입력 확인 (true / false)
+		//	keyboard = _getch();      // 방향키 입력시 224 00이 들어오게 되기에 앞에 있는 값 224를 없앰
+		//	if (keyboard == -32) {    // -32로 입력되면
+		//		keyboard = _getch();  // 새로 입력값을 판별하여 상하좌우 출력
+		//		switch (keyboard) {
+		//		case LEFT:
+		//			other_player.player_world._41 -= 1.0f;
+		//			printf("왼쪽으로 이동\n");
+		//			break;
+		//		case RIGHT:
+		//			other_player.player_world._41 += 1.0f;
+		//			printf("오른쪽으로 이동\n");
+		//			break;
+		//		case UP:
+		//			other_player.player_world._43 += 1.0f;
+		//			printf("위로 이동\n");
+		//			break;
+		//		case DOWN:
+		//			other_player.player_world._43 -= 1.0f;
+		//			printf("아래로 이동\n");
+		//			break;
+		//		}
+		//	}
+		//}
+
+		////값보내기
+		//retval = send(client_sock, (char*)&other_player, sizeof(other_player), 0);
+		//cout << other_player.player_world._41 << " " << other_player.player_world._42 << " " << other_player.player_world._43 << endl;
+		//
+		
 
 
 	}

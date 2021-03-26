@@ -7,6 +7,10 @@
 #include "Player.h"
 #include "Scene.h"
 
+#if defined(DEBUG) | defined(_DEBUG)
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#endif
+
 ////SEVER////
 #include "Server.h"
 

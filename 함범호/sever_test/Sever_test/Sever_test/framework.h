@@ -68,6 +68,14 @@ struct Player_world {
 };
 #pragma pack(pop)
 
+#pragma pack(push,1)
+struct Thread_id {
+
+	int thread_id = 0;
+
+};
+#pragma pack(pop)
+
 
 
 

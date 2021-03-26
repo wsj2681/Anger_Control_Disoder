@@ -8,7 +8,6 @@ ID3D12Resource* CreateBufferResource(ID3D12Device* device, ID3D12GraphicsCommand
 {
 	ASSERT(device != nullptr, "framework/CreatebufferResource/device is not be nullptr\n");
 	ASSERT(commandList != nullptr, "framework/CreatebufferResource/commandList is not be nullptr\n");
-	ASSERT(uploadBuffer != nullptr, "framework/CreatebufferResource/uploadBuffer is not be nullptr\n");
 
 	ID3D12Resource* pd3dBuffer = NULL;
 
@@ -92,7 +91,6 @@ ID3D12Resource* CreateTextureResourceFromDDSFile(ID3D12Device* device, ID3D12Gra
 	ASSERT(device != nullptr, "framework/CreateTextureResourceFromDDSFile/device is not be nullptr\n");
 	ASSERT(commandList != nullptr, "framework/CreateTextureResourceFromDDSFile/commandList is not be nullptr\n");
 	ASSERT(pszFileName != nullptr, "framework/CreateTextureResourceFromDDSFile/pszFileName is not be nullptr\n");
-	ASSERT(uploadBuffer != nullptr, "framework/CreateTextureResourceFromDDSFile/uploadBuffer is not be nullptr\n");
 
 	ID3D12Resource* pd3dTexture = NULL;
 	std::unique_ptr<uint8_t[]> ddsData;
@@ -150,7 +148,6 @@ ID3D12Resource* CreateTextureResourceFromWICFile(ID3D12Device* device, ID3D12Gra
 	ASSERT(device != nullptr, "framework/CreateTextureResourceFromWICFile/device is not be nullptr\n");
 	ASSERT(commandList != nullptr, "framework/CreateTextureResourceFromWICFile/commandList is not be nullptr\n");
 	ASSERT(pszFileName != nullptr, "framework/CreateTextureResourceFromWICFile/pszFileName is not be nullptr\n");
-	ASSERT(uploadBuffer != nullptr, "framework/CreateTextureResourceFromWICFile/uploadBuffer is not be nullptr\n");
 
 	ID3D12Resource* pd3dTexture = NULL;
 	std::unique_ptr<uint8_t[]> decodedData;
