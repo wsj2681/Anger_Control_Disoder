@@ -125,6 +125,15 @@
     <ClInclude Include="Player.h">
       <Filter>소스 파일\04 Player</Filter>
     </ClInclude>
+    <ClInclude Include="AnimationSet.h">
+      <Filter>소스 파일\03 Object\05 Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationSets.h">
+      <Filter>소스 파일\03 Object\05 Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationTrack.h">
+      <Filter>소스 파일\03 Object\05 Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AngryControlDisorder.rc">
@@ -193,6 +202,15 @@
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일\04 Player</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSet.cpp">
+      <Filter>소스 파일\03 Object\05 Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSets.cpp">
+      <Filter>소스 파일\03 Object\05 Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTrack.cpp">
+      <Filter>소스 파일\03 Object\05 Animation</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

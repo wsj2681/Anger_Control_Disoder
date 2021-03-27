@@ -140,6 +140,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AngryControlDisorder.h" />
+    <ClInclude Include="AnimationSet.h" />
+    <ClInclude Include="AnimationSets.h" />
+    <ClInclude Include="AnimationTrack.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
@@ -164,6 +167,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AngryControlDisorder.cpp" />
+    <ClCompile Include="AnimationSet.cpp" />
+    <ClCompile Include="AnimationSets.cpp" />
+    <ClCompile Include="AnimationTrack.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="Engine.cpp" />
