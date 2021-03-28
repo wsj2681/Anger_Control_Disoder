@@ -440,7 +440,11 @@ void CAnimationController::SetAnimationCallbackHandler(int nAnimationSet, CAnima
 
 void CAnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet)
 {
-	if (m_pAnimationTracks) m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
+	if (m_pAnimationTracks)
+	{
+		this->m_fTime = 0;
+		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
+	}
 }
 
 void CAnimationController::SetTrackEnable(int nAnimationTrack, bool bEnable)

@@ -167,13 +167,13 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	//m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
 	m_ppHierarchicalGameObjects[0]->SetPosition(0.0f, 0, 0.0f);
 
-	CLoadedModelInfo* circle = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/circle.bin", NULL);
+	CLoadedModelInfo* circle = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/boxingComplete.bin", NULL);
 	m_ppHierarchicalGameObjects[1] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, circle, 1);
-	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
 	CAnimationCallbackHandler* circleAnimation = new CSoundCallbackHandler();
 	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, circleAnimation);
-	m_ppHierarchicalGameObjects[1]->SetScale(3.f, 5.f, 3.f);
-	m_ppHierarchicalGameObjects[1]->SetPosition(0.0f, 12.f, 0.0f);
+	//m_ppHierarchicalGameObjects[1]->SetScale(3.f, 5.f, 3.f);
+	m_ppHierarchicalGameObjects[1]->SetPosition(0.0f, 10.f, 0.0f);
 
 	CLoadedModelInfo* texbox = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", NULL);
 	m_ppHierarchicalGameObjects[2] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, texbox, 1);
@@ -629,13 +629,13 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
 			break;
 		case '3':
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
-			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 3);
+			//m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
+			m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 3);
 			break;
 		case VK_F9:
 			break;
 		case VK_F4:
-			m_pPlayer->m_pChild->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
+			//m_pPlayer->m_pChild->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
 			break;
 		case VK_F5:
 			m_pPlayer->SetTrackAnimationSet(0, 2);
@@ -701,7 +701,7 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 		{
 			m_ppHierarchicalGameObjects[i]->Animate(m_fElapsedTime);
 			
-			m_ppHierarchicalGameObjects[i]->SetTrackAnimationSet(0, 0);
+			//m_ppHierarchicalGameObjects[i]->SetTrackAnimationSet(0, 0);
 			if (!m_ppHierarchicalGameObjects[i]->m_pSkinnedAnimationController) m_ppHierarchicalGameObjects[i]->UpdateTransform(NULL);
 			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
 		}
