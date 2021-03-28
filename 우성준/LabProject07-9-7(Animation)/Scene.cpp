@@ -629,9 +629,19 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
 			break;
 		case '3':
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
 			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 3);
 			break;
 		case VK_F9:
+			break;
+		case VK_F4:
+			m_pPlayer->m_pChild->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
+			break;
+		case VK_F5:
+			m_pPlayer->SetTrackAnimationSet(0, 2);
+			break;
+		case VK_F6:
+			m_pPlayer->m_pChild->SetTrackAnimationSet(0, 3);
 			break;
 		default:
 			break;
