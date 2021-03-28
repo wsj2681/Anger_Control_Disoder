@@ -145,10 +145,10 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		retval = recv(client_sock, (char*)&player, sizeof(player), 0);
 		cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
 		
-		retval = send(client_sock, (char*)&other_player, sizeof(other_player), 0);
+		//retval = send(client_sock, (char*)&other_player, sizeof(other_player), 0);
 		
 
-		/*if (id.thread_id == 0) {
+		if (id.thread_id == 0) {
 			retval = recv(client_sock, (char*)&player, sizeof(player), 0);
 			cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
 			retval = send(client_sock, (char*)&other_player, sizeof(other_player), 0);
@@ -159,7 +159,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			cout << other_player.player_world._41 << ", " << other_player.player_world._42 << ", " << other_player.player_world._43 << endl;
 
 			retval = send(client_sock, (char*)&player, sizeof(player), 0);
-		}*/
+		}
 
 		//LeaveCriticalSection(&cs);
 		
