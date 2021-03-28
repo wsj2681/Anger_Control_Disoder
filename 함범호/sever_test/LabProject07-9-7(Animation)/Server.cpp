@@ -39,12 +39,12 @@ void Server::Server_send()
 		++send_count;
 	}
 	else {
-		retval = send(sock, (char*)&id, sizeof(id), 0);
+		retval = send(sock, (char*)&thread_id, sizeof(thread_id), 0);
 
 		//cout << "thread_id = " << id.thread_id << endl;
 
 		player.player_world = cplayer->m_xmf4x4World;
-		cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
+		//cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
 
 		retval = send(sock, (char*)&player, sizeof(player), 0);
 
@@ -56,24 +56,30 @@ void Server::Server_recv()
 {
 	//준비완료 받기
 	if (recv_count == 0) {
-		retval = recv(sock, (char*)Save_Data, sizeof BUFSIZE, 0);
+		retval = recv(sock, (char*)Save_Data, sizeof(Save_Data), 0);
 		cout << Save_Data << "받기완료" << endl;
 
-		cout << "thread_id = " << id.thread_id << endl;
-		retval = recv(sock, (char*)&id, sizeof(id), 0);
-		cout << "thread_id = " << id.thread_id << endl;
+		
+
+		cout << "thread_id = " << thread_id.thread_num << endl;
+		retval = recv(sock, (char*)&thread_id, sizeof(thread_id), 0);
+		cout << "thread_id = " << thread_id.thread_num << endl;
 		
 		++recv_count;
 	}
 	else {
-		retval = recv(sock, (char*)&other_player, sizeof(other_player), 0);
-		//cout << other_player.player_world._41 << " " << other_player.player_world._42 << " " << other_player.player_world._43 << endl;
+		cout << other_player.player_world._41 << " " << other_player.player_world._42 << " " << other_player.player_world._43 << endl;
 
+
+		retval = recv(sock, (char*)&other_player, sizeof(other_player), 0);
+		
 		//save_world.player_world =  cscene->m_ppHierarchicalGameObjects[0]->m_xmf4x4World;
 		
 		player_position.x =  other_player.player_world._41;
 		player_position.y =  other_player.player_world._42;
 		player_position.z =  other_player.player_world._43;
+
+		//cout << player_position.x << " / " << player_position.y << " / " << player_position.z << endl;
 
 		cscene->m_ppHierarchicalGameObjects[0]->SetPosition(player_position.x, player_position.y, player_position.z); 
 

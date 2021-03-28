@@ -71,7 +71,7 @@ struct Player_world {
 #pragma pack(push,1)
 struct Thread_id {
 
-	short thread_id = 0;
+	int thread_num;
 
 };
 #pragma pack(pop)

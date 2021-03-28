@@ -26,7 +26,7 @@ struct Player_world {
 #pragma pack(push,1)
 struct Thread_id {
 
-	short thread_id;
+	int thread_num;
 
 };
 #pragma pack(pop)
@@ -54,7 +54,7 @@ public:
 
 	XMFLOAT3 player_position;
 
-	Thread_id id;
+	Thread_id thread_id;
 
 	int send_count = 0;
 	int recv_count = 0;

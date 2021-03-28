@@ -39,7 +39,7 @@ void Server::Server_send()
 		++send_count;
 	}
 	else {
-		retval = send(sock, (char*)&id, sizeof(id), 0);
+		retval = send(sock, (char*)&thread_id, sizeof(thread_id), 0);
 
 		player.player_world = cplayer->m_xmf4x4World;
 
@@ -53,9 +53,9 @@ void Server::Server_recv()
 {
 	//준비완료 받기
 	if (recv_count == 0) {
-		retval = recv(sock, (char*)Save_Data, sizeof BUFSIZE, 0);
+		retval = recv(sock, (char*)Save_Data, sizeof(Save_Data), 0);
 		cout << Save_Data << "받기완료" << endl;
-		retval = recv(sock, (char*)&id, sizeof(id), 0);
+		retval = recv(sock, (char*)&thread_id, sizeof(thread_id), 0);
 
 		++recv_count;
 	}
