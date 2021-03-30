@@ -3,10 +3,11 @@
 
 Mesh::Mesh()
 {
-	memset(meshName, NULL, sizeof(meshName));
+	::ZeroMemory(meshName, sizeof(meshName));
+	::ZeroMemory(&positionBuffer, sizeof(positionBuffer));
 }
 
-Mesh::Mesh(ID3D12Device* device, ID3D12GraphicsCommandList* commandList)
+Mesh::Mesh(ID3D12Device* device, ID3D12GraphicsCommandList* commandList) : Mesh()
 {
 
 }
@@ -99,4 +100,9 @@ void Mesh::OnPostRender(ID3D12GraphicsCommandList* commandList, void* pContext)
 const UINT Mesh::GetType()
 {
 	return this->type;
+}
+
+const char* Mesh::GetMeshName()
+{
+	return meshName;
 }

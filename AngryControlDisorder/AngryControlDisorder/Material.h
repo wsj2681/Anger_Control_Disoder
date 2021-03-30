@@ -17,11 +17,11 @@ class Material final
 {
 public:
 
-	Material() = default;
+	Material();
 	Material(int textures);
 	~Material();
 
-private:
+public:
 
 	int references = 0;
 

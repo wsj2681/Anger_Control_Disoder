@@ -198,4 +198,6 @@ void StandardMesh::ReleaseUploadBuffers()
 
 void StandardMesh::OnPreRender(ID3D12GraphicsCommandList* pd3dCommandList, void* pContext)
 {
+	D3D12_VERTEX_BUFFER_VIEW pVertexBufferViews[5] = { positionBufferView, textureCoord0BufferView, normalBufferView, tangentBufferView, biTangentBufferView };
+	pd3dCommandList->IASetVertexBuffers(slot, 5, pVertexBufferViews);
 }

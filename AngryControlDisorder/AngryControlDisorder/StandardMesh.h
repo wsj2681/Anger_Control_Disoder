@@ -1,5 +1,6 @@
 #pragma once
 #include "Mesh.h"
+
 class StandardMesh : public Mesh
 {
 public:

@@ -15,20 +15,22 @@ public:
 
 private:
 
+
+
 protected:
-	ID3D12RootSignature* m_pd3dGraphicsRootSignature = nullptr;
+	ID3D12RootSignature* graphicsRootSignature = nullptr;
 
-	static ID3D12DescriptorHeap* m_pd3dCbvSrvDescriptorHeap;
+	static ID3D12DescriptorHeap* cbvSrvDescriptorHeap;
 
-	static D3D12_CPU_DESCRIPTOR_HANDLE	m_d3dCbvCPUDescriptorStartHandle;
-	static D3D12_GPU_DESCRIPTOR_HANDLE	m_d3dCbvGPUDescriptorStartHandle;
-	static D3D12_CPU_DESCRIPTOR_HANDLE	m_d3dSrvCPUDescriptorStartHandle;
-	static D3D12_GPU_DESCRIPTOR_HANDLE	m_d3dSrvGPUDescriptorStartHandle;
+	static D3D12_CPU_DESCRIPTOR_HANDLE	cbvCPUDescriptorStartHandle;
+	static D3D12_GPU_DESCRIPTOR_HANDLE	cbvGPUDescriptorStartHandle;
+	static D3D12_CPU_DESCRIPTOR_HANDLE	srvCPUDescriptorStartHandle;
+	static D3D12_GPU_DESCRIPTOR_HANDLE	srvGPUDescriptorStartHandle;
 
-	static D3D12_CPU_DESCRIPTOR_HANDLE	m_d3dCbvCPUDescriptorNextHandle;
-	static D3D12_GPU_DESCRIPTOR_HANDLE	m_d3dCbvGPUDescriptorNextHandle;
-	static D3D12_CPU_DESCRIPTOR_HANDLE	m_d3dSrvCPUDescriptorNextHandle;
-	static D3D12_GPU_DESCRIPTOR_HANDLE	m_d3dSrvGPUDescriptorNextHandle;
+	static D3D12_CPU_DESCRIPTOR_HANDLE	cbvCPUDescriptorNextHandle;
+	static D3D12_GPU_DESCRIPTOR_HANDLE	cbvGPUDescriptorNextHandle;
+	static D3D12_CPU_DESCRIPTOR_HANDLE	srvCPUDescriptorNextHandle;
+	static D3D12_GPU_DESCRIPTOR_HANDLE	srvGPUDescriptorNextHandle;
 
 public:
 

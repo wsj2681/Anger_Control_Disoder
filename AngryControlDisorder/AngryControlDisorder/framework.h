@@ -66,7 +66,7 @@ extern UINT gnCbvSrvDescriptorIncrementSize;
 extern ID3D12Resource* CreateBufferResource(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, void* pData, UINT nBytes, D3D12_HEAP_TYPE d3dHeapType = D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, ID3D12Resource** uploadBuffer = nullptr);
 extern ID3D12Resource* CreateTextureResourceFromDDSFile(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, wchar_t* fileName, ID3D12Resource** uploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 extern ID3D12Resource* CreateTextureResourceFromWICFile(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, wchar_t* fileName, ID3D12Resource** uploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-
+extern D3D12_SHADER_RESOURCE_VIEW_DESC GetShaderResourceViewDesc(D3D12_RESOURCE_DESC d3dResourceDesc, UINT nTextureType);
 extern BYTE ReadStringFromFile(FILE* pInFile, char* pstrToken);
 extern int ReadIntegerFromFile(FILE* pInFile);
 extern float ReadFloatFromFile(FILE* pInFile);
@@ -114,6 +114,12 @@ extern float ReadFloatFromFile(FILE* pInFile);
 #define DIR_RIGHT				0x08
 #define DIR_UP					0x10
 #define DIR_DOWN				0x20
+
+#define RESOURCE_TEXTURE2D			0x01
+#define RESOURCE_TEXTURE2D_ARRAY	0x02	//[]
+#define RESOURCE_TEXTURE2DARRAY		0x03
+#define RESOURCE_TEXTURE_CUBE		0x04
+#define RESOURCE_BUFFER				0x05
 
 #define SAFE_RELEASE(x) if((x)) (x)->Release(); (x) = nullptr;
 #define DELETE_CLASS(x) if((x)) delete (x); (x) = nullptr;

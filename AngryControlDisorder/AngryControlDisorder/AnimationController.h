@@ -27,7 +27,7 @@ public:
 
 	ID3D12Resource** cbSkinningBoneTransforms = nullptr;
 
-	XMFLOAT4X4** MappedSkinningBoneTransforms = nullptr;
+	XMFLOAT4X4** cbMappedSkinningBoneTransforms = nullptr;
 
 public:
 

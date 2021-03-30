@@ -23,19 +23,19 @@ AnimationController::AnimationController(ID3D12Device* pd3dDevice, ID3D12Graphic
 		skinnedMeshes.data()[i] = pModel->skinnedMeshs[i];
 	}
 	cbSkinningBoneTransforms = new ID3D12Resource * [skinnedMeshCount];
-	MappedSkinningBoneTransforms = new XMFLOAT4X4 * [skinnedMeshCount];
+	cbMappedSkinningBoneTransforms = new XMFLOAT4X4 * [skinnedMeshCount];
 
 	UINT ncbElementBytes = (((sizeof(XMFLOAT4X4) * SKINNED_ANIMATION_BONES) + 255) & ~255); //256ÀÇ ¹è¼ö
 	for (int i = 0; i < skinnedMeshCount; i++)
 	{
 		cbSkinningBoneTransforms[i] = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
-		cbSkinningBoneTransforms[i]->Map(0, nullptr, (void**)&MappedSkinningBoneTransforms[i]);
+		cbSkinningBoneTransforms[i]->Map(0, nullptr, (void**)&cbMappedSkinningBoneTransforms[i]);
 	}
 }
 
 AnimationController::~AnimationController()
 {
-	animationTracks.empty();
+	animationTracks.clear();
 
 	for (int i = 0; i < skinnedMeshCount; ++i)
 	{
@@ -44,15 +44,20 @@ AnimationController::~AnimationController()
 	}
 
 	DELETE_ARRAY(cbSkinningBoneTransforms);
-	DELETE_ARRAY(MappedSkinningBoneTransforms);
+	DELETE_ARRAY(cbMappedSkinningBoneTransforms);
 
 	SAFE_RELEASE(animationSets);
-	skinnedMeshes.empty();
+	skinnedMeshes.clear();
 
 }
 
 void AnimationController::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 {
+	for (int i = 0; i < (int)skinnedMeshes.size(); i++)
+	{
+		skinnedMeshes.data()[i]->cbSkinningBoneTransforms = cbSkinningBoneTransforms[i];
+		skinnedMeshes.data()[i]->cbMappedSkinningBoneTransforms = cbMappedSkinningBoneTransforms[i];
+	}
 }
 
 void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet)
@@ -113,7 +118,7 @@ void AnimationController::AdvanceTime(float fElapsedTime, Object* pRootGameObjec
 		for (int j = 0; j < animationSets->animatedBoneFrameCount; j++)
 		{
 			XMFLOAT4X4 xmf4x4Transform = Matrix4x4::Zero();
-			for (int k = 0; k < animationTracks.size(); k++)
+			for (int k = 0; k < (int)animationTracks.size(); k++)
 			{
 				if (animationTracks.data()[k].enable)
 				{
