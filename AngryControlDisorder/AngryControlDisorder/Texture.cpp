@@ -1,6 +1,10 @@
 #include "framework.h"
 #include "Texture.h"
 
+Texture::Texture()
+{
+}
+
 Texture::Texture(int nTextureResources, UINT nResourceType, int nSamplers)
 {
 	textureCount = nTextureResources;

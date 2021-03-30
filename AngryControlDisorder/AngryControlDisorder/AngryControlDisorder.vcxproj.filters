@@ -134,6 +134,10 @@
     <ClInclude Include="AnimationTrack.h">
       <Filter>소스 파일\03 Object\05 Animation</Filter>
     </ClInclude>
+    <ClInclude Include="ModelInfo.h" />
+    <ClInclude Include="StandartMesh.h">
+      <Filter>소스 파일\03 Object\01 Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AngryControlDisorder.rc">
@@ -211,6 +215,12 @@
     </ClCompile>
     <ClCompile Include="AnimationTrack.cpp">
       <Filter>소스 파일\03 Object\05 Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelInfo.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="StandartMesh.cpp">
+      <Filter>소스 파일\03 Object\01 Mesh</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

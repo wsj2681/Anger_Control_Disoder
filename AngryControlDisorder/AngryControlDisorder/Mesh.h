@@ -1,4 +1,12 @@
 #pragma once
+
+#define VERTEXT_POSITION				0x0001
+#define VERTEXT_COLOR					0x0002
+#define VERTEXT_NORMAL					0x0004
+#define VERTEXT_TANGENT					0x0008
+#define VERTEXT_TEXTURE_COORD0			0x0010
+#define VERTEXT_TEXTURE_COORD1			0x0020
+
 class Mesh
 {
 public:
@@ -34,7 +42,7 @@ protected:
 	D3D12_VERTEX_BUFFER_VIEW positionBufferView;
 
 	int	subMeshes = 0;
-	int* subSetIndiceCount = nullptr;
+	int* subSetIndexCount = nullptr;
 	UINT** subSetIndices = nullptr;
 
 	ID3D12Resource** subSetIndexBuffers = nullptr;

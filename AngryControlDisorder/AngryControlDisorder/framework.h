@@ -115,5 +115,6 @@ extern float ReadFloatFromFile(FILE* pInFile);
 #define DIR_UP					0x10
 #define DIR_DOWN				0x20
 
-#define SAFE_RELEASE(x) if((x)) (x)->Release();
-#define DELETE_CLASS(x) if((x)) delete (x);
+#define SAFE_RELEASE(x) if((x)) (x)->Release(); (x) = nullptr;
+#define DELETE_CLASS(x) if((x)) delete (x); (x) = nullptr;
+#define DELETE_ARRAY(x) if((x)) delete[] (x); (x) = nullptr;

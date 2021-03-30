@@ -20,21 +20,15 @@ Mesh::~Mesh()
 		for (int i = 0; i < subMeshes; ++i)
 		{
 			SAFE_RELEASE(subSetIndexBuffers[i]);
-			if (subSetIndices[i])
-			{
-				delete[] subSetIndices[i];
-			}
+			DELETE_ARRAY(subSetIndices);
 		}
 
-		if (subSetIndexBuffers) delete[] subSetIndexBuffers;
-		if (subSetIndexBufferViews) delete[] subSetIndexBufferViews;
-
-		if (subSetIndiceCount) delete[] subSetIndiceCount;
-		if (subSetIndices) delete[] subSetIndices;
-
+		DELETE_ARRAY(subSetIndexBuffers);
+		DELETE_ARRAY(subSetIndexBufferViews);
+		DELETE_ARRAY(subSetIndexCount);
+		DELETE_ARRAY(subSetIndices);
 	}
-
-	if (positions) delete[] positions;
+	DELETE_ARRAY(positions);
 }
 
 void Mesh::AddRef()
@@ -66,17 +60,13 @@ void Mesh::ReleaseUploadBuffers()
 {
 	SAFE_RELEASE(positionUploadBuffer);
 
-	if ((subMeshes > 0) && subSetIndexUploadBuffers)
+	if ((subSetIndices > 0) && subSetIndexUploadBuffers)
 	{
 		for (int i = 0; i < subMeshes; ++i)
 		{
 			SAFE_RELEASE(subSetIndexUploadBuffers[i]);
 		}
-		if (subSetIndexUploadBuffers)
-		{
-			delete[] subSetIndexUploadBuffers;
-		}
-		subSetIndexUploadBuffers = nullptr;
+		DELETE_ARRAY(subSetIndexUploadBuffers);
 	}
 }
 
@@ -94,7 +84,7 @@ void Mesh::Render(ID3D12GraphicsCommandList* commandList, int nSubSet)
 	if ((subMeshes > 0) && (nSubSet < subMeshes))
 	{
 		commandList->IASetIndexBuffer(&(subSetIndexBufferViews[nSubSet]));
-		commandList->DrawIndexedInstanced(subSetIndiceCount[nSubSet], 1, 0, 0, 0);
+		commandList->DrawIndexedInstanced(subSetIndexCount[nSubSet], 1, 0, 0, 0);
 	}
 	else
 	{
