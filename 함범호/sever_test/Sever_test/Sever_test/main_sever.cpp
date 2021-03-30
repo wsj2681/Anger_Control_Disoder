@@ -18,11 +18,14 @@ DWORD WINAPI PlayerThread(LPVOID arg);
 
 // Thread ID
 DWORD dwThreadID[MAXTHREAD];
-static int idIndex = 0;
+
+//스레드 갯수
+static int idIndex = 1;
+
 HANDLE hThread[MAXTHREAD];
 int threadCount = 0;
 
-Thread_id id;
+
 
 
 
@@ -94,8 +97,10 @@ int main()
 DWORD WINAPI PlayerThread(LPVOID arg)
 {
 	int retval;
-	int threadIndex = idIndex;
+	Thread_id thread_id;
+	thread_id.thread_num = idIndex;
 	idIndex++;
+
 	SOCKET client_sock = (SOCKET)arg;
 	SOCKADDR_IN client_addr;
 	int client_addr_len;
@@ -106,7 +111,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	Player_world player;
 
 	Player_world other_player;
-	char thread_count = 0;
+	
 	char keyboard;
 	
 	////쓰레드 카운터
@@ -128,40 +133,42 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	//id.thread_id =thread_count;
 
 	
-
-	retval = send(client_sock, (char*)&id, sizeof(id), 0);
+	cout << "lll thread_id = " << thread_id.thread_num << endl;
+	retval = send(client_sock, (char*)&thread_id, sizeof(thread_id), 0);
+	cout << "llll  thread_id = " << thread_id.thread_num << endl;
 	///////////////////////////
 
 	
 
 	while (true) {
 
-		//EnterCriticalSection(&cs);
+		//스레드 아이디 초기화
+		thread_id.thread_num = 0;
 		
-		retval = recv(client_sock, (char*)&id, sizeof(id), 0);
-		cout << "thread_id = "<<id.thread_id << endl;
-		cout << "thread_count = " << thread_count << endl;
+		retval = recv(client_sock, (char*)&thread_id, sizeof(thread_id), 0);
 		
-		retval = recv(client_sock, (char*)&player, sizeof(player), 0);
-		cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
 		
-		//retval = send(client_sock, (char*)&other_player, sizeof(other_player), 0);
 		
-
-		if (id.thread_id == 0) {
+		
+		EnterCriticalSection(&cs);
+		if (thread_id.thread_num == 1) {
 			retval = recv(client_sock, (char*)&player, sizeof(player), 0);
-			cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
+			//cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
 			retval = send(client_sock, (char*)&other_player, sizeof(other_player), 0);
-		}
-		else if (id.thread_id == 1) {
-			
-			retval = recv(client_sock, (char*)&other_player, sizeof(other_player), 0);
 			cout << other_player.player_world._41 << ", " << other_player.player_world._42 << ", " << other_player.player_world._43 << endl;
 
+		}
+		else if (thread_id.thread_num == 2) {
+			
+			retval = recv(client_sock, (char*)&other_player, sizeof(other_player), 0);
+			//cout << other_player.player_world._41 << ", " << other_player.player_world._42 << ", " << other_player.player_world._43 << endl;
+
 			retval = send(client_sock, (char*)&player, sizeof(player), 0);
+			cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
+
 		}
 
-		//LeaveCriticalSection(&cs);
+		LeaveCriticalSection(&cs);
 		
 
 		//////월드좌표계 초기화
