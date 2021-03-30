@@ -53,6 +53,9 @@ public:
 	Player_world save_world;
 
 	XMFLOAT3 player_position;
+	XMFLOAT3 player_right;
+	XMFLOAT3 player_up;
+	XMFLOAT3 player_look;
 
 	Thread_id thread_id;
 

@@ -18,7 +18,7 @@ struct SRVROOTARGUMENTINFO
 class Texture final
 {
 public:
-	Texture() = default;
+	Texture();
 	Texture(int nTextureResources = 1, UINT nResourceType = RESOURCE_TEXTURE2D, int nSamplers = 0);
 	~Texture();
 

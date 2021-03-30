@@ -3,6 +3,16 @@
 #include "Object.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "Scene.h"
+#include "StandardShader.h"
+
+
+Shader* Material::skinnedAnimationShader = nullptr;
+Shader* Material::standardShader = nullptr;
+
+Material::Material()
+{
+}
 
 Material::Material(int textures)
 {
@@ -75,12 +85,12 @@ void Material::ReleaseUploadBuffers()
 
 void Material::SetStandardShader()
 {
-	SetShader(standardShader);
+	Material::SetShader(standardShader);
 }
 
 void Material::SetSkinnedAnimationShader()
 {
-	SetShader(skinnedAnimationShader);
+	Material::SetShader(skinnedAnimationShader);
 }
 
 void Material::LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nType, UINT nRootParameter, _TCHAR* pwstrTextureName, Texture** ppTexture, Object* pParent, FILE* pInFile, Shader* pShader)

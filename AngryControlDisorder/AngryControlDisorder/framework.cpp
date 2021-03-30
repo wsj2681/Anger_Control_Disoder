@@ -196,30 +196,74 @@ ID3D12Resource* CreateTextureResourceFromWICFile(ID3D12Device* device, ID3D12Gra
 	return(pd3dTexture);
 }
 
-int ReadIntegerFromFile(FILE* pInFile)
+D3D12_SHADER_RESOURCE_VIEW_DESC GetShaderResourceViewDesc(D3D12_RESOURCE_DESC d3dResourceDesc, UINT nTextureType)
 {
-	ASSERT(pInFile != nullptr, "framework/ReadIntegerFromFile/pInFile is not be nullptr\n");
-	int nValue = 0;
-	UINT nReads = (UINT)::fread(&nValue, sizeof(int), 1, pInFile);
-	return(nValue);
+	D3D12_SHADER_RESOURCE_VIEW_DESC d3dShaderResourceViewDesc;
+	d3dShaderResourceViewDesc.Format = d3dResourceDesc.Format;
+	d3dShaderResourceViewDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	switch (nTextureType)
+	{
+	case RESOURCE_TEXTURE2D: //(d3dResourceDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE2D)(d3dResourceDesc.DepthOrArraySize == 1)
+	case RESOURCE_TEXTURE2D_ARRAY:
+		d3dShaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		d3dShaderResourceViewDesc.Texture2D.MipLevels = -1;
+		d3dShaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
+		d3dShaderResourceViewDesc.Texture2D.PlaneSlice = 0;
+		d3dShaderResourceViewDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+		break;
+	case RESOURCE_TEXTURE2DARRAY: //(d3dResourceDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE2D)(d3dResourceDesc.DepthOrArraySize != 1)
+		d3dShaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
+		d3dShaderResourceViewDesc.Texture2DArray.MipLevels = -1;
+		d3dShaderResourceViewDesc.Texture2DArray.MostDetailedMip = 0;
+		d3dShaderResourceViewDesc.Texture2DArray.PlaneSlice = 0;
+		d3dShaderResourceViewDesc.Texture2DArray.ResourceMinLODClamp = 0.0f;
+		d3dShaderResourceViewDesc.Texture2DArray.FirstArraySlice = 0;
+		d3dShaderResourceViewDesc.Texture2DArray.ArraySize = d3dResourceDesc.DepthOrArraySize;
+		break;
+	case RESOURCE_TEXTURE_CUBE: //(d3dResourceDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE2D)(d3dResourceDesc.DepthOrArraySize == 6)
+		d3dShaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+		d3dShaderResourceViewDesc.TextureCube.MipLevels = -1;
+		d3dShaderResourceViewDesc.TextureCube.MostDetailedMip = 0;
+		d3dShaderResourceViewDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+		break;
+	case RESOURCE_BUFFER: //(d3dResourceDesc.Dimension == D3D12_RESOURCE_DIMENSION_BUFFER)
+		d3dShaderResourceViewDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
+		d3dShaderResourceViewDesc.Buffer.FirstElement = 0;
+		d3dShaderResourceViewDesc.Buffer.NumElements = 0;
+		d3dShaderResourceViewDesc.Buffer.StructureByteStride = 0;
+		d3dShaderResourceViewDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
+		break;
+	}
+	return d3dShaderResourceViewDesc;
 }
 
-float ReadFloatFromFile(FILE* pInFile)
-{
-	ASSERT(pInFile != nullptr, "framework/ReadFloatFromFile/pInFile is not be nullptr\n");
-	float fValue = 0;
-	UINT nReads = (UINT)::fread(&fValue, sizeof(float), 1, pInFile);
-	return(fValue);
-}
-
-BYTE ReadStringFromFile(FILE* pInFile, char* pstrToken)
-{
-	ASSERT(pInFile != nullptr, "framework/ReadStringFromFile/pInFile is not be nullptr\n");
-	BYTE nStrLength = 0;
-	UINT nReads = 0;
-	nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pInFile);
-	nReads = (UINT)::fread(pstrToken, sizeof(char), nStrLength, pInFile);
-	pstrToken[nStrLength] = '\0';
-
-	return(nStrLength);
-}
+//int ReadIntegerFromFile(FILE* pInFile)
+//{
+//	ASSERT(pInFile != nullptr, "framework/ReadIntegerFromFile/pInFile is not be nullptr\n");
+//
+//	int nValue = 0;
+//	UINT nReads = (UINT)::fread(&nValue, sizeof(int), 1, pInFile);
+//	return(nValue);
+//}
+//
+//float ReadFloatFromFile(FILE* pInFile)
+//{
+//	ASSERT(pInFile != nullptr, "framework/ReadFloatFromFile/pInFile is not be nullptr\n");
+//
+//	float fValue = 0;
+//	UINT nReads = (UINT)::fread(&fValue, sizeof(float), 1, pInFile);
+//	return(fValue);
+//}
+//
+//BYTE ReadStringFromFile(FILE* pInFile, char* pstrToken)
+//{
+//	ASSERT(pInFile != nullptr, "framework/ReadStringFromFile/pInFile is not be nullptr\n");
+//
+//	BYTE nStrLength = 0;
+//	UINT nReads = 0;
+//	nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pInFile);
+//	nReads = (UINT)::fread(pstrToken, sizeof(char), nStrLength, pInFile);
+//	pstrToken[nStrLength] = '\0';
+//
+//	return(nStrLength);
+//}

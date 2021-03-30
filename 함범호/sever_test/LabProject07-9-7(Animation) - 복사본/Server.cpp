@@ -55,8 +55,10 @@ void Server::Server_recv()
 	if (recv_count == 0) {
 		retval = recv(sock, (char*)Save_Data, sizeof(Save_Data), 0);
 		cout << Save_Data << "받기완료" << endl;
-		retval = recv(sock, (char*)&thread_id, sizeof(thread_id), 0);
 
+		cout << "thread_id = " << thread_id.thread_num << endl;
+		retval = recv(sock, (char*)&thread_id, sizeof(thread_id), 0);
+		cout << "thread_id = " << thread_id.thread_num << endl;
 		++recv_count;
 	}
 	else {
@@ -69,7 +71,26 @@ void Server::Server_recv()
 		player_position.y =  other_player.player_world._42;
 		player_position.z =  other_player.player_world._43;
 
+		player_right.x = other_player.player_world._11;
+		player_right.y = other_player.player_world._12;
+		player_right.z = other_player.player_world._13;
+
+		player_up.x = other_player.player_world._21;
+		player_up.y = other_player.player_world._22;
+		player_up.z = other_player.player_world._23;
+
+		player_look.x = other_player.player_world._31;
+		player_look.y = other_player.player_world._32;
+		player_look.z = other_player.player_world._33;
+
+
+		cout << player_position.x << " / " << player_position.y << " / " << player_position.z << endl;
+
+
 		cscene->m_ppHierarchicalGameObjects[0]->SetPosition(player_position.x, player_position.y, player_position.z); 
+		cscene->m_ppHierarchicalGameObjects[0]->SetRight(player_right.x, player_right.y, player_right.z);
+		cscene->m_ppHierarchicalGameObjects[0]->SetUp(player_up.x, player_up.y, player_up.z);
+		cscene->m_ppHierarchicalGameObjects[0]->SetLook(player_look.x, player_look.y, player_look.z);
 
 
 

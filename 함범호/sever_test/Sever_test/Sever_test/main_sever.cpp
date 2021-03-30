@@ -25,7 +25,8 @@ static int idIndex = 1;
 HANDLE hThread[MAXTHREAD];
 int threadCount = 0;
 
-
+Player_world thread_num_1_player;
+Player_world thread_num_2_player;
 
 
 
@@ -111,6 +112,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	Player_world player;
 
 	Player_world other_player;
+
+	
 	
 	char keyboard;
 	
@@ -138,38 +141,81 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	cout << "llll  thread_id = " << thread_id.thread_num << endl;
 	///////////////////////////
 
-	
+	////월드좌표계 초기화
+	XMStoreFloat4x4(&other_player.player_world, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_world, XMMatrixIdentity());
+
+	XMStoreFloat4x4(&thread_num_1_player.player_world, XMMatrixIdentity());
+	XMStoreFloat4x4(&thread_num_2_player.player_world, XMMatrixIdentity());
+
 
 	while (true) {
 
 		//스레드 아이디 초기화
 		thread_id.thread_num = 0;
 		
-		retval = recv(client_sock, (char*)&thread_id, sizeof(thread_id), 0);
-		
-		
-		
-		
-		EnterCriticalSection(&cs);
-		if (thread_id.thread_num == 1) {
-			retval = recv(client_sock, (char*)&player, sizeof(player), 0);
-			//cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
-			retval = send(client_sock, (char*)&other_player, sizeof(other_player), 0);
-			cout << other_player.player_world._41 << ", " << other_player.player_world._42 << ", " << other_player.player_world._43 << endl;
+		recv(client_sock, (char*)&thread_id, sizeof(thread_id), 0);
+		recv(client_sock, (char*)&player, sizeof(player), 0);
+
+		/*if (thread_id.thread_num == 1) {
+			
+			thread_num_1_player = player;
+			cout << "thread_1 of thread_2 value = " << thread_id.thread_num << " / " << thread_num_2_player.player_world._41 << " ," << thread_num_2_player.player_world._42 << ", " << thread_num_2_player.player_world._43 << endl;
 
 		}
 		else if (thread_id.thread_num == 2) {
 			
-			retval = recv(client_sock, (char*)&other_player, sizeof(other_player), 0);
+			thread_num_2_player = player;
+			cout << "thread_2 of thread_1 value = " << thread_id.thread_num << " / " << thread_num_1_player.player_world._41 << " ," << thread_num_1_player.player_world._42 << ", " << thread_num_1_player.player_world._43 << endl;
+
+		}*/
+		
+
+		
+
+		EnterCriticalSection(&cs);
+		
+		if (thread_id.thread_num == 1) {
+			//retval = recv(client_sock, (char*)&player, sizeof(player), 0);
+			//cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
+
+			//cout <<"thread_id = " <<thread_id.thread_num <<" / "<<other_player.player_world._41 << "/ " << other_player.player_world._42 << "/ " << other_player.player_world._43 << endl;
+
+			
+			thread_num_1_player = player;
+			send(client_sock, (char*)&thread_num_2_player, sizeof(thread_num_2_player), 0);
+			cout << "thread_1 of thread_2 value = " << thread_id.thread_num << " / " << thread_num_2_player.player_world._41 << " ," << thread_num_2_player.player_world._42 << ", " << thread_num_2_player.player_world._43 << endl;
+		
+			//cout << other_player.player_world._41 << ", " << other_player.player_world._42 << ", " << other_player.player_world._43 << endl;
+			
+			//cout << "thread_id = " << thread_id.thread_num << " / " << thread_num_2_player.player_world._41 << " ," << thread_num_2_player.player_world._42 << ", " << thread_num_2_player.player_world._43 << endl;
+
+
+		}
+		else if (thread_id.thread_num == 2) {
+			
+			//retval = recv(client_sock, (char*)&other_player, sizeof(other_player), 0);
 			//cout << other_player.player_world._41 << ", " << other_player.player_world._42 << ", " << other_player.player_world._43 << endl;
 
-			retval = send(client_sock, (char*)&player, sizeof(player), 0);
-			cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
+			//cout << "thread_id = " << thread_id.thread_num <<" / "<< player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;
 
+			
+			thread_num_2_player = player;
+			send(client_sock, (char*)&thread_num_1_player, sizeof(thread_num_1_player), 0);
+			//cout << "thread_id = " << thread_id.thread_num << " / " << thread_num_1_player.player_world._41 << " ," << thread_num_1_player.player_world._42 << ", " << thread_num_1_player.player_world._43 << endl;
+			cout << "thread_2 of thread_1 value = " << thread_id.thread_num << " / " << thread_num_1_player.player_world._41 << " ," << thread_num_1_player.player_world._42 << ", " << thread_num_1_player.player_world._43 << endl;
+
+		
 		}
 
 		LeaveCriticalSection(&cs);
 		
+		
+
+		/*cout << other_player.player_world._41 << ", " << other_player.player_world._42 << ", " << other_player.player_world._43 << endl;
+		cout << player.player_world._41 << " ," << player.player_world._42 << ", " << player.player_world._43 << endl;*/
+
+
 
 		//////월드좌표계 초기화
 		//XMStoreFloat4x4(&other_player.player_world, XMMatrixIdentity());

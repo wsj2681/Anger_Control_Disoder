@@ -112,7 +112,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/boxingComplete.bin", NULL);
 	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
-	m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
+	//m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
 	m_ppHierarchicalGameObjects[0]->SetPosition(0.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 500.0f);
 
 	if (pAngrybotModel) delete pAngrybotModel;

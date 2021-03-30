@@ -5,7 +5,9 @@ class Material;
 class Texture;
 class Shader;
 class Camera;
-
+class AnimationController;
+class SkinnedMesh;
+class ModelInfo;
 
 class Object
 {
@@ -43,6 +45,10 @@ protected:
 
 public:
 
+	AnimationController* skinnedAnimationController = nullptr;
+
+public:
+
 	void AddRef();
 	void Release();
 
@@ -62,6 +68,25 @@ public:
 	virtual void ReleaseUploadBuffers();
 
 	void UpdateTransform(XMFLOAT4X4* parent = nullptr);
+
+public: /* Animation Function */
+
+	SkinnedMesh* FindSkinnedMesh(const char* skinnedMeshName);
+	void FindAndSetSkinnedMesh(SkinnedMesh** skinnedMeshs, int* skinnedMeshCount);
+
+	void SetTrackAnimationSet(int animationTrack, int animationSet);
+	void SetTrackAnimationPosition(int animationTrack, float position);
+
+	void LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, Object* pParent, FILE* pInFile, Shader* pShader);
+
+	static void LoadAnimationFromFile(FILE* pInFile, ModelInfo* pLoadedModel);
+	static Object* LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, Object* pParent, FILE* pInFile, Shader* pShader, int* pnSkinnedMeshes);
+
+	static ModelInfo* LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, const char* pstrFileName, Shader* pShader);
+
+	static void PrintFrameInfo(Object* pGameObject, Object* pParent);
+
+public: /* Get Set */
 
 	void SetMesh(Mesh* mesh);
 	void SetShader(Shader* shader);
@@ -108,6 +133,9 @@ public:
 
 	Texture* FindReplicatedTexture(_TCHAR* textureName);
 	UINT GetMeshType();
-	/* Animation Function */
+
+	const XMFLOAT4X4& GetToParent();
+	void SetToParent(const XMFLOAT4X4& matrix);
+
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Timer.h"
+#include "Scene.h"
 
 class Engine final
 {
@@ -49,7 +50,7 @@ private:
 
 	Timer					m_GameTimer;
 
-	//CScene* m_pScene = nullptr;
+	Scene* m_pScene = nullptr;
 	//CPlayer* m_pPlayer = nullptr;
 	//CCamera* m_pCamera = nullptr;
 

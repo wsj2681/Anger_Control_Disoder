@@ -743,7 +743,24 @@ void CGameObject::SetPosition(float x, float y, float z)
 
 	UpdateTransform(NULL);
 }
-
+void CGameObject::SetRight(float x, float y, float z)
+{
+	m_xmf4x4ToParent._11 = x;
+	m_xmf4x4ToParent._12 = y;
+	m_xmf4x4ToParent._13 = z;
+}
+void CGameObject::SetUp(float x, float y, float z)
+{
+	m_xmf4x4ToParent._21 = x;
+	m_xmf4x4ToParent._22 = y;
+	m_xmf4x4ToParent._23 = z;
+}
+void CGameObject::SetLook(float x, float y, float z)
+{
+	m_xmf4x4ToParent._31 = x;
+	m_xmf4x4ToParent._32 = y;
+	m_xmf4x4ToParent._33 = z;
+}
 void CGameObject::SetPosition(XMFLOAT3 xmf3Position)
 {
 	SetPosition(xmf3Position.x, xmf3Position.y, xmf3Position.z);

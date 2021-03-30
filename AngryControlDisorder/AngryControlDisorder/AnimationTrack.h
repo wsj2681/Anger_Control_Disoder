@@ -1,9 +1,9 @@
 #pragma once
-class CAnimationTrack
+class AnimationTrack
 {
 public:
-	CAnimationTrack() = default;
-	~CAnimationTrack() = default;
+	AnimationTrack() = default;
+	~AnimationTrack() = default;
 
 public:
 	bool 							enable = true;

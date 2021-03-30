@@ -57,6 +57,9 @@
     <Filter Include="소스 파일\06 Light">
       <UniqueIdentifier>{040a86c7-d761-4411-bb54-dbfe68d40237}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\97 HLSL">
+      <UniqueIdentifier>{857b6c1b-6dd6-4edb-94ad-0aafa9704c8d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AngryControlDisorder.h">
@@ -133,6 +136,18 @@
     </ClInclude>
     <ClInclude Include="AnimationTrack.h">
       <Filter>소스 파일\03 Object\05 Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardMesh.h">
+      <Filter>소스 파일\03 Object\01 Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMesh.h">
+      <Filter>소스 파일\03 Object\01 Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationController.h">
+      <Filter>소스 파일\03 Object\05 Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelInfo.h">
+      <Filter>소스 파일\03 Object\00 GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -212,5 +227,25 @@
     <ClCompile Include="AnimationTrack.cpp">
       <Filter>소스 파일\03 Object\05 Animation</Filter>
     </ClCompile>
+    <ClCompile Include="StandardMesh.cpp">
+      <Filter>소스 파일\03 Object\01 Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMesh.cpp">
+      <Filter>소스 파일\03 Object\01 Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationController.cpp">
+      <Filter>소스 파일\03 Object\05 Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelInfo.cpp">
+      <Filter>소스 파일\03 Object\00 GameObject</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Light.hlsl">
+      <Filter>소스 파일\97 HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Shader.hlsl">
+      <Filter>소스 파일\97 HLSL</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
