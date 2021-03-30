@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include "Shader.h"
+#include "Scene.h"
 #include "HPBar.h"
 
 UIObject::UIObject(const XMFLOAT2& position, const float& width, const float& height)
@@ -16,6 +18,13 @@ XMFLOAT2& UIObject::GetPosition()
 void UIObject::SetPosition(const XMFLOAT2& position)
 {
 	this->position = position;
+}
+
+void UIObject::SetMaterial(int nMaterial, CMaterial* material)
+{
+	if (this->material[nMaterial]) material[nMaterial].Release();
+	this->material[nMaterial] = material;
+	if (this->material[nMaterial]) material[nMaterial].AddRef();
 }
 
 void UIObject::Update()
@@ -36,6 +45,25 @@ void UIObject::Render(ID3D12GraphicsCommandList* commandList, ID3D12DescriptorHe
 
 }
 
+void HPBar::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(VS_CB_UI_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	m_pd3dcbHPBar = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbHPBar->Map(0, NULL, (void**)&m_pcbHPBar);
+}
+
+void HPBar::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	unsigned int hp;
+	
+	XMStoreInt(&hp, XMLoadInt(&this->maxHp));
+	::memcpy(&m_pcbHPBar->hp, &hp, sizeof(unsigned int));
+
+	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbHPBar->GetGPUVirtualAddress();
+	pd3dCommandList->SetGraphicsRootConstantBufferView(5, d3dGpuVirtualAddress);
+}
+
 //void UIObject::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 //{
 //	if (m_nTextureType == RESOURCE_TEXTURE2D_ARRAY)
@@ -51,13 +79,47 @@ void UIObject::Render(ID3D12GraphicsCommandList* commandList, ID3D12DescriptorHe
 //	}
 //}
 
-HPBar::HPBar()
+HPBar::HPBar(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature)
 {
+	CreateShaderVariables(device, commandList);
+
+	CTexture* hpBarTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	hpBarTexture->LoadTextureFromFile(device, commandList, L"UI/hpbar.png", 0);
+
+	HPUIShader* hpuishader = new HPUIShader();
+	hpuishader->CreateShader(device, commandList, rootSignature);
+	hpuishader->CreateShaderVariables(device, commandList, rootSignature);
+
+	CScene::CreateShaderResourceViews(device, hpBarTexture, 10, false);
+
+	CMaterial* hpBarMaterial = new CMaterial(1);
+	hpBarMaterial[0].SetTexture(hpBarTexture, 0);
+	hpBarMaterial[0].SetShader(hpuishader);
+
+	SetMaterial(0, hpBarMaterial);
+
 	UIObject::UIObject();
 }
 
-HPBar::HPBar(const XMFLOAT2& position, const float& width, const float& height)
+HPBar::HPBar(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, const XMFLOAT2& position, const float& width, const float& height)
 {
+	CreateShaderVariables(device, commandList);
+
+	CTexture* hpBarTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	hpBarTexture->LoadTextureFromFile(device, commandList, L"Model/Textures/Chair.dds", 1);
+
+	HPUIShader* hpuishader = new HPUIShader();
+	hpuishader->CreateShader(device, commandList, rootSignature);
+	hpuishader->CreateShaderVariables(device, commandList, rootSignature);
+
+	CScene::CreateShaderResourceViews(device, hpBarTexture, 16, false);
+
+	CMaterial* hpBarMaterial = new CMaterial(1);
+	hpBarMaterial[0].SetTexture(hpBarTexture, 0);
+	hpBarMaterial[0].SetShader(hpuishader);
+
+	SetMaterial(0, hpBarMaterial);
+
 	UIObject::UIObject(position, width, height);
 }
 

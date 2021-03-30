@@ -6,19 +6,19 @@ struct MATERIAL
 	float4					m_cEmissive;
 };
 
-cbuffer cbCameraInfo : register(b1)
+cbuffer cbCameraInfo : register(b0)
 {
-	matrix					gmtxView : packoffset(c0);
-	matrix					gmtxProjection : packoffset(c4);
-	float3					gvCameraPosition : packoffset(c8);
-	matrix					gmtxOrtho : packoffset(c12);
+	matrix					gmtxView;
+	matrix					gmtxProjection;
+	float3					gvCameraPosition;
+	matrix					gmtxOrtho;
 };
 
-cbuffer cbGameObjectInfo : register(b2)
+cbuffer cbGameObjectInfo : register(b1)
 {
-	matrix					gmtxGameObject : packoffset(c0);
-	MATERIAL				gMaterial : packoffset(c4);
-	uint					gnTexturesMask : packoffset(c8);
+	matrix					gmtxGameObject;
+	MATERIAL				gMaterial;
+	uint					gnTexturesMask;
 };
 
 #include "Light.hlsl"
@@ -112,12 +112,12 @@ float4 PSStandard(VS_STANDARD_OUTPUT input) : SV_TARGET
 #define MAX_VERTEX_INFLUENCES			4
 #define SKINNED_ANIMATION_BONES			128
 
-cbuffer cbBoneOffsets : register(b4)
+cbuffer cbBoneOffsets : register(b3)
 {
 	float4x4 gpmtxBoneOffsets[SKINNED_ANIMATION_BONES];
 };
 
-cbuffer cbBoneTransforms : register(b5)
+cbuffer cbBoneTransforms : register(b4)
 {
 	float4x4 gpmtxBoneTransforms[SKINNED_ANIMATION_BONES];
 };
@@ -247,19 +247,17 @@ float4 PSSkyBox(VS_SKYBOX_CUBEMAP_OUTPUT input) : SV_TARGET
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-Texture2D<float4> gtxUI : register(t10);
+Texture2D gtxUI : register(t10);
 
-cbuffer UI_INFO : register(b6)
+cbuffer UI_INFO : register(b5)
 {
-	float uv1 : packoffset(c0);
-	float uv2 : packoffset(c4);
-	int hp : packoffset(c8);
-	int enemyHp : packoffset(c12);
+	int hp;
 };
 
 struct VS_UI_INPUT
 {
 	float3 position : POSITION;
+	float2 uv : TEXCOORD;
 };
 
 struct VS_UI_OUTPUT
@@ -280,7 +278,12 @@ VS_UI_OUTPUT VSUI(VS_UI_INPUT input)
 float4 PSUI(VS_UI_OUTPUT input) : SV_TARGET
 {
 	float4 color = gtxUI.Sample(gssWrap, input.uv);
+	if (color.a < 0.1) discard;
+	return color;
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//
 
 Texture2D gtxtTexture : register(t11);
 

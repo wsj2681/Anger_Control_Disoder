@@ -350,6 +350,7 @@ public:
 
 	bool bCheckCollision{ false };
 	bool bHittable{ false };
+	bool bDefeated{ false };
 	
 	BoundingOrientedBox& GetOBB();
 	unsigned int& GetHP();
