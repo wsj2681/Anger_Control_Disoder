@@ -293,8 +293,8 @@ void Engine::BuildObjects()
 {
 	HR(commandList->Reset(commandAllocator, nullptr));
 
-//	m_pScene = new CScene();
-//	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
+	m_pScene = new Scene();
+	if (m_pScene) m_pScene->BuildObjects(device, commandList);
 //
 //#ifdef _WITH_TERRAIN_PLAYER
 //	CTerrainPlayer* pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->m_pTerrain);
@@ -313,7 +313,7 @@ void Engine::BuildObjects()
 	
 	WaitForGpuComplete();
 //
-//	if (m_pScene) m_pScene->ReleaseUploadBuffers();
+	if (m_pScene) m_pScene->ReleaseUploadBuffers();
 //	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
 //
 	m_GameTimer.Reset();
@@ -323,7 +323,7 @@ void Engine::ReleaseObjects()
 {
 	//if (m_pPlayer) m_pPlayer->Release();
 
-	//if (m_pScene) m_pScene->ReleaseObjects();
+	if (m_pScene) m_pScene->ReleaseObjects();
 	//if (m_pScene) delete m_pScene;
 }
 
@@ -410,7 +410,7 @@ void Engine::FrameAdvance()
 	commandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
 	// Redner
-	//if (m_pScene) m_pScene->Render(m_pd3dCommandList, m_pCamera);
+	//if (m_pScene) m_pScene->Render(commandList, camera);
 	//if (m_pPlayer) m_pPlayer->Render(m_pd3dCommandList, m_pCamera);
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;

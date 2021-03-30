@@ -4,7 +4,7 @@
 
 SkinnedMesh::SkinnedMesh()
 {
-	::ZeroMemory(skinningBoneNames, sizeof(skinningBoneNames));
+	
 }
 
 SkinnedMesh::SkinnedMesh(ID3D12Device* device, ID3D12GraphicsCommandList* commandList) :SkinnedMesh()

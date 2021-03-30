@@ -237,30 +237,33 @@ D3D12_SHADER_RESOURCE_VIEW_DESC GetShaderResourceViewDesc(D3D12_RESOURCE_DESC d3
 	return d3dShaderResourceViewDesc;
 }
 
-int ReadIntegerFromFile(FILE* pInFile)
-{
-	ASSERT(pInFile != nullptr, "framework/ReadIntegerFromFile/pInFile is not be nullptr\n");
-	int nValue = 0;
-	UINT nReads = (UINT)::fread(&nValue, sizeof(int), 1, pInFile);
-	return(nValue);
-}
-
-float ReadFloatFromFile(FILE* pInFile)
-{
-	ASSERT(pInFile != nullptr, "framework/ReadFloatFromFile/pInFile is not be nullptr\n");
-	float fValue = 0;
-	UINT nReads = (UINT)::fread(&fValue, sizeof(float), 1, pInFile);
-	return(fValue);
-}
-
-BYTE ReadStringFromFile(FILE* pInFile, char* pstrToken)
-{
-	ASSERT(pInFile != nullptr, "framework/ReadStringFromFile/pInFile is not be nullptr\n");
-	BYTE nStrLength = 0;
-	UINT nReads = 0;
-	nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pInFile);
-	nReads = (UINT)::fread(pstrToken, sizeof(char), nStrLength, pInFile);
-	pstrToken[nStrLength] = '\0';
-
-	return(nStrLength);
-}
+//int ReadIntegerFromFile(FILE* pInFile)
+//{
+//	ASSERT(pInFile != nullptr, "framework/ReadIntegerFromFile/pInFile is not be nullptr\n");
+//
+//	int nValue = 0;
+//	UINT nReads = (UINT)::fread(&nValue, sizeof(int), 1, pInFile);
+//	return(nValue);
+//}
+//
+//float ReadFloatFromFile(FILE* pInFile)
+//{
+//	ASSERT(pInFile != nullptr, "framework/ReadFloatFromFile/pInFile is not be nullptr\n");
+//
+//	float fValue = 0;
+//	UINT nReads = (UINT)::fread(&fValue, sizeof(float), 1, pInFile);
+//	return(fValue);
+//}
+//
+//BYTE ReadStringFromFile(FILE* pInFile, char* pstrToken)
+//{
+//	ASSERT(pInFile != nullptr, "framework/ReadStringFromFile/pInFile is not be nullptr\n");
+//
+//	BYTE nStrLength = 0;
+//	UINT nReads = 0;
+//	nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pInFile);
+//	nReads = (UINT)::fread(pstrToken, sizeof(char), nStrLength, pInFile);
+//	pstrToken[nStrLength] = '\0';
+//
+//	return(nStrLength);
+//}

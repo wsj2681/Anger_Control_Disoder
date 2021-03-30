@@ -6,6 +6,7 @@
 #include "AnimationController.h"
 #include "ModelInfo.h"
 #include "SkinnedMesh.h"
+#include "AnimationSets.h"
 
 Object::Object()
 {
@@ -200,6 +201,31 @@ void Object::SetTrackAnimationPosition(int animationTrack, float position)
 	if (skinnedAnimationController) skinnedAnimationController->SetTrackPosition(animationTrack, position);
 }
 
+int ReadIntegerFromFile(FILE* pInFile)
+{
+	int nValue = 0;
+	UINT nReads = (UINT)::fread(&nValue, sizeof(int), 1, pInFile);
+	return(nValue);
+}
+
+float ReadFloatFromFile(FILE* pInFile)
+{
+	float fValue = 0;
+	UINT nReads = (UINT)::fread(&fValue, sizeof(float), 1, pInFile);
+	return(fValue);
+}
+
+BYTE ReadStringFromFile(FILE* pInFile, char* pstrToken)
+{
+	BYTE nStrLength = 0;
+	UINT nReads = 0;
+	nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pInFile);
+	nReads = (UINT)::fread(pstrToken, sizeof(char), nStrLength, pInFile);
+	pstrToken[nStrLength] = '\0';
+
+	return(nStrLength);
+}
+
 void Object::LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, Object* pParent, FILE* pInFile, Shader* pShader)
 {
 	char pstrToken[64] = { '\0' };
@@ -209,9 +235,9 @@ void Object::LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 	materialCount = ReadIntegerFromFile(pInFile);
 
 	materials = new Material * [materialCount];
-	for (int i = 0; i < materialCount; i++) materials[i] = NULL;
+	for (int i = 0; i < materialCount; i++) materials[i] = nullptr;
 
-	Material* pMaterial = NULL;
+	Material* pMaterial = nullptr;
 
 	for (; ; )
 	{
@@ -309,7 +335,72 @@ void Object::LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 
 void Object::LoadAnimationFromFile(FILE* pInFile, ModelInfo* pLoadedModel)
 {
+	char pstrToken[64] = { '\0' };
+	UINT nReads = 0;
 
+	int nAnimationSets = 0;
+
+	for (; ; )
+	{
+		::ReadStringFromFile(pInFile, pstrToken);
+		if (!strcmp(pstrToken, "<AnimationSets>:"))
+		{
+			nAnimationSets = ::ReadIntegerFromFile(pInFile);
+			pLoadedModel->animationSets = new AnimationSets(nAnimationSets);
+		}
+		else if (!strcmp(pstrToken, "<FrameNames>:"))
+		{
+			pLoadedModel->animationSets->animatedBoneFrameCount = ::ReadIntegerFromFile(pInFile);
+			pLoadedModel->animationSets->animatedBoneFrameCaches = new Object * [pLoadedModel->animationSets->animatedBoneFrameCount];
+
+			for (int j = 0; j < pLoadedModel->animationSets->animatedBoneFrameCount; j++)
+			{
+				::ReadStringFromFile(pInFile, pstrToken);
+				pLoadedModel->animationSets->animatedBoneFrameCaches[j] = pLoadedModel->modelRootObject->FindFrame(pstrToken);
+
+#ifdef _WITH_DEBUG_SKINNING_BONE
+				TCHAR pstrDebug[256] = { 0 };
+				TCHAR pwstrAnimationBoneName[64] = { 0 };
+				TCHAR pwstrBoneCacheName[64] = { 0 };
+				size_t nConverted = 0;
+				mbstowcs_s(&nConverted, pwstrAnimationBoneName, 64, pstrToken, _TRUNCATE);
+				mbstowcs_s(&nConverted, pwstrBoneCacheName, 64, pLoadedModel->m_ppAnimatedBoneFrameCaches[j]->m_pstrFrameName, _TRUNCATE);
+				_stprintf_s(pstrDebug, 256, _T("AnimationBoneFrame:: Cache(%s) AnimationBone(%s)\n"), pwstrBoneCacheName, pwstrAnimationBoneName);
+				OutputDebugString(pstrDebug);
+#endif
+			}
+		}
+		else if (!strcmp(pstrToken, "<AnimationSet>:"))
+		{
+			int nAnimationSet = ::ReadIntegerFromFile(pInFile);
+
+			::ReadStringFromFile(pInFile, pstrToken); //Animation Set Name
+
+			float fLength = ::ReadFloatFromFile(pInFile);
+			int nFramesPerSecond = ::ReadIntegerFromFile(pInFile);
+			int nKeyFrames = ::ReadIntegerFromFile(pInFile);
+
+			pLoadedModel->animationSets->animationSets[nAnimationSet] = new AnimationSet(fLength, nFramesPerSecond, nKeyFrames, pLoadedModel->animationSets->animatedBoneFrameCount, pstrToken);
+
+			for (int i = 0; i < nKeyFrames; i++)
+			{
+				::ReadStringFromFile(pInFile, pstrToken);
+				if (!strcmp(pstrToken, "<Transforms>:"))
+				{
+					int nKey = ::ReadIntegerFromFile(pInFile); //i
+					float fKeyTime = ::ReadFloatFromFile(pInFile);
+
+					AnimationSet* pAnimationSet = pLoadedModel->animationSets->animationSets[nAnimationSet];
+					pAnimationSet->keyFrameTimes[i] = fKeyTime;
+					nReads = (UINT)::fread(pAnimationSet->keyFrameTransforms[i], sizeof(XMFLOAT4X4), pLoadedModel->animationSets->animatedBoneFrameCount, pInFile);
+				}
+			}
+		}
+		else if (!strcmp(pstrToken, "</AnimationSets>"))
+		{
+			break;
+		}
+	}
 }
 
 Object* Object::LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, Object* pParent, FILE* pInFile, Shader* pShader, int* pnSkinnedMeshes)
@@ -383,13 +474,17 @@ Object* Object::LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12Graph
 		{
 			break;
 		}
+		else
+		{
+			break;
+		}
 	}
 	return pGameObject;
 }
 
-ModelInfo* Object::LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, char* pstrFileName, Shader* pShader)
+ModelInfo* Object::LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, const char* pstrFileName, Shader* pShader)
 {
-	FILE* pInFile = NULL;
+	FILE* pInFile = nullptr;
 	::fopen_s(&pInFile, pstrFileName, "rb");
 	::rewind(pInFile);
 
