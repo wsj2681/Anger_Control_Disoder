@@ -416,3 +416,13 @@ UINT Object::GetMeshType()
 {
 	return (mesh) ? mesh->GetType() : 0x00;
 }
+
+const XMFLOAT4X4& Object::GetToParent()
+{
+	return this->toParent;
+}
+
+void Object::SetToParent(const XMFLOAT4X4& matrix)
+{
+	this->toParent = matrix;
+}

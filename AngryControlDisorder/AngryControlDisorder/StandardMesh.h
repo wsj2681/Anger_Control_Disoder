@@ -1,12 +1,12 @@
 #pragma once
 #include "Mesh.h"
-class StandartMesh : public Mesh
+class StandardMesh : public Mesh
 {
 public:
 
-	StandartMesh();
-	StandartMesh(ID3D12Device* device, ID3D12GraphicsCommandList* commandList);
-	virtual ~StandartMesh();
+	StandardMesh();
+	StandardMesh(ID3D12Device* device, ID3D12GraphicsCommandList* commandList);
+	virtual ~StandardMesh();
 
 protected:
 

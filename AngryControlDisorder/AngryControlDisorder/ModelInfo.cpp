@@ -2,6 +2,7 @@
 #include "ModelInfo.h"
 #include "Object.h"
 #include "AnimationSets.h"
+#include "SkinnedMesh.h"
 
 ModelInfo::ModelInfo()
 {

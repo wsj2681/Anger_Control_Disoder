@@ -1,11 +1,11 @@
 #include "framework.h"
-#include "StandartMesh.h"
+#include "StandardMesh.h"
 
-StandartMesh::StandartMesh()
+StandardMesh::StandardMesh()
 {
 }
 
-StandartMesh::StandartMesh(ID3D12Device* device, ID3D12GraphicsCommandList* commandList)
+StandardMesh::StandardMesh(ID3D12Device* device, ID3D12GraphicsCommandList* commandList)
 {
 	SAFE_RELEASE(textureCoord0Buffer);
 	SAFE_RELEASE(normalBuffer);
@@ -20,11 +20,11 @@ StandartMesh::StandartMesh(ID3D12Device* device, ID3D12GraphicsCommandList* comm
 	DELETE_ARRAY(textureCoords1);
 }
 
-StandartMesh::~StandartMesh()
+StandardMesh::~StandardMesh()
 {
 }
 
-void StandartMesh::LoadMeshFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, FILE* pInFile)
+void StandardMesh::LoadMeshFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, FILE* pInFile)
 {
 	char pstrToken[64] = { '\0' };
 	int nPositions = 0, nColors = 0, nNormals = 0, nTangents = 0, nBiTangents = 0, nTextureCoords = 0, nIndices = 0, nSubMeshes = 0, nSubIndices = 0;
@@ -188,7 +188,7 @@ void StandartMesh::LoadMeshFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsComm
 	}
 }
 
-void StandartMesh::ReleaseUploadBuffers()
+void StandardMesh::ReleaseUploadBuffers()
 {
 	SAFE_RELEASE(textureCoord0UploadBuffer);
 	SAFE_RELEASE(normalUploadBuffer);
@@ -196,6 +196,6 @@ void StandartMesh::ReleaseUploadBuffers()
 	SAFE_RELEASE(biTangentUploadBuffer);
 }
 
-void StandartMesh::OnPreRender(ID3D12GraphicsCommandList* pd3dCommandList, void* pContext)
+void StandardMesh::OnPreRender(ID3D12GraphicsCommandList* pd3dCommandList, void* pContext)
 {
 }

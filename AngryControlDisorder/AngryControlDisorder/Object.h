@@ -108,6 +108,13 @@ public:
 
 	Texture* FindReplicatedTexture(_TCHAR* textureName);
 	UINT GetMeshType();
-	/* Animation Function */
+
+	const XMFLOAT4X4& GetToParent();
+	void SetToParent(const XMFLOAT4X4& matrix);
+
+public: /* Animation Function */
+
+	
+
 };
 

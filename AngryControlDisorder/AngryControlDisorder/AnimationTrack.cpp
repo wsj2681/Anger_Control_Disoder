@@ -1,26 +1,26 @@
 #include "AnimationTrack.h"
 
-void CAnimationTrack::SetAnimationSet(int nAnimationSet)
+void AnimationTrack::SetAnimationSet(int nAnimationSet)
 {
 	this->animationSets = nAnimationSet;
 }
 
-void CAnimationTrack::SetEnable(bool bEnable)
+void AnimationTrack::SetEnable(bool bEnable)
 {
 	this->enable = bEnable;
 }
 
-void CAnimationTrack::SetSpeed(float fSpeed)
+void AnimationTrack::SetSpeed(float fSpeed)
 {
 	this->speed = fSpeed;
 }
 
-void CAnimationTrack::SetWeight(float fWeight)
+void AnimationTrack::SetWeight(float fWeight)
 {
 	this->weight = fWeight;
 }
 
-void CAnimationTrack::SetPosition(float fPosition)
+void AnimationTrack::SetPosition(float fPosition)
 {
 	this->position = fPosition;
 }
