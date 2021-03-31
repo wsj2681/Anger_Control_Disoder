@@ -60,6 +60,30 @@
     <Filter Include="소스 파일\03 Model\GameObject\Object">
       <UniqueIdentifier>{7cd866b2-5d15-4305-bae8-50fb8fd2939d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\03 Model\Shader\StandardShader">
+      <UniqueIdentifier>{26f34100-b1a7-4717-9b86-d8c6539964e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader">
+      <UniqueIdentifier>{b299b64a-e048-44dd-9220-d094948031c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader\SkinnedAnimationObjectShader">
+      <UniqueIdentifier>{37a9b6ac-e07f-4b88-9db3-fc822697cb6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader\SkinnedAnimationObjectShader\AngrybotObjectsShader">
+      <UniqueIdentifier>{7fcb523e-c87b-4afe-bfc6-b7be485727ea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03 Model\Shader\StandardShader\StandardObjectsShader">
+      <UniqueIdentifier>{c1aa1f34-6b12-41d5-ba7d-041ab3b39884}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03 Model\Shader\SkyBoxShader">
+      <UniqueIdentifier>{e90028e4-0b57-4059-81f1-031fddfcf264}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03 Model\Shader\TerrainShader">
+      <UniqueIdentifier>{082b65e4-a227-4b88-9ad7-07281288e5fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader\SkinnedAnimationObjectShader\EthanObjectsShader">
+      <UniqueIdentifier>{94f3559c-952e-47fc-82e8-0dedb245845c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DDSTextureLoader12.h">
@@ -138,38 +162,38 @@
     <ClInclude Include="HeightMapImage.h">
       <Filter>소스 파일\03 Model\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="SkinnedAnimationStandardShader.h">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="StandardObjectsShader.h">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="StandardShader.h">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="SkinnedAnimationObjectsShader.h">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="SkyBoxShader.h">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClInclude>
-    <ClInclude Include="TerrainShader.h">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClInclude>
     <ClInclude Include="HeightMapGridMesh.h">
       <Filter>소스 파일\03 Model\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="HeightMapTerrain.h">
       <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClInclude>
-    <ClInclude Include="AngrybotObjectsShader.h">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClInclude>
     <ClInclude Include="AngrybotObject.h">
       <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClInclude>
+    <ClInclude Include="StandardShader.h">
+      <Filter>소스 파일\03 Model\Shader\StandardShader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedAnimationStandardShader.h">
+      <Filter>소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedAnimationObjectsShader.h">
+      <Filter>소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader\SkinnedAnimationObjectShader</Filter>
+    </ClInclude>
+    <ClInclude Include="AngrybotObjectsShader.h">
+      <Filter>소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader\SkinnedAnimationObjectShader\AngrybotObjectsShader</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardObjectsShader.h">
+      <Filter>소스 파일\03 Model\Shader\StandardShader\StandardObjectsShader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxShader.h">
+      <Filter>소스 파일\03 Model\Shader\SkyBoxShader</Filter>
+    </ClInclude>
+    <ClInclude Include="TerrainShader.h">
+      <Filter>소스 파일\03 Model\Shader\TerrainShader</Filter>
+    </ClInclude>
     <ClInclude Include="EthanObjectsShader.h">
-      <Filter>소스 파일\03 Model\GameObject\Object</Filter>
+      <Filter>소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader\SkinnedAnimationObjectShader\EthanObjectsShader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -190,9 +214,6 @@
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>소스 파일\02 Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>소스 파일\03 Model\Shader</Filter>
     </ClCompile>
     <ClCompile Include="Player.cpp">
       <Filter>소스 파일\04 Player</Filter>
@@ -245,38 +266,41 @@
     <ClCompile Include="HeightMapImage.cpp">
       <Filter>소스 파일\03 Model\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="SkinnedAnimationStandardShader.cpp">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="StandardObjectsShader.cpp">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="StandardShader.cpp">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="SkinnedAnimationObjectsShader.cpp">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="SkyBoxShader.cpp">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClCompile>
-    <ClCompile Include="TerrainShader.cpp">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClCompile>
     <ClCompile Include="HeightMapGridMesh.cpp">
       <Filter>소스 파일\03 Model\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="HeightMapTerrain.cpp">
       <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClCompile>
-    <ClCompile Include="AngrybotObjectsShader.cpp">
-      <Filter>소스 파일\03 Model\Shader</Filter>
-    </ClCompile>
     <ClCompile Include="AngrybotObject.cpp">
       <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClCompile>
+    <ClCompile Include="StandardShader.cpp">
+      <Filter>소스 파일\03 Model\Shader\StandardShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>소스 파일\03 Model\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedAnimationStandardShader.cpp">
+      <Filter>소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedAnimationObjectsShader.cpp">
+      <Filter>소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader\SkinnedAnimationObjectShader</Filter>
+    </ClCompile>
+    <ClCompile Include="AngrybotObjectsShader.cpp">
+      <Filter>소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader\SkinnedAnimationObjectShader\AngrybotObjectsShader</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardObjectsShader.cpp">
+      <Filter>소스 파일\03 Model\Shader\StandardShader\StandardObjectsShader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxShader.cpp">
+      <Filter>소스 파일\03 Model\Shader\SkyBoxShader</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainShader.cpp">
+      <Filter>소스 파일\03 Model\Shader\TerrainShader</Filter>
+    </ClCompile>
     <ClCompile Include="EthanObjectsShader.cpp">
-      <Filter>소스 파일\03 Model\GameObject\Object</Filter>
+      <Filter>소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader\SkinnedAnimationObjectShader\EthanObjectsShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

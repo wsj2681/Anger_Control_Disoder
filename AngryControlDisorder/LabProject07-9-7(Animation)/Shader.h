@@ -3,8 +3,7 @@
 //-----------------------------------------------------------------------------
 
 #pragma once
-
-#include "Object.h"
+#include "ModelInfo.h"
 #include "Camera.h"
 
 class CShader
@@ -14,11 +13,11 @@ public:
 	virtual ~CShader();
 
 private:
-	int									m_nReferences = 0;
+	int nReferences{ 0 };
 
 public:
-	void AddRef() { m_nReferences++; }
-	void Release() { if (--m_nReferences <= 0) delete this; }
+	void AddRef();
+	void Release();
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
@@ -49,12 +48,12 @@ public:
 	virtual void ReleaseObjects() { }
 
 protected:
-	ID3DBlob							*m_pd3dVertexShaderBlob = NULL;
-	ID3DBlob							*m_pd3dPixelShaderBlob = NULL;
+	ID3DBlob* m_pd3dVertexShaderBlob{ nullptr };
+	ID3DBlob* m_pd3dPixelShaderBlob{ nullptr };
 
-	ID3D12PipelineState					*m_pd3dPipelineState = NULL;
+	ID3D12PipelineState* m_pd3dPipelineState{ nullptr };
 
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC	m_d3dPipelineStateDesc;
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC	m_d3dPipelineStateDesc{};
 
 	float								m_fElapsedTime = 0.0f;
 };
