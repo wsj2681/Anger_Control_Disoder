@@ -6,6 +6,7 @@
 
 #include "Shader.h"
 #include "Player.h"
+#include "HPBar.h"
 
 #define MAX_LIGHTS						16 
 
@@ -120,8 +121,8 @@ public:
 	ID3D12Resource						*m_pd3dcbLights = NULL;
 	LIGHTS								*m_pcbMappedLights = NULL;
 
-	//HPBar bar1;
-	//HPBar bar2;
+	HPBar* bar1{ nullptr };
+	HPBar* bar2{ nullptr };
 
 	int lightsCount = 0;
 	vector<CGameObject*> lights;

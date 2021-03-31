@@ -3,7 +3,6 @@
 //-----------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "HPBar.h"
 #include "Scene.h"
 
 ID3D12DescriptorHeap *CScene::m_pd3dCbvSrvDescriptorHeap = NULL;
@@ -24,6 +23,10 @@ CScene::CScene()
 
 CScene::~CScene()
 {
+	if (bar1)
+		delete[] bar1;
+	if (bar2)
+		delete[] bar2;
 }
 
 void CScene::BuildDefaultLightsAndMaterials()
@@ -213,9 +216,9 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	//----------------------------------------
 	XMFLOAT2 position{ XMFLOAT2(0.f, 0.f) };
 	float width{ 100.f }, height{ 5.f };
-	//bar1 = HPBar(position, width, height);
-	////position = XMFLOAT2(200.f, 200.f);
-	//bar2 = HPBar(position, width, height);
+	bar1 = new HPBar(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, position, width, height);
+	position = XMFLOAT2(200.f, 200.f);
+	bar2 = new HPBar(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, position, width, height);
 	//XMFLOAT3 vec = m_pPlayer->GetPosition();
 	
 
@@ -365,15 +368,15 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dRootParameters[2].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-	pd3dRootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	pd3dRootParameters[3].Descriptor.ShaderRegister = 3; //Skinned Bone Offsets
-	pd3dRootParameters[3].Descriptor.RegisterSpace = 0;
-	pd3dRootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	pd3dRootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[3].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[3].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[0]);
+	pd3dRootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
-	pd3dRootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	pd3dRootParameters[4].Descriptor.ShaderRegister = 4; //Skinned Bone Transforms
-	pd3dRootParameters[4].Descriptor.RegisterSpace = 0;
-	pd3dRootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+	pd3dRootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[4].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[4].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[1]);
+	pd3dRootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	pd3dRootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[5].Descriptor.ShaderRegister = 5; //UI
@@ -382,38 +385,38 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 
 	pd3dRootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	pd3dRootParameters[6].DescriptorTable.NumDescriptorRanges = 1;
-	pd3dRootParameters[6].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[0]);
+	pd3dRootParameters[6].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[2]);
 	pd3dRootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	pd3dRootParameters[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	pd3dRootParameters[7].DescriptorTable.NumDescriptorRanges = 1;
-	pd3dRootParameters[7].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[1]);
+	pd3dRootParameters[7].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[3]);
 	pd3dRootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	pd3dRootParameters[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	pd3dRootParameters[8].DescriptorTable.NumDescriptorRanges = 1;
-	pd3dRootParameters[8].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[2]);
+	pd3dRootParameters[8].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[4]);
 	pd3dRootParameters[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	pd3dRootParameters[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	pd3dRootParameters[9].DescriptorTable.NumDescriptorRanges = 1;
-	pd3dRootParameters[9].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[3]);
+	pd3dRootParameters[9].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[5]);
 	pd3dRootParameters[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	pd3dRootParameters[10].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	pd3dRootParameters[10].DescriptorTable.NumDescriptorRanges = 1;
-	pd3dRootParameters[10].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[4]);
+	pd3dRootParameters[10].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[6]);
 	pd3dRootParameters[10].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
-	pd3dRootParameters[11].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	pd3dRootParameters[11].DescriptorTable.NumDescriptorRanges = 1;
-	pd3dRootParameters[11].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[5]);
-	pd3dRootParameters[11].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	pd3dRootParameters[11].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[11].Descriptor.ShaderRegister = 3; //Skinned Bone Offsets
+	pd3dRootParameters[11].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[11].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
-	pd3dRootParameters[12].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	pd3dRootParameters[12].DescriptorTable.NumDescriptorRanges = 1;
-	pd3dRootParameters[12].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[6]);
-	pd3dRootParameters[12].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+	pd3dRootParameters[12].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[12].Descriptor.ShaderRegister = 4; //Skinned Bone Transforms
+	pd3dRootParameters[12].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[12].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
 
 	pd3dRootParameters[13].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 	pd3dRootParameters[13].DescriptorTable.NumDescriptorRanges = 1;

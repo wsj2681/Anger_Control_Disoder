@@ -77,6 +77,6 @@ struct Thread_id {
 #pragma pack(pop)
 
 
-
+void display_error(const char* msg, int err_no);
 
 

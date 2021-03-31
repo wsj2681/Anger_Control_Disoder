@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 
 #include "stdafx.h"
+#include "Scene.h"
 #include "Shader.h"
 
 CShader::CShader()
@@ -606,10 +607,11 @@ void CEthanObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsC
 
 D3D12_INPUT_LAYOUT_DESC UIShader::CreateInputLayout()
 {
-	UINT nInputElementDescs = 1;
+	UINT nInputElementDescs = 2;
 	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
 
 	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
 
 	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
 	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
@@ -639,6 +641,22 @@ D3D12_DEPTH_STENCIL_DESC UIShader::CreateDepthStencilState()
 	return d3dDepthStencilDesc;
 }
 
+void UIShader::BuildObject(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context)
+{
+	texture = new CTexture(1, RESOURCE_TEXTURE2D);
+	texture->LoadTextureFromFile(device, commandList, L"UI/hpbar.png", false);
+
+	CScene::CreateShaderResourceViews(device, texture, 16, false);
+}
+
+void UIShader::Render(ID3D12GraphicsCommandList* commandList, CCamera* camera)
+{
+	texture->UpdateShaderVariables(commandList);
+	CShader::Render(commandList, camera);
+
+	commandList->DrawInstanced(6, 1, 0, 0);
+}
+
 D3D12_SHADER_BYTECODE UIShader::CreateVertexShader()
 {
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSUI", "vs_5_1", &m_pd3dVertexShaderBlob));
@@ -647,4 +665,76 @@ D3D12_SHADER_BYTECODE UIShader::CreateVertexShader()
 D3D12_SHADER_BYTECODE UIShader::CreatePixelShader()
 {
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSUI", "ps_5_1", &m_pd3dPixelShaderBlob));
+}
+
+//D3D12_INPUT_LAYOUT_DESC HPUIShader::CreateInputLayout()
+//{
+//	UIShader::CreateInputLayout();
+//}
+//
+//D3D12_DEPTH_STENCIL_DESC HPUIShader::CreateDepthStencilState()
+//{
+//	UIShader::CreateDepthStencilState();
+//}
+
+D3D12_INPUT_LAYOUT_DESC HPUIShader::CreateInputLayout()
+{
+	return UIShader::CreateInputLayout();
+}
+
+D3D12_DEPTH_STENCIL_DESC HPUIShader::CreateDepthStencilState()
+{
+	return UIShader::CreateDepthStencilState();
+}
+
+void HPUIShader::BuildObject(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context)
+{
+	nObjects = 1;
+	texture = new CTexture(1, RESOURCE_TEXTURE2D);
+	texture->LoadTextureFromFile(device, commandList, L"UI/hpbar.dds", 1);
+
+	CScene::CreateShaderResourceViews(device, texture, 16, false);
+
+	
+	cbMappedHp = new CB_HP_INFO;
+	::ZeroMemory(cbMappedHp, sizeof(CB_HP_INFO));
+
+	cbMappedHp->hp = 100;
+}
+
+void HPUIShader::CreateShaderVariables(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context)
+{
+	UINT cbElementBytes = ((sizeof(CB_HP_INFO) + 255) & ~255);
+	cbHpResource = ::CreateBufferResource(device, commandList, nullptr, cbElementBytes);
+	cbHpResource->Map(0, nullptr, (void**)&cbMappedHp);
+}
+
+void HPUIShader::UpdateShaderVariables(ID3D12GraphicsCommandList* commandList)
+{
+	unsigned int hp;
+
+	XMStoreInt(&hp, XMLoadInt(&player->GetHP()));
+	::memcpy(&cbMappedHp->hp, &hp, sizeof(unsigned int));
+
+	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = cbHpResource->GetGPUVirtualAddress();
+	commandList->SetGraphicsRootConstantBufferView(5, d3dGpuVirtualAddress);
+}
+
+void HPUIShader::ReleaseShaderVariables()
+{
+	if (cbHpResource)
+	{
+		cbHpResource->Unmap(0, nullptr);
+		cbHpResource->Release();
+	}
+}
+
+D3D12_SHADER_BYTECODE HPUIShader::CreateVertexShader()
+{
+	return UIShader::CreateVertexShader();
+}
+
+D3D12_SHADER_BYTECODE HPUIShader::CreatePixelShader()
+{
+	return UIShader::CreatePixelShader();
 }
