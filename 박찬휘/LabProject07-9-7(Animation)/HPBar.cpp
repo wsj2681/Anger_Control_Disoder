@@ -22,9 +22,9 @@ void UIObject::SetPosition(const XMFLOAT2& position)
 
 void UIObject::SetMaterial(int nMaterial, CMaterial* material)
 {
-	if (this->material[nMaterial]) material[nMaterial].Release();
+	if (this->material[nMaterial] != nullptr) material[nMaterial].Release();
 	this->material[nMaterial] = material;
-	if (this->material[nMaterial]) material[nMaterial].AddRef();
+	if (this->material[nMaterial] != nullptr) material[nMaterial].AddRef();
 }
 
 void UIObject::Update()
@@ -83,17 +83,15 @@ HPBar::HPBar(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D1
 {
 	CreateShaderVariables(device, commandList);
 
-	CTexture* hpBarTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	hpBarTexture->LoadTextureFromFile(device, commandList, L"UI/hpbar.png", 0);
-
 	HPUIShader* hpuishader = new HPUIShader();
 	hpuishader->CreateShader(device, commandList, rootSignature);
+	hpuishader->BuildObjects(device, commandList, rootSignature);
 	hpuishader->CreateShaderVariables(device, commandList, rootSignature);
 
-	CScene::CreateShaderResourceViews(device, hpBarTexture, 10, false);
+	CScene::CreateShaderResourceViews(device, hpuishader->GetTexture(), 10, false);
 
 	CMaterial* hpBarMaterial = new CMaterial(1);
-	hpBarMaterial[0].SetTexture(hpBarTexture, 0);
+	hpBarMaterial[0].SetTexture(hpuishader->GetTexture(), 0);
 	hpBarMaterial[0].SetShader(hpuishader);
 
 	SetMaterial(0, hpBarMaterial);
@@ -105,17 +103,15 @@ HPBar::HPBar(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D1
 {
 	CreateShaderVariables(device, commandList);
 
-	CTexture* hpBarTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	hpBarTexture->LoadTextureFromFile(device, commandList, L"Model/Textures/Chair.dds", 1);
-
 	HPUIShader* hpuishader = new HPUIShader();
 	hpuishader->CreateShader(device, commandList, rootSignature);
+	hpuishader->BuildObjects(device, commandList, rootSignature);
 	hpuishader->CreateShaderVariables(device, commandList, rootSignature);
 
-	CScene::CreateShaderResourceViews(device, hpBarTexture, 16, false);
+	//CScene::CreateShaderResourceViews(device, texture, 16, false);
 
 	CMaterial* hpBarMaterial = new CMaterial(1);
-	hpBarMaterial[0].SetTexture(hpBarTexture, 0);
+	hpBarMaterial[0].SetTexture(hpuishader->GetTexture(), 0);
 	hpBarMaterial[0].SetShader(hpuishader);
 
 	SetMaterial(0, hpBarMaterial);

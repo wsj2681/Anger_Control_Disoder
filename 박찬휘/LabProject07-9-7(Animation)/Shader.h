@@ -99,13 +99,15 @@ public:
 	virtual ~UIShader() = default;
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
-	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	//virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
 
-	virtual void BuildObject(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context = nullptr);
+	virtual void BuildObjects(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context = nullptr);
 	virtual void Render(ID3D12GraphicsCommandList* commandList, CCamera* camera = nullptr);
 
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+
+	CTexture* GetTexture();
 };
 
 struct CB_HP_INFO
@@ -128,9 +130,10 @@ public:
 	virtual ~HPUIShader() = default;
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
-	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	//virtual D3D12_BLEND_DESC CreateBlendState();
+	//virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
 
-	virtual void BuildObject(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context = nullptr);
+	virtual void BuildObjects(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context = nullptr);
 	virtual void CreateShaderVariables(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context = nullptr);
 	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* commandList);
 	virtual void ReleaseShaderVariables();

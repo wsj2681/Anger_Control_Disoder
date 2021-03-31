@@ -215,10 +215,10 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	// UI 오브젝트 선언
 	//----------------------------------------
 	XMFLOAT2 position{ XMFLOAT2(0.f, 0.f) };
-	float width{ 100.f }, height{ 5.f };
-	bar1 = new HPBar(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, position, width, height);
+	float width{ 100.f }, height{ 10.f };
+	//bar1 = new HPBar(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, position, width, height);
 	position = XMFLOAT2(200.f, 200.f);
-	bar2 = new HPBar(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, position, width, height);
+	//bar2 = new HPBar(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, position, width, height);
 	//XMFLOAT3 vec = m_pPlayer->GetPosition();
 	
 
@@ -639,6 +639,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE CScene::CreateShaderResourceViews(ID3D12Device *pd3d
 		{
 			ID3D12Resource *pShaderResource = pTexture->GetTexture(i);
 			D3D12_RESOURCE_DESC d3dResourceDesc = pShaderResource->GetDesc();
+			//printf("Width : %d\nHeight : %d\nDepthOrSize : %d\nMipMapLevel : %d\n", pShaderResource->GetDesc().Width, pShaderResource->GetDesc().Height, pShaderResource->GetDesc().DepthOrArraySize, pShaderResource->GetDesc().MipLevels);
 			D3D12_SHADER_RESOURCE_VIEW_DESC d3dShaderResourceViewDesc = GetShaderResourceViewDesc(d3dResourceDesc, nTextureType);
 			pd3dDevice->CreateShaderResourceView(pShaderResource, &d3dShaderResourceViewDesc, m_d3dSrvCPUDescriptorNextHandle);
 			m_d3dSrvCPUDescriptorNextHandle.ptr += ::gnCbvSrvDescriptorIncrementSize;

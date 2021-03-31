@@ -247,7 +247,7 @@ float4 PSSkyBox(VS_SKYBOX_CUBEMAP_OUTPUT input) : SV_TARGET
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-Texture2D gtxUI : register(t10);
+Texture2D gtxtUI : register(t10);
 
 cbuffer UI_INFO : register(b5)
 {
@@ -271,14 +271,14 @@ VS_UI_OUTPUT VSUI(VS_UI_INPUT input)
 	VS_UI_OUTPUT output;
 
 	output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxGameObject), gmtxView), gmtxOrtho);
-
+	output.uv = input.uv;
 	return output;
 }
 
 float4 PSUI(VS_UI_OUTPUT input) : SV_TARGET
 {
-	float4 color = gtxUI.Sample(gssWrap, input.uv);
-	if (color.a < 0.1) discard;
+	float4 color = gtxtUI.Sample(gssWrap, input.uv);
+	//if (color.a < 0.1) discard;
 	return color;
 }
 

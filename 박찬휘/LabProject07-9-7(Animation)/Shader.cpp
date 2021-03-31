@@ -620,31 +620,34 @@ D3D12_INPUT_LAYOUT_DESC UIShader::CreateInputLayout()
 	return d3dInputLayoutDesc;
 }
 
-D3D12_DEPTH_STENCIL_DESC UIShader::CreateDepthStencilState()
-{
-	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc{};
-	d3dDepthStencilDesc.DepthEnable = false;
-	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_NEVER;
-	d3dDepthStencilDesc.StencilEnable = false;
-	d3dDepthStencilDesc.StencilReadMask = 0x00;
-	d3dDepthStencilDesc.StencilWriteMask = 0x00;
-	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
-	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
-	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
-	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+//D3D12_DEPTH_STENCIL_DESC UIShader::CreateDepthStencilState()
+//{
+//	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc{};
+//	//d3dDepthStencilDesc.DepthEnable = true;
+//	d3dDepthStencilDesc.DepthEnable = false;
+//	//d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+//	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+//	//d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+//	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_NEVER;
+//	d3dDepthStencilDesc.StencilEnable = false;
+//	d3dDepthStencilDesc.StencilReadMask = 0x00;
+//	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+//	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+//	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+//	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+//	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+//	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+//	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+//	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+//	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+//
+//	return d3dDepthStencilDesc;
+//}
 
-	return d3dDepthStencilDesc;
-}
-
-void UIShader::BuildObject(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context)
+void UIShader::BuildObjects(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context)
 {
 	texture = new CTexture(1, RESOURCE_TEXTURE2D);
-	texture->LoadTextureFromFile(device, commandList, L"UI/hpbar.png", false);
+	texture->LoadTextureFromFile(device, commandList, L"UI/entrance.dds", 0);
 
 	CScene::CreateShaderResourceViews(device, texture, 16, false);
 }
@@ -667,35 +670,59 @@ D3D12_SHADER_BYTECODE UIShader::CreatePixelShader()
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSUI", "ps_5_1", &m_pd3dPixelShaderBlob));
 }
 
-//D3D12_INPUT_LAYOUT_DESC HPUIShader::CreateInputLayout()
-//{
-//	UIShader::CreateInputLayout();
-//}
+CTexture* UIShader::GetTexture()
+{
+	return texture;
+}
+
+D3D12_INPUT_LAYOUT_DESC HPUIShader::CreateInputLayout()
+{
+	return UIShader::CreateInputLayout();
+}
 //
 //D3D12_DEPTH_STENCIL_DESC HPUIShader::CreateDepthStencilState()
 //{
 //	UIShader::CreateDepthStencilState();
 //}
 
-D3D12_INPUT_LAYOUT_DESC HPUIShader::CreateInputLayout()
-{
-	return UIShader::CreateInputLayout();
-}
+//D3D12_INPUT_LAYOUT_DESC HPUIShader::CreateInputLayout()
+//{
+//	return UIShader::CreateInputLayout();
+//}
+//
+//D3D12_BLEND_DESC HPUIShader::CreateBlendState()
+//{
+//	D3D12_BLEND_DESC d3dBlendDesc;
+//	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
+//	d3dBlendDesc.AlphaToCoverageEnable = false;
+//	d3dBlendDesc.IndependentBlendEnable = false;
+//	d3dBlendDesc.RenderTarget[0].BlendEnable = false;
+//	d3dBlendDesc.RenderTarget[0].LogicOpEnable = false;
+//	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
+//	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
+//	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+//	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+//	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+//	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+//	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+//	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+//
+//	return d3dBlendDesc;
+//}
+//
+//D3D12_DEPTH_STENCIL_DESC HPUIShader::CreateDepthStencilState()
+//{
+//	return UIShader::CreateDepthStencilState();
+//}
 
-D3D12_DEPTH_STENCIL_DESC HPUIShader::CreateDepthStencilState()
-{
-	return UIShader::CreateDepthStencilState();
-}
-
-void HPUIShader::BuildObject(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context)
+void HPUIShader::BuildObjects(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context)
 {
 	nObjects = 1;
 	texture = new CTexture(1, RESOURCE_TEXTURE2D);
-	texture->LoadTextureFromFile(device, commandList, L"UI/hpbar.dds", 1);
+	texture->LoadTextureFromFile(device, commandList, L"UI/hpbar.dds", 0);
 
 	CScene::CreateShaderResourceViews(device, texture, 16, false);
 
-	
 	cbMappedHp = new CB_HP_INFO;
 	::ZeroMemory(cbMappedHp, sizeof(CB_HP_INFO));
 
@@ -705,7 +732,7 @@ void HPUIShader::BuildObject(ID3D12Device* device, ID3D12GraphicsCommandList* co
 void HPUIShader::CreateShaderVariables(ID3D12Device* device, ID3D12GraphicsCommandList* commandList, ID3D12RootSignature* rootSignature, void* context)
 {
 	UINT cbElementBytes = ((sizeof(CB_HP_INFO) + 255) & ~255);
-	cbHpResource = ::CreateBufferResource(device, commandList, nullptr, cbElementBytes);
+	cbHpResource = ::CreateBufferResource(device, commandList, nullptr, cbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr);;
 	cbHpResource->Map(0, nullptr, (void**)&cbMappedHp);
 }
 
