@@ -12,6 +12,7 @@ using namespace std;
 #pragma comment(lib, "ws2_32")
 
 
+#include<map>
 /////////Client Çì´õ//////////
 #include <stdlib.h>
 #include <malloc.h>

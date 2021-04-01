@@ -19,11 +19,19 @@ static int idIndex = 1;
 HANDLE hThread;
 int threadCount = 0;
 
+//공유자원
 Player_world thread_num_1_player;
 Player_world thread_num_2_player;
-
-
 int thread_empty[MAXTHREAD] = { 0, };
+bool using_recv = false;
+
+struct SESSION {
+	WSABUF dataBuffer;
+	SOCKET socket;
+
+};
+
+map<SOCKET, SESSION>clients;
 
 //void err_quit(const char* msg);
 //void err_display(const char* msg);
@@ -103,6 +111,16 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	/*thread_id.thread_num = idIndex;
 	idIndex++;*/
 
+
+	SOCKET thread_client_sock = (SOCKET)arg;
+	SOCKADDR_IN client_addr;
+	int thread_client_addr_len;
+	char buf[2];
+	char GameReady[6];
+	ZeroMemory(&buf, sizeof(buf));
+
+
+	//mian 으로 뺴는게 좋지않을까? 공유자원이라서 임계영역 설정시 프레임 드랍 예상됨
 	for (int i = 0; i < MAXTHREAD; ++i) {
 		if (thread_empty[i] == 0) {
 			thread_empty[i] = 1;
@@ -112,15 +130,12 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		else {
 
 			//쓰레드 해당개수(5개)를 다 할당했을떄
+			closesocket(thread_client_sock);
+			return 0;
 		}
 	}
 
-	SOCKET thread_client_sock = (SOCKET)arg;
-	SOCKADDR_IN client_addr;
-	int thread_client_addr_len;
-	char buf[2];
-	char GameReady[6];
-	ZeroMemory(&buf, sizeof(buf));
+	
 	
 	Player_world player;
 
@@ -175,17 +190,17 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 
 		EnterCriticalSection(&cs);
 		
-		if (thread_id.thread_num == 1 || thread_id.thread_num == 3) {
+		if (thread_empty[ thread_id.thread_num] == 1 && using_recv == false) {
 		
 			thread_num_1_player = player;
 			retval = send(thread_client_sock, (char*)&thread_num_2_player, sizeof(thread_num_2_player), 0);
 			cout << "thread_1 of thread_2 value = " << thread_id.thread_num << " / " << thread_num_2_player.player_world._41 << 
 				" ," << thread_num_2_player.player_world._42 << ", " << thread_num_2_player.player_world._43 << endl;
 		
-			
+			using_recv = true;
 
 		}
-		else if (thread_id.thread_num == 2 || thread_id.thread_num == 4) {
+		else if (thread_empty[thread_id.thread_num] == 1 || using_recv == true) {
 			
 			
 			thread_num_2_player = player;
@@ -200,6 +215,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		
 
 	}
+	using_recv = false;
 	closesocket(thread_client_sock);
 
 	return 0;
