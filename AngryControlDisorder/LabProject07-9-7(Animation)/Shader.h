@@ -15,6 +15,16 @@ public:
 private:
 	int nReferences{ 0 };
 
+protected:
+	ID3DBlob* m_pd3dVertexShaderBlob{ nullptr };
+	ID3DBlob* m_pd3dPixelShaderBlob{ nullptr };
+
+	ID3D12PipelineState* m_pd3dPipelineState{ nullptr };
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC	m_d3dPipelineStateDesc{};
+
+	float m_fElapsedTime{ 0.0f };
+
 public:
 	void AddRef();
 	void Release();
@@ -28,7 +38,7 @@ public:
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
 
 	D3D12_SHADER_BYTECODE CompileShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile, ID3DBlob **ppd3dShaderBlob);
-	D3D12_SHADER_BYTECODE ReadCompiledShaderFromFile(WCHAR *pszFileName, ID3DBlob **ppd3dShaderBlob=NULL);
+	D3D12_SHADER_BYTECODE ReadCompiledShaderFromFile(WCHAR *pszFileName, ID3DBlob** ppd3dShaderBlob = nullptr);
 
 	virtual void CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature);
 
@@ -46,14 +56,4 @@ public:
 	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, CLoadedModelInfo *pModel, void *pContext = NULL) { }
 	virtual void AnimateObjects(float fTimeElapsed) { }
 	virtual void ReleaseObjects() { }
-
-protected:
-	ID3DBlob* m_pd3dVertexShaderBlob{ nullptr };
-	ID3DBlob* m_pd3dPixelShaderBlob{ nullptr };
-
-	ID3D12PipelineState* m_pd3dPipelineState{ nullptr };
-
-	D3D12_GRAPHICS_PIPELINE_STATE_DESC	m_d3dPipelineStateDesc{};
-
-	float								m_fElapsedTime = 0.0f;
 };
