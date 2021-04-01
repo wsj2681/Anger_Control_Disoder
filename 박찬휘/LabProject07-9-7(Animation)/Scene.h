@@ -6,6 +6,7 @@
 
 #include "Shader.h"
 #include "Player.h"
+#include "SoundManager.h"
 #include "HPBar.h"
 
 #define MAX_LIGHTS						16 
@@ -121,9 +122,13 @@ public:
 	ID3D12Resource						*m_pd3dcbLights = NULL;
 	LIGHTS								*m_pcbMappedLights = NULL;
 
+	
+
 	HPBar* bar1{ nullptr };
 	HPBar* bar2{ nullptr };
 
 	int lightsCount = 0;
 	vector<CGameObject*> lights;
+	unsigned int nSound{ 4 };	// 0 : BackGround 1 : Punch01 2 : Punch02 3 : Hit01
+	vector<SoundManager> soundManager;
 };
