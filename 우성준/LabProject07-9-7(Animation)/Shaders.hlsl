@@ -274,3 +274,43 @@ float4 PSTextured(VS_TEXTURED_OUTPUT input, uint primitiveID : SV_PrimitiveID) :
 
 	return(cColor);
 }
+
+//struct VS_PARTICLE_INPUT
+//{
+//	float4 position : POSITION;
+//	float2 uv : TEXCOORD;
+//	float4 color : COLOR;
+//};
+//
+//struct VS_PARTICLE_OUTPUT
+//{
+//	float4 position : SV_POSITION;
+//	float2 uv : TEXCOORD;
+//	float4 color : COLOR;
+//};
+//
+//VS_PARTICLE_OUTPUT VSParticle(VS_PARTICLE_INPUT input)
+//{
+//	VS_PARTICLE_OUTPUT output;
+//
+//	input.position.w = 1.0f;
+//
+//	output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxGameObject), gmtxView), gmtxProjection);
+//	output.uv = input.uv;
+//
+//	output.color = input.color;
+//
+//	return output;
+//}
+//
+//float4 PSParticle(VS_PARTICLE_OUTPUT input) : SV_TARGET
+//{
+//	float4 textureColor;
+//	float4 output;
+//
+//	textureColor = gtxtTexture.Sample(gssWrap, input.uv);
+//	output = textureColor * input.color;
+//
+//	return output;
+//
+//}

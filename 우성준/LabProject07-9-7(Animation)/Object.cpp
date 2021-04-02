@@ -1414,3 +1414,38 @@ void CGrassObject::Animate(float fDeltaTime)
 
 	Rotate(0.0f, 0.0f, m_fRotationAngle);
 }
+
+Particle::Particle()
+{
+}
+
+Particle::Particle(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+{
+	ParticleMesh* pSkyBoxMesh = new ParticleMesh(pd3dDevice, pd3dCommandList);
+	SetMesh(pSkyBoxMesh);
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	CTexture* pSkyBoxTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	pSkyBoxTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Model/Textures/red.dds", 0);
+
+	CSkyBoxShader* pSkyBoxShader = new CSkyBoxShader();
+	pSkyBoxShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	pSkyBoxShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	CScene::CreateShaderResourceViews(pd3dDevice, pSkyBoxTexture, 10, false);
+
+	CMaterial* pSkyBoxMaterial = new CMaterial(1);
+	pSkyBoxMaterial->SetTexture(pSkyBoxTexture);
+	pSkyBoxMaterial->SetShader(pSkyBoxShader);
+
+	SetMaterial(0, pSkyBoxMaterial);
+}
+
+Particle::~Particle()
+{
+}
+
+void Particle::Animate(float fDeltaTime)
+{
+}

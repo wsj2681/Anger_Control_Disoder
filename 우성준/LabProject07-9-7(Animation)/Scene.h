@@ -108,6 +108,8 @@ public:
 	CShader								**m_ppShaders = NULL;
 
 	CSkyBox								*m_pSkyBox = NULL;
+	int particleCount = 0;
+	Particle* particles = nullptr;
 	CHeightMapTerrain					*m_pTerrain = NULL;
 
 	LIGHT								*m_pLights = NULL;

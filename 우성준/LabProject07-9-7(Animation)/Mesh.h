@@ -251,3 +251,12 @@ public:
 
 	virtual void OnPreRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
 };
+
+class ParticleMesh : public CMesh
+{
+public:
+	ParticleMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual~ParticleMesh();
+
+
+};
