@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "SkinnedAnimationObjectsShader.h"
+#include "Object.h"
 
 CSkinnedAnimationObjectsShader::CSkinnedAnimationObjectsShader()
 {
