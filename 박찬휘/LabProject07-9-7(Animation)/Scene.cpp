@@ -19,6 +19,17 @@ D3D12_GPU_DESCRIPTOR_HANDLE	CScene::m_d3dSrvGPUDescriptorNextHandle;
 
 CScene::CScene()
 {
+	SoundManager sm("Sound/ACD.mid", true);
+	soundManager.push_back(sm);
+	sm = SoundManager("Sound/Punch01.mp3", false);
+	soundManager.push_back(sm);
+	sm = SoundManager("Sound/Punch02.wav", false);
+	soundManager.push_back(sm);
+	sm = SoundManager("Sound/Hit01.mp3", false);
+	soundManager.push_back(sm);
+	for (int i = 0; i < soundManager.size(); ++i)
+		soundManager[i].Init();
+	soundManager[0].Play();
 }
 
 CScene::~CScene()
@@ -27,6 +38,9 @@ CScene::~CScene()
 		delete[] bar1;
 	if (bar2)
 		delete[] bar2;
+
+	for (int i = 0; i < soundManager.size(); ++i)
+		soundManager[i].Release();
 }
 
 void CScene::BuildDefaultLightsAndMaterials()
@@ -189,6 +203,15 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[1]->bCheckCollision = true;
 	m_ppHierarchicalGameObjects[1]->bHittable = true;
 
+	//CLoadedModelInfo* bar = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", NULL);
+	//m_ppHierarchicalGameObjects[2] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, bar, 1);
+	//m_ppHierarchicalGameObjects[2]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	//CAnimationCallbackHandler* barAnimation = new CSoundCallbackHandler();
+	//m_ppHierarchicalGameObjects[2]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, barAnimation);
+	//m_ppHierarchicalGameObjects[2]->SetPosition(0.0f, 12.f, 0.0f);
+	//m_ppHierarchicalGameObjects[2]->bCheckCollision = false;
+	//m_ppHierarchicalGameObjects[2]->bHittable = false;
+
 	//조명 벡터 만들었다.
 	lightsCount = 38;
 	
@@ -202,13 +225,6 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 
 	BuildDefaultLightsAndMaterials();
 
-	//CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/BoxingComplete.bin", NULL);
-	//m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
-	//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	//CAnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
-	//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(2, pAnimationCallbackHandler);
-	////m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
-	//m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
 		if (pAngrybotModel) delete pAngrybotModel;
 	
 	//----------------------------------------
@@ -742,5 +758,8 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
 		}
 	}
+
+	for (int i = 1; i < soundManager.size(); ++i)
+		soundManager[i].Update();
 }
 
