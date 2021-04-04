@@ -37,7 +37,7 @@ void CScene::BuildDefaultLightsAndMaterials()
 	{
 		m_pLights[i].m_bEnable = true;
 		m_pLights[i].m_nType = DIRECTIONAL_LIGHT;
-		m_pLights[i].m_fRange = 300.0f;
+		m_pLights[i].m_fRange = 200.0f;
 		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
 		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);

@@ -1448,4 +1448,10 @@ Particle::~Particle()
 
 void Particle::Animate(float fDeltaTime)
 {
+	this->SetPosition(this->GetPosition().x, this->GetPosition().y + fDeltaTime, this->GetPosition().z);
+}
+
+void Particle::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* camera)
+{
+	CGameObject::Render(pd3dCommandList, camera);
 }

@@ -771,12 +771,12 @@ ParticleMesh::ParticleMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* 
 	
 	m_pxmf3Positions = new XMFLOAT3[m_nVertices];
 
-	m_pxmf3Positions[0] = XMFLOAT3(-fx, +fx, +fx);
-	m_pxmf3Positions[1] = XMFLOAT3(+fx, +fx, +fx);
-	m_pxmf3Positions[2] = XMFLOAT3(-fx, -fx, +fx);
-	m_pxmf3Positions[3] = XMFLOAT3(-fx, -fx, +fx);
-	m_pxmf3Positions[4] = XMFLOAT3(+fx, +fx, +fx);
-	m_pxmf3Positions[5] = XMFLOAT3(+fx, -fx, +fx);
+	m_pxmf3Positions[0] = XMFLOAT3(-fx, -fx, 0.f);
+	m_pxmf3Positions[1] = XMFLOAT3(+fx, -fx, 0.f);
+	m_pxmf3Positions[2] = XMFLOAT3(+fx, +fx, 0.f);
+	m_pxmf3Positions[3] = XMFLOAT3(-fx, -fx, 0.f);
+	m_pxmf3Positions[4] = XMFLOAT3(+fx, +fx, 0.f);
+	m_pxmf3Positions[5] = XMFLOAT3(-fx, +fx, 0.f);
 
 	m_pd3dPositionBuffer = ::CreateBufferResource(pd3dDevice, pd3dCommandList, m_pxmf3Positions, sizeof(XMFLOAT3) * m_nVertices, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &m_pd3dPositionUploadBuffer);
 

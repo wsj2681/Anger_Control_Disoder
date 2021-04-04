@@ -246,46 +246,43 @@ float4 PSSkyBox(VS_SKYBOX_CUBEMAP_OUTPUT input) : SV_TARGET
 
 Texture2D gtxtTexture : register(t0);
 
-struct VS_TEXTURED_INPUT
+struct VS_PARTICLE_INPUT
 {
 	float3 position : POSITION;
-	float2 uv : TEXCOORD;
+	float4 color : COLOR;
 };
 
-struct VS_TEXTURED_OUTPUT
+struct VS_PARTICLE_OUTPUT
 {
 	float4 position : SV_POSITION;
-	float2 uv : TEXCOORD;
+	float4 color : COLOR;
 };
 
-VS_TEXTURED_OUTPUT VSTextured(VS_TEXTURED_INPUT input)
+VS_PARTICLE_OUTPUT VSParticle(VS_PARTICLE_INPUT input)
 {
-	VS_TEXTURED_OUTPUT output;
+	VS_PARTICLE_OUTPUT output;
 
 	output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxGameObject), gmtxView), gmtxProjection);
-	output.uv = input.uv;
 
 	return(output);
 }
 
-float4 PSTextured(VS_TEXTURED_OUTPUT input, uint primitiveID : SV_PrimitiveID) : SV_TARGET
+float4 PSParticle(VS_PARTICLE_OUTPUT input, uint primitiveID : SV_PrimitiveID) : SV_TARGET
 {
-	float4 cColor = gtxtTexture.Sample(gssWrap, input.uv);
+	float4 cColor = (1, 0 , 0, 1);
 
 	return(cColor);
 }
 
 //struct VS_PARTICLE_INPUT
 //{
-//	float4 position : POSITION;
-//	float2 uv : TEXCOORD;
+//	float3 position : POSITION;
 //	float4 color : COLOR;
 //};
 //
 //struct VS_PARTICLE_OUTPUT
 //{
-//	float4 position : SV_POSITION;
-//	float2 uv : TEXCOORD;
+//	float3 position : SV_POSITION;
 //	float4 color : COLOR;
 //};
 //

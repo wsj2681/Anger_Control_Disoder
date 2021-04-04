@@ -545,7 +545,7 @@ public:
 	virtual ~Particle();
 
 	virtual void Animate(float fDeltaTime);
-
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* camera = NULL);
 	float m_fRotationAngle = 0.0f;
 	float m_fRotationDelta = 1.0f;
 };
