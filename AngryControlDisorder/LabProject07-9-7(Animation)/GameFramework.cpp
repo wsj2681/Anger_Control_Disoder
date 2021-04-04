@@ -397,6 +397,15 @@ void CGameFramework::OnDestroy()
 
 void CGameFramework::BuildObjects()
 {
+
+#ifdef _WITH_SERVER_CONNECT
+	/////SERVER///
+	server = new Server();
+
+	////////////////////////
+#endif // _WITH_SERVER_CONNECT
+
+
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
 	m_pScene = new CScene();
@@ -409,6 +418,13 @@ void CGameFramework::BuildObjects()
 	CAirplanePlayer *pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), NULL);
 	pPlayer->SetPosition(XMFLOAT3(425.0f, 240.0f, 640.0f));
 #endif
+
+#ifdef _WITH_SERVER_CONNECT
+	////server//////////////
+	server->cplayer = m_pPlayer;
+	server->cscene = m_pScene;
+	/// /////////////////////////////
+#endif // _WITH_SERVER_CONNECT
 
 	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
 	m_pCamera = m_pPlayer->GetCamera();
@@ -518,6 +534,19 @@ void CGameFramework::MoveToNextFrame()
 
 void CGameFramework::FrameAdvance()
 {    
+#ifdef _WITH_SERVER_CONNECT
+	/////////////////server////////////////
+	//if (i == 0) {
+	server->Server_send();
+	server->Server_recv();
+	//++i;
+	//}
+
+	//server->Server_send();
+
+	///////////////////////////////////////
+#endif // _WITH_SERVER_CONNECT
+
 	m_GameTimer.Tick(30.0f);
 	
 	ProcessInput();
