@@ -84,6 +84,7 @@ void CPlayer::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
 
 void CPlayer::Rotate(float x, float y, float z)
 {
+	// TODO : 카메라 오프셋, 캐릭터 lookat
 	DWORD nCurrentCameraMode = m_pCamera->GetMode();
 	if ((nCurrentCameraMode == FIRST_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA))
 	{
@@ -161,9 +162,9 @@ void CPlayer::Update(float fTimeElapsed)
 	if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
 
 	DWORD nCurrentCameraMode = m_pCamera->GetMode();
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(GetPosition(), fTimeElapsed);
+	if (nCurrentCameraMode == THIRD_PERSON_CAMERA && otherHead) m_pCamera->Update(otherHead->GetPosition(), fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(GetPosition());
+	if (nCurrentCameraMode == THIRD_PERSON_CAMERA && otherHead) m_pCamera->SetLookAt(otherHead->GetPosition());
 	m_pCamera->RegenerateViewMatrix();
 
 	fLength = Vector3::Length(m_xmf3Velocity);
@@ -357,7 +358,7 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	CLoadedModelInfo *pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
 	SetChild(pAngrybotModel->m_pModelRootObject, true);
 
-	//this->head = FindFrame("Head");
+	this->head = FindFrame("Bip01_Head");
 	//this->rHand = FindFrame("RHand");
 	//this->lHand = FindFrame("LHand");
 
@@ -434,7 +435,7 @@ CCamera *CTerrainPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			m_pCamera = OnChangeCamera(THIRD_PERSON_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.25f);
 			
-			m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, -20.0f));
+			m_pCamera->SetOffset(XMFLOAT3(m_xmf3Position.x + 4.f, m_xmf3Position.y + 7.f, m_xmf3Position.z - 6.f));
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
@@ -481,7 +482,7 @@ void CTerrainPlayer::OnCameraUpdateCallback(float fTimeElapsed)
 		if (m_pCamera->GetMode() == THIRD_PERSON_CAMERA)
 		{
 			CThirdPersonCamera *p3rdPersonCamera = (CThirdPersonCamera *)m_pCamera;
-			p3rdPersonCamera->SetLookAt(head->GetPosition()); //머리 바라보기
+			p3rdPersonCamera->SetLookAt(otherHead->GetPosition()); //머리 바라보기
 		}
 	}
 }
@@ -491,5 +492,5 @@ void CTerrainPlayer::Update(float fTimeElapsed)
 	CPlayer::Update(fTimeElapsed);
 	// TODO : 애니메이션 셋 할때 이쪽으로 와서 한다. 
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
-	SetTrackAnimationSet(0, ::IsZero(fLength) ? 0 : 4);
+	//SetTrackAnimationSet(0, ::IsZero(fLength) ? 0 : 4);
 }

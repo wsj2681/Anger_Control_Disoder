@@ -38,14 +38,11 @@ void CScene::BuildDefaultLightsAndMaterials()
 		m_pLights[i].m_bEnable = true;
 		m_pLights[i].m_nType = DIRECTIONAL_LIGHT;
 		m_pLights[i].m_fRange = 200.0f;
-		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.0f);
 		m_pLights[i].m_xmf3Position = lights.data()[i]->GetPosition();
-		m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
-		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, -1.0f, 0.0f);
-	 	m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
-		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, -.5f, 0.0f);
 	}
 
 
@@ -62,11 +59,12 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	CLoadedModelInfo* mapModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
+	CLoadedModelInfo* mapModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena_Roof.bin", NULL);
 	CGameObject* map = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, mapModel, 1);
 	map->SetPosition(0.f, 0.f, 0.f);
 	hierarchicalGameObjects.push_back(map);
 	if (mapModel) delete mapModel;
+
 	lightsCount = 38;
 
 	char name[30];
@@ -83,6 +81,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	CGameObject* boxer = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, boxerModel, 1);
 	boxer->SetPosition(0.f, 10.f, 0.f);
 	hierarchicalGameObjects.push_back(boxer);
+
 	if (boxerModel) delete boxerModel;
 
 	CLoadedModelInfo* cubeModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", NULL);

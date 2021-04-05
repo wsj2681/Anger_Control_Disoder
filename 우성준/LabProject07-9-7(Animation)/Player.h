@@ -92,6 +92,9 @@ public:
 	CGameObject* head = NULL;
 	CGameObject* rHand = NULL;
 	CGameObject* lHand = NULL;
+
+	CGameObject* otherPlayer = NULL;
+	CGameObject* otherHead = NULL;
 };
 
 class CAirplanePlayer : public CPlayer
