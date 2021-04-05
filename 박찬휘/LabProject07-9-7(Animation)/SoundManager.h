@@ -10,7 +10,7 @@ constexpr float SOUND_DEFAULT{ 0.1f };
 class SoundManager final
 {
 public:
-	SoundManager() = delete;
+	SoundManager() = default;
 	SoundManager(const char* path, bool loop);
 	SoundManager(const SoundManager&) = default;
 	SoundManager& operator=(const SoundManager&) = default;

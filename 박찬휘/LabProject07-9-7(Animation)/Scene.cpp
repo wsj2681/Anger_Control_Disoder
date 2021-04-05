@@ -203,14 +203,24 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[1]->bCheckCollision = true;
 	m_ppHierarchicalGameObjects[1]->bHittable = true;
 
-	//CLoadedModelInfo* bar = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", NULL);
-	//m_ppHierarchicalGameObjects[2] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, bar, 1);
-	//m_ppHierarchicalGameObjects[2]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	//CAnimationCallbackHandler* barAnimation = new CSoundCallbackHandler();
-	//m_ppHierarchicalGameObjects[2]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, barAnimation);
-	//m_ppHierarchicalGameObjects[2]->SetPosition(0.0f, 12.f, 0.0f);
-	//m_ppHierarchicalGameObjects[2]->bCheckCollision = false;
-	//m_ppHierarchicalGameObjects[2]->bHittable = false;
+
+	CTexturedRectMesh* rectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList);
+	m_nGameObjects = 1;
+	m_ppGameObjects = new CGameObject * [m_nGameObjects];
+
+	m_nShaders = 1;
+	m_ppShaders = new CShader * [m_nShaders];
+
+	m_ppGameObjects[0] = new CGameObject();
+	m_ppGameObjects[0]->SetMesh(rectMesh);
+
+	UIShader* pObjectsShader = new UIShader();
+	pObjectsShader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	pObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, NULL);
+
+	m_ppGameObjects[0]->SetShader(pObjectsShader);
+
+	m_ppShaders[0] = pObjectsShader;
 
 	//조명 벡터 만들었다.
 	lightsCount = 38;
