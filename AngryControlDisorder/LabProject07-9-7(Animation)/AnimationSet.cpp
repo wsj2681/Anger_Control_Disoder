@@ -32,7 +32,7 @@ void* CAnimationSet::GetCallbackData()
 	{
 		if (::IsEqual(m_pCallbackKeys[i].m_fTime, m_fPosition, ANIMATION_CALLBACK_EPSILON)) return(m_pCallbackKeys[i].m_pCallbackData);
 	}
-	return(NULL);
+	return nullptr;
 }
 
 void CAnimationSet::SetPosition(float fTrackPosition)
@@ -93,7 +93,7 @@ XMFLOAT4X4 CAnimationSet::GetSRT(int nBone)
 		}
 	}
 
-	XMStoreFloat4x4(&xmf4x4Transform, XMMatrixAffineTransformation(S, NULL, R, T));
+	XMStoreFloat4x4(&xmf4x4Transform, XMMatrixAffineTransformation(S, nullptr, R, T));
 #else   
 	for (int i = 0; i < (m_nKeyFrames - 1); i++)
 	{

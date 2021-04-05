@@ -13,8 +13,59 @@
 class Engine
 {
 public:
+
 	Engine();
+	Engine(const Engine&) = delete;
+	Engine& operator=(const Engine&) = delete;
 	~Engine();
+
+private:
+	HINSTANCE hInstance = nullptr;
+	HWND hWnd = nullptr;
+
+	int wndClientWidth;
+	int wndClientHeight;
+
+	IDXGIFactory4* factory = nullptr;
+	IDXGISwapChain3* swapChain = nullptr;
+	ID3D12Device* device = nullptr;
+
+	bool bMsaa4xEnable = false;
+	UINT nMsaa4xQualityLevels = 0;
+
+	static const UINT swapChainBuffers = 2;
+	UINT swapChainBufferIndex = 0;
+
+	ID3D12Resource* swapChainBackBuffers[swapChainBuffers];
+	ID3D12DescriptorHeap* rtvDescHeap = nullptr;
+	UINT rtvDescIncrementSize;
+
+	ID3D12Resource* depthStencilBuffer = nullptr;
+	ID3D12DescriptorHeap* dsvDescHeap = nullptr;
+	UINT dsvDescIncrementSize;
+
+	ID3D12CommandAllocator* commandAllocator = nullptr;
+	ID3D12CommandQueue* commandQueue = NULL;
+	ID3D12GraphicsCommandList* commandList = nullptr;
+
+	ID3D12Fence* fence = nullptr;
+	UINT64						fenceValues[swapChainBuffers];
+	HANDLE						fenceEvent;
+
+#if defined(_DEBUG)
+	ID3D12Debug* debugController;
+#endif
+
+	CGameTimer m_GameTimer;
+
+	Scene* m_pScene = nullptr;
+	Player* m_pPlayer = nullptr;
+	Camera* m_pCamera = nullptr;
+
+	POINT m_ptOldCursorPos;
+
+	_TCHAR						frameRate[70];
+public:
 
 	bool OnCreate(HINSTANCE hInstance, HWND hMainWnd);
 	void OnDestroy();
@@ -30,12 +81,12 @@ public:
 
 	void ChangeSwapChainState();
 
-    void BuildObjects();
-    void ReleaseObjects();
+	void BuildObjects();
+	void ReleaseObjects();
 
-    void ProcessInput();
-    void AnimateObjects();
-    void FrameAdvance();
+	void ProcessInput();
+	void AnimateObjects();
+	void FrameAdvance();
 
 	void WaitForGpuComplete();
 	void MoveToNextFrame();
@@ -43,53 +94,6 @@ public:
 	void OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
-
-private:
-	HINSTANCE					m_hInstance;
-	HWND						m_hWnd; 
-
-	int							m_nWndClientWidth;
-	int							m_nWndClientHeight;
-        
-	IDXGIFactory4				*m_pdxgiFactory = NULL;
-	IDXGISwapChain3				*m_pdxgiSwapChain = NULL;
-	ID3D12Device				*m_pd3dDevice = NULL;
-
-	bool						m_bMsaa4xEnable = false;
-	UINT						m_nMsaa4xQualityLevels = 0;
-
-	static const UINT			m_nSwapChainBuffers = 2;
-	UINT						m_nSwapChainBufferIndex;
-
-	ID3D12Resource				*m_ppd3dSwapChainBackBuffers[m_nSwapChainBuffers];
-	ID3D12DescriptorHeap		*m_pd3dRtvDescriptorHeap = NULL;
-	UINT						m_nRtvDescriptorIncrementSize;
-
-	ID3D12Resource				*m_pd3dDepthStencilBuffer = NULL;
-	ID3D12DescriptorHeap		*m_pd3dDsvDescriptorHeap = NULL;
-	UINT						m_nDsvDescriptorIncrementSize;
-
-	ID3D12CommandAllocator		*m_pd3dCommandAllocator = NULL;
-	ID3D12CommandQueue			*m_pd3dCommandQueue = NULL;
-	ID3D12GraphicsCommandList	*m_pd3dCommandList = NULL;
-
-	ID3D12Fence					*m_pd3dFence = NULL;
-	UINT64						m_nFenceValues[m_nSwapChainBuffers];
-	HANDLE						m_hFenceEvent;
-
-#if defined(_DEBUG)
-	ID3D12Debug					*m_pd3dDebugController;
-#endif
-
-	CGameTimer					m_GameTimer;
-
-	Scene						*m_pScene = NULL;
-	Player						*m_pPlayer = NULL;
-	Camera						*m_pCamera = NULL;
-
-	POINT						m_ptOldCursorPos;
-
-	_TCHAR						m_pszFrameRate[70];
 
 	///////////server/////////////
 	Server* server = NULL;

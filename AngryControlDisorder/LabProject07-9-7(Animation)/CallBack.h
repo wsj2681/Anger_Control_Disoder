@@ -5,7 +5,7 @@
 struct CALLBACKKEY
 {
 	float  							m_fTime = 0.0f;
-	void* m_pCallbackData = NULL;
+	void* m_pCallbackData = nullptr;
 };
 
 class AnimationCallbackHandler

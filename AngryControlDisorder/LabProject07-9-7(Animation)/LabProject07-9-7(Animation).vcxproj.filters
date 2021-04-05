@@ -189,6 +189,9 @@
     <ClInclude Include="Server.h">
       <Filter>소스 파일\07 Server</Filter>
     </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>소스 파일\99 Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WICTextureLoader12.cpp">

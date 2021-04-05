@@ -161,6 +161,7 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="LabProject07-9-7(Animation).h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ModelInfo.h" />
     <ClInclude Include="Object.h" />

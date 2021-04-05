@@ -24,8 +24,8 @@ AnimationController::AnimationController(ID3D12Device* pd3dDevice, ID3D12Graphic
 	UINT ncbElementBytes = (((sizeof(XMFLOAT4X4) * SKINNED_ANIMATION_BONES) + 255) & ~255); //256ÀÇ ¹è¼ö
 	for (int i = 0; i < m_nSkinnedMeshes; i++)
 	{
-		m_ppd3dcbSkinningBoneTransforms[i] = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
-		m_ppd3dcbSkinningBoneTransforms[i]->Map(0, NULL, (void**)&m_ppcbxmf4x4MappedSkinningBoneTransforms[i]);
+		m_ppd3dcbSkinningBoneTransforms[i] = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+		m_ppd3dcbSkinningBoneTransforms[i]->Map(0, nullptr, (void**)&m_ppcbxmf4x4MappedSkinningBoneTransforms[i]);
 	}
 }
 
@@ -35,7 +35,7 @@ AnimationController::~AnimationController()
 
 	for (int i = 0; i < m_nSkinnedMeshes; i++)
 	{
-		m_ppd3dcbSkinningBoneTransforms[i]->Unmap(0, NULL);
+		m_ppd3dcbSkinningBoneTransforms[i]->Unmap(0, nullptr);
 		m_ppd3dcbSkinningBoneTransforms[i]->Release();
 	}
 	if (m_ppd3dcbSkinningBoneTransforms) delete[] m_ppd3dcbSkinningBoneTransforms;
@@ -122,6 +122,6 @@ void AnimationController::AdvanceTime(float fTimeElapsed, Object* pRootGameObjec
 			m_pAnimationSets->m_ppAnimatedBoneFrameCaches[j]->m_xmf4x4ToParent = xmf4x4Transform;
 		}
 
-		pRootGameObject->UpdateTransform(NULL);
+		pRootGameObject->UpdateTransform(nullptr);
 	}
 }
