@@ -517,7 +517,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
 }
 
-void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 {
 	if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
 	if (m_pd3dCbvSrvDescriptorHeap) pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);

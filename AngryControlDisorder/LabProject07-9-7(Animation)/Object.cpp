@@ -169,7 +169,7 @@ void Object::Animate(float fTimeElapsed)
 	if (m_pChild) m_pChild->Animate(fTimeElapsed);
 }
 
-void Object::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+void Object::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 {
 	if (this->isActive)
 	{

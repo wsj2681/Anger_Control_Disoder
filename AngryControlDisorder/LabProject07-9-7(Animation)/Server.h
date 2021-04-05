@@ -31,7 +31,7 @@ struct Thread_id {
 };
 #pragma pack(pop)
 
-class CPlayer;
+class Player;
 
 class Scene;
 
@@ -41,7 +41,7 @@ class Server
 {
 
 public:
-	CPlayer* cplayer;
+	Player* cplayer;
 	Scene* cscene;
 
 	SOCKET sock;

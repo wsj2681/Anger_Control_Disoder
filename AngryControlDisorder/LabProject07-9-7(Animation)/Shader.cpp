@@ -217,7 +217,7 @@ void Shader::OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList, int nPi
 	if (m_pd3dPipelineState) pd3dCommandList->SetPipelineState(m_pd3dPipelineState);
 }
 
-void Shader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+void Shader::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 {
 	OnPrepareRender(pd3dCommandList);
 }

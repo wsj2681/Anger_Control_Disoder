@@ -61,11 +61,11 @@ public:
 
 	bool ProcessInput(UCHAR *pKeysBuffer);
     void AnimateObjects(float fTimeElapsed);
-    void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
+    void Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera=NULL);
 
 	void ReleaseUploadBuffers();
 
-	CPlayer								*m_pPlayer = NULL;
+	Player								*m_pPlayer = NULL;
 
 protected:
 	ID3D12RootSignature					*m_pd3dGraphicsRootSignature = NULL;

@@ -27,15 +27,15 @@ void BoxerObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCo
 	float fxPitch = 7.0f * 2.5f;
 	float fzPitch = 7.0f * 2.5f;
 
-	ModelInfo* pAngrybotModel = pModel;
-	if (!pAngrybotModel) pAngrybotModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL);
+	ModelInfo* boxerModel = pModel;
+	if (!boxerModel) boxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
 
 	int nObjects = 0;
 	for (int x = -xObjects; x <= xObjects; x++)
 	{
 		for (int z = -zObjects; z <= zObjects; z++)
 		{
-			m_ppObjects[nObjects] = new BoxerObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, pAngrybotModel, 1);
+			m_ppObjects[nObjects] = new BoxerObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, boxerModel, 1);
 			m_ppObjects[nObjects]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, (nObjects % 2));
 			m_ppObjects[nObjects]->m_pSkinnedAnimationController->SetTrackSpeed(0, (nObjects % 2) ? 0.25f : 1.0f);
 			m_ppObjects[nObjects]->m_pSkinnedAnimationController->SetTrackPosition(0, (nObjects % 3) ? 0.85f : 0.0f);
@@ -47,5 +47,5 @@ void BoxerObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCo
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
-	if (!pModel && pAngrybotModel) delete pAngrybotModel;
+	if (!pModel && boxerModel) delete boxerModel;
 }
