@@ -87,10 +87,10 @@ void Server::Server_recv()
 		cout << player_position.x << " / " << player_position.y << " / " << player_position.z << endl;
 
 
-		cscene->m_ppHierarchicalGameObjects[0]->SetPosition(player_position.x, player_position.y, player_position.z);
-		cscene->m_ppHierarchicalGameObjects[0]->SetRight(player_right.x, player_right.y, player_right.z);
-		cscene->m_ppHierarchicalGameObjects[0]->SetUp(player_up.x, player_up.y, player_up.z);
-		cscene->m_ppHierarchicalGameObjects[0]->SetLook(player_look.x, player_look.y, player_look.z);
+		cscene->hierarchicalGameObjects.data()[0]->SetPosition(player_position.x, player_position.y, player_position.z);
+		cscene->hierarchicalGameObjects.data()[0]->SetRight(player_right.x, player_right.y, player_right.z);
+		cscene->hierarchicalGameObjects.data()[0]->SetUp(player_up.x, player_up.y, player_up.z);
+		cscene->hierarchicalGameObjects.data()[0]->SetLook(player_look.x, player_look.y, player_look.z);
 
 
 

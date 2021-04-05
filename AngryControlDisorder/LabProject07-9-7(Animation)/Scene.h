@@ -103,8 +103,7 @@ public:
 	int									m_nGameObjects = 0;
 	Object							**m_ppGameObjects = NULL;
 
-	int									m_nHierarchicalGameObjects = 0;
-	Object							**m_ppHierarchicalGameObjects = NULL;
+	vector<Object*> hierarchicalGameObjects;
 
 	int									m_nShaders = 0;
 	Shader								**m_ppShaders = NULL;

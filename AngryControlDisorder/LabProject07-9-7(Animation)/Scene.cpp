@@ -67,59 +67,34 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 	Material::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	
-	
-
 	m_pSkyBox = new SkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	//XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
-	//XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
-	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
-
-	m_nHierarchicalGameObjects = 2;
-	m_ppHierarchicalGameObjects = new Object * [m_nHierarchicalGameObjects];
-
-	ModelInfo* pAngrybotModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
-	m_ppHierarchicalGameObjects[0] = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
-	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	AnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
-	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, pAnimationCallbackHandler);
-	//m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
-	m_ppHierarchicalGameObjects[0]->SetPosition(0.0f, 0, 0.0f);
-	if (pAngrybotModel) delete pAngrybotModel;
-
-	ModelInfo* boxer = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
-	m_ppHierarchicalGameObjects[1] = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, boxer, 1);
-	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
-	AnimationCallbackHandler* circleAnimation = new CSoundCallbackHandler();
-	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, circleAnimation);
-	//m_ppHierarchicalGameObjects[1]->SetScale(3.f, 5.f, 3.f);
-	m_ppHierarchicalGameObjects[1]->SetPosition(0.0f, 10.f, 0.0f);
+	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
+	Object* Map = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
+	Map->SetPosition(0.0f, 0.f, 0.0f);
+	hierarchicalGameObjects.push_back(Map);
+	if (MapModel) delete MapModel;
 
 	//조명 벡터 만들었다.
 	lightsCount = 38;
 	
 	char name[30];
-	lights.push_back(m_ppHierarchicalGameObjects[0]->FindFrame("light"));
+	lights.push_back(Map->FindFrame("light"));
 	for (int i = 1; i < lightsCount; ++i)
 	{
 		sprintf(name, "light%d", i);
-		lights.push_back(m_ppHierarchicalGameObjects[0]->FindFrame(name));
+		lights.push_back(Map->FindFrame(name));
 	}
 
 	BuildDefaultLightsAndMaterials();
 
-	
+	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
+	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
+	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	boxer->SetPosition(0.0f, 10, 0.0f);
+	hierarchicalGameObjects.push_back(boxer);
+	if (BoxerModel) delete BoxerModel;
 
-	m_nShaders = 0;
-	m_ppShaders = new Shader*[m_nShaders];
-
-	//CEthanObjectsShader *pEthanObjectsShader = new CEthanObjectsShader();
-	//CLoadedModelInfo *pEthanModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Ethan.bin", NULL);
-	//pEthanObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pEthanModel, m_pTerrain);
-
-	//m_ppShaders[0] = nullptr;
-
-	//if (pEthanModel) delete pEthanModel;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -148,10 +123,16 @@ void Scene::ReleaseObjects()
 
 	if (m_pSkyBox) delete m_pSkyBox;
 
-	if (m_ppHierarchicalGameObjects)
+	if (!hierarchicalGameObjects.empty())
 	{
-		for (int i = 0; i < m_nHierarchicalGameObjects; i++) if (m_ppHierarchicalGameObjects[i]) m_ppHierarchicalGameObjects[i]->Release();
-		delete[] m_ppHierarchicalGameObjects;
+		for (auto& obj : hierarchicalGameObjects)
+		{
+			if (obj)
+			{
+				obj->Release();
+			}
+		}
+		hierarchicalGameObjects.clear();
 	}
 
 	ReleaseShaderVariables();
@@ -391,7 +372,7 @@ void Scene::ReleaseUploadBuffers()
 
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->ReleaseUploadBuffers();
-	for (int i = 0; i < m_nHierarchicalGameObjects; i++) m_ppHierarchicalGameObjects[i]->ReleaseUploadBuffers();
+	for (auto& obj : hierarchicalGameObjects) obj->ReleaseUploadBuffers();
 }
 
 void Scene::CreateCbvSrvDescriptorHeaps(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, int nShaderResourceViews)
@@ -505,37 +486,13 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			break;
 		case VK_RETURN:
 			break;
-		case '1':
-			if(m_ppHierarchicalGameObjects[0]->isActive)
-				m_ppHierarchicalGameObjects[0]->isActive = false;
-			else
-				m_ppHierarchicalGameObjects[0]->isActive = true;
-			break;
-		case '2':
-
-			m_ppHierarchicalGameObjects[2]->m_xmf4x4ToParent._11 = 1.f;
-			m_ppHierarchicalGameObjects[2]->m_xmf4x4ToParent._22 = 1.f;
-			m_ppHierarchicalGameObjects[2]->m_xmf4x4ToParent._33 = 1.f;
-			texScale = { 1.f, 1.f, 1.f };
-			m_ppHierarchicalGameObjects[2]->SetScale(1.f, 1.f, 1.f);
-			m_ppHierarchicalGameObjects[2]->isActive = true;
-
-			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
-			break;
-		case '3':
-			//m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
-			m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 3);
-			break;
-		case VK_F9:
-			break;
 		case VK_F4:
-			//m_pPlayer->m_pChild->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
 			break;
 		case VK_F5:
-			m_pPlayer->SetTrackAnimationSet(0, 2);
 			break;
 		case VK_F6:
-			m_pPlayer->m_pChild->SetTrackAnimationSet(0, 3);
+			break;
+		case VK_F9:
 			break;
 		default:
 			break;
@@ -558,12 +515,6 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
-
-	if (m_pLights)
-	{
-		m_pLights[1].m_xmf3Position = XMFLOAT3(m_pPlayer->head->GetPosition().x, m_pPlayer->head->GetPosition().y, m_pPlayer->head->GetPosition().z + 0.4f);
-		m_pLights[1].m_xmf3Direction = m_pPlayer->GetLookVector();
-	}
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
@@ -584,14 +535,17 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 
-	for (int i = 0; i < m_nHierarchicalGameObjects; i++)
+	if (!hierarchicalGameObjects.empty())
 	{
-		if (m_ppHierarchicalGameObjects[i])
+		for (auto& object : hierarchicalGameObjects)
 		{
-			m_ppHierarchicalGameObjects[i]->Animate(m_fElapsedTime);
-			
-			if (!m_ppHierarchicalGameObjects[i]->m_pSkinnedAnimationController) m_ppHierarchicalGameObjects[i]->UpdateTransform(NULL);
-			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
+			object->Animate(m_fElapsedTime);
+			if (object->m_pSkinnedAnimationController)
+			{
+				object->UpdateTransform(nullptr);
+			}
+
+			object->Render(pd3dCommandList, pCamera);
 		}
 	}
 }
