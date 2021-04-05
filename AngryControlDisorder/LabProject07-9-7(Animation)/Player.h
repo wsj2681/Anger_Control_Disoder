@@ -9,9 +9,9 @@
 
 #include "Object.h"
 #include "Camera.h"
-class CAnimationCallbackHandler;
+class AnimationCallbackHandler;
 
-class CPlayer : public CGameObject
+class CPlayer : public Object
 {
 protected:
 	XMFLOAT3					m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -90,44 +90,19 @@ public:
 
 public:
 
-	CGameObject* head = NULL;
-	CGameObject* rHand = NULL;
-	CGameObject* lHand = NULL;
+	Object* head = NULL;
+	Object* rHand = NULL;
+	Object* lHand = NULL;
 };
 
-class CAirplanePlayer : public CPlayer
+class BoxingPlayer : public CPlayer
 {
 public:
-	CAirplanePlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=NULL);
-	virtual ~CAirplanePlayer();
-
-	CGameObject					*m_pMainRotorFrame = NULL;
-	CGameObject					*m_pTailRotorFrame = NULL;
-
-private:
-	virtual void OnPrepareAnimate();
-	virtual void Animate(float fTimeElapsed);
+	BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=NULL);
+	virtual ~BoxingPlayer();
 
 public:
 	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
-	virtual void OnPrepareRender();
-};
-
-
-
-class CTerrainPlayer : public CPlayer
-{
-public:
-	CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=NULL);
-	virtual ~CTerrainPlayer();
-
-public:
-	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
-
-	virtual void OnPlayerUpdateCallback(float fTimeElapsed);
-	virtual void OnCameraUpdateCallback(float fTimeElapsed);
-
-	
 
 	virtual void Update(float fTimeElapsed);
 };

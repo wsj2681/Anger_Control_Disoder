@@ -33,7 +33,7 @@ struct Thread_id {
 
 class CPlayer;
 
-class CScene;
+class Scene;
 
 
 
@@ -42,7 +42,7 @@ class Server
 
 public:
 	CPlayer* cplayer;
-	CScene* cscene;
+	Scene* cscene;
 
 	SOCKET sock;
 	int retval = 0;

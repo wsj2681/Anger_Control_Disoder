@@ -1,28 +1,28 @@
 #pragma once
 
-class CLoadedModelInfo;
-class CAnimationTrack;
-class CAnimationSets;
-class CSkinnedMesh;
-class CAnimationCallbackHandler;
-class CGameObject;
+class ModelInfo;
+class AnimationTrack;
+class AnimationSets;
+class SkinnedMesh;
+class AnimationCallbackHandler;
+class Object;
 
-class CAnimationController
+class AnimationController
 {
 public:
-	CAnimationController(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, int nAnimationTracks, CLoadedModelInfo* pModel);
-	~CAnimationController();
+	AnimationController(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, int nAnimationTracks, ModelInfo* pModel);
+	~AnimationController();
 
 public:
 	float 							m_fTime = 0.0f;
 
 	int 							m_nAnimationTracks = 0;
-	CAnimationTrack* m_pAnimationTracks = NULL;
+	AnimationTrack* m_pAnimationTracks = NULL;
 
-	CAnimationSets* m_pAnimationSets = NULL;
+	AnimationSets* m_pAnimationSets = NULL;
 
 	int 							m_nSkinnedMeshes = 0;
-	CSkinnedMesh** m_ppSkinnedMeshes = NULL; //[SkinnedMeshes], Skinned Mesh Cache
+	SkinnedMesh** m_ppSkinnedMeshes = NULL; //[SkinnedMeshes], Skinned Mesh Cache
 
 	ID3D12Resource** m_ppd3dcbSkinningBoneTransforms = NULL; //[SkinnedMeshes]
 	XMFLOAT4X4** m_ppcbxmf4x4MappedSkinningBoneTransforms = NULL; //[SkinnedMeshes]
@@ -38,7 +38,7 @@ public:
 
 	void SetCallbackKeys(int nAnimationSet, int nCallbackKeys);
 	void SetCallbackKey(int nAnimationSet, int nKeyIndex, float fTime, void* pData);
-	void SetAnimationCallbackHandler(int nAnimationSet, CAnimationCallbackHandler* pCallbackHandler);
+	void SetAnimationCallbackHandler(int nAnimationSet, AnimationCallbackHandler* pCallbackHandler);
 
-	void AdvanceTime(float fElapsedTime, CGameObject* pRootGameObject);
+	void AdvanceTime(float fElapsedTime, Object* pRootGameObject);
 };

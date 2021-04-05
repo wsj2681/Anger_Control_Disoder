@@ -1,10 +1,10 @@
 #pragma once
 
-class CAnimationTrack
+class AnimationTrack
 {
 public:
-	CAnimationTrack() { }
-	~CAnimationTrack() { }
+	AnimationTrack() { }
+	~AnimationTrack() { }
 
 public:
 	BOOL 							m_bEnable = true;

@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "TerrainShader.h"
 
-CTerrainShader::CTerrainShader()
+TerrainShader::TerrainShader()
 {
 }
 
-CTerrainShader::~CTerrainShader()
+TerrainShader::~TerrainShader()
 {
 }
 
-D3D12_INPUT_LAYOUT_DESC CTerrainShader::CreateInputLayout()
+D3D12_INPUT_LAYOUT_DESC TerrainShader::CreateInputLayout()
 {
 	UINT nInputElementDescs = 4;
 	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
@@ -26,12 +26,12 @@ D3D12_INPUT_LAYOUT_DESC CTerrainShader::CreateInputLayout()
 	return(d3dInputLayoutDesc);
 }
 
-D3D12_SHADER_BYTECODE CTerrainShader::CreateVertexShader()
+D3D12_SHADER_BYTECODE TerrainShader::CreateVertexShader()
 {
-	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSTerrain", "vs_5_1", &m_pd3dVertexShaderBlob));
+	return(Shader::CompileShaderFromFile(L"Shaders.hlsl", "VSTerrain", "vs_5_1", &m_pd3dVertexShaderBlob));
 }
 
-D3D12_SHADER_BYTECODE CTerrainShader::CreatePixelShader()
+D3D12_SHADER_BYTECODE TerrainShader::CreatePixelShader()
 {
-	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSTerrain", "ps_5_1", &m_pd3dPixelShaderBlob));
+	return(Shader::CompileShaderFromFile(L"Shaders.hlsl", "PSTerrain", "ps_5_1", &m_pd3dPixelShaderBlob));
 }

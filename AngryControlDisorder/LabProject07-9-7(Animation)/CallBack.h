@@ -8,17 +8,17 @@ struct CALLBACKKEY
 	void* m_pCallbackData = NULL;
 };
 
-class CAnimationCallbackHandler
+class AnimationCallbackHandler
 {
 public:
-	CAnimationCallbackHandler() { }
-	~CAnimationCallbackHandler() { }
+	AnimationCallbackHandler() { }
+	~AnimationCallbackHandler() { }
 
 public:
 	virtual void HandleCallback(void* pCallbackData) { }
 };
 
-class CSoundCallbackHandler : public CAnimationCallbackHandler
+class CSoundCallbackHandler : public AnimationCallbackHandler
 {
 public:
 	CSoundCallbackHandler() { }

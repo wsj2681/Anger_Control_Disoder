@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Texture.h"
 
-CTexture::CTexture(int nTextures, UINT nTextureType, int nSamplers)
+Texture::Texture(int nTextures, UINT nTextureType, int nSamplers)
 {
 	m_nTextureType = nTextureType;
 	m_nTextures = nTextures;
@@ -17,7 +17,7 @@ CTexture::CTexture(int nTextures, UINT nTextureType, int nSamplers)
 	if (m_nSamplers > 0) m_pd3dSamplerGpuDescriptorHandles = new D3D12_GPU_DESCRIPTOR_HANDLE[m_nSamplers];
 }
 
-CTexture::~CTexture()
+Texture::~Texture()
 {
 	if (m_ppd3dTextures)
 	{
@@ -33,18 +33,18 @@ CTexture::~CTexture()
 	if (m_pd3dSamplerGpuDescriptorHandles) delete[] m_pd3dSamplerGpuDescriptorHandles;
 }
 
-void CTexture::SetRootArgument(int nIndex, UINT nRootParameterIndex, D3D12_GPU_DESCRIPTOR_HANDLE d3dSrvGpuDescriptorHandle)
+void Texture::SetRootArgument(int nIndex, UINT nRootParameterIndex, D3D12_GPU_DESCRIPTOR_HANDLE d3dSrvGpuDescriptorHandle)
 {
 	m_pRootArgumentInfos[nIndex].m_nRootParameterIndex = nRootParameterIndex;
 	m_pRootArgumentInfos[nIndex].m_d3dSrvGpuDescriptorHandle = d3dSrvGpuDescriptorHandle;
 }
 
-void CTexture::SetSampler(int nIndex, D3D12_GPU_DESCRIPTOR_HANDLE d3dSamplerGpuDescriptorHandle)
+void Texture::SetSampler(int nIndex, D3D12_GPU_DESCRIPTOR_HANDLE d3dSamplerGpuDescriptorHandle)
 {
 	m_pd3dSamplerGpuDescriptorHandles[nIndex] = d3dSamplerGpuDescriptorHandle;
 }
 
-void CTexture::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+void Texture::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	if (m_nTextureType == RESOURCE_TEXTURE2D_ARRAY)
 	{
@@ -59,12 +59,12 @@ void CTexture::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 	}
 }
 
-void CTexture::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, int nIndex)
+void Texture::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList, int nIndex)
 {
 	pd3dCommandList->SetGraphicsRootDescriptorTable(m_pRootArgumentInfos[nIndex].m_nRootParameterIndex, m_pRootArgumentInfos[nIndex].m_d3dSrvGpuDescriptorHandle);
 }
 
-void CTexture::ReleaseUploadBuffers()
+void Texture::ReleaseUploadBuffers()
 {
 	if (m_ppd3dTextureUploadBuffers)
 	{
@@ -74,11 +74,11 @@ void CTexture::ReleaseUploadBuffers()
 	}
 }
 
-void CTexture::ReleaseShaderVariables()
+void Texture::ReleaseShaderVariables()
 {
 }
 
-void CTexture::LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, wchar_t* pszFileName, UINT nIndex, bool bIsDDSFile)
+void Texture::LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, wchar_t* pszFileName, UINT nIndex, bool bIsDDSFile)
 {
 	if (bIsDDSFile)
 		m_ppd3dTextures[nIndex] = ::CreateTextureResourceFromDDSFile(pd3dDevice, pd3dCommandList, pszFileName, &(m_ppd3dTextureUploadBuffers[nIndex]), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);

@@ -13,9 +13,7 @@
 #define SPOT_LIGHT						2
 #define DIRECTIONAL_LIGHT				3
 
-class CSkyBox;
-class CHeightMapTerrain;
-class CSkyBox;
+class SkyBox;
 
 struct LIGHT
 {
@@ -41,11 +39,11 @@ struct LIGHTS
 	int									m_nLights;
 };
 
-class CScene
+class Scene
 {
 public:
-    CScene();
-    ~CScene();
+    Scene();
+    ~Scene();
 
 	bool OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	bool OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
@@ -88,7 +86,7 @@ public:
 	static void CreateCbvSrvDescriptorHeaps(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, int nShaderResourceViews);
 
 	static D3D12_GPU_DESCRIPTOR_HANDLE CreateConstantBufferViews(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, ID3D12Resource *pd3dConstantBuffers, UINT nStride);
-	static D3D12_GPU_DESCRIPTOR_HANDLE CreateShaderResourceViews(ID3D12Device *pd3dDevice, CTexture *pTexture, UINT nRootParameter, bool bAutoIncrement);
+	static D3D12_GPU_DESCRIPTOR_HANDLE CreateShaderResourceViews(ID3D12Device *pd3dDevice, Texture *pTexture, UINT nRootParameter, bool bAutoIncrement);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUCbvDescriptorStartHandle() { return(m_d3dCbvCPUDescriptorStartHandle); }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUCbvDescriptorStartHandle() { return(m_d3dCbvGPUDescriptorStartHandle); }
@@ -103,16 +101,15 @@ public:
 	float								m_fElapsedTime = 0.0f;
 
 	int									m_nGameObjects = 0;
-	CGameObject							**m_ppGameObjects = NULL;
+	Object							**m_ppGameObjects = NULL;
 
 	int									m_nHierarchicalGameObjects = 0;
-	CGameObject							**m_ppHierarchicalGameObjects = NULL;
+	Object							**m_ppHierarchicalGameObjects = NULL;
 
 	int									m_nShaders = 0;
-	CShader								**m_ppShaders = NULL;
+	Shader								**m_ppShaders = NULL;
 
-	CSkyBox								*m_pSkyBox = NULL;
-	CHeightMapTerrain					*m_pTerrain = NULL;
+	SkyBox								*m_pSkyBox = NULL;
 
 	LIGHT								*m_pLights = NULL;
 	int									m_nLights = 0;
@@ -123,7 +120,7 @@ public:
 	LIGHTS								*m_pcbMappedLights = NULL;
 
 	int lightsCount = 0;
-	vector<CGameObject*> lights;
+	vector<Object*> lights;
 
 
 	XMFLOAT3 texScale{ 1.f, 1.f, 1.f };

@@ -2,12 +2,13 @@
 #include "SkinnedMesh.h"
 #include "Object.h"
 
-CSkinnedMesh::CSkinnedMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) : CStandardMesh(pd3dDevice, pd3dCommandList)
+SkinnedMesh::SkinnedMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) : CStandardMesh(pd3dDevice, pd3dCommandList)
 {
 }
 
-CSkinnedMesh::~CSkinnedMesh()
+SkinnedMesh::~SkinnedMesh()
 {
+	//TODO : Delete Scalar
 	if (m_pxmn4BoneIndices) delete[] m_pxmn4BoneIndices;
 	if (m_pxmf4BoneWeights) delete[] m_pxmf4BoneWeights;
 
@@ -23,11 +24,11 @@ CSkinnedMesh::~CSkinnedMesh()
 	ReleaseShaderVariables();
 }
 
-void CSkinnedMesh::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+void SkinnedMesh::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 }
 
-void CSkinnedMesh::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+void SkinnedMesh::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	if (m_pd3dcbBindPoseBoneOffsets)
 	{
@@ -47,11 +48,11 @@ void CSkinnedMesh::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandL
 	}
 }
 
-void CSkinnedMesh::ReleaseShaderVariables()
+void SkinnedMesh::ReleaseShaderVariables()
 {
 }
 
-void CSkinnedMesh::ReleaseUploadBuffers()
+void SkinnedMesh::ReleaseUploadBuffers()
 {
 	CStandardMesh::ReleaseUploadBuffers();
 
@@ -62,7 +63,7 @@ void CSkinnedMesh::ReleaseUploadBuffers()
 	m_pd3dBoneWeightUploadBuffer = NULL;
 }
 
-void CSkinnedMesh::PrepareSkinning(CGameObject* pModelRootObject)
+void SkinnedMesh::PrepareSkinning(Object* pModelRootObject)
 {
 	for (int j = 0; j < m_nSkinningBones; j++)
 	{
@@ -70,7 +71,7 @@ void CSkinnedMesh::PrepareSkinning(CGameObject* pModelRootObject)
 	}
 }
 
-void CSkinnedMesh::LoadSkinInfoFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, FILE* pInFile)
+void SkinnedMesh::LoadSkinInfoFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, FILE* pInFile)
 {
 	char pstrToken[64] = { '\0' };
 	UINT nReads = 0;
@@ -95,7 +96,7 @@ void CSkinnedMesh::LoadSkinInfoFromFile(ID3D12Device* pd3dDevice, ID3D12Graphics
 			if (m_nSkinningBones > 0)
 			{
 				m_ppstrSkinningBoneNames = new char[m_nSkinningBones][64];
-				m_ppSkinningBoneFrameCaches = new CGameObject * [m_nSkinningBones];
+				m_ppSkinningBoneFrameCaches = new Object * [m_nSkinningBones];
 				for (int i = 0; i < m_nSkinningBones; i++)
 				{
 					::ReadStringFromFile(pInFile, m_ppstrSkinningBoneNames[i]);
@@ -162,7 +163,7 @@ void CSkinnedMesh::LoadSkinInfoFromFile(ID3D12Device* pd3dDevice, ID3D12Graphics
 	}
 }
 
-void CSkinnedMesh::OnPreRender(ID3D12GraphicsCommandList* pd3dCommandList, void* pContext)
+void SkinnedMesh::OnPreRender(ID3D12GraphicsCommandList* pd3dCommandList, void* pContext)
 {
 	D3D12_VERTEX_BUFFER_VIEW pVertexBufferViews[7] = { m_d3dPositionBufferView, m_d3dTextureCoord0BufferView, m_d3dNormalBufferView, m_d3dTangentBufferView, m_d3dBiTangentBufferView, m_d3dBoneIndexBufferView, m_d3dBoneWeightBufferView };
 	pd3dCommandList->IASetVertexBuffers(m_nSlot, 7, pVertexBufferViews);

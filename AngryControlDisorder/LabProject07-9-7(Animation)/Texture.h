@@ -12,11 +12,11 @@ struct SRVROOTARGUMENTINFO
 	D3D12_GPU_DESCRIPTOR_HANDLE		m_d3dSrvGpuDescriptorHandle;
 };
 
-class CTexture final
+class Texture final
 {
 public:
-	CTexture(int nTextureResources = 1, UINT nResourceType = RESOURCE_TEXTURE2D, int nSamplers = 0);
-	virtual ~CTexture();
+	Texture(int nTextureResources = 1, UINT nResourceType = RESOURCE_TEXTURE2D, int nSamplers = 0);
+	virtual ~Texture();
 
 private:
 	int								m_nReferences = 0;

@@ -1,10 +1,10 @@
 #pragma once
 #include "Shader.h"
-class CSkyBoxShader : public CShader
+class SkyBoxShader : public Shader
 {
 public:
-	CSkyBoxShader();
-	virtual ~CSkyBoxShader();
+	SkyBoxShader();
+	virtual ~SkyBoxShader();
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
 	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();

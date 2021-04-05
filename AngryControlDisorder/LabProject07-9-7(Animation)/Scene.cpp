@@ -13,30 +13,29 @@
 #include "CallBack.h"
 #include "AnimationSet.h"
 #include "SkyBox.h"
-#include "AngrybotObject.h"
-#include "HeightMapTerrain.h"
+#include "BoxerObject.h"
 
-ID3D12DescriptorHeap *CScene::m_pd3dCbvSrvDescriptorHeap = NULL;
+ID3D12DescriptorHeap *Scene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
-D3D12_CPU_DESCRIPTOR_HANDLE	CScene::m_d3dCbvCPUDescriptorStartHandle;
-D3D12_GPU_DESCRIPTOR_HANDLE	CScene::m_d3dCbvGPUDescriptorStartHandle;
-D3D12_CPU_DESCRIPTOR_HANDLE	CScene::m_d3dSrvCPUDescriptorStartHandle;
-D3D12_GPU_DESCRIPTOR_HANDLE	CScene::m_d3dSrvGPUDescriptorStartHandle;
+D3D12_CPU_DESCRIPTOR_HANDLE	Scene::m_d3dCbvCPUDescriptorStartHandle;
+D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dCbvGPUDescriptorStartHandle;
+D3D12_CPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvCPUDescriptorStartHandle;
+D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvGPUDescriptorStartHandle;
 
-D3D12_CPU_DESCRIPTOR_HANDLE	CScene::m_d3dCbvCPUDescriptorNextHandle;
-D3D12_GPU_DESCRIPTOR_HANDLE	CScene::m_d3dCbvGPUDescriptorNextHandle;
-D3D12_CPU_DESCRIPTOR_HANDLE	CScene::m_d3dSrvCPUDescriptorNextHandle;
-D3D12_GPU_DESCRIPTOR_HANDLE	CScene::m_d3dSrvGPUDescriptorNextHandle;
+D3D12_CPU_DESCRIPTOR_HANDLE	Scene::m_d3dCbvCPUDescriptorNextHandle;
+D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dCbvGPUDescriptorNextHandle;
+D3D12_CPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvCPUDescriptorNextHandle;
+D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvGPUDescriptorNextHandle;
 
-CScene::CScene()
+Scene::Scene()
 {
 }
 
-CScene::~CScene()
+Scene::~Scene()
 {
 }
 
-void CScene::BuildDefaultLightsAndMaterials()
+void Scene::BuildDefaultLightsAndMaterials()
 {
 	m_nLights = lightsCount;
 	m_pLights = new LIGHT[m_nLights];
@@ -59,57 +58,42 @@ void CScene::BuildDefaultLightsAndMaterials()
 	}
 }
 
-void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
 
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 0, 76); //SuperCobra(17), Gunship(2), Player:Mi24(1), Angrybot()
 
-	CMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	Material::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	
 	
 
-	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	m_pSkyBox = new SkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	//XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	//XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
 
-	m_nHierarchicalGameObjects = 4;
-	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
+	m_nHierarchicalGameObjects = 2;
+	m_ppHierarchicalGameObjects = new Object * [m_nHierarchicalGameObjects];
 
-	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
-	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
+	ModelInfo* pAngrybotModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
+	m_ppHierarchicalGameObjects[0] = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	CAnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
+	AnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, pAnimationCallbackHandler);
 	//m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
 	m_ppHierarchicalGameObjects[0]->SetPosition(0.0f, 0, 0.0f);
+	if (pAngrybotModel) delete pAngrybotModel;
 
-	CLoadedModelInfo* circle = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/boxingComplete.bin", NULL);
-	m_ppHierarchicalGameObjects[1] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, circle, 1);
+	ModelInfo* boxer = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
+	m_ppHierarchicalGameObjects[1] = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, boxer, 1);
 	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
-	CAnimationCallbackHandler* circleAnimation = new CSoundCallbackHandler();
+	AnimationCallbackHandler* circleAnimation = new CSoundCallbackHandler();
 	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, circleAnimation);
 	//m_ppHierarchicalGameObjects[1]->SetScale(3.f, 5.f, 3.f);
 	m_ppHierarchicalGameObjects[1]->SetPosition(0.0f, 10.f, 0.0f);
-
-	CLoadedModelInfo* texbox = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", NULL);
-	m_ppHierarchicalGameObjects[2] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, texbox, 1);
-	m_ppHierarchicalGameObjects[2]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	CAnimationCallbackHandler* texboxAnimation = new CSoundCallbackHandler();
-	m_ppHierarchicalGameObjects[2]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, texboxAnimation);
-	m_ppHierarchicalGameObjects[2]->SetScale(texScale.x, texScale.y, texScale.z);
-	m_ppHierarchicalGameObjects[2]->SetPosition(0.0f, 12.f, 30.0f);
-
-	CLoadedModelInfo* red = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/hp.bin", NULL);
-	m_ppHierarchicalGameObjects[3] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, red, 1);
-	m_ppHierarchicalGameObjects[3]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	CAnimationCallbackHandler* redAnimation = new CSoundCallbackHandler();
-	m_ppHierarchicalGameObjects[3]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, redAnimation);
-	m_ppHierarchicalGameObjects[3]->SetScale(texScale.x, texScale.y, texScale.z);
-	m_ppHierarchicalGameObjects[3]->SetPosition(0.0f, 12.f, -30.0f);
 
 	//조명 벡터 만들었다.
 	lightsCount = 38;
@@ -124,18 +108,10 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 
 	BuildDefaultLightsAndMaterials();
 
-	//CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/BoxingComplete.bin", NULL);
-	//m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
-	//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	//CAnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
-	//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(2, pAnimationCallbackHandler);
-	////m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
-	//m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
-		if (pAngrybotModel) delete pAngrybotModel;
 	
 
 	m_nShaders = 0;
-	m_ppShaders = new CShader*[m_nShaders];
+	m_ppShaders = new Shader*[m_nShaders];
 
 	//CEthanObjectsShader *pEthanObjectsShader = new CEthanObjectsShader();
 	//CLoadedModelInfo *pEthanModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Ethan.bin", NULL);
@@ -148,7 +124,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
-void CScene::ReleaseObjects()
+void Scene::ReleaseObjects()
 {
 	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
 	if (m_pd3dCbvSrvDescriptorHeap) m_pd3dCbvSrvDescriptorHeap->Release();
@@ -170,7 +146,6 @@ void CScene::ReleaseObjects()
 		delete[] m_ppShaders;
 	}
 
-	if (m_pTerrain) delete m_pTerrain;
 	if (m_pSkyBox) delete m_pSkyBox;
 
 	if (m_ppHierarchicalGameObjects)
@@ -184,7 +159,7 @@ void CScene::ReleaseObjects()
 	if (m_pLights) delete[] m_pLights;
 }
 
-ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
+ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
 {
 	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;
 
@@ -386,7 +361,7 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	return(pd3dGraphicsRootSignature);
 }
 
-void CScene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+void Scene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	UINT ncbElementBytes = ((sizeof(LIGHTS) + 255) & ~255); //256의 배수
 	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
@@ -394,14 +369,14 @@ void CScene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	m_pd3dcbLights->Map(0, NULL, (void **)&m_pcbMappedLights);
 }
 
-void CScene::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+void Scene::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	::memcpy(m_pcbMappedLights->m_pLights, m_pLights, sizeof(LIGHT) * m_nLights);
 	::memcpy(&m_pcbMappedLights->m_xmf4GlobalAmbient, &m_xmf4GlobalAmbient, sizeof(XMFLOAT4));
 	::memcpy(&m_pcbMappedLights->m_nLights, &m_nLights, sizeof(int));
 }
 
-void CScene::ReleaseShaderVariables()
+void Scene::ReleaseShaderVariables()
 {
 	if (m_pd3dcbLights)
 	{
@@ -410,17 +385,16 @@ void CScene::ReleaseShaderVariables()
 	}
 }
 
-void CScene::ReleaseUploadBuffers()
+void Scene::ReleaseUploadBuffers()
 {
 	if (m_pSkyBox) m_pSkyBox->ReleaseUploadBuffers();
-	if (m_pTerrain) m_pTerrain->ReleaseUploadBuffers();
 
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < m_nHierarchicalGameObjects; i++) m_ppHierarchicalGameObjects[i]->ReleaseUploadBuffers();
 }
 
-void CScene::CreateCbvSrvDescriptorHeaps(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, int nShaderResourceViews)
+void Scene::CreateCbvSrvDescriptorHeaps(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, int nShaderResourceViews)
 {
 	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
 	d3dDescriptorHeapDesc.NumDescriptors = nConstantBufferViews + nShaderResourceViews; //CBVs + SRVs 
@@ -435,7 +409,7 @@ void CScene::CreateCbvSrvDescriptorHeaps(ID3D12Device *pd3dDevice, ID3D12Graphic
 	m_d3dSrvGPUDescriptorNextHandle.ptr = m_d3dSrvGPUDescriptorStartHandle.ptr = m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nConstantBufferViews);
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE CScene::CreateConstantBufferViews(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, ID3D12Resource *pd3dConstantBuffers, UINT nStride)
+D3D12_GPU_DESCRIPTOR_HANDLE Scene::CreateConstantBufferViews(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, ID3D12Resource *pd3dConstantBuffers, UINT nStride)
 {
 	D3D12_GPU_DESCRIPTOR_HANDLE d3dCbvGPUDescriptorHandle = m_d3dCbvGPUDescriptorNextHandle;
 	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = pd3dConstantBuffers->GetGPUVirtualAddress();
@@ -492,7 +466,7 @@ D3D12_SHADER_RESOURCE_VIEW_DESC GetShaderResourceViewDesc(D3D12_RESOURCE_DESC d3
 	return(d3dShaderResourceViewDesc);
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE CScene::CreateShaderResourceViews(ID3D12Device *pd3dDevice, CTexture *pTexture, UINT nRootParameter, bool bAutoIncrement)
+D3D12_GPU_DESCRIPTOR_HANDLE Scene::CreateShaderResourceViews(ID3D12Device *pd3dDevice, Texture *pTexture, UINT nRootParameter, bool bAutoIncrement)
 {
 	D3D12_GPU_DESCRIPTOR_HANDLE d3dSrvGPUDescriptorHandle = m_d3dSrvGPUDescriptorNextHandle;
 	if (pTexture)
@@ -514,12 +488,12 @@ D3D12_GPU_DESCRIPTOR_HANDLE CScene::CreateShaderResourceViews(ID3D12Device *pd3d
 	return(d3dSrvGPUDescriptorHandle);
 }
 
-bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+bool Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	return(false);
 }
 
-bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (nMessageID)
 	{
@@ -573,12 +547,12 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	return(false);
 }
 
-bool CScene::ProcessInput(UCHAR *pKeysBuffer)
+bool Scene::ProcessInput(UCHAR *pKeysBuffer)
 {
 	return(false);
 }
 
-void CScene::AnimateObjects(float fTimeElapsed)
+void Scene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime = fTimeElapsed;
 
@@ -590,13 +564,9 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		m_pLights[1].m_xmf3Position = XMFLOAT3(m_pPlayer->head->GetPosition().x, m_pPlayer->head->GetPosition().y, m_pPlayer->head->GetPosition().z + 0.4f);
 		m_pLights[1].m_xmf3Direction = m_pPlayer->GetLookVector();
 	}
-	//cout << m_pPlayer->head->GetPosition().x << " / " << m_pPlayer->head->GetPosition().y << " / " << m_pPlayer->head->GetPosition().z << "\t";
-	//cout << m_pPlayer->lHand->GetPosition().x << " / " << m_pPlayer->lHand->GetPosition().y << " / " << m_pPlayer->lHand->GetPosition().z << "\t"; 
-	//cout << m_pPlayer->rHand->GetPosition().x << " / " << m_pPlayer->rHand->GetPosition().y << " / " << m_pPlayer->rHand->GetPosition().z << endl;
-
 }
 
-void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
 	if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
 	if (m_pd3dCbvSrvDescriptorHeap) pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);
@@ -610,7 +580,6 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 
 	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
-	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
@@ -621,19 +590,9 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 		{
 			m_ppHierarchicalGameObjects[i]->Animate(m_fElapsedTime);
 			
-			//m_ppHierarchicalGameObjects[i]->SetTrackAnimationSet(0, 0);
 			if (!m_ppHierarchicalGameObjects[i]->m_pSkinnedAnimationController) m_ppHierarchicalGameObjects[i]->UpdateTransform(NULL);
 			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
 		}
-	}
-
-	if (texScale.x > 1.1f)
-	{
-		m_ppHierarchicalGameObjects[2]->SetScale(texScale.x -= 0.001f, texScale.y -= 0.001f, texScale.z -= 0.001f);
-	}
-	if (texScale.x < 1.1f)
-	{
-		m_ppHierarchicalGameObjects[2]->SetScale(texScale.x += 0.001f, texScale.y += 0.001f, texScale.z += 0.001f);
 	}
 }
 

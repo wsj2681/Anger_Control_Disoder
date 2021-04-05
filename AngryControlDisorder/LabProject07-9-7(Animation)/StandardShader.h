@@ -1,10 +1,10 @@
 #pragma once
 #include "Shader.h"
-class CStandardShader : public CShader
+class StandardShader : public Shader
 {
 public:
-	CStandardShader();
-	virtual ~CStandardShader();
+	StandardShader();
+	virtual ~StandardShader();
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
 

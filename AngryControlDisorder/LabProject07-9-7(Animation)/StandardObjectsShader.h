@@ -1,15 +1,15 @@
 #pragma once
 #include "StandardShader.h"
 
-class CGameObject;
+class Object;
 
-class CStandardObjectsShader : public CStandardShader
+class StandardObjectsShader : public StandardShader
 {
 public:
-	CStandardObjectsShader();
-	virtual ~CStandardObjectsShader();
+	StandardObjectsShader();
+	virtual ~StandardObjectsShader();
 
-	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pModel, void* pContext = NULL);
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, ModelInfo* pModel, void* pContext = NULL);
 	virtual void AnimateObjects(float fTimeElapsed);
 	virtual void ReleaseObjects();
 
@@ -18,6 +18,6 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 
 protected:
-	CGameObject** m_ppObjects = 0;
+	Object** m_ppObjects = 0;
 	int								m_nObjects = 0;
 };

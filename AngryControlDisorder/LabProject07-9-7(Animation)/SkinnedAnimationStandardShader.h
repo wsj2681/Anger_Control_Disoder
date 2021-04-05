@@ -1,7 +1,7 @@
 #pragma once
 #include "StandardShader.h"
 
-class CSkinnedAnimationStandardShader : public CStandardShader
+class CSkinnedAnimationStandardShader : public StandardShader
 {
 public:
 	CSkinnedAnimationStandardShader();

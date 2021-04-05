@@ -6,17 +6,17 @@
 #include "Scene.h"
 #include "SkinnedAnimationStandardShader.h"
 
-CMaterial::CMaterial(int nTextures)
+Material::Material(int nTextures)
 {
 	m_nTextures = nTextures;
 
-	m_ppTextures = new CTexture * [m_nTextures];
+	m_ppTextures = new Texture * [m_nTextures];
 	m_ppstrTextureNames = new _TCHAR[m_nTextures][64];
 	for (int i = 0; i < m_nTextures; i++) m_ppTextures[i] = NULL;
 	for (int i = 0; i < m_nTextures; i++) m_ppstrTextureNames[i][0] = '\0';
 }
 
-CMaterial::~CMaterial()
+Material::~Material()
 {
 	if (m_pShader) m_pShader->Release();
 
@@ -29,21 +29,21 @@ CMaterial::~CMaterial()
 	}
 }
 
-void CMaterial::SetShader(CShader* pShader)
+void Material::SetShader(Shader* pShader)
 {
 	if (m_pShader) m_pShader->Release();
 	m_pShader = pShader;
 	if (m_pShader) m_pShader->AddRef();
 }
 
-void CMaterial::SetTexture(CTexture* pTexture, UINT nTexture)
+void Material::SetTexture(Texture* pTexture, UINT nTexture)
 {
 	if (m_ppTextures[nTexture]) m_ppTextures[nTexture]->Release();
 	m_ppTextures[nTexture] = pTexture;
 	if (m_ppTextures[nTexture]) m_ppTextures[nTexture]->AddRef();
 }
 
-void CMaterial::ReleaseUploadBuffers()
+void Material::ReleaseUploadBuffers()
 {
 	for (int i = 0; i < m_nTextures; i++)
 	{
@@ -51,12 +51,12 @@ void CMaterial::ReleaseUploadBuffers()
 	}
 }
 
-CShader* CMaterial::m_pSkinnedAnimationShader = NULL;
-CShader* CMaterial::m_pStandardShader = NULL;
+Shader* Material::m_pSkinnedAnimationShader = NULL;
+Shader* Material::m_pStandardShader = NULL;
 
-void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+void Material::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
-	m_pStandardShader = new CStandardShader();
+	m_pStandardShader = new StandardShader();
 	m_pStandardShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	m_pStandardShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
@@ -65,7 +65,7 @@ void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandLi
 	m_pSkinnedAnimationShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
-void CMaterial::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList)
+void Material::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	pd3dCommandList->SetGraphicsRoot32BitConstants(1, 4, &m_xmf4AmbientColor, 16);
 	pd3dCommandList->SetGraphicsRoot32BitConstants(1, 4, &m_xmf4AlbedoColor, 20);
@@ -80,7 +80,7 @@ void CMaterial::UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList)
 	}
 }
 
-void CMaterial::LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nType, UINT nRootParameter, _TCHAR* pwstrTextureName, CTexture** ppTexture, CGameObject* pParent, FILE* pInFile, CShader* pShader)
+void Material::LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nType, UINT nRootParameter, _TCHAR* pwstrTextureName, Texture** ppTexture, Object* pParent, FILE* pInFile, Shader* pShader)
 {
 	char pstrTextureName[64] = { '\0' };
 
@@ -111,11 +111,11 @@ void CMaterial::LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsComm
 #endif
 		if (!bDuplicated)
 		{
-			*ppTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+			*ppTexture = new Texture(1, RESOURCE_TEXTURE2D, 0);
 			(*ppTexture)->LoadTextureFromFile(pd3dDevice, pd3dCommandList, pwstrTextureName, 0, true);
 			if (*ppTexture) (*ppTexture)->AddRef();
 
-			CScene::CreateShaderResourceViews(pd3dDevice, *ppTexture, nRootParameter, false);
+			Scene::CreateShaderResourceViews(pd3dDevice, *ppTexture, nRootParameter, false);
 		}
 		else
 		{
@@ -126,7 +126,7 @@ void CMaterial::LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsComm
 					if (!pParent->m_pParent) break;
 					pParent = pParent->m_pParent;
 				}
-				CGameObject* pRootGameObject = pParent;
+				Object* pRootGameObject = pParent;
 				*ppTexture = pRootGameObject->FindReplicatedTexture(pwstrTextureName);
 				if (*ppTexture) (*ppTexture)->AddRef();
 			}

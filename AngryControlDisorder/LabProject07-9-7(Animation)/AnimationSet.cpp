@@ -120,20 +120,20 @@ void CAnimationSet::SetCallbackKey(int nKeyIndex, float fKeyTime, void* pData)
 	m_pCallbackKeys[nKeyIndex].m_pCallbackData = pData;
 }
 
-void CAnimationSet::SetAnimationCallbackHandler(CAnimationCallbackHandler* pCallbackHandler)
+void CAnimationSet::SetAnimationCallbackHandler(AnimationCallbackHandler* pCallbackHandler)
 {
 	m_pAnimationCallbackHandler = pCallbackHandler;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
-CAnimationSets::CAnimationSets(int nAnimationSets)
+AnimationSets::AnimationSets(int nAnimationSets)
 {
 	m_nAnimationSets = nAnimationSets;
 	m_pAnimationSets = new CAnimationSet * [nAnimationSets];
 }
 
-CAnimationSets::~CAnimationSets()
+AnimationSets::~AnimationSets()
 {
 	for (int i = 0; i < m_nAnimationSets; i++) if (m_pAnimationSets[i]) delete m_pAnimationSets[i];
 	if (m_pAnimationSets) delete[] m_pAnimationSets;
@@ -141,19 +141,19 @@ CAnimationSets::~CAnimationSets()
 	if (m_ppAnimatedBoneFrameCaches) delete[] m_ppAnimatedBoneFrameCaches;
 }
 
-void CAnimationSets::SetCallbackKeys(int nAnimationSet, int nCallbackKeys)
+void AnimationSets::SetCallbackKeys(int nAnimationSet, int nCallbackKeys)
 {
 	m_pAnimationSets[nAnimationSet]->m_nCallbackKeys = nCallbackKeys;
 	m_pAnimationSets[nAnimationSet]->m_pCallbackKeys = new CALLBACKKEY[nCallbackKeys];
 }
 
-void CAnimationSets::SetCallbackKey(int nAnimationSet, int nKeyIndex, float fKeyTime, void* pData)
+void AnimationSets::SetCallbackKey(int nAnimationSet, int nKeyIndex, float fKeyTime, void* pData)
 {
 	m_pAnimationSets[nAnimationSet]->m_pCallbackKeys[nKeyIndex].m_fTime = fKeyTime;
 	m_pAnimationSets[nAnimationSet]->m_pCallbackKeys[nKeyIndex].m_pCallbackData = pData;
 }
 
-void CAnimationSets::SetAnimationCallbackHandler(int nAnimationSet, CAnimationCallbackHandler* pCallbackHandler)
+void AnimationSets::SetAnimationCallbackHandler(int nAnimationSet, AnimationCallbackHandler* pCallbackHandler)
 {
 	m_pAnimationSets[nAnimationSet]->SetAnimationCallbackHandler(pCallbackHandler);
 }
