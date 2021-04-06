@@ -15,6 +15,7 @@
 #include "SkyBox.h"
 #include "AngrybotObject.h"
 #include "HeightMapTerrain.h"
+#include "EthanObjectsShader.h"
 
 ID3D12DescriptorHeap *CScene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
@@ -67,16 +68,18 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 0, 76); //SuperCobra(17), Gunship(2), Player:Mi24(1), Angrybot()
 
 	CMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	
-	
+
+
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	//XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
 	//XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
 	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
-
-	m_nHierarchicalGameObjects = 4;
+	int nFloors = 4;
+	int nBaseModels = 4;
+	int nCrowds = 9;
+	m_nHierarchicalGameObjects = nBaseModels + nCrowds * nFloors;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
 
 	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
@@ -84,7 +87,6 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	CAnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, pAnimationCallbackHandler);
-	//m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
 	m_ppHierarchicalGameObjects[0]->SetPosition(0.0f, 0, 0.0f);
 
 	CLoadedModelInfo* circle = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/boxingComplete.bin", NULL);
@@ -92,7 +94,6 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	CAnimationCallbackHandler* circleAnimation = new CSoundCallbackHandler();
 	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, circleAnimation);
-	//m_ppHierarchicalGameObjects[1]->SetScale(3.f, 5.f, 3.f);
 	m_ppHierarchicalGameObjects[1]->SetPosition(10.0f, 10.f, -1000.0f);
 
 	CLoadedModelInfo* texbox = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", NULL);
@@ -111,6 +112,29 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[3]->SetScale(texScale.x, texScale.y, texScale.z);
 	m_ppHierarchicalGameObjects[3]->SetPosition(0.0f, 12.f, -30.0f);
 
+	CLoadedModelInfo* crowd = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/boxingComplete.bin", NULL);
+	CAnimationCallbackHandler* crowdAnimation = new CSoundCallbackHandler();
+
+	float angle = 0.0f;
+	float radius = 130.0f;
+
+	for (int i = 0; i < nFloors; ++i)
+	{
+		angle = -30.0f;
+		for (int j = nBaseModels + i * nCrowds; j < nBaseModels + (i + 1) * nCrowds; ++j)
+		{
+			m_ppHierarchicalGameObjects[j] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, crowd, 1);
+			m_ppHierarchicalGameObjects[j]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+			m_ppHierarchicalGameObjects[j]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, crowdAnimation);
+			m_ppHierarchicalGameObjects[j]->SetScale(texScale.x, texScale.y, texScale.z);
+			//m_ppHierarchicalGameObjects[i]->SetPosition(0, 1.0f + 4.0f * (int)((i - 4) / 2), 130.0f + 12.5f * (i - 4));
+			m_ppHierarchicalGameObjects[j]->SetPosition(cos(XMConvertToRadians(angle)) * radius, 1.0f + 4.0f * i, sin(XMConvertToRadians(angle)) * radius);
+			angle += 30.f;
+		}
+		radius += 25.0f;
+	}
+
+
 	//조명 벡터 만들었다.
 	lightsCount = 38;
 	
@@ -124,26 +148,17 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 
 	BuildDefaultLightsAndMaterials();
 
-	//CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/BoxingComplete.bin", NULL);
-	//m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
-	//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	//CAnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
-	//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(2, pAnimationCallbackHandler);
-	////m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
-	//m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
 		if (pAngrybotModel) delete pAngrybotModel;
-	
 
-	m_nShaders = 0;
-	m_ppShaders = new CShader*[m_nShaders];
+	/*m_nShaders = 1;
+	m_ppShaders = new CShader * [m_nShaders];
 
-	//CEthanObjectsShader *pEthanObjectsShader = new CEthanObjectsShader();
-	//CLoadedModelInfo *pEthanModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Ethan.bin", NULL);
-	//pEthanObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pEthanModel, m_pTerrain);
+	CEthanObjectsShader* pEthanObjectsShader = new CEthanObjectsShader();
+	pEthanObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pEthanModel, m_pTerrain);
 
-	//m_ppShaders[0] = nullptr;
+	m_ppShaders[0] = pEthanObjectsShader;
 
-	//if (pEthanModel) delete pEthanModel;
+	if (pEthanModel) delete pEthanModel;*/
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
