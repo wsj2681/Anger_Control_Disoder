@@ -271,15 +271,6 @@ void CGameObject::SetLook(float x, float y, float z)
 	UpdateTransform(NULL);
 }
 
-void CGameObject::SetLook(XMFLOAT3 position)
-{
-	m_xmf4x4ToParent._31 = position.x;
-	m_xmf4x4ToParent._32 = position.y;
-	m_xmf4x4ToParent._33 = position.z;
-
-	UpdateTransform(NULL);
-}
-
 void CGameObject::SetPosition(XMFLOAT3 xmf3Position)
 {
 	SetPosition(xmf3Position.x, xmf3Position.y, xmf3Position.z);

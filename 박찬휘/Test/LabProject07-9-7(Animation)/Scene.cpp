@@ -129,6 +129,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 			m_ppHierarchicalGameObjects[j]->SetScale(texScale.x, texScale.y, texScale.z);
 			//m_ppHierarchicalGameObjects[i]->SetPosition(0, 1.0f + 4.0f * (int)((i - 4) / 2), 130.0f + 12.5f * (i - 4));
 			m_ppHierarchicalGameObjects[j]->SetPosition(cos(XMConvertToRadians(angle)) * radius, 1.0f + 4.0f * i, sin(XMConvertToRadians(angle)) * radius);
+			m_ppHierarchicalGameObjects[j]->Rotate(0.0f, angle + 90.f + ((j - nBaseModels) % (nCrowds - 1)) * 30.0f, 0.0f);
 			angle += 30.f;
 		}
 		radius += 25.0f;

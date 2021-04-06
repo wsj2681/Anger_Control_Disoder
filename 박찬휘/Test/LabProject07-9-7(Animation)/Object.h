@@ -86,7 +86,6 @@ public:
 	void SetRight(float x, float y, float z);
 	void SetUp(float x, float y, float z);
 	void SetLook(float x, float y, float z);
-	void SetLook(XMFLOAT3 position);
 	void SetPosition(XMFLOAT3 xmf3Position);
 	void SetScale(float x, float y, float z);
 	void MoveStrafe(float fDistance = 1.0f);
