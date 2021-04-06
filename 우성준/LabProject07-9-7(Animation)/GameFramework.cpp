@@ -494,13 +494,13 @@ void CGameFramework::ProcessInput()
 
 		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
 		{
-			if (cxDelta || cyDelta)
-			{
-				if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-					m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
-				else
-					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
-			}
+			//if (cxDelta || cyDelta)
+			//{
+			//	if (pKeysBuffer[VK_RBUTTON] & 0xF0)
+			//		m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
+			//	else
+			//		m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+			//}
 			if (dwDirection) m_pPlayer->Move(dwDirection, 50.25f, true);
 		}
 	}
@@ -547,7 +547,7 @@ void CGameFramework::MoveToNextFrame()
 
 void CGameFramework::FrameAdvance()
 {    
-	m_GameTimer.Tick(30.0f);
+	m_GameTimer.Tick(60.0f);
 	
 	ProcessInput();
 

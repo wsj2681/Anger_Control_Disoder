@@ -94,11 +94,11 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	
 
 	
-	//m_nShaders = 0;
-	//m_ppShaders = new CShader*[m_nShaders];
+	m_nShaders =0;
+	m_ppShaders = new CShader*[m_nShaders];
 
 	//CEthanObjectsShader *pEthanObjectsShader = new CEthanObjectsShader();
-	//CLoadedModelInfo *pEthanModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Ethan.bin", NULL);
+	//CLoadedModelInfo *pEthanModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
 	//pEthanObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pEthanModel, m_pTerrain);
 
 	//if (pEthanModel) delete pEthanModel;
