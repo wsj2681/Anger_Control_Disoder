@@ -583,14 +583,12 @@ void CGameObject::SetChild(CGameObject *pChild, bool bReferenceUpdate)
 	}
 }
 
+//--------------------------------------
+// 충돌처리:
+//--------------------------------------
 BoundingOrientedBox& CGameObject::GetOBB()
 {
 	return obb;
-}
-
-unsigned int& CGameObject::GetHP()
-{
-	return hp;
 }
 
 void CGameObject::SetOBB(const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation)
@@ -598,6 +596,12 @@ void CGameObject::SetOBB(const XMFLOAT3& center, const XMFLOAT3& extents, const 
 	obb.Center = center;
 	obb.Extents = extents;
 	obb.Orientation = orientation;
+}
+//--------------------------------------
+
+unsigned int& CGameObject::GetHP()
+{
+	return hp;
 }
 
 void CGameObject::SetHP(const unsigned int& hp)

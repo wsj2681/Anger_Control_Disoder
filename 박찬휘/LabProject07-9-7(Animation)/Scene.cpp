@@ -170,10 +170,6 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 
 	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	//XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
-	//XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
-	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
-
 	m_nHierarchicalGameObjects = 2;
 	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
 
@@ -193,6 +189,9 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, circleAnimation);
 	m_ppHierarchicalGameObjects[1]->SetScale(3.f, 5.f, 3.f);
 	m_ppHierarchicalGameObjects[1]->SetPosition(0.0f, 12.f, 0.0f);
+	//-----------------------------------------------------------
+	// 충돌처리: 오브젝트 OBB 설정 및 Boolean 변수 설정 방법
+	//-----------------------------------------------------------
 	XMFLOAT3 center = m_ppHierarchicalGameObjects[1]->GetPosition();
 	//XMFLOAT3 extents = XMFLOAT3(m_ppHierarchicalGameObjects[1]->m_xmf4x4ToParent._11,
 	//							m_ppHierarchicalGameObjects[1]->m_xmf4x4ToParent._22,
@@ -202,7 +201,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 	m_ppHierarchicalGameObjects[1]->SetOBB(center, extents, orientation);
 	m_ppHierarchicalGameObjects[1]->bCheckCollision = true;
 	m_ppHierarchicalGameObjects[1]->bHittable = true;
-
+	//-----------------------------------------------------------
 
 	CTexturedRectMesh* rectMesh = new CTexturedRectMesh(pd3dDevice, pd3dCommandList);
 	m_nGameObjects = 1;
@@ -550,6 +549,9 @@ void CScene::ReleaseUploadBuffers()
 	for (int i = 0; i < m_nHierarchicalGameObjects; i++) m_ppHierarchicalGameObjects[i]->ReleaseUploadBuffers();
 }
 
+//----------------------------
+// 충돌처리: 충돌처리 알고리즘 여기서 수정할 부분 있으면 수정하면 됨
+//----------------------------
 void CScene::CheckCollision()
 {
 	m_pPlayer->collidedObject = nullptr;
@@ -581,6 +583,7 @@ void CScene::CheckCollision()
 		}
 	}
 }
+//----------------------------
 
 void CScene::CreateCbvSrvDescriptorHeaps(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, int nShaderResourceViews)
 {

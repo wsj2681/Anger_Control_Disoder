@@ -348,13 +348,18 @@ public:
 	CGameObject 					*m_pChild = NULL;
 	CGameObject 					*m_pSibling = NULL;
 
-	bool bCheckCollision{ false };
-	bool bHittable{ false };
-	bool bDefeated{ false };
+	//---------------------------------
+	// 충돌처리: 
+	//---------------------------------
+	bool bCheckCollision{ false };	// 충돌체크를 하는 오브젝트인지 구별하는 변수 - 아레나는 충돌체크를 하지 않음
+	bool bHittable{ false };		// 맞는 오브젝트인지 확인하는 변수	- 플레이어와 상대 플레이어, 샌드백 등
+	bool bDefeated{ false };		// 이건 체력이 0이하로 내려가서 패배했는지 판별하는 변수인데 아직 미구현
 	
 	BoundingOrientedBox& GetOBB();
-	unsigned int& GetHP();
 	void SetOBB(const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation);
+	//---------------------------------
+
+	unsigned int& GetHP();
 	void SetHP(const unsigned int& hp);
 
 	void SetMesh(CMesh *pMesh);

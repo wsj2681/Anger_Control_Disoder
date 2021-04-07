@@ -38,9 +38,12 @@ protected:
 	
 
 public:
+	//--------------------------------------
+	// 충돌처리: 
+	//--------------------------------------
 	bool bMovable{ true };
 	CGameObject* collidedObject{ nullptr };
-
+	//--------------------------------------
 
 	CPlayer();
 	virtual ~CPlayer();

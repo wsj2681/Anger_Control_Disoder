@@ -65,7 +65,11 @@ public:
 
 	void ReleaseUploadBuffers();
 
+	//----------------------------
+	// 충돌처리: 충돌처리 알고리즘 여기서 수정할 부분 있으면 수정하면 됨
+	//----------------------------
 	void CheckCollision();
+	//----------------------------
 
 	CPlayer								*m_pPlayer = NULL;
 

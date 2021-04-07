@@ -389,8 +389,13 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	this->rHand = FindFrame("RHand");
 	this->lHand = FindFrame("LHand");
 
+	//-----------------------------------------------------------
+	// 충돌처리: 플레이어 OBB 설정
+	//-----------------------------------------------------------
+
 	XMFLOAT3 extents = XMFLOAT3(2.2f, 2.2f, 2.2f);
 	SetOBB(GetPosition(), extents, XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+	//-----------------------------------------------------------
 
 	if (pAngrybotModel) delete pAngrybotModel;
 }
