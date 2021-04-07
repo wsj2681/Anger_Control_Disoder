@@ -17,6 +17,8 @@ private:
 
 protected:
 	ID3DBlob* m_pd3dVertexShaderBlob{ nullptr };
+	ID3DBlob* m_pd3dHullShaderBlob{ nullptr };
+	ID3DBlob* m_pd3dDomainShaderBlob{ nullptr };
 	ID3DBlob* m_pd3dPixelShaderBlob{ nullptr };
 
 	ID3D12PipelineState* m_pd3dPipelineState{ nullptr };
@@ -35,6 +37,8 @@ public:
 	virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
 
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
+	virtual D3D12_SHADER_BYTECODE CreateHullShader();
+	virtual D3D12_SHADER_BYTECODE CreateDomainShader();
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
 
 	D3D12_SHADER_BYTECODE CompileShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile, ID3DBlob **ppd3dShaderBlob);

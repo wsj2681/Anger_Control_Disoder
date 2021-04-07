@@ -201,6 +201,9 @@
     <ClInclude Include="Server.h">
       <Filter>소스 파일\07 Server</Filter>
     </ClInclude>
+    <ClInclude Include="TerrainTessellationShader.h">
+      <Filter>소스 파일\03 Model\Shader\TerrainShader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WICTextureLoader12.cpp">
@@ -310,6 +313,9 @@
     </ClCompile>
     <ClCompile Include="Server.cpp">
       <Filter>소스 파일\07 Server</Filter>
+    </ClCompile>
+    <ClCompile Include="TerrainTessellationShader.cpp">
+      <Filter>소스 파일\03 Model\Shader\TerrainShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

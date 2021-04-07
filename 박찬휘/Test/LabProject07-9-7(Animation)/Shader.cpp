@@ -36,6 +36,24 @@ D3D12_SHADER_BYTECODE CShader::CreateVertexShader()
 	return(d3dShaderByteCode);
 }
 
+D3D12_SHADER_BYTECODE CShader::CreateHullShader()
+{
+	D3D12_SHADER_BYTECODE d3dShaderByteCode;
+	d3dShaderByteCode.BytecodeLength = 0;
+	d3dShaderByteCode.pShaderBytecode = NULL;
+
+	return(d3dShaderByteCode);
+}
+
+D3D12_SHADER_BYTECODE CShader::CreateDomainShader()
+{
+	D3D12_SHADER_BYTECODE d3dShaderByteCode;
+	d3dShaderByteCode.BytecodeLength = 0;
+	d3dShaderByteCode.pShaderBytecode = NULL;
+
+	return(d3dShaderByteCode);
+}
+
 D3D12_SHADER_BYTECODE CShader::CreatePixelShader()
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
