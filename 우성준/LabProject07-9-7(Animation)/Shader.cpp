@@ -571,7 +571,7 @@ CEthanObjectsShader::~CEthanObjectsShader()
 
 void CEthanObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, CLoadedModelInfo *pModel, void *pContext)
 {
-	int xObjects = 1, zObjects = 1, i = 0;
+	int xObjects = 10, zObjects = 10, i = 0;
 
 	m_nObjects = (xObjects * 2 + 1) * (zObjects * 2 + 1);
 
@@ -583,7 +583,7 @@ void CEthanObjectsShader::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsC
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
 
 	CLoadedModelInfo *pEthanModel = pModel;
-	if (!pEthanModel) pEthanModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Ethan.bin", NULL);
+	if (!pEthanModel) pEthanModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
 
 	int nObjects = 0;
 	for (int x = -xObjects; x <= xObjects; x++)
