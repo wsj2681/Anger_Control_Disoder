@@ -27,8 +27,8 @@ CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	CTexture* pTerrainDetailTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
 	pTerrainDetailTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Terrain/Detail_Texture_7.dds", 0);
 
-	CTexture* pTerrainAlphaTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	pTerrainAlphaTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Terrain/Alpha_Texture.dds", 0);
+	//CTexture* pTerrainAlphaTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	//pTerrainAlphaTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Terrain/Alpha_Texture.dds", 0);
 
 	CTerrainShader* pTerrainShader = new CTerrainShader();
 	pTerrainShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
@@ -36,7 +36,7 @@ CHeightMapTerrain::CHeightMapTerrain(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 
 	CScene::CreateShaderResourceViews(pd3dDevice, pTerrainBaseTexture, 13, false);
 	CScene::CreateShaderResourceViews(pd3dDevice, pTerrainDetailTexture, 14, false);
-	CScene::CreateShaderResourceViews(pd3dDevice, pTerrainDetailTexture, 16, false);
+	//CScene::CreateShaderResourceViews(pd3dDevice, pTerrainDetailTexture, 16, false);
 
 	CMaterial* pTerrainMaterial = new CMaterial(2);
 	pTerrainMaterial->SetTexture(pTerrainBaseTexture, 0);
