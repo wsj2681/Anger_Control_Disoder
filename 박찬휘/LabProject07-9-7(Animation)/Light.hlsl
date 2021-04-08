@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------
-#define MAX_LIGHTS			16 
+#define MAX_LIGHTS			38 
 #define MAX_MATERIALS		16 
 
 #define POINT_LIGHT			1
@@ -27,7 +27,7 @@ struct LIGHT
 	float					padding;
 };
 
-cbuffer cbLights : register(b2)
+cbuffer cbLights : register(b4)
 {
 	LIGHT					gLights[MAX_LIGHTS];
 	float4					gcGlobalAmbientLight;

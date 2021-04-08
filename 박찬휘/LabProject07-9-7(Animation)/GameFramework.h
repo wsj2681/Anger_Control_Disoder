@@ -7,6 +7,9 @@
 #include "Player.h"
 #include "Scene.h"
 
+////SEVER////
+#include "Server.h"
+
 class CGameFramework
 {
 public:
@@ -87,5 +90,10 @@ private:
 	POINT						m_ptOldCursorPos;
 
 	_TCHAR						m_pszFrameRate[70];
+
+	///////////server/////////////
+	Server* server = NULL;
+
+	/////////////////////////////
 };
 

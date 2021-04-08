@@ -72,8 +72,6 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Program Files %28x86%29\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Program Files %28x86%29\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -89,14 +87,14 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);Winmm.lib;fmod_vc.lib</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);Winmm.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -151,41 +149,87 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AngrybotObject.h" />
+    <ClInclude Include="AngrybotObjectsShader.h" />
+    <ClInclude Include="AnimationController.h" />
+    <ClInclude Include="AnimationSet.h" />
+    <ClInclude Include="AnimationTrack.h" />
+    <ClInclude Include="CallBack.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
+    <ClInclude Include="EthanObjectsShader.h" />
     <ClInclude Include="GameFramework.h" />
-    <ClInclude Include="HPBar.h" />
+    <ClInclude Include="HeightMapGridMesh.h" />
+    <ClInclude Include="HeightMapImage.h" />
+    <ClInclude Include="HeightMapTerrain.h" />
     <ClInclude Include="LabProject07-9-7(Animation).h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="ModelInfo.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
+    <ClInclude Include="Server.h" />
     <ClInclude Include="Shader.h" />
-    <ClInclude Include="SoundManager.h" />
+    <ClInclude Include="SkinnedAnimationObjectsShader.h" />
+    <ClInclude Include="SkinnedAnimationStandardShader.h" />
+    <ClInclude Include="SkinnedMesh.h" />
+    <ClInclude Include="SkyBox.h" />
+    <ClInclude Include="SkyBoxMesh.h" />
+    <ClInclude Include="SkyBoxShader.h" />
+    <ClInclude Include="StandardMesh.h" />
+    <ClInclude Include="StandardObjectsShader.h" />
+    <ClInclude Include="StandardShader.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="TerrainShader.h" />
+    <ClInclude Include="TerrainTessellationShader.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AngrybotObject.cpp" />
+    <ClCompile Include="AngrybotObjectsShader.cpp" />
+    <ClCompile Include="AnimationController.cpp" />
+    <ClCompile Include="AnimationSet.cpp" />
+    <ClCompile Include="AnimationTrack.cpp" />
+    <ClCompile Include="CallBack.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
+    <ClCompile Include="EthanObjectsShader.cpp" />
     <ClCompile Include="GameFramework.cpp" />
-    <ClCompile Include="HPBar.cpp" />
+    <ClCompile Include="HeightMapGridMesh.cpp" />
+    <ClCompile Include="HeightMapImage.cpp" />
+    <ClCompile Include="HeightMapTerrain.cpp" />
     <ClCompile Include="LabProject07-9-7(Animation).cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="ModelInfo.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Server.cpp" />
     <ClCompile Include="Shader.cpp" />
-    <ClCompile Include="SoundManager.cpp" />
+    <ClCompile Include="SkinnedAnimationObjectsShader.cpp" />
+    <ClCompile Include="SkinnedAnimationStandardShader.cpp" />
+    <ClCompile Include="SkinnedMesh.cpp" />
+    <ClCompile Include="SkyBox.cpp" />
+    <ClCompile Include="SkyBoxMesh.cpp" />
+    <ClCompile Include="SkyBoxShader.cpp" />
+    <ClCompile Include="StandardMesh.cpp" />
+    <ClCompile Include="StandardObjectsShader.cpp" />
+    <ClCompile Include="StandardShader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TerrainShader.cpp" />
+    <ClCompile Include="TerrainTessellationShader.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
   </ItemGroup>

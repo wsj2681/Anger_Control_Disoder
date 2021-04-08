@@ -9,6 +9,7 @@
 
 #include "Object.h"
 #include "Camera.h"
+class CAnimationCallbackHandler;
 
 class CPlayer : public CGameObject
 {
@@ -38,13 +39,6 @@ protected:
 	
 
 public:
-	//--------------------------------------
-	// 충돌처리: 
-	//--------------------------------------
-	bool bMovable{ true };
-	CGameObject* collidedObject{ nullptr };
-	//--------------------------------------
-
 	CPlayer();
 	virtual ~CPlayer();
 
@@ -119,15 +113,7 @@ public:
 	virtual void OnPrepareRender();
 };
 
-class CSoundCallbackHandler : public CAnimationCallbackHandler
-{
-public:
-	CSoundCallbackHandler() { }
-	~CSoundCallbackHandler() { }
 
-public:
-	virtual void HandleCallback(void *pCallbackData); 
-};
 
 class CTerrainPlayer : public CPlayer
 {

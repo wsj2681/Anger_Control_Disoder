@@ -5,6 +5,12 @@
 #include "stdafx.h"
 #include "Player.h"
 #include "Shader.h"
+#include "AnimationController.h"
+#include "AnimationSet.h"
+#include "ModelInfo.h"
+#include "CallBack.h"
+#include "AnimationSet.h"
+#include "HeightMapTerrain.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CPlayer
@@ -161,9 +167,9 @@ void CPlayer::Update(float fTimeElapsed)
 	if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
 
 	DWORD nCurrentCameraMode = m_pCamera->GetMode();
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
+	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(head->GetPosition(), fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
+	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(head->GetPosition());
 	m_pCamera->RegenerateViewMatrix();
 
 	fLength = Vector3::Length(m_xmf3Velocity);
@@ -224,16 +230,12 @@ void CPlayer::OnPrepareRender()
 	m_xmf4x4ToParent._41 = m_xmf3Position.x; m_xmf4x4ToParent._42 = m_xmf3Position.y; m_xmf4x4ToParent._43 = m_xmf3Position.z;
 
 	m_xmf4x4ToParent = Matrix4x4::Multiply(XMMatrixScaling(m_xmf3Scale.x, m_xmf3Scale.y, m_xmf3Scale.z), m_xmf4x4ToParent);
-
-	CGameObject::OnPrepareRender();
 }
 
 void CPlayer::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
 	DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
 	if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
-	//printf("obb.Center(%lf,%lf,%lf) | ", obb.Center.x, obb.Center.y, obb.Center.z);
-	//printf("obb.Extents(%lf,%lf,%lf)\n", obb.Extents.x, obb.Extents.y, obb.Extents.z);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -336,33 +338,23 @@ CCamera *CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // 
-#define _WITH_DEBUG_CALLBACK_DATA
 
-void CSoundCallbackHandler::HandleCallback(void *pCallbackData)
-{
-   _TCHAR *pWavName = (_TCHAR *)pCallbackData; 
-#ifdef _WITH_DEBUG_CALLBACK_DATA
-	TCHAR pstrDebug[256] = { 0 };
-	_stprintf_s(pstrDebug, 256, _T("%s\n"), pWavName);
-	OutputDebugString(pstrDebug);
-#endif
-#ifdef _WITH_SOUND_RESOURCE
-   PlaySound(pWavName, ::ghAppInstance, SND_RESOURCE | SND_ASYNC);
-#else
-   PlaySound(pWavName, NULL, SND_FILENAME | SND_ASYNC);
-#endif
-}
 
 CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext)
 {
-	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
 	CLoadedModelInfo *pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/boxingComplete.bin", NULL);
 	SetChild(pAngrybotModel->m_pModelRootObject, true);
 
+	this->head = FindFrame("Head");
+	this->rHand = FindFrame("RHand");
+	this->lHand = FindFrame("LHand");
+
+	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
+
 	m_pSkinnedAnimationController = new CAnimationController(pd3dDevice, pd3dCommandList, 1, pAngrybotModel);
 
-	m_pSkinnedAnimationController->SetTrackAnimationSet(0, 5);
+	m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 
 	//m_pSkinnedAnimationController->SetCallbackKeys(1, 2);
 #ifdef _WITH_SOUND_RESOURCE
@@ -383,19 +375,8 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	SetCameraUpdatedContext(pContext);
 
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
-	SetPosition(XMFLOAT3(0.f, 10.f, -10.0f));
+	SetPosition(XMFLOAT3(0.f, 10.f/*pTerrain->GetHeight(310.0f, 590.0f)*/, 0.0f));
 
-	this->head = FindFrame("Head");
-	this->rHand = FindFrame("RHand");
-	this->lHand = FindFrame("LHand");
-
-	//-----------------------------------------------------------
-	// 충돌처리: 플레이어 OBB 설정
-	//-----------------------------------------------------------
-
-	XMFLOAT3 extents = XMFLOAT3(2.2f, 2.2f, 2.2f);
-	SetOBB(GetPosition(), extents, XMFLOAT4(0.f, 0.f, 0.f, 1.f));
-	//-----------------------------------------------------------
 
 	if (pAngrybotModel) delete pAngrybotModel;
 }
@@ -417,7 +398,7 @@ CCamera *CTerrainPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityY(400.0f);
 			m_pCamera = OnChangeCamera(FIRST_PERSON_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.0f);
-			m_pCamera->SetOffset(XMFLOAT3(0.0f, 20.0f, 0.0f));
+			m_pCamera->SetOffset(head->GetPosition());
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 90.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
@@ -429,7 +410,7 @@ CCamera *CTerrainPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityY(400.0f);
 			m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.0f);
-			m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, 0.0f));
+			m_pCamera->SetOffset(head->GetPosition());
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
@@ -441,7 +422,8 @@ CCamera *CTerrainPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityY(400.0f);
 			m_pCamera = OnChangeCamera(THIRD_PERSON_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.25f);
-			m_pCamera->SetOffset(XMFLOAT3(0.0f, 20.0f, -30.0f));
+			
+			m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, -20.0f));
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
@@ -449,7 +431,7 @@ CCamera *CTerrainPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 		default:
 			break;
 	}
-	m_pCamera->SetPosition(Vector3::Add(m_xmf3Position, m_pCamera->GetOffset()));
+	m_pCamera->SetPosition(Vector3::Add(head->GetPosition(), m_pCamera->GetOffset()));
 	Update(fTimeElapsed);
 
 	return(m_pCamera);
@@ -488,7 +470,7 @@ void CTerrainPlayer::OnCameraUpdateCallback(float fTimeElapsed)
 		if (m_pCamera->GetMode() == THIRD_PERSON_CAMERA)
 		{
 			CThirdPersonCamera *p3rdPersonCamera = (CThirdPersonCamera *)m_pCamera;
-			p3rdPersonCamera->SetLookAt(GetPosition());
+			p3rdPersonCamera->SetLookAt(head->GetPosition()); //머리 바라보기
 		}
 	}
 }
@@ -498,5 +480,5 @@ void CTerrainPlayer::Update(float fTimeElapsed)
 	CPlayer::Update(fTimeElapsed);
 	// TODO : 애니메이션 셋 할때 이쪽으로 와서 한다. 
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
-	SetTrackAnimationSet(0, ::IsZero(fLength) ? 0 : 4);
+	//SetTrackAnimationSet(0, ::IsZero(fLength) ? 0 : 2);
 }

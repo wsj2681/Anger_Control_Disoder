@@ -6,14 +6,16 @@
 
 #include "Shader.h"
 #include "Player.h"
-#include "SoundManager.h"
-#include "HPBar.h"
 
-#define MAX_LIGHTS						16 
+#define MAX_LIGHTS						38 
 
 #define POINT_LIGHT						1
 #define SPOT_LIGHT						2
 #define DIRECTIONAL_LIGHT				3
+
+class CSkyBox;
+class CHeightMapTerrain;
+class CSkyBox;
 
 struct LIGHT
 {
@@ -64,12 +66,6 @@ public:
     void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
 
 	void ReleaseUploadBuffers();
-
-	//----------------------------
-	// 충돌처리: 충돌처리 알고리즘 여기서 수정할 부분 있으면 수정하면 됨
-	//----------------------------
-	void CheckCollision();
-	//----------------------------
 
 	CPlayer								*m_pPlayer = NULL;
 
@@ -126,13 +122,10 @@ public:
 	ID3D12Resource						*m_pd3dcbLights = NULL;
 	LIGHTS								*m_pcbMappedLights = NULL;
 
-	
-
-	HPBar* bar1{ nullptr };
-	HPBar* bar2{ nullptr };
-
 	int lightsCount = 0;
 	vector<CGameObject*> lights;
-	unsigned int nSound{ 4 };	// 0 : BackGround 1 : Punch01 2 : Punch02 3 : Hit01
-	vector<SoundManager> soundManager;
+
+	bool stayWalking{ false };
+
+	XMFLOAT3 texScale{ 1.f, 1.f, 1.f };
 };

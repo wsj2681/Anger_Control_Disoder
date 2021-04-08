@@ -6,7 +6,6 @@ CCamera::CCamera()
 {
 	m_xmf4x4View = Matrix4x4::Identity();
 	m_xmf4x4Projection = Matrix4x4::Identity();
-	m_xmf4x4OrthoProjection = Matrix4x4::Identity();
 	m_d3dViewport = { 0, 0, FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT, 0.0f, 1.0f };
 	m_d3dScissorRect = { 0, 0, FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT };
 	m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -33,7 +32,6 @@ CCamera::CCamera(CCamera *pCamera)
 	{
 		m_xmf4x4View = Matrix4x4::Identity();
 		m_xmf4x4Projection = Matrix4x4::Identity();
-		m_xmf4x4OrthoProjection = Matrix4x4::Identity();
 		m_d3dViewport = { 0, 0, FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT, 0.0f, 1.0f };
 		m_d3dScissorRect = { 0, 0, FRAME_BUFFER_WIDTH , FRAME_BUFFER_HEIGHT };
 		m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -128,10 +126,6 @@ void CCamera::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 
 	::memcpy(&m_pcbMappedCamera->m_xmf3Position, &m_xmf3Position, sizeof(XMFLOAT3));
 
-	XMFLOAT4X4 xmf4x4Ortho;
-	XMStoreFloat4x4(&xmf4x4Ortho, XMMatrixTranspose(XMLoadFloat4x4(&m_xmf4x4OrthoProjection)));
-	::memcpy(&m_pcbMappedCamera->m_xmf4x4Ortho, &xmf4x4Ortho, sizeof(XMFLOAT4X4));
-
 	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbCamera->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(0, d3dGpuVirtualAddress);
 }
@@ -149,26 +143,6 @@ void CCamera::SetViewportsAndScissorRects(ID3D12GraphicsCommandList *pd3dCommand
 {
 	pd3dCommandList->RSSetViewports(1, &m_d3dViewport);
 	pd3dCommandList->RSSetScissorRects(1, &m_d3dScissorRect);
-}
-
-XMFLOAT4X4 CCamera::CalcOrtho()
-{
-	float fFar{ 1.f };	// 원근 투영과는 다르게 월드의 Z를 반영하지 않음
-	float fNear{ 0.f }; // 그래서 고정값
-
-	float w = 2.f / m_xmf4x4Projection._11;
-	float h = 2.f / m_xmf4x4Projection._22;
-	float a = 1.f; // 1.f / (fFar - fNear);
-	float b = 0.f; // -fNear * a;
-
-	XMFLOAT4X4 temp = XMFLOAT4X4(
-		w, 0, 0, 0,
-		0, h, 0, 0,
-		0, 0, a, 0,
-		0, 0, b, 1
-	);
-
-	return temp;
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -286,18 +260,18 @@ CThirdPersonCamera::CThirdPersonCamera(CCamera *pCamera) : CCamera(pCamera)
 
 void CThirdPersonCamera::Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed)
 {
-	if (m_pPlayer)
+	if (m_pPlayer->head)
 	{
 		XMFLOAT4X4 xmf4x4Rotate = Matrix4x4::Identity();
-		XMFLOAT3 xmf3Right = m_pPlayer->GetRightVector();
-		XMFLOAT3 xmf3Up = m_pPlayer->GetUpVector();
-		XMFLOAT3 xmf3Look = m_pPlayer->GetLookVector();
+		XMFLOAT3 xmf3Right = m_pPlayer->GetRight();
+		XMFLOAT3 xmf3Up = m_pPlayer->GetUp();
+		XMFLOAT3 xmf3Look = m_pPlayer->GetLook();
 		xmf4x4Rotate._11 = xmf3Right.x; xmf4x4Rotate._21 = xmf3Up.x; xmf4x4Rotate._31 = xmf3Look.x;
 		xmf4x4Rotate._12 = xmf3Right.y; xmf4x4Rotate._22 = xmf3Up.y; xmf4x4Rotate._32 = xmf3Look.y;
 		xmf4x4Rotate._13 = xmf3Right.z; xmf4x4Rotate._23 = xmf3Up.z; xmf4x4Rotate._33 = xmf3Look.z;
 
 		XMFLOAT3 xmf3Offset = Vector3::TransformCoord(m_xmf3Offset, xmf4x4Rotate);
-		XMFLOAT3 xmf3Position = Vector3::Add(m_pPlayer->GetPosition(), xmf3Offset);
+		XMFLOAT3 xmf3Position = Vector3::Add(m_pPlayer->head->GetPosition(), xmf3Offset);
 		XMFLOAT3 xmf3Direction = Vector3::Subtract(xmf3Position, m_xmf3Position);
 		float fLength = Vector3::Length(xmf3Direction);
 		xmf3Direction = Vector3::Normalize(xmf3Direction);
@@ -316,6 +290,7 @@ void CThirdPersonCamera::Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed)
 
 void CThirdPersonCamera::SetLookAt(XMFLOAT3& xmf3LookAt)
 {
+	//xmf3LookAt.y += 20;
 	XMFLOAT4X4 mtxLookAt = Matrix4x4::LookAtLH(m_xmf3Position, xmf3LookAt, m_pPlayer->GetUpVector());
 	m_xmf3Right = XMFLOAT3(mtxLookAt._11, mtxLookAt._21, mtxLookAt._31);
 	m_xmf3Up = XMFLOAT3(mtxLookAt._12, mtxLookAt._22, mtxLookAt._32);

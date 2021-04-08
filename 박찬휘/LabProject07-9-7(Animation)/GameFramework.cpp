@@ -397,27 +397,38 @@ void CGameFramework::OnDestroy()
 
 void CGameFramework::BuildObjects()
 {
+
+#ifdef _WITH_SERVER_CONNECT
+	/////SERVER///
+	server = new Server();
+
+	////////////////////////
+#endif // _WITH_SERVER_CONNECT
+
+
 	m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);
 
 	m_pScene = new CScene();
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
 
-	
 #ifdef _WITH_TERRAIN_PLAYER
 	CTerrainPlayer *pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->m_pTerrain);
-	//pPlayer->SetScale(XMFLOAT3(10.f, 10.f, 10.f ));
-	
+	//pPlayer->SetPosition(XMFLOAT3(-10.0f, 10.0f, -1000.0f));
+	pPlayer->SetPosition(XMFLOAT3(-10.0f, 10.0f, 0.0f));
 #else
 	CAirplanePlayer *pPlayer = new CAirplanePlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), NULL);
 	pPlayer->SetPosition(XMFLOAT3(425.0f, 240.0f, 640.0f));
 #endif
 
-
+#ifdef _WITH_SERVER_CONNECT
+	////server//////////////
+	server->cplayer = pPlayer;
+	server->cscene = m_pScene;
+	/// /////////////////////////////
+#endif // _WITH_SERVER_CONNECT
 
 	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
 	m_pCamera = m_pPlayer->GetCamera();
-	
-	m_pPlayer->head->GetLook();
 
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -449,7 +460,11 @@ void CGameFramework::ProcessInput()
 		DWORD dwDirection = 0;
 		if (pKeysBuffer['W'] & 0xF0) dwDirection |= DIR_FORWARD;
 		if (pKeysBuffer['S'] & 0xF0) dwDirection |= DIR_BACKWARD;
-		if (pKeysBuffer['A'] & 0xF0) dwDirection |= DIR_LEFT;
+		if (pKeysBuffer['A'] & 0xF0)
+		{
+			dwDirection |= DIR_LEFT;
+
+		}
 		if (pKeysBuffer['D'] & 0xF0) dwDirection |= DIR_RIGHT;
 		if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_RSHIFT] & 0xF0) dwDirection |= DIR_DOWN;
@@ -520,7 +535,20 @@ void CGameFramework::MoveToNextFrame()
 
 void CGameFramework::FrameAdvance()
 {    
-	m_GameTimer.Tick(30.0f);
+#ifdef _WITH_SERVER_CONNECT
+	/////////////////server////////////////
+	//if (i == 0) {
+	server->Server_send();
+	server->Server_recv();
+	//++i;
+	//}
+
+	//server->Server_send();
+
+	///////////////////////////////////////
+#endif // _WITH_SERVER_CONNECT
+
+	m_GameTimer.Tick(60.0f);
 	
 	ProcessInput();
 
@@ -542,8 +570,6 @@ void CGameFramework::FrameAdvance()
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = m_pd3dRtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	d3dRtvCPUDescriptorHandle.ptr += (m_nSwapChainBufferIndex * m_nRtvDescriptorIncrementSize);
 
-	
-
 	float pfClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
 	m_pd3dCommandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, NULL);
 
@@ -553,7 +579,7 @@ void CGameFramework::FrameAdvance()
 	m_pd3dCommandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
 	if (m_pScene) m_pScene->Render(m_pd3dCommandList, m_pCamera);
-	
+
 #ifdef _WITH_PLAYER_TOP
 	m_pd3dCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 #endif
