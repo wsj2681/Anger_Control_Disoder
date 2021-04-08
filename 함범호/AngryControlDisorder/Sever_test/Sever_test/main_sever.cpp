@@ -4,7 +4,7 @@
 #define MAXTHREAD 5
 
 
-
+//임계영역설정
 CRITICAL_SECTION cs;
 // ThreadFunction
 DWORD WINAPI PlayerThread(LPVOID arg);
@@ -25,8 +25,11 @@ Player_world thread_num_2_player;
 
 int thread_empty[MAXTHREAD] = { 0, };
 
-//void err_quit(const char* msg);
-//void err_display(const char* msg);
+
+//충돌처리
+BoundingOrientedBox obb[2];
+void makecollidbox(Thread_id id, const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation);
+int checkcollition();
 
 int main()
 {
@@ -215,13 +218,8 @@ void display_error(const char* msg, int err_no)
 	LocalFree(lpMsgBuf);
 }
 
-void err_quit(char* msg)
-{
-
-}
-
-// 소켓 함수 오류 출력
-void err_display(char* msg)
-{
-
+void makecollidbox(Thread_id id, const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation) {
+	obb[id.thread_num].Center = center;
+	obb[id.thread_num].Extents = extents;
+	obb[id.thread_num].Orientation = orientation;
 }

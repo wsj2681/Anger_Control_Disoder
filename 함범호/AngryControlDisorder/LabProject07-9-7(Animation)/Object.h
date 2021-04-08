@@ -83,6 +83,8 @@ public:
 	XMFLOAT3 GetRight();
 
 	void SetPosition(float x, float y, float z);
+	void SetRight(float x, float y, float z);
+	void SetUp(float x, float y, float z);
 	void SetLook(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);
 	void SetScale(float x, float y, float z);
