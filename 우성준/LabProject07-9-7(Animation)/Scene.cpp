@@ -35,7 +35,14 @@ void CScene::BuildDefaultLightsAndMaterials()
 
 	for (int i = 0; i < m_nLights; ++i)
 	{
-		m_pLights[i].m_bEnable = true;
+		if (i % 2 == 0)
+		{
+			m_pLights[i].m_bEnable = true;
+		}
+		else
+		{
+			m_pLights[i].m_bEnable = false;
+		}
 		m_pLights[i].m_nType = DIRECTIONAL_LIGHT;
 		m_pLights[i].m_fRange = 200.0f;
 		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
@@ -77,7 +84,7 @@ void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* p
 
 	BuildDefaultLightsAndMaterials();
 
-	CLoadedModelInfo* boxerModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
+	CLoadedModelInfo* boxerModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer(1).bin", NULL);
 	CGameObject* boxer = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, boxerModel, 1);
 	boxer->SetPosition(0.f, 10.f, 0.f);
 	hierarchicalGameObjects.push_back(boxer);

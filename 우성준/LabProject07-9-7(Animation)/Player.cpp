@@ -110,8 +110,8 @@ void CPlayer::Rotate(float x, float y, float z)
 		if (y != 0.0f)
 		{
 			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
-			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
-			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
+			m_xmf3Look = Vector3::TransformNormal(otherHead->GetLook(), xmmtxRotate);
+			m_xmf3Right = Vector3::TransformNormal(otherHead->GetRight(), xmmtxRotate);
 		}
 	}
 	else if (nCurrentCameraMode == SPACESHIP_CAMERA)
@@ -138,6 +138,8 @@ void CPlayer::Rotate(float x, float y, float z)
 	}
 
 	m_xmf3Look = Vector3::Normalize(m_xmf3Look);
+	XMFLOAT3 dir = Vector3::Subtract(otherHead->GetPosition(), m_xmf3Position);
+	XMQuaternionRotationNormal(Vector3::Normalize(dir), 30);
 	m_xmf3Right = Vector3::CrossProduct(m_xmf3Up, m_xmf3Look, true);
 	m_xmf3Up = Vector3::CrossProduct(m_xmf3Look, m_xmf3Right, true);
 }
@@ -162,9 +164,9 @@ void CPlayer::Update(float fTimeElapsed)
 	if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
 
 	DWORD nCurrentCameraMode = m_pCamera->GetMode();
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA && otherHead) m_pCamera->Update(otherHead->GetPosition(), fTimeElapsed);
+	if (nCurrentCameraMode == THIRD_PERSON_CAMERA && otherHead) m_pCamera->Update(GetPosition(), fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
-	if (nCurrentCameraMode == THIRD_PERSON_CAMERA && otherHead) m_pCamera->SetLookAt(otherHead->GetPosition());
+	if (nCurrentCameraMode == THIRD_PERSON_CAMERA && otherHead) m_pCamera->SetLookAt(otherPlayer->GetPosition());
 	m_pCamera->RegenerateViewMatrix();
 
 	fLength = Vector3::Length(m_xmf3Velocity);
@@ -355,7 +357,7 @@ void CSoundCallbackHandler::HandleCallback(void *pCallbackData)
 CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext)
 {
 
-	CLoadedModelInfo *pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
+	CLoadedModelInfo *pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxer(1).bin", NULL);
 	SetChild(pAngrybotModel->m_pModelRootObject, true);
 
 	this->head = FindFrame("Bip01_Head");
@@ -482,9 +484,14 @@ void CTerrainPlayer::OnCameraUpdateCallback(float fTimeElapsed)
 		if (m_pCamera->GetMode() == THIRD_PERSON_CAMERA)
 		{
 			CThirdPersonCamera *p3rdPersonCamera = (CThirdPersonCamera *)m_pCamera;
-			p3rdPersonCamera->SetLookAt(otherHead->GetPosition()); //머리 바라보기
+			p3rdPersonCamera->SetLookAt(GetLookVector()); //머리 바라보기
 		}
 	}
+}
+
+void CTerrainPlayer::SetLookAt(XMFLOAT3 lookAt)
+{
+	this->m_xmf3Look = Vector3::Normalize(lookAt);
 }
 
 void CTerrainPlayer::Update(float fTimeElapsed)

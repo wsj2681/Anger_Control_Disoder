@@ -7,6 +7,13 @@
 #define DIR_UP					0x10
 #define DIR_DOWN				0x20
 
+#define ANIMATION_IDLE 0x00
+#define ANIMATION_ATTACK_LOOP 0x01
+#define ANIMATION_MOVE_FORWARD 0x02
+#define ANIMATION_MOVE_BACKWARD 0x03
+#define ANIMATION_MOVE_LEFT 0x04
+#define ANIMATION_MOVE_RIGHT 0x05
+
 #include "Object.h"
 #include "Camera.h"
 class AnimationCallbackHandler;

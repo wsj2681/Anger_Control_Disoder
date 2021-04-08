@@ -7,7 +7,7 @@
 #include "Shader.h"
 #include "Player.h"
 
-#define MAX_LIGHTS						16 
+#define MAX_LIGHTS						38
 
 #define POINT_LIGHT						1
 #define SPOT_LIGHT						2

@@ -137,7 +137,7 @@ public:
 	virtual void OnPlayerUpdateCallback(float fTimeElapsed);
 	virtual void OnCameraUpdateCallback(float fTimeElapsed);
 
-	
+	void SetLookAt(XMFLOAT3 lookAt);
 
 	virtual void Update(float fTimeElapsed);
 };

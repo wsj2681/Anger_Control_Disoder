@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "Engine.h"
-
+#include "AnimationController.h"
 Engine::Engine()
 {
 	_tcscpy_s(frameRate, _T("AngerControlDisorder("));
@@ -259,6 +259,7 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	switch (nMessageID)
 	{
 		case WM_KEYUP:
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE);
 			switch (wParam)
 			{
 				case VK_ESCAPE:
@@ -270,6 +271,12 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				case VK_F2:
 				case VK_F3:
 					m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
+					break;
+				case '1':
+					break;
+				case '2':
+					break;
+				case '3':
 					break;
 				case VK_F9:
 					ChangeSwapChainState();
@@ -401,16 +408,36 @@ void Engine::ProcessInput()
 	if (!bProcessedByScene)
 	{
 		DWORD dwDirection = 0;
-		if (pKeysBuffer['W'] & 0xF0) dwDirection |= DIR_FORWARD;
-		if (pKeysBuffer['S'] & 0xF0) dwDirection |= DIR_BACKWARD;
+		if (pKeysBuffer['W'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['W'] & 0xF0 ? ANIMATION_MOVE_FORWARD : ANIMATION_IDLE);
+			dwDirection |= DIR_FORWARD;
+		}
+		if (pKeysBuffer['S'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['S'] & 0xF0 ? ANIMATION_MOVE_BACKWARD : ANIMATION_IDLE);
+			dwDirection |= DIR_BACKWARD;
+		}
 		if (pKeysBuffer['A'] & 0xF0)
 		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['A'] & 0xF0 ? ANIMATION_MOVE_LEFT : ANIMATION_IDLE);
 			dwDirection |= DIR_LEFT;
 
 		}
-		if (pKeysBuffer['D'] & 0xF0) dwDirection |= DIR_RIGHT;
+		if (pKeysBuffer['D'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['D'] & 0xF0 ? ANIMATION_MOVE_RIGHT : ANIMATION_IDLE);
+			dwDirection |= DIR_RIGHT;
+		}
 		if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_RSHIFT] & 0xF0) dwDirection |= DIR_DOWN;
+
+		if (pKeysBuffer['1'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['1'] & 0xF0 ? ANIMATION_ATTACK_LOOP : ANIMATION_IDLE);
+		}
+
+		
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;
@@ -491,7 +518,7 @@ void Engine::FrameAdvance()
 	///////////////////////////////////////
 #endif // _WITH_SERVER_CONNECT
 
-	m_GameTimer.Tick(30.0f);
+	m_GameTimer.Tick(60.0f);
 	
 	ProcessInput();
 

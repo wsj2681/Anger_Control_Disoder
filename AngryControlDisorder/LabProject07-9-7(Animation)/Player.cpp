@@ -253,16 +253,6 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 
 	m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
 
-	//m_pSkinnedAnimationController->SetCallbackKeys(1, 2);
-#ifdef _WITH_SOUND_RESOURCE
-	//m_pSkinnedAnimationController->SetCallbackKey(0, 0.1f, _T("Footstep01"));
-	//m_pSkinnedAnimationController->SetCallbackKey(1, 0.5f, _T("Footstep02"));
-	//m_pSkinnedAnimationController->SetCallbackKey(2, 0.9f, _T("Footstep03"));
-#else
-	//m_pSkinnedAnimationController->SetCallbackKey(1, 0, 0.1f, _T("Sound/swing.wav"));
-	//m_pSkinnedAnimationController->SetCallbackKey(1, 1, 0.5f, _T("Sound/Footstep02.wav"));
-	//m_pSkinnedAnimationController->SetCallbackKey(1, 2, 0.9f, _T("Sound/Footstep03.wav"));
-#endif
 	AnimationCallbackHandler *pAnimationCallbackHandler = new CSoundCallbackHandler();
 	m_pSkinnedAnimationController->SetAnimationCallbackHandler(1, pAnimationCallbackHandler);
 
@@ -339,5 +329,5 @@ void BoxingPlayer::Update(float fTimeElapsed)
 	Player::Update(fTimeElapsed);
 	// TODO : 애니메이션 셋 할때 이쪽으로 와서 한다. 
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
-	SetTrackAnimationSet(0, ::IsZero(fLength) ? 0 : 4);
+	//SetTrackAnimationSet(0, ::IsZero(fLength) ? ANIMATION_IDLE : ANIMATION_ATTACK_LOOP);
 }

@@ -44,17 +44,21 @@ void Scene::BuildDefaultLightsAndMaterials()
 	m_xmf4GlobalAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
 	for (int i = 0; i < m_nLights; ++i)
 	{
-		m_pLights[i].m_bEnable = true;
+		if (i % 2)
+		{
+			m_pLights[i].m_bEnable = true;
+		}
+		else
+		{
+			m_pLights[i].m_bEnable = false;
+		}
 		m_pLights[i].m_nType = DIRECTIONAL_LIGHT;
 		m_pLights[i].m_fRange = 300.0f;
-		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.0f);
 		m_pLights[i].m_xmf3Position = lights.data()[i]->GetPosition();
-		m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
-		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, -1.0f, 0.0f);
-		m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
-		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, -.5f, 0.0f);
 	}
 }
 
@@ -69,7 +73,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	
 	m_pSkyBox = new SkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
+	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx(1).bin", NULL);
 	Object* Map = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
 	Map->SetPosition(0.0f, 0.f, 0.0f);
 	hierarchicalGameObjects.push_back(Map);
@@ -87,7 +91,15 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	}
 
 	BuildDefaultLightsAndMaterials();
-
+	/*
+	0 : Idle
+	1 : Beating Loop
+	2 : Step forward
+	3 : Step Backward
+	4 : Step Left
+	5 : Step Right
+	6 : KickCombo
+	*/
 	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
@@ -487,8 +499,10 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case VK_RETURN:
 			break;
 		case VK_F4:
+			hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
 			break;
 		case VK_F5:
+			hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 			break;
 		case VK_F6:
 			break;
