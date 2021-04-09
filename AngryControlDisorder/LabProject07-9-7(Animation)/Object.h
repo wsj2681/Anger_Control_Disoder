@@ -56,15 +56,6 @@ public:
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
 	bool isActive = true;
 
-	UINT nowState = STATE_IDLE;
-
-	UINT GetNowState() { return nowState; }
-	void SetNowState(UINT state) { nowState = state; };
-	bool IsMove() { return nowState == STATE_MOVE; }
-	void Update(float fTimeElapsed);
-	void SetTarget(XMFLOAT3 target);
-	
-
 	void SetMesh(Mesh *pMesh);
 	void SetShader(Shader *pShader);
 	void SetShader(int nMaterial, Shader *pShader);
