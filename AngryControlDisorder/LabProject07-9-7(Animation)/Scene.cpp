@@ -636,7 +636,14 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		{
 			m_pLights[i].m_bEnable = false;
 		}
+
+		if (m_pPlayer->GetPosition().z > -300)
+		{
+			m_pLights[i].m_bEnable = false;
+		}
 	}
+
+
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
