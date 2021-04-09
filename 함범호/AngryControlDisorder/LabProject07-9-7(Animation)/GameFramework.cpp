@@ -421,11 +421,13 @@ void CGameFramework::BuildObjects()
 
 	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
 	m_pCamera = m_pPlayer->GetCamera();
+	m_pScene->m_ppHierarchicalGameObjects[1];
 
 #ifdef _WITH_SERVER_CONNECT
 	////server//////////////
 	server->cplayer = m_pPlayer;
 	server->cscene = m_pScene;
+	server->other_object = m_pScene->m_ppHierarchicalGameObjects[1];
 	/// /////////////////////////////
 #endif // _WITH_SERVER_CONNECT
 

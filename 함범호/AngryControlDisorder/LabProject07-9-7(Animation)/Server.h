@@ -31,10 +31,19 @@ struct Thread_id {
 };
 #pragma pack(pop)
 
+#pragma pack(push,1)
+struct collide {
+
+	bool check_collide = false;
+
+};
+#pragma pack(pop)
+
 class CPlayer;
 
 class CScene;
 
+class CGameObject;
 
 
 class Server
@@ -43,6 +52,7 @@ class Server
 public:
 	CPlayer* cplayer;
 	CScene* cscene;
+	CGameObject* other_object;
 
 	SOCKET sock;
 	int retval = 0;
@@ -58,6 +68,7 @@ public:
 	XMFLOAT3 player_look;
 
 	Thread_id thread_id;
+	collide col;
 
 	int send_count = 0;
 	int recv_count = 0;

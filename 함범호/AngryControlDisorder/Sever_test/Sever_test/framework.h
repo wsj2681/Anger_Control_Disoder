@@ -9,6 +9,7 @@
 using namespace std;
 
 #include <WinSock2.h>
+#include <thread>
 #pragma comment(lib, "ws2_32")
 
 
@@ -72,6 +73,14 @@ struct Player_world {
 struct Thread_id {
 
 	int thread_num;
+
+};
+#pragma pack(pop)
+
+#pragma pack(push,1)
+struct collide {
+
+	bool check_collide =false;
 
 };
 #pragma pack(pop)

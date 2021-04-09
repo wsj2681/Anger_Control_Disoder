@@ -63,6 +63,7 @@ void Server::Server_recv()
 	}
 	else {
 		retval = recv(sock, (char*)&other_player, sizeof(other_player), 0);
+		retval = recv(sock, (char*)&col, sizeof(col), 0);
 		//cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
 
 		//save_world.player_world =  cscene->m_ppHierarchicalGameObjects[0]->m_xmf4x4World;
@@ -84,45 +85,24 @@ void Server::Server_recv()
 		player_look.z = other_player.player_world._33;
 
 
-		cout << player_position.x << " / " << player_position.y << " / " << player_position.z << endl;
+		//cout << player_position.x << " / " << player_position.y << " / " << player_position.z << endl;
 
 
 		cscene->m_ppHierarchicalGameObjects[1]->SetPosition(player_position.x, player_position.y, player_position.z);
-		//cscene->m_ppHierarchicalGameObjects[0]->SetRight(player_right.x, player_right.y, player_right.z);
-		//cscene->m_ppHierarchicalGameObjects[0]->SetUp(player_up.x, player_up.y, player_up.z);
+		cscene->m_ppHierarchicalGameObjects[1]->SetRight(player_right.x, player_right.y, player_right.z);
+		cscene->m_ppHierarchicalGameObjects[1]->SetUp(player_up.x, player_up.y, player_up.z);
 		cscene->m_ppHierarchicalGameObjects[1]->SetLook(player_look.x, player_look.y, player_look.z);
 
+		if (col.check_collide) {
+			cout << "COLLIDE! " << endl;
+			other_object->isCollide = true;
 
+		}
+		else {
+			cout << "NOT COLLIDE! " << endl;
+			other_object->isCollide = false;
 
-		/*cplayer->m_xmf4x4World = player.player_world;
-
-		player_position.x = player.player_world._41;
-		player_position.y = player.player_world._42;
-		player_position.z = player.player_world._43;
-
-		cplayer->SetPosition(player_position);*/
-
-
-		/*cplayer.m_xm
-
-		m_xmf4x4Transform._11 = m_xmf3Right.x;
-		m_xmf4x4Transform._12 = m_xmf3Right.y;
-		m_xmf4x4Transform._13 = m_xmf3Right.z;
-
-		m_xmf4x4Transform._21 = m_xmf3Up.x;
-		m_xmf4x4Transform._22 = m_xmf3Up.y;
-		m_xmf4x4Transform._23 = m_xmf3Up.z;
-
-		m_xmf4x4Transform._31 = m_xmf3Look.x;
-		m_xmf4x4Transform._32 = m_xmf3Look.y;
-		m_xmf4x4Transform._33 = m_xmf3Look.z;
-
-		m_xmf4x4Transform._41 = m_xmf3Position.x;
-		m_xmf4x4Transform._42 = m_xmf3Position.y;
-		m_xmf4x4Transform._43 = m_xmf3Position.z;*/
-
-
-
+		}
 
 	}
 
