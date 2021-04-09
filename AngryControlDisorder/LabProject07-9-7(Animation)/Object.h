@@ -14,6 +14,9 @@
 #define DIR_UP						0x10
 #define DIR_DOWN					0x20
 
+#define STATE_IDLE 0x01
+#define STATE_MOVE 0x02
+
 class Shader;
 class AnimationController;
 class Texture;
@@ -52,6 +55,15 @@ public:
 	Object 					*m_pSibling = NULL;
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
 	bool isActive = true;
+
+	UINT nowState = STATE_IDLE;
+
+	UINT GetNowState() { return nowState; }
+	void SetNowState(UINT state) { nowState = state; };
+	bool IsMove() { return nowState == STATE_MOVE; }
+	void Update(float fTimeElapsed);
+	void SetTarget(XMFLOAT3 target);
+	
 
 	void SetMesh(Mesh *pMesh);
 	void SetShader(Shader *pShader);
