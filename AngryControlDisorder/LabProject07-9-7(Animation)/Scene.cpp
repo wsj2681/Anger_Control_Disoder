@@ -37,12 +37,18 @@ Scene::~Scene()
 
 void Scene::BuildDefaultLightsAndMaterials()
 {
+	/*
+	0 ~ 37 = Roof Light
+	38~39 = RedSpotLight
+	40~42 = HallWayLight
+	*/
 	m_nLights = lightsCount;
+	m_nLights += 3;
 	m_pLights = new LIGHT[m_nLights];
 	::ZeroMemory(m_pLights, sizeof(LIGHT) * m_nLights);
 
 	m_xmf4GlobalAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
-	for (int i = 0; i < m_nLights - 2; ++i)
+	for (int i = 0; i < 38; ++i)
 	{
 		if (i % 2)
 		{
@@ -61,7 +67,7 @@ void Scene::BuildDefaultLightsAndMaterials()
 		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, -.5f, 0.0f);
 	}
 
-	for (int i = m_nLights - 2; i < m_nLights; ++i)
+	for (int i = 38 ; i < 40; ++i)
 	{
 		m_pLights[i].m_bEnable = true;
 		m_pLights[i].m_nType = SPOT_LIGHT;
@@ -76,6 +82,44 @@ void Scene::BuildDefaultLightsAndMaterials()
 		m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
 		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 	}
+	m_pLights[40].m_bEnable = false;
+	m_pLights[40].m_nType = SPOT_LIGHT;
+	m_pLights[40].m_fRange = 400.0f;
+	m_pLights[40].m_xmf4Ambient = XMFLOAT4(0.1f, 0.f, 0.f, 1.0f);
+	m_pLights[40].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.f, 0.f, 1.0f);
+	m_pLights[40].m_xmf4Specular = XMFLOAT4(0.3f, 0.f, 0.f, 0.0f);
+	m_pLights[40].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -750.f);
+	m_pLights[40].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
+	m_pLights[40].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[40].m_fFalloff = 8.0f;
+	m_pLights[40].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
+	m_pLights[40].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+
+	m_pLights[41].m_bEnable = false;
+	m_pLights[41].m_nType = SPOT_LIGHT;
+	m_pLights[41].m_fRange = 400.0f;
+	m_pLights[41].m_xmf4Ambient = XMFLOAT4(0.1f, 0.f, 0.f, 1.0f);
+	m_pLights[41].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.f, 0.f, 1.0f);
+	m_pLights[41].m_xmf4Specular = XMFLOAT4(0.3f, 0.f, 0.f, 0.0f);
+	m_pLights[41].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -675.f);
+	m_pLights[41].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
+	m_pLights[41].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[41].m_fFalloff = 8.0f;
+	m_pLights[41].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
+	m_pLights[41].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+
+	m_pLights[42].m_bEnable = false;
+	m_pLights[42].m_nType = SPOT_LIGHT;
+	m_pLights[42].m_fRange = 400.0f;
+	m_pLights[42].m_xmf4Ambient = XMFLOAT4(1.f, 0.f, 0.f, 1.0f);
+	m_pLights[42].m_xmf4Diffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.0f);
+	m_pLights[42].m_xmf4Specular = XMFLOAT4(1.f, 0.f, 0.f, 0.0f);
+	m_pLights[42].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -550.f);
+	m_pLights[42].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
+	m_pLights[42].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[42].m_fFalloff = 8.0f;
+	m_pLights[42].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
+	m_pLights[42].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 }
 
 void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
@@ -581,6 +625,18 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
+
+	for (int i = 40; i < 43; ++i)
+	{
+		if (m_pLights[i].m_xmf3Position.z - 30.f < m_pPlayer->GetPosition().z)
+		{
+			m_pLights[i].m_bEnable = true;
+		}
+		else
+		{
+			m_pLights[i].m_bEnable = false;
+		}
+	}
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
