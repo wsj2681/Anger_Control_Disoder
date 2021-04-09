@@ -42,7 +42,7 @@ void Scene::BuildDefaultLightsAndMaterials()
 	::ZeroMemory(m_pLights, sizeof(LIGHT) * m_nLights);
 
 	m_xmf4GlobalAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
-	for (int i = 0; i < m_nLights; ++i)
+	for (int i = 0; i < m_nLights - 2; ++i)
 	{
 		if (i % 2)
 		{
@@ -53,12 +53,28 @@ void Scene::BuildDefaultLightsAndMaterials()
 			m_pLights[i].m_bEnable = false;
 		}
 		m_pLights[i].m_nType = DIRECTIONAL_LIGHT;
-		m_pLights[i].m_fRange = 300.0f;
+		m_pLights[i].m_fRange = 120.0f;
 		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
 		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.0f);
 		m_pLights[i].m_xmf3Position = lights.data()[i]->GetPosition();
 		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, -.5f, 0.0f);
+	}
+
+	for (int i = m_nLights - 2; i < m_nLights; ++i)
+	{
+		m_pLights[i].m_bEnable = true;
+		m_pLights[i].m_nType = SPOT_LIGHT;
+		m_pLights[i].m_fRange = 150.0f;
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.1f, 0.f, 0.f, 1.0f);
+		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.f, 0.f, 1.0f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.3f, 0.f, 0.f, 0.0f);
+		m_pLights[i].m_xmf3Position = lights.data()[i]->GetPosition();
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.f, 60.f, -252.6f);
+		m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+		m_pLights[i].m_fFalloff = 8.0f;
+		m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
+		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 	}
 }
 
@@ -73,7 +89,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	
 	m_pSkyBox = new SkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx(1).bin", NULL);
+	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/frena.bin", NULL);
 	Object* Map = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
 	Map->SetPosition(0.0f, 0.f, 0.0f);
 	hierarchicalGameObjects.push_back(Map);
@@ -89,6 +105,9 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 		sprintf(name, "light%d", i);
 		lights.push_back(Map->FindFrame(name));
 	}
+	lightsCount += 2;
+	lights.push_back(Map->FindFrame("spot_light"));
+	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
 	/*

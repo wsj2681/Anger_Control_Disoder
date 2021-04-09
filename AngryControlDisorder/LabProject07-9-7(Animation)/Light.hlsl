@@ -1,5 +1,5 @@
 //--------------------------------------------------------------------------------------
-#define MAX_LIGHTS			38
+#define MAX_LIGHTS			40
 #define MAX_MATERIALS		16 
 
 #define POINT_LIGHT			1
@@ -32,6 +32,13 @@ cbuffer cbLights : register(b4)
 	LIGHT					gLights[MAX_LIGHTS];
 	float4					gcGlobalAmbientLight;
 	int						gnLights;
+};
+
+struct LIGHTEDCOLOR
+{
+	float4 m_cAmbient;
+	float4 m_cDiffuse;
+	float4 m_cSpecular;
 };
 
 float4 DirectionalLight(int nIndex, float3 vNormal, float3 vToCamera)
