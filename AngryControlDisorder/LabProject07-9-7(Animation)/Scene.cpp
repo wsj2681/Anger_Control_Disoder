@@ -85,9 +85,9 @@ void Scene::BuildDefaultLightsAndMaterials()
 	m_pLights[40].m_bEnable = false;
 	m_pLights[40].m_nType = SPOT_LIGHT;
 	m_pLights[40].m_fRange = 400.0f;
-	m_pLights[40].m_xmf4Ambient = XMFLOAT4(0.1f, 0.f, 0.f, 1.0f);
-	m_pLights[40].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.f, 0.f, 1.0f);
-	m_pLights[40].m_xmf4Specular = XMFLOAT4(0.3f, 0.f, 0.f, 0.0f);
+	m_pLights[40].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[40].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.f, 1.0f);
+	m_pLights[40].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.f, 0.0f);
 	m_pLights[40].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -750.f);
 	m_pLights[40].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
 	m_pLights[40].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
@@ -98,9 +98,9 @@ void Scene::BuildDefaultLightsAndMaterials()
 	m_pLights[41].m_bEnable = false;
 	m_pLights[41].m_nType = SPOT_LIGHT;
 	m_pLights[41].m_fRange = 400.0f;
-	m_pLights[41].m_xmf4Ambient = XMFLOAT4(0.1f, 0.f, 0.f, 1.0f);
-	m_pLights[41].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.f, 0.f, 1.0f);
-	m_pLights[41].m_xmf4Specular = XMFLOAT4(0.3f, 0.f, 0.f, 0.0f);
+	m_pLights[41].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[41].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.f, 1.0f);
+	m_pLights[41].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.f, 0.0f);
 	m_pLights[41].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -675.f);
 	m_pLights[41].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
 	m_pLights[41].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
@@ -111,9 +111,9 @@ void Scene::BuildDefaultLightsAndMaterials()
 	m_pLights[42].m_bEnable = false;
 	m_pLights[42].m_nType = SPOT_LIGHT;
 	m_pLights[42].m_fRange = 400.0f;
-	m_pLights[42].m_xmf4Ambient = XMFLOAT4(1.f, 0.f, 0.f, 1.0f);
-	m_pLights[42].m_xmf4Diffuse = XMFLOAT4(1.f, 0.f, 0.f, 1.0f);
-	m_pLights[42].m_xmf4Specular = XMFLOAT4(1.f, 0.f, 0.f, 0.0f);
+	m_pLights[42].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[42].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[42].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.f, 0.0f);
 	m_pLights[42].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -550.f);
 	m_pLights[42].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
 	m_pLights[42].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
@@ -162,6 +162,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	4 : Step Left
 	5 : Step Right
 	6 : KickCombo
+	7 : ceremony
 	*/
 	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);

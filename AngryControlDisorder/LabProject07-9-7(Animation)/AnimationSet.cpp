@@ -30,7 +30,8 @@ void* CAnimationSet::GetCallbackData()
 {
 	for (int i = 0; i < m_nCallbackKeys; i++)
 	{
-		if (::IsEqual(m_pCallbackKeys[i].m_fTime, m_fPosition, ANIMATION_CALLBACK_EPSILON)) return(m_pCallbackKeys[i].m_pCallbackData);
+		if (::IsEqual(m_pCallbackKeys[i].m_fTime, m_fPosition, ANIMATION_CALLBACK_EPSILON)) 
+			return(m_pCallbackKeys[i].m_pCallbackData);
 	}
 	return nullptr;
 }
@@ -42,12 +43,18 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 	{
 	case ANIMATION_TYPE_LOOP:
 	{
-		m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]); // m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames-1]) * m_pfKeyFrameTimes[m_nKeyFrames-1];
+		m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]); 
+		// m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames-1]) * m_pfKeyFrameTimes[m_nKeyFrames-1];
 //			m_fPosition = fmod(fTrackPosition, m_fLength); //if (m_fPosition < 0) m_fPosition += m_fLength;
 //			m_fPosition = fTrackPosition - int(fTrackPosition / m_fLength) * m_fLength;
 		break;
 	}
 	case ANIMATION_TYPE_ONCE:
+		m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]);
+		if (m_fLength >= m_fPosition)
+		{
+			
+		}
 		break;
 	case ANIMATION_TYPE_PINGPONG:
 		break;

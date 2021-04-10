@@ -65,7 +65,7 @@ void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimati
 {
 	if (m_pAnimationTracks)
 	{
-		this->m_fTime = 0;
+		//this->m_fTime = 0;
 		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
 	}
 }
