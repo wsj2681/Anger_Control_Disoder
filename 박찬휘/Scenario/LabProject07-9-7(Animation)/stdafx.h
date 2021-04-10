@@ -79,6 +79,9 @@ extern BYTE ReadStringFromFile(FILE *pInFile, char *pstrToken);
 extern int ReadIntegerFromFile(FILE *pInFile);
 extern float ReadFloatFromFile(FILE *pInFile);
 
+constexpr UINT STATE_IDLE = 0x01;
+constexpr UINT STATE_MOVE = 0x02;
+
 //HR
 #if defined(DEBUG) | defined(_DEBUG)
 #ifndef HR

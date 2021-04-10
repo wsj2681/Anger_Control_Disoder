@@ -6,6 +6,7 @@
 
 #include "Mesh.h"
 #include "Camera.h"
+#include "WayPoint.h"
 
 #define DIR_FORWARD					0x01
 #define DIR_BACKWARD				0x02
@@ -13,9 +14,6 @@
 #define DIR_RIGHT					0x08
 #define DIR_UP						0x10
 #define DIR_DOWN					0x20
-
-constexpr UINT STATE_IDLE = 0x01;
-constexpr UINT STATE_MOVE = 0x02;
 
 class Shader;
 class AnimationController;
@@ -56,6 +54,8 @@ public:
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
 	bool isActive = true;
 
+	WayPoint wayPoint{};
+
 	void SetMesh(Mesh *pMesh);
 	void SetShader(Shader *pShader);
 	void SetShader(int nMaterial, Shader *pShader);
@@ -89,8 +89,12 @@ public:
 	void SetLook(float x, float y, float z);
 	void SetRight(float x, float y, float z);
 	void SetUp(float x, float y, float z);
-	void SetPosition(XMFLOAT3 xmf3Position);
+	void SetPosition(XMFLOAT3 position);
+	void SetLook(XMFLOAT3 look);
+	void SetRight(XMFLOAT3 right);
+	void SetUp(XMFLOAT3 up);
 	void SetScale(float x, float y, float z);
+	void MoveTo(XMFLOAT3 destination, float fDistance = 1.0f);
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
 	void MoveForward(float fDistance = 1.0f);
@@ -124,4 +128,6 @@ public:
 	static ModelInfo *LoadGeometryAndAnimationFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, char *pstrFileName, Shader *pShader);
 
 	static void PrintFrameInfo(Object *pGameObject, Object *pParent);
+
+	virtual void UpdateWayPoints();
 };

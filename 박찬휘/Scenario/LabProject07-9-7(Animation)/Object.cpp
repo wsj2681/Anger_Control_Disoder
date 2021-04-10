@@ -271,9 +271,24 @@ void Object::SetUp(float x, float y, float z)
 	UpdateTransform(NULL);
 }
 
-void Object::SetPosition(XMFLOAT3 xmf3Position)
+void Object::SetPosition(XMFLOAT3 position)
 {
-	SetPosition(xmf3Position.x, xmf3Position.y, xmf3Position.z);
+	SetPosition(position.x, position.y, position.z);
+}
+
+void Object::SetLook(XMFLOAT3 look)
+{
+	SetLook(look.x, look.y, look.z);
+}
+
+void Object::SetRight(XMFLOAT3 right)
+{
+	SetRight(right.x, right.y, right.z);
+}
+
+void Object::SetUp(XMFLOAT3 up)
+{
+	SetUp(up.x, up.y, up.z);
 }
 
 void Object::SetScale(float x, float y, float z)
@@ -307,6 +322,24 @@ XMFLOAT3 Object::GetUp()
 XMFLOAT3 Object::GetRight()
 {
 	return(Vector3::Normalize(XMFLOAT3(m_xmf4x4World._11, m_xmf4x4World._12, m_xmf4x4World._13)));
+}
+
+void Object::MoveTo(XMFLOAT3 destination, float fDistance)
+{
+	XMFLOAT3 comparePosition = GetPosition();
+	XMFLOAT3 xmf3Look = GetLook();
+	comparePosition = Vector3::Subtract(destination, comparePosition);
+	
+	// 이동
+	XMFLOAT3 xmf3Position = GetPosition();
+
+	if (comparePosition.x < 0 || comparePosition.y < 0 || comparePosition.z < 0)
+	{
+		Vector3::Add(comparePosition, comparePosition, fDistance);
+		xmf3Position = Vector3::Add(xmf3Position, comparePosition);
+		Object::SetPosition(xmf3Position);
+		// 갈 플래그 위치를 뺀 다음 거리만큼 이동
+	}
 }
 
 void Object::MoveStrafe(float fDistance)
@@ -718,4 +751,9 @@ ModelInfo *Object::LoadGeometryAndAnimationFromFile(ID3D12Device *pd3dDevice, ID
 #endif
 
 	return(pLoadedModel);
+}
+
+void Object::UpdateWayPoints()
+{
+	cout << "Object::UpdateWayPoints" << endl;
 }

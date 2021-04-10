@@ -1,8 +1,6 @@
 #pragma once
-constexpr UINT STATE_IDLE = 0x01;
-constexpr UINT STATE_MOVE = 0x02;
 
-class WayPoint
+class WayPoint final
 {
 public:
 	WayPoint() = default;

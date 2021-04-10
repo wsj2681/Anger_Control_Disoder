@@ -122,27 +122,30 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
 	BoxerObject* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	boxer->SetPosition(0.0f, 10, 0.0f);
+	boxer->SetPosition(22.0f, 10.0f, -1000.0f);
 	// 플레이어 위치 리스트
-	boxer->SetWayPoint(XMFLOAT3(-20.6077, 10, -773.896));
-	boxer->SetWayPoint(XMFLOAT3(-20.2948, 0.787479, -541.159));
-	boxer->SetWayPoint(XMFLOAT3(-20.2948, -3.40003, -520.221));
-	boxer->SetWayPoint(XMFLOAT3(-11.8792, -3.40003, -109.23));
-	boxer->SetWayPoint(XMFLOAT3(-67.4061, -3.40003, -63.9117));
-	boxer->SetWayPoint(XMFLOAT3(-83.4126, -3.40003, -20.7048));
-	boxer->SetWayPoint(XMFLOAT3(-76.0117, -3.40003, 42.4818));
-	boxer->SetWayPoint(XMFLOAT3(-40.3895, -3.40003, 77.617));
-	boxer->SetWayPoint(XMFLOAT3(28.6369, -3.40003, 88.189));
-	boxer->SetWayPoint(XMFLOAT3(79.1366, -3.40003, 32.4801));
-	boxer->SetWayPoint(XMFLOAT3(80.9487, -3.40003, -28.6296));
-	boxer->SetWayPoint(XMFLOAT3(41.1226, -3.40003, -75.0653));
-	boxer->SetWayPoint(XMFLOAT3(-7.63731, -3.40003, -85.3541));
-	boxer->SetWayPoint(XMFLOAT3(-13.4095, 9.1625, -65.2431));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-20.6077, 10, -773.896));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-20.2948, 0.787479, -541.159));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-20.2948, -3.40003, -520.221));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-11.8792, -3.40003, -109.23));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-67.4061, -3.40003, -63.9117));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-83.4126, -3.40003, -20.7048));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-76.0117, -3.40003, 42.4818));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-40.3895, -3.40003, 77.617));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(28.6369, -3.40003, 88.189));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.1366, -3.40003, 32.4801));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(80.9487, -3.40003, -28.6296));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(41.1226, -3.40003, -75.0653));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-7.63731, -3.40003, -85.3541));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-13.4095, 9.1625, -65.2431));
+
+	cout << typeid(boxer).name() << endl;
 
 	hierarchicalGameObjects.push_back(boxer);
 	if (BoxerModel) delete BoxerModel;
-
 	
+	for (int i = 0; i < hierarchicalGameObjects.size(); ++i)
+		cout << typeid(hierarchicalGameObjects[i]).name() << endl;
 
 	// 오브젝트 위치 리스트
 	XMFLOAT3(27.3922, 16.7001, -769.689);
@@ -584,6 +587,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
+	hierarchicalGameObjects[1]->UpdateWayPoints();
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
@@ -617,5 +621,6 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 			object->Render(pd3dCommandList, pCamera);
 		}
 	}
+	
 }
 

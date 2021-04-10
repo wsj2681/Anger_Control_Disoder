@@ -261,7 +261,7 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	SetPlayerUpdatedContext(pContext);
 	SetCameraUpdatedContext(pContext);
 
-	SetPosition(XMFLOAT3(0.f, 10.f/*pTerrain->GetHeight(310.0f, 590.0f)*/, 0.0f));
+	SetPosition(XMFLOAT3(0.f, 10.f, -1000.0f));
 
 
 	if (BoxerModel) delete BoxerModel;

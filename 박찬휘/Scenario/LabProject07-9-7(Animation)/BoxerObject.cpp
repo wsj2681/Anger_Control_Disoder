@@ -18,14 +18,22 @@ BoxerObject::~BoxerObject()
 
 void BoxerObject::UpdateWayPoints()
 {
+	//cout << "BoxerObject::UpdateWayPoints" << endl;
+
 	XMFLOAT3 pos = GetPosition();
 	int curWayPoint = wayPoint.GetCurWayPoints();
 	XMFLOAT3 direction = Vector3::Subtract(pos, wayPoint.GetWayPoints()[curWayPoint]);
-	float length = Vector3::Length(direction);
-	if (length < 100)	// obj_speed
+	//float length = Vector3::Length(direction);
+	//if (length < 100)	// obj_speed
+	cout << direction.x << ", " << direction.y << ", " << direction.z << endl;
+	if (false)
 	{
-		wayPoint.SetCurWayPoints(curWayPoint + 1);
-		Rotate(0.f, -10.0f, 0.0f);
+		wayPoint.SetCurWayPoints(++curWayPoint);
+		SetLook(wayPoint.GetWayPoints()[curWayPoint]);
+	}
+	else
+	{
+		MoveTo(wayPoint.GetWayPoints()[curWayPoint], 0.001f);
 	}
 	wayPoint.SetNowState(STATE_MOVE);
 }
