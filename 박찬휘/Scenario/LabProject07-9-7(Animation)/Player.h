@@ -93,8 +93,6 @@ public:
 	virtual Camera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed) { return(NULL); }
 	virtual void OnPrepareRender();
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera = NULL);
-
-
 public:
 
 	Object* head = NULL;
@@ -112,5 +110,7 @@ public:
 	virtual Camera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 
 	virtual void Update(float fTimeElapsed);
+
+	virtual void UpdateWayPoints();
 };
 

@@ -587,6 +587,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
+	m_pPlayer->UpdateWayPoints();
 	hierarchicalGameObjects[1]->UpdateWayPoints();
 }
 

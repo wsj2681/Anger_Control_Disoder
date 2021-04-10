@@ -327,19 +327,27 @@ XMFLOAT3 Object::GetRight()
 void Object::MoveTo(XMFLOAT3 destination, float fDistance)
 {
 	XMFLOAT3 comparePosition = GetPosition();
-	XMFLOAT3 xmf3Look = GetLook();
 	comparePosition = Vector3::Subtract(destination, comparePosition);
 	
 	// 이동
 	XMFLOAT3 xmf3Position = GetPosition();
 
-	if (comparePosition.x < 0 || comparePosition.y < 0 || comparePosition.z < 0)
+	if (comparePosition.x > 0 || comparePosition.y > 0 || comparePosition.z > 0)
 	{
-		Vector3::Add(comparePosition, comparePosition, fDistance);
+		comparePosition.x /= 1'000;
+		comparePosition.y /= 1'000;
+		comparePosition.z /= 1'000;
+	}
+	else
+		return;
+
+	for (int i = 0; i < 1'000; ++i)
+	{
 		xmf3Position = Vector3::Add(xmf3Position, comparePosition);
 		Object::SetPosition(xmf3Position);
-		// 갈 플래그 위치를 뺀 다음 거리만큼 이동
 	}
+	wayPoint.SetCurWayPoints(wayPoint.GetCurWayPoints() + 1);
+		// 갈 플래그 위치를 뺀 다음 거리만큼 이동
 }
 
 void Object::MoveStrafe(float fDistance)
