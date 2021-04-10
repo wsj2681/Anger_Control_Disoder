@@ -371,15 +371,19 @@ void Engine::BuildObjects()
 
 	BoxingPlayer *pPlayer = new BoxingPlayer(device, commandList, m_pScene->GetGraphicsRootSignature());
 
+	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
+	m_pCamera = m_pPlayer->GetCamera();
+	m_pScene->hierarchicalGameObjects[1];
+
 #ifdef _WITH_SERVER_CONNECT
 	////server//////////////
 	server->cplayer = m_pPlayer;
 	server->cscene = m_pScene;
+	server->other_object = m_pScene->hierarchicalGameObjects[1];
 	/// /////////////////////////////
 #endif // _WITH_SERVER_CONNECT
 
-	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
-	m_pCamera = m_pPlayer->GetCamera();
+	
 
 	commandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { commandList };

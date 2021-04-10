@@ -54,7 +54,10 @@ public:
 	Object 					*m_pChild = NULL;
 	Object 					*m_pSibling = NULL;
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
+
 	bool isActive = true;
+	//충돌처리
+	bool isCollide = false;
 
 	void SetMesh(Mesh *pMesh);
 	void SetShader(Shader *pShader);

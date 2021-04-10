@@ -23,7 +23,7 @@
     <ProjectGuid>{1EB15378-08E5-4968-8822-783E90677599}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>LabProject0797Animation</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
