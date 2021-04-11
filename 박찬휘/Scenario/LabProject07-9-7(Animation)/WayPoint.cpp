@@ -35,7 +35,6 @@ const XMFLOAT3& WayPoint::GetWayPoint(int index) const
 void WayPoint::SetWayPoint(XMFLOAT3 way)
 {
 	wayPoints[nWayPoints++] = way;
-	cout << "nWayPoints : " << nWayPoints << endl;
 }
 
 const UINT& WayPoint::GetCurWayPoints() const

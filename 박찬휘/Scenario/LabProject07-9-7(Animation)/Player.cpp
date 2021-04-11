@@ -358,8 +358,8 @@ void BoxingPlayer::UpdateWayPoints()
 	XMFLOAT3 pos = GetPosition();
 	int curWayPoint = wayPoint.GetCurWayPoints();
 	//XMFLOAT3 direction = Vector3::Subtract(pos, wayPoint.GetWayPoints()[curWayPoint]);
-	MoveTo(wayPoint.GetWayPoints()[curWayPoint], 1.0f);
+	MoveTo(wayPoint.GetWayPoints()[curWayPoint]);
 	SetLook(wayPoint.GetWayPoints()[curWayPoint]);
 
-	wayPoint.SetNowState(STATE_MOVE);
+	
 }

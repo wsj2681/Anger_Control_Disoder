@@ -29,6 +29,12 @@ Server::Server()
 
 }
 
+Server::~Server()
+{
+	if (cplayer) delete cplayer;
+	if (cscene) delete cscene;
+}
+
 void Server::Server_send()
 {
 	//준비완료 보내기

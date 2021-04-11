@@ -18,7 +18,12 @@ BoxerObject::~BoxerObject()
 
 void BoxerObject::UpdateWayPoints()
 {
-	
 	int curWayPoint = wayPoint.GetCurWayPoints();
-	MoveTo(wayPoint.GetWayPoints()[curWayPoint], 1.0f);
+	if (curWayPoint < wayPoint.GetNWayPoints())
+		MoveTo(wayPoint.GetWayPoints()[curWayPoint]);
+	else
+	{
+		SetPosition(0.0f, 10.0f, 0.0f);
+		SetLook(0.0f, 0.0f, 1.0f);
+	}
 }

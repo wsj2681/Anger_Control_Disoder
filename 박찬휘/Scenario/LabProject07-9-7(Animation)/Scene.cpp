@@ -124,18 +124,20 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	boxer->SetPosition(27.3922f, 10.0f, -1000.0f);
 
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(27.3922, 16.7001, -769.689));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(23.6849, 4.97499, -542.77));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(23.529, -5.07497, -529.371));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(14.169, -5.07497, -107.802));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(78.6226, -5.07497, -47.1712));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.3465, -5.07497, 38.0991));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.8948, -5.07497, 88.4771));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-42.2256, -5.07497, 78.6373));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-87.4857, -5.07497, 19.6149));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-72.4226, -5.07497, -54.7802));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-20.7811, -5.07497, -87.9845));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-16.0207, 10.8376, -61.6417));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 10.0f, -769.689f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 10.0f, -551.034f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 1.66975f, -533.916f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -527.249f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -107.806f));
+
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(78.6226f, -5.69284f, -47.1712f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.3465f, -5.69284f, 38.0991f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.8948f, -5.69284f, 88.4771f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-42.2256f, -5.69284f, 78.6373f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-87.4857f, -5.69284f, 19.6149f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-72.4226f, -5.69284f, -54.7802f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-20.7811f, -5.69284f, -87.9845f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-16.0207f, 10.8376f, -61.6417f));
 
 	hierarchicalGameObjects.push_back(boxer);
 	if (BoxerModel) delete BoxerModel;
@@ -550,9 +552,18 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 	return(false);
 }
 
-void Scene::Sinario()
+void Scene::Scenario()
 {
-	
+	if (bScenario == false)
+	{
+		bScenario = true;
+		hierarchicalGameObjects.data()[1]->SetPosition(XMFLOAT3(21.3046f, 10.0f, -769.689f));
+		hierarchicalGameObjects.data()[1]->wayPoint.SetCurWayPoints(0);
+	}
+	else
+	{
+		bScenario = false;
+	}
 }
 
 bool Scene::ProcessInput(UCHAR *pKeysBuffer)
@@ -566,7 +577,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
-	hierarchicalGameObjects[1]->UpdateWayPoints();
+	if (bScenario) hierarchicalGameObjects[1]->UpdateWayPoints();
 	//cout << "(" << hierarchicalGameObjects[1]->GetPosition().x << ", " << hierarchicalGameObjects[1]->GetPosition().y << ", " << hierarchicalGameObjects[1]->GetPosition().z << ")" << endl;
 }
 

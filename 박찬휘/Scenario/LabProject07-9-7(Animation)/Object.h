@@ -38,7 +38,7 @@ public:
     virtual ~Object();
 
 public:
-	char							m_pstrFrameName[64];
+	char							m_pstrFrameName[64]{};
 
 	Mesh							*m_pMesh = NULL;
 
@@ -129,6 +129,6 @@ public:
 
 	static void PrintFrameInfo(Object *pGameObject, Object *pParent);
 
-	virtual void MoveTo(XMFLOAT3 destination, float fDistance = 1.0f);
+	virtual void MoveTo(XMFLOAT3 destination);
 	virtual void UpdateWayPoints();
 };

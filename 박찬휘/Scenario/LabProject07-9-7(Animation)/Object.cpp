@@ -324,7 +324,7 @@ XMFLOAT3 Object::GetRight()
 	return(Vector3::Normalize(XMFLOAT3(m_xmf4x4World._11, m_xmf4x4World._12, m_xmf4x4World._13)));
 }
 
-void Object::MoveTo(XMFLOAT3 destination, float fDistance)
+void Object::MoveTo(XMFLOAT3 destination)
 {
 	XMFLOAT3 comparePosition = GetPosition();
 	comparePosition = Vector3::Subtract(destination, comparePosition);
@@ -335,22 +335,24 @@ void Object::MoveTo(XMFLOAT3 destination, float fDistance)
 
 	if (wayPoint.GetNWayPoints() > 0)
 	{
-		XMFLOAT3 Dir = Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), position);
-		XMFLOAT3 velocity = Vector3::Normalize(Dir);
+		//TODO: SetLook 했을 때 메쉬가 스트립쇼를 해버린다
+		XMFLOAT3 dir = Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), position);
+		XMFLOAT3 velocity = Vector3::Normalize(dir);
+		SetLook(velocity);
 
 		position = GetPosition();
-		position.x += velocity.x * 50 * 0.016;
+		position.x += velocity.x * 50 * 0.016;	// 50 : 초당 이동 거리, 0.016 : fElapsedTime
 		position.y += velocity.y * 50 * 0.016;
 		position.z += velocity.z * 50 * 0.016;
 		SetPosition(position);
 	}
 	
 	//TODO : 빼기 연산해서 현재 포지션이랑 같은지
-	if (Vector3::Length(Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), GetPosition())) < 10.f)
+	if (Vector3::Length(Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), GetPosition())) < 1.f)
 	{
 		wayPoint.SetCurWayPoints(wayPoint.GetCurWayPoints() + 1);
 	}
-
+	wayPoint.SetNowState(STATE_MOVE);
 }
 
 void Object::MoveStrafe(float fDistance)
@@ -446,7 +448,7 @@ BYTE ReadStringFromFile(FILE *pInFile, char *pstrToken)
 	nReads = (UINT)::fread(&nStrLength, sizeof(BYTE), 1, pInFile);
 	nReads = (UINT)::fread(pstrToken, sizeof(char), nStrLength, pInFile); 
 	pstrToken[nStrLength] = '\0';
-
+	
 	return(nStrLength);
 }
 

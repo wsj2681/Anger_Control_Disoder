@@ -41,26 +41,26 @@ class Server
 {
 
 public:
-	Player* cplayer;
-	Scene* cscene;
+	Player* cplayer{ nullptr };
+	Scene* cscene{ nullptr };
 
-	SOCKET sock;
-	int retval = 0;
-	char Save_Data[BUFSIZE];
+	SOCKET sock{};
+	int retval{ 0 };
+	char Save_Data[BUFSIZE]{};
 
-	Player_world player;
-	Player_world other_player;
-	Player_world save_world;
+	Player_world player{};
+	Player_world other_player{};
+	Player_world save_world{};
 
-	XMFLOAT3 player_position;
-	XMFLOAT3 player_right;
-	XMFLOAT3 player_up;
-	XMFLOAT3 player_look;
+	XMFLOAT3 player_position{};
+	XMFLOAT3 player_right{};
+	XMFLOAT3 player_up{};
+	XMFLOAT3 player_look{};
 
-	Thread_id thread_id;
+	Thread_id thread_id{};
 
-	int send_count = 0;
-	int recv_count = 0;
+	int send_count{0};
+	int recv_count{0};
 
 	Server();
 	~Server();
