@@ -94,7 +94,7 @@ public:
 	void SetRight(XMFLOAT3 right);
 	void SetUp(XMFLOAT3 up);
 	void SetScale(float x, float y, float z);
-	void MoveTo(XMFLOAT3 destination, float fDistance = 1.0f);
+	
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
 	void MoveForward(float fDistance = 1.0f);
@@ -129,5 +129,6 @@ public:
 
 	static void PrintFrameInfo(Object *pGameObject, Object *pParent);
 
+	virtual void MoveTo(XMFLOAT3 destination, float fDistance = 1.0f);
 	virtual void UpdateWayPoints();
 };

@@ -14,10 +14,12 @@ public:
 	const UINT& GetNowState() const;
 	void SetNowState(const UINT& state);
 
+	const UINT& GetNWayPoints() const;
+	void SetNWayPoints(const UINT& nWayPoints);
+
 	XMFLOAT3* GetWayPoints();
 	const XMFLOAT3& GetWayPoint(int index) const;
 	void SetWayPoint(XMFLOAT3 way);
-	void SetWayPoint(XMFLOAT3 way, int index);
 
 	const UINT& GetCurWayPoints() const;
 	void SetCurWayPoints(const UINT& cur);

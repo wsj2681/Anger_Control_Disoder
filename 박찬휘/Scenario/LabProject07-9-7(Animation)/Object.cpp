@@ -332,22 +332,29 @@ void Object::MoveTo(XMFLOAT3 destination, float fDistance)
 	// 이동
 	XMFLOAT3 xmf3Position = GetPosition();
 
-	if (comparePosition.x > 0 || comparePosition.y > 0 || comparePosition.z > 0)
+	if (abs(comparePosition.x) > 0 || abs(comparePosition.y) > 0 || abs(comparePosition.z) > 0)
 	{
-		comparePosition.x /= 1'000;
-		comparePosition.y /= 1'000;
-		comparePosition.z /= 1'000;
+		comparePosition.x /= 10;
+		comparePosition.y /= 10;
+		comparePosition.z /= 10;
 	}
 	else
 		return;
 
-	for (int i = 0; i < 1'000; ++i)
+	/*XMFLOAT3 look = GetLook();
+	XMFLOAT3 up = GetUp();
+	XMFLOAT3 right = GetRight();*/
+
+	for (int i = 0; i < 10; ++i)
 	{
-		xmf3Position = Vector3::Add(xmf3Position, comparePosition);
-		Object::SetPosition(xmf3Position);
+		MoveStrafe(comparePosition.x);
+		MoveUp(comparePosition.y);
+		MoveForward(comparePosition.z);
+		//xmf3Position = Vector3::Add(xmf3Position, comparePosition);
+		//Object::SetPosition(xmf3Position);
 	}
-	wayPoint.SetCurWayPoints(wayPoint.GetCurWayPoints() + 1);
-		// 갈 플래그 위치를 뺀 다음 거리만큼 이동
+	if (wayPoint.GetCurWayPoints() <  wayPoint.GetNWayPoints())
+		wayPoint.SetCurWayPoints(wayPoint.GetCurWayPoints() + 1);
 }
 
 void Object::MoveStrafe(float fDistance)

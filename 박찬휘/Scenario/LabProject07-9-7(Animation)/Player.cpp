@@ -237,25 +237,16 @@ void Player::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 	if (nCameraMode == THIRD_PERSON_CAMERA) Object::Render(pd3dCommandList, pCamera);
 }
 
+void Player::SetWayPoint(XMFLOAT3 way)
+{
+	wayPoint.SetWayPoint(way);
+}
+
 BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext)
 {
 
 	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
 	// 플레이어 위치 리스트
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(-20.6077, 10, -773.896));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(-20.2948, 0.787479, -541.159));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(-20.2948, -3.40003, -520.221));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(-11.8792, -3.40003, -109.23));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(-67.4061, -3.40003, -63.9117));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(-83.4126, -3.40003, -20.7048));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(-76.0117, -3.40003, 42.4818));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(-40.3895, -3.40003, 77.617));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(28.6369, -3.40003, 88.189));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(79.1366, -3.40003, 32.4801));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(80.9487, -3.40003, -28.6296));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(41.1226, -3.40003, -75.0653));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(-7.63731, -3.40003, -85.3541));
-	BoxerModel->m_pModelRootObject->wayPoint.SetWayPoint(XMFLOAT3(-13.4095, 9.1625, -65.2431));
 	SetChild(BoxerModel->m_pModelRootObject, true);
 
 	this->head = FindFrame("Bip01_Head");
@@ -278,6 +269,20 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 
 	SetPosition(XMFLOAT3(0.f, 10.f, -1000.0f));
 
+	SetWayPoint(XMFLOAT3(-20.6077, 10, -773.896));
+	SetWayPoint(XMFLOAT3(-20.2948, 0.787479, -541.159));
+	SetWayPoint(XMFLOAT3(-20.2948, -3.40003, -520.221));
+	SetWayPoint(XMFLOAT3(-11.8792, -3.40003, -109.23));
+	SetWayPoint(XMFLOAT3(-67.4061, -3.40003, -63.9117));
+	SetWayPoint(XMFLOAT3(-83.4126, -3.40003, -20.7048));
+	SetWayPoint(XMFLOAT3(-76.0117, -3.40003, 42.4818));
+	SetWayPoint(XMFLOAT3(-40.3895, -3.40003, 77.617));
+	SetWayPoint(XMFLOAT3(28.6369, -3.40003, 88.189));
+	SetWayPoint(XMFLOAT3(79.1366, -3.40003, 32.4801));
+	SetWayPoint(XMFLOAT3(80.9487, -3.40003, -28.6296));
+	SetWayPoint(XMFLOAT3(41.1226, -3.40003, -75.0653));
+	SetWayPoint(XMFLOAT3(-7.63731, -3.40003, -85.3541));
+	SetWayPoint(XMFLOAT3(-13.4095, 9.1625, -65.2431));
 
 	if (BoxerModel) delete BoxerModel;
 }
@@ -342,6 +347,7 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 void BoxingPlayer::Update(float fTimeElapsed)
 {
 	Player::Update(fTimeElapsed);
+	UpdateWayPoints();
 	// TODO : 애니메이션 셋 할때 이쪽으로 와서 한다. 
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
 	//SetTrackAnimationSet(0, ::IsZero(fLength) ? ANIMATION_IDLE : ANIMATION_ATTACK_LOOP);

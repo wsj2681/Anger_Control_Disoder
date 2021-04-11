@@ -12,6 +12,16 @@ void WayPoint::SetNowState(const UINT& state)
 	nowState = state;
 }
 
+const UINT& WayPoint::GetNWayPoints() const
+{
+	return nWayPoints;
+}
+
+void WayPoint::SetNWayPoints(const UINT& nWayPoints)
+{
+	this->nWayPoints = nWayPoints;
+}
+
 XMFLOAT3* WayPoint::GetWayPoints()
 {
 	return wayPoints;
@@ -25,13 +35,7 @@ const XMFLOAT3& WayPoint::GetWayPoint(int index) const
 void WayPoint::SetWayPoint(XMFLOAT3 way)
 {
 	wayPoints[nWayPoints++] = way;
-}
-
-void WayPoint::SetWayPoint(XMFLOAT3 way, int index)
-{
-	wayPoints[index] = way;
-	if (nWayPoints <= index)
-		nWayPoints = index;
+	cout << "nWayPoints : " << nWayPoints << endl;
 }
 
 const UINT& WayPoint::GetCurWayPoints() const
