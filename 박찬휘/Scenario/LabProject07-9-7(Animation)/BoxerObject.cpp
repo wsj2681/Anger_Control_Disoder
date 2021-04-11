@@ -18,11 +18,7 @@ BoxerObject::~BoxerObject()
 
 void BoxerObject::UpdateWayPoints()
 {
-	XMFLOAT3 pos = GetPosition();
+	
 	int curWayPoint = wayPoint.GetCurWayPoints();
-	//XMFLOAT3 direction = Vector3::Subtract(pos, wayPoint.GetWayPoints()[curWayPoint]);
 	MoveTo(wayPoint.GetWayPoints()[curWayPoint], 1.0f);
-	//SetLook(wayPoint.GetWayPoints()[curWayPoint]);
-
-	//wayPoint.SetNowState(STATE_MOVE);
 }

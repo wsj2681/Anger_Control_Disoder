@@ -330,31 +330,27 @@ void Object::MoveTo(XMFLOAT3 destination, float fDistance)
 	comparePosition = Vector3::Subtract(destination, comparePosition);
 	
 	// 이동
-	XMFLOAT3 xmf3Position = GetPosition();
+	XMFLOAT3 look = GetLook();
+	XMFLOAT3 position = GetPosition();
 
-	if (abs(comparePosition.x) > 0 || abs(comparePosition.y) > 0 || abs(comparePosition.z) > 0)
+	if (wayPoint.GetNWayPoints() > 0)
 	{
-		comparePosition.x /= 10;
-		comparePosition.y /= 10;
-		comparePosition.z /= 10;
+		XMFLOAT3 Dir = Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), position);
+		XMFLOAT3 velocity = Vector3::Normalize(Dir);
+
+		position = GetPosition();
+		position.x += velocity.x * 50 * 0.016;
+		position.y += velocity.y * 50 * 0.016;
+		position.z += velocity.z * 50 * 0.016;
+		SetPosition(position);
 	}
-	else
-		return;
-
-	/*XMFLOAT3 look = GetLook();
-	XMFLOAT3 up = GetUp();
-	XMFLOAT3 right = GetRight();*/
-
-	for (int i = 0; i < 10; ++i)
+	
+	//TODO : 빼기 연산해서 현재 포지션이랑 같은지
+	if (Vector3::Length(Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), GetPosition())) < 10.f)
 	{
-		MoveStrafe(comparePosition.x);
-		MoveUp(comparePosition.y);
-		MoveForward(comparePosition.z);
-		//xmf3Position = Vector3::Add(xmf3Position, comparePosition);
-		//Object::SetPosition(xmf3Position);
-	}
-	if (wayPoint.GetCurWayPoints() <  wayPoint.GetNWayPoints())
 		wayPoint.SetCurWayPoints(wayPoint.GetCurWayPoints() + 1);
+	}
+
 }
 
 void Object::MoveStrafe(float fDistance)

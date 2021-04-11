@@ -162,6 +162,22 @@ void CScene::ReleaseObjects()
 	if (m_pLights) delete[] m_pLights;
 }
 
+void CScene::WayPoint()
+{
+	if (hierarchicalGameObjects.data()[1])
+	{
+
+	}
+	XMFLOAT3 xmf3Position = hierarchicalGameObjects.data()[1]->GetPosition();
+	XMFLOAT3 xmf3Look = hierarchicalGameObjects.data()[1]->GetLook();
+	XMFLOAT3 xmf3Pos = hierarchicalGameObjects.data()[1]->GetPosition();
+	XMFLOAT3 xmf3Dir = Vector3::Subtract(xmf3Target, xmf3Pos);
+	XMFLOAT3 velocity = Vector3::Normalize(xmf3Dir);
+	xmf3Position.x += velocity.x * 20 * 0.016;
+	xmf3Position.y += velocity.y * 20 * 0.016;
+	xmf3Position.z += velocity.z * 20 * 0.016;
+}
+
 ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
 {
 	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;

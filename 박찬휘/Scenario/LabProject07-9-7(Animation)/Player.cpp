@@ -347,7 +347,7 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 void BoxingPlayer::Update(float fTimeElapsed)
 {
 	Player::Update(fTimeElapsed);
-	UpdateWayPoints();
+	//UpdateWayPoints();
 	// TODO : 애니메이션 셋 할때 이쪽으로 와서 한다. 
 	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
 	//SetTrackAnimationSet(0, ::IsZero(fLength) ? ANIMATION_IDLE : ANIMATION_ATTACK_LOOP);
