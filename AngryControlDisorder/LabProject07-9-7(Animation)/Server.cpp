@@ -64,6 +64,7 @@ void Server::Server_recv()
 	else {
 		retval = recv(sock, (char*)&other_player, sizeof(other_player), 0);
 		retval = recv(sock, (char*)&col, sizeof(col), 0);
+		retval = recv(sock, (char*)&bScenario, sizeof(bScenario), 0);
 		//cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
 
 		//save_world.player_world =  cscene->m_ppHierarchicalGameObjects[0]->m_xmf4x4World;

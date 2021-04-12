@@ -69,6 +69,7 @@ public:
 
 	Thread_id thread_id;
 	collide col;
+	bool bScenario{ false };
 
 	int send_count = 0;
 	int recv_count = 0;
