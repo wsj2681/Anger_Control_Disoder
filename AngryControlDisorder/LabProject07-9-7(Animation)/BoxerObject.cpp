@@ -25,5 +25,6 @@ void BoxerObject::UpdateWayPoints()
 	{
 		SetPosition(0.0f, 10.0f, -36.0f);
 		SetLook(0.0f, 0.0f, 1.0f);
+		m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	}
 }

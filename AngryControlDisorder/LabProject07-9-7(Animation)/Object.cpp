@@ -737,6 +737,9 @@ ModelInfo *Object::LoadGeometryAndAnimationFromFile(ID3D12Device *pd3dDevice, ID
 
 void Object::MoveTo(XMFLOAT3 destination)
 {
+	wayPoint.SetNowState(STATE_MOVE);
+	UINT animation = wayPoint.GetAnimations();
+	m_pSkinnedAnimationController->SetTrackAnimationSet(0, animation);
 	XMFLOAT3 comparePosition = GetPosition();
 	comparePosition = Vector3::Subtract(destination, comparePosition);
 
@@ -751,7 +754,8 @@ void Object::MoveTo(XMFLOAT3 destination)
 		XMFLOAT3 dir = Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), position);
 		XMFLOAT3 posVelocity = velocity;
 		velocity = Vector3::Normalize(dir);
-		Rotate(Vector3::Angle(posVelocity, velocity));
+		
+		//Rotate(velocity.x, velocity.z, velocity.y); // 각 계산해서 회전
 
 		position = GetPosition();
 		position.x += velocity.x * 50 * 0.016f;	// 50 : 초당 이동 거리, 0.016 : fElapsedTime

@@ -175,18 +175,18 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -527.249f), 2);
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -107.806f), 2);
 
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -109.177f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -94.0986f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -109.177f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -94.0986f), 2);
 
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -78.1817f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -36.0f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, -36.0f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -78.1817f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -36.0f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, -36.0f), 2);
 
 	hierarchicalGameObjects.push_back(boxer);
 	if (BoxerModel) delete BoxerModel;
@@ -194,7 +194,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ModelInfo* crowdModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/boxingComplete.bin", NULL);
 
 	int nFloors = 4;
-	int nBaseModels = hierarchicalGameObjects.size();
+	size_t nBaseModels = hierarchicalGameObjects.size();
 	int nCrowds = 9;
 
 	float angle = 0.0f;
@@ -210,7 +210,8 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 			crowd->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
 			//m_ppHierarchicalGameObjects[i]->SetPosition(0, 1.0f + 4.0f * (int)((i - 4) / 2), 130.0f + 12.5f * (i - 4));
 			crowd->SetPosition(cos(XMConvertToRadians(angle)) * radius, 1.0f + 4.0f * i, sin(XMConvertToRadians(angle)) * radius);
-			crowd->Rotate(0.0f, angle + 90.f + ((j - nBaseModels) % (nCrowds - 1)) * 30.0f, 0.0f);
+			//crowd->Rotate(0.0f, angle + 90.f + ((j - nBaseModels) % (nCrowds - 1)) * 30.0f, 0.0f);
+			crowd->Rotate(0.0f, 180.0f, 0.0f);
 			hierarchicalGameObjects.push_back(crowd);
 			angle += 30.f;
 		}
