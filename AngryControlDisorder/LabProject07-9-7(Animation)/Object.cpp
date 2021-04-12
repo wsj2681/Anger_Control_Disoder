@@ -276,6 +276,21 @@ void Object::SetPosition(XMFLOAT3 xmf3Position)
 	SetPosition(xmf3Position.x, xmf3Position.y, xmf3Position.z);
 }
 
+void Object::SetLook(XMFLOAT3 look)
+{
+	SetLook(look.x, look.y, look.z);
+}
+
+void Object::SetRight(XMFLOAT3 right)
+{
+	SetRight(right.x, right.y, right.z);
+}
+
+void Object::SetUp(XMFLOAT3 up)
+{
+	SetUp(up.x, up.y, up.z);
+}
+
 void Object::SetScale(float x, float y, float z)
 {
 	scale = { x,y,z };
@@ -718,4 +733,41 @@ ModelInfo *Object::LoadGeometryAndAnimationFromFile(ID3D12Device *pd3dDevice, ID
 #endif
 
 	return(pLoadedModel);
+}
+
+void Object::MoveTo(XMFLOAT3 destination)
+{
+	XMFLOAT3 comparePosition = GetPosition();
+	comparePosition = Vector3::Subtract(destination, comparePosition);
+
+	// 이동
+	XMFLOAT3 look = GetLook();
+	XMFLOAT3 position = GetPosition();
+	XMFLOAT3 velocity{};
+
+	if (wayPoint.GetNWayPoints() > 0)
+	{
+
+		XMFLOAT3 dir = Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), position);
+		XMFLOAT3 posVelocity = velocity;
+		velocity = Vector3::Normalize(dir);
+		Rotate(Vector3::Angle(posVelocity, velocity));
+
+		position = GetPosition();
+		position.x += velocity.x * 50 * 0.016f;	// 50 : 초당 이동 거리, 0.016 : fElapsedTime
+		position.y += velocity.y * 50 * 0.016f;
+		position.z += velocity.z * 50 * 0.016f;
+		SetPosition(position);
+	}
+
+	if (Vector3::Length(Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), GetPosition())) < 1.f)
+	{
+		wayPoint.SetCurWayPoints(wayPoint.GetCurWayPoints() + 1);
+	}
+	wayPoint.SetNowState(STATE_MOVE);
+}
+
+void Object::UpdateWayPoints()
+{
+	cout << "Object::UpdateWayPoints" << endl;
 }

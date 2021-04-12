@@ -59,7 +59,7 @@ public:
 	ID3D12RootSignature *CreateGraphicsRootSignature(ID3D12Device *pd3dDevice);
 	ID3D12RootSignature *GetGraphicsRootSignature() { return(m_pd3dGraphicsRootSignature); }
 
-	void Sinario();
+	void Scenario();
 
 	bool ProcessInput(UCHAR *pKeysBuffer);
     void AnimateObjects(float fTimeElapsed);
@@ -123,6 +123,5 @@ public:
 	int lightsCount = 0;
 	vector<Object*> lights;
 
-
-	XMFLOAT3 texScale{ 1.f, 1.f, 1.f };
+	bool bScenario{ false };
 };

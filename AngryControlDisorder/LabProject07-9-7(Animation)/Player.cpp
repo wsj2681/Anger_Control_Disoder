@@ -251,7 +251,7 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 
 	m_pSkinnedAnimationController = new AnimationController(pd3dDevice, pd3dCommandList, 1, BoxerModel);
 
-	m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
+	m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 
 	AnimationCallbackHandler *pAnimationCallbackHandler = new CSoundCallbackHandler();
 	m_pSkinnedAnimationController->SetAnimationCallbackHandler(1, pAnimationCallbackHandler);
@@ -261,7 +261,7 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	SetPlayerUpdatedContext(pContext);
 	SetCameraUpdatedContext(pContext);
 
-	SetPosition(XMFLOAT3(0.f, 10.f/*pTerrain->GetHeight(310.0f, 590.0f)*/, 0.0f));
+	SetPosition(XMFLOAT3(0.f, 10.f, -769.689f));
 
 
 	if (BoxerModel) delete BoxerModel;

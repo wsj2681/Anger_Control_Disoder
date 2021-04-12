@@ -14,6 +14,7 @@
 #include "AnimationSet.h"
 #include "SkyBox.h"
 #include "BoxerObject.h"
+#include "CrowdObject.h"
 
 ID3D12DescriptorHeap *Scene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
@@ -167,10 +168,56 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	boxer->SetPosition(0.0f, 10, 0.0f);
+	boxer->SetPosition(21.3046f, 10.0f, -769.689f);
+
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 10.0f, -551.034f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 1.66975f, -533.916f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -527.249f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -107.806f), 2);
+
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -109.177f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -94.0986f));
+
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -78.1817f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -36.0f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, -36.0f));
+
 	hierarchicalGameObjects.push_back(boxer);
 	if (BoxerModel) delete BoxerModel;
 
+	ModelInfo* crowdModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/boxingComplete.bin", NULL);
+
+	int nFloors = 4;
+	int nBaseModels = hierarchicalGameObjects.size();
+	int nCrowds = 9;
+
+	float angle = 0.0f;
+	float radius = 130.0f;
+
+	//TODO: 관중 각도 조절
+	for (int i = 0; i < nFloors; ++i)
+	{
+		angle = -30.0f;
+		for (int j = nBaseModels + i * nCrowds; j < nBaseModels + (i + 1) * nCrowds; ++j)
+		{
+			Object* crowd = new CrowdObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, crowdModel, 1);
+			crowd->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
+			//m_ppHierarchicalGameObjects[i]->SetPosition(0, 1.0f + 4.0f * (int)((i - 4) / 2), 130.0f + 12.5f * (i - 4));
+			crowd->SetPosition(cos(XMConvertToRadians(angle)) * radius, 1.0f + 4.0f * i, sin(XMConvertToRadians(angle)) * radius);
+			crowd->Rotate(0.0f, angle + 90.f + ((j - nBaseModels) % (nCrowds - 1)) * 30.0f, 0.0f);
+			hierarchicalGameObjects.push_back(crowd);
+			angle += 30.f;
+		}
+		radius += 25.0f;
+	}
+	
+	if (crowdModel) delete crowdModel;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -582,37 +629,18 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 	return(false);
 }
 
-void Scene::Sinario()
+void Scene::Scenario()
 {
-	// 플레이어 위치 리스트
-	XMFLOAT3(-20.6077, 10, -773.896);
-	XMFLOAT3(-20.2948, 0.787479, -541.159);
-	XMFLOAT3(-20.2948, -3.40003, -520.221);
-	XMFLOAT3(-11.8792, -3.40003, -109.23);
-	XMFLOAT3(-67.4061, -3.40003, -63.9117);
-	XMFLOAT3(-83.4126, -3.40003, -20.7048);
-	XMFLOAT3(-76.0117, -3.40003, 42.4818);
-	XMFLOAT3(-40.3895, -3.40003, 77.617);
-	XMFLOAT3(28.6369, -3.40003, 88.189);
-	XMFLOAT3(79.1366, -3.40003, 32.4801);
-	XMFLOAT3(80.9487, -3.40003, -28.6296);
-	XMFLOAT3(41.1226, -3.40003, -75.0653);
-	XMFLOAT3(-7.63731, -3.40003, -85.3541);
-	XMFLOAT3(-13.4095, 9.1625, -65.2431);
-
-	// 오브젝트 위치 리스트
-	XMFLOAT3(27.3922, 16.7001, -769.689);
-	XMFLOAT3(23.6849, 4.97499, -542.77);
-	XMFLOAT3(23.529, -5.07497, -529.371);
-	XMFLOAT3(14.169, -5.07497, -107.802);
-	XMFLOAT3(78.6226, -5.07497, -47.1712);
-	XMFLOAT3(79.3465, -5.07497, 38.0991);
-	XMFLOAT3(21.8948, -5.07497, 88.4771);
-	XMFLOAT3(-42.2256, -5.07497, 78.6373);
-	XMFLOAT3(-87.4857, -5.07497, 19.6149);
-	XMFLOAT3(-72.4226, -5.07497, -54.7802);
-	XMFLOAT3(-20.7811, -5.07497, -87.9845);
-	XMFLOAT3(-16.0207, 10.8376, -61.6417);
+	if (bScenario == false)
+	{
+		bScenario = true;
+		hierarchicalGameObjects.data()[1]->SetPosition(XMFLOAT3(21.3046f, 10.0f, -769.689f));
+		hierarchicalGameObjects.data()[1]->wayPoint.SetCurWayPoints(0);
+	}
+	else
+	{
+		bScenario = false;
+	}
 }
 
 bool Scene::ProcessInput(UCHAR *pKeysBuffer)
@@ -626,6 +654,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
+	if (bScenario) hierarchicalGameObjects[1]->UpdateWayPoints();
 
 	for (int i = 40; i < 43; ++i)
 	{

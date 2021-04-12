@@ -87,6 +87,9 @@
     <Filter Include="소스 파일\03 Model\Shader\StandardShader\SkinnedAnimationStandardShader\SkinnedAnimationObjectShader\BoxerObjectsShader">
       <UniqueIdentifier>{7fcb523e-c87b-4afe-bfc6-b7be485727ea}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\08 WayPoint">
+      <UniqueIdentifier>{bb521d4b-691a-4cdb-9a20-348016d247f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DDSTextureLoader12.h">
@@ -192,6 +195,12 @@
     <ClInclude Include="Math.h">
       <Filter>소스 파일\99 Common</Filter>
     </ClInclude>
+    <ClInclude Include="WayPoint.h">
+      <Filter>소스 파일\08 WayPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="CrowdObject.h">
+      <Filter>소스 파일\03 Model\GameObject\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WICTextureLoader12.cpp">
@@ -289,6 +298,12 @@
     </ClCompile>
     <ClCompile Include="Server.cpp">
       <Filter>소스 파일\07 Server</Filter>
+    </ClCompile>
+    <ClCompile Include="WayPoint.cpp">
+      <Filter>소스 파일\08 WayPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="CrowdObject.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

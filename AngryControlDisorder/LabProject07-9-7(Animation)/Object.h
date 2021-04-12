@@ -6,6 +6,7 @@
 
 #include "Mesh.h"
 #include "Camera.h"
+#include "WayPoint.h"
 
 #define DIR_FORWARD					0x01
 #define DIR_BACKWARD				0x02
@@ -58,6 +59,7 @@ public:
 	bool isActive = true;
 	//충돌처리
 	bool isCollide = false;
+	WayPoint wayPoint{};
 
 	void SetMesh(Mesh *pMesh);
 	void SetShader(Shader *pShader);
@@ -93,6 +95,9 @@ public:
 	void SetRight(float x, float y, float z);
 	void SetUp(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);
+	void SetLook(XMFLOAT3 look);
+	void SetRight(XMFLOAT3 right);
+	void SetUp(XMFLOAT3 up);
 	void SetScale(float x, float y, float z);
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
@@ -127,4 +132,7 @@ public:
 	static ModelInfo *LoadGeometryAndAnimationFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, char *pstrFileName, Shader *pShader);
 
 	static void PrintFrameInfo(Object *pGameObject, Object *pParent);
+
+	virtual void MoveTo(XMFLOAT3 destination);
+	virtual void UpdateWayPoints();
 };

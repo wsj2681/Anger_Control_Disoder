@@ -279,6 +279,10 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 					break;
 				case '3':
 					break;
+				case '4':
+					if (m_pScene)
+						m_pScene->Scenario();
+					break;
 				case VK_F9:
 					ChangeSwapChainState();
 					break;

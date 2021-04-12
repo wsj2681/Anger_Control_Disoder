@@ -15,3 +15,15 @@ BoxerObject::BoxerObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 BoxerObject::~BoxerObject()
 {
 }
+
+void BoxerObject::UpdateWayPoints()
+{
+	int curWayPoint = wayPoint.GetCurWayPoints();
+	if (curWayPoint < wayPoint.GetNWayPoints())
+		MoveTo(wayPoint.GetWayPoints()[curWayPoint]);
+	else
+	{
+		SetPosition(0.0f, 10.0f, -36.0f);
+		SetLook(0.0f, 0.0f, 1.0f);
+	}
+}
