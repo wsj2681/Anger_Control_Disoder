@@ -122,22 +122,27 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
 	BoxerObject* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	boxer->SetPosition(27.3922f, 10.0f, -1000.0f);
+	boxer->SetPosition(21.3046f, 10.0f, -769.689f);
 
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 10.0f, -769.689f));
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 10.0f, -551.034f));
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 1.66975f, -533.916f));
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -527.249f));
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -107.806f));
 
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(78.6226f, -5.69284f, -47.1712f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.3465f, -5.69284f, 38.0991f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.8948f, -5.69284f, 88.4771f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-42.2256f, -5.69284f, 78.6373f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-87.4857f, -5.69284f, 19.6149f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-72.4226f, -5.69284f, -54.7802f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-20.7811f, -5.69284f, -87.9845f));
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-16.0207f, 10.8376f, -61.6417f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0519f, -5.69284f, -109.177f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-16.9359f, -5.69284f, -94.0986f));
+	
+	// 계단 위 실종됨
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-16.9359f, 10.0f, -78.1817f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-16.9359f, 10.0f, 25.3378f));
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-0.579981f, 10.0f, 24.9725f));
+	//boxer->wayPoint.SetWayPoint(XMFLOAT3(-0.696899f, 10.0f, 21.6244f));
 
 	hierarchicalGameObjects.push_back(boxer);
 	if (BoxerModel) delete BoxerModel;

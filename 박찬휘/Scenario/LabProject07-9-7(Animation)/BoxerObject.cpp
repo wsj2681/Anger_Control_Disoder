@@ -23,7 +23,7 @@ void BoxerObject::UpdateWayPoints()
 		MoveTo(wayPoint.GetWayPoints()[curWayPoint]);
 	else
 	{
-		SetPosition(0.0f, 10.0f, 0.0f);
-		SetLook(0.0f, 0.0f, 1.0f);
+		SetPosition(-0.579981f, 10.0f, 24.9725f);
+		SetLook(0.0f, 0.0f, -1.0f);
 	}
 }

@@ -257,7 +257,7 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 
 	m_pSkinnedAnimationController = new AnimationController(pd3dDevice, pd3dCommandList, 1, BoxerModel);
 
-	m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
+	m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 
 	AnimationCallbackHandler *pAnimationCallbackHandler = new CSoundCallbackHandler();
 	m_pSkinnedAnimationController->SetAnimationCallbackHandler(1, pAnimationCallbackHandler);
@@ -267,21 +267,21 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	SetPlayerUpdatedContext(pContext);
 	SetCameraUpdatedContext(pContext);
 
-	SetPosition(XMFLOAT3(0.f, 10.f, -1000.0f));
+	SetPosition(XMFLOAT3(0.f, 10.f, -769.689f));
 
-	SetWayPoint(XMFLOAT3(-20.6077, 10, -773.896));
-	SetWayPoint(XMFLOAT3(-20.2948, 0.787479, -541.159));
-	SetWayPoint(XMFLOAT3(-20.2948, -3.40003, -520.221));
-	SetWayPoint(XMFLOAT3(-11.8792, -3.40003, -109.23));
-	SetWayPoint(XMFLOAT3(-67.4061, -3.40003, -63.9117));
-	SetWayPoint(XMFLOAT3(-83.4126, -3.40003, -20.7048));
-	SetWayPoint(XMFLOAT3(-76.0117, -3.40003, 42.4818));
-	SetWayPoint(XMFLOAT3(-40.3895, -3.40003, 77.617));
-	SetWayPoint(XMFLOAT3(28.6369, -3.40003, 88.189));
-	SetWayPoint(XMFLOAT3(79.1366, -3.40003, 32.4801));
-	SetWayPoint(XMFLOAT3(80.9487, -3.40003, -28.6296));
-	SetWayPoint(XMFLOAT3(41.1226, -3.40003, -75.0653));
-	SetWayPoint(XMFLOAT3(-7.63731, -3.40003, -85.3541));
+	SetWayPoint(XMFLOAT3(-20.6077f, 10, -773.896));
+	SetWayPoint(XMFLOAT3(-20.2948f, 0.787479, -541.159));
+	SetWayPoint(XMFLOAT3(-20.2948f, -3.40003, -520.221));
+	SetWayPoint(XMFLOAT3(-11.8792f, -3.40003, -109.23));
+	SetWayPoint(XMFLOAT3(-67.4061f, -3.40003, -63.9117));
+	SetWayPoint(XMFLOAT3(-83.4126f, -3.40003, -20.7048));
+	SetWayPoint(XMFLOAT3(-76.0117f, -3.40003, 42.4818));
+	SetWayPoint(XMFLOAT3(-40.3895f, -3.40003, 77.617));
+	SetWayPoint(XMFLOAT3(28.6369f, -3.40003, 88.189));
+	SetWayPoint(XMFLOAT3(79.1366f, -3.40003, 32.4801));
+	SetWayPoint(XMFLOAT3(80.9487f, -3.40003, -28.6296));
+	SetWayPoint(XMFLOAT3(41.1226f, -3.40003, -75.0653));
+	SetWayPoint(XMFLOAT3(-7.63731f, -3.40003, -85.3541));
 	SetWayPoint(XMFLOAT3(-13.4095, 9.1625, -65.2431));
 
 	if (BoxerModel) delete BoxerModel;
