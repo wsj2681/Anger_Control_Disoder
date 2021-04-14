@@ -30,10 +30,16 @@ D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvGPUDescriptorNextHandle;
 
 Scene::Scene()
 {
+	SoundManager::Init();
+
+	soundManager = new SoundManager("Sound/ACD.mid", true);
+	
+	soundManager->Play();
 }
 
 Scene::~Scene()
 {
+	SoundManager::Release();
 }
 
 void Scene::BuildDefaultLightsAndMaterials()
@@ -205,7 +211,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	for (int i = 0; i < nFloors; ++i)
 	{
 		angle = -30.0f;
-		for (int j = nBaseModels + i * nCrowds; j < nBaseModels + (i + 1) * nCrowds; ++j)
+		for (int j = (int)nBaseModels + i * nCrowds; j < (int)nBaseModels + (i + 1) * nCrowds; ++j)
 		{
 			Object* crowd = new CrowdObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, crowdModel, 1);
 			crowd->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
@@ -618,6 +624,7 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 			break;
 		case VK_F6:
+			hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 6);
 			break;
 		case VK_F9:
 			break;
@@ -709,5 +716,7 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 			object->Render(pd3dCommandList, pCamera);
 		}
 	}
+
+	soundManager->Update();
 }
 

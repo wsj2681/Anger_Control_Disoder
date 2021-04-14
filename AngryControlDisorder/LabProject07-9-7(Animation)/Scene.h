@@ -6,6 +6,7 @@
 
 #include "Shader.h"
 #include "Player.h"
+#include "SoundManager.h"
 
 #define MAX_LIGHTS						43
 
@@ -122,6 +123,9 @@ public:
 
 	int lightsCount = 0;
 	vector<Object*> lights;
+
+	SoundManager* soundManager{ nullptr };
+	//SoundManager* soundManager{ nullptr };
 
 	bool bScenario{ false };
 };
