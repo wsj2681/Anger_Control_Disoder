@@ -246,6 +246,9 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	this->head = FindFrame("Bip01_Head");
 	this->rHand = FindFrame("Bip01_R_Hand");
 	this->lHand = FindFrame("Bip01_L_Hand");
+	this->rFoot = FindFrame("Bip01_L_Foot");
+	this->lFoot = FindFrame("Bip01_R_Foot");
+	this->spine = FindFrame("Bip01_Spine1");
 
 	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
