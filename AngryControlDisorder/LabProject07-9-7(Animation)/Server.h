@@ -46,6 +46,15 @@ class Scene;
 class Object;
 
 
+// hierarchicalGameObjects.data()[1].head->GetPosition();
+// hierarchicalGameObjects.data()[1].head->SetPosition(XMFLOAT3());
+//Object* head	// ¸Ó¸®
+//Object* rHand	// ¿À¸¥¼Õ
+//Object* lHand	// ¿Þ¼Õ
+//Object* lFoot	// ¿Þ¹ß
+//Object* rFoot	// ¿À¸¥¹ß
+//Object* spine	// Ã´Ãß Áß½É
+
 class Server
 {
 

@@ -54,6 +54,15 @@ public:
 	Object 					*m_pParent = NULL;
 	Object 					*m_pChild = NULL;
 	Object 					*m_pSibling = NULL;
+
+
+	Object* head = NULL;	//¸Ó¸®
+	Object* rHand = NULL;	//¿À¸¥¼Õ
+	Object* lHand = NULL;	//¿Þ¼Õ
+	Object* lFoot = NULL;	//¿Þ¹ß
+	Object* rFoot = NULL;	//¿À¸¥¹ß
+	Object* spine = NULL;	//Ã´Ãß Áß½É
+
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
 
 	bool isActive = true;

@@ -97,9 +97,7 @@ public:
 
 public:
 
-	Object* head = NULL;
-	Object* rHand = NULL;
-	Object* lHand = NULL;
+	
 };
 
 class BoxingPlayer : public Player
