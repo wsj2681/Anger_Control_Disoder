@@ -272,14 +272,7 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				case VK_F3:
 					m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 					break;
-				case '1':
-					cout << m_pPlayer->GetPosition().x << ", " << m_pPlayer->GetPosition().y << ", " << m_pPlayer->GetPosition().z << endl;
-					break;
-				case '2':
-					break;
-				case '3':
-					break;
-				case '4':
+				case VK_F4:
 					if (m_pScene)
 						m_pScene->Scenario();
 					break;
@@ -445,8 +438,26 @@ void Engine::ProcessInput()
 		{
 			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['1'] & 0xF0 ? ANIMATION_ATTACK_LOOP : ANIMATION_IDLE);
 		}
-
-		
+		if (pKeysBuffer['2'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['2'] & 0xF0 ? ANIMATION_ATTACK_LOOP : ANIMATION_IDLE);
+		}
+		if (pKeysBuffer['3'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['3'] & 0xF0 ? ANIMATION_ATTACK_KICK : ANIMATION_IDLE);
+		}
+		if (pKeysBuffer['4'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['4'] & 0xF0 ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_IDLE);
+		}
+		if (pKeysBuffer['5'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['5'] & 0xF0 ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_IDLE);
+		}
+		if (pKeysBuffer['6'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['6'] & 0xF0 ? ANIMATION_GUARD_BODY : ANIMATION_IDLE);
+		}
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;

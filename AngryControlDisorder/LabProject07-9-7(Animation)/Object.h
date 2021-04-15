@@ -17,6 +17,9 @@
 
 #define STATE_IDLE 0x01
 #define STATE_MOVE 0x02
+#define STATE_GUARD_LEFT_HEAD 0x04
+#define STATE_GUARD_RIGHT_HEAD 0x08
+#define STATE_GUARD_BODY 0x10
 
 class Shader;
 class AnimationController;
