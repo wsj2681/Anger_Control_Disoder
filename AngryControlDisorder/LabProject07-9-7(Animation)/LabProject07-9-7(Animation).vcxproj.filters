@@ -146,7 +146,6 @@
     <ClInclude Include="Object.h">
       <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClInclude>
-    <ClInclude Include="CallBack.h" />
     <ClInclude Include="AnimationSet.h">
       <Filter>소스 파일\03 Model\GameObject\Animation</Filter>
     </ClInclude>
@@ -206,6 +205,9 @@
     </ClInclude>
     <ClInclude Include="SoundManager.h">
       <Filter>소스 파일\09 SoundManager</Filter>
+    </ClInclude>
+    <ClInclude Include="CallBack.h">
+      <Filter>소스 파일</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -308,11 +310,11 @@
     <ClCompile Include="WayPoint.cpp">
       <Filter>소스 파일\08 WayPoint</Filter>
     </ClCompile>
-    <ClCompile Include="CrowdObject.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="SoundManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\09 SoundManager</Filter>
+    </ClCompile>
+    <ClCompile Include="CrowdObject.cpp">
+      <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

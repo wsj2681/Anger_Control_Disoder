@@ -68,6 +68,9 @@ public:
 
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
 
+
+	UINT nowState = STATE_IDLE;
+
 	bool isActive = true;
 	//충돌처리
 	bool isCollide = false;
