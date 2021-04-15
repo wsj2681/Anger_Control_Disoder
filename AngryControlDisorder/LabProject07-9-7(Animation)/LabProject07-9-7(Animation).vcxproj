@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(SolutionDir)/FMOD/inc;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)/FMOD/lib/x64;$(LibraryPath)</LibraryPath>
+    <LibraryPath>C:\Users\wsj26\Desktop\Anger_Control_Disoder\AngryControlDisorder\LabProject07-9-7%28Animation%29\FMOD\Fx64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
