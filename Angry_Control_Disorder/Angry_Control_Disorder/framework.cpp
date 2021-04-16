@@ -208,7 +208,7 @@ float Random()
 	return(rand() / float(RAND_MAX));
 }
 
-const XMFLOAT3& RandomPositionInSphere(const XMFLOAT3& xmf3Center, float fRadius, int nColumn, int nColumnSpace)
+const XMFLOAT3 RandomPositionInSphere(const XMFLOAT3& xmf3Center, float fRadius, int nColumn, int nColumnSpace)
 {
 	float fAngle = Random() * 360.0f * (2.0f * 3.14159f / 360.0f);
 
@@ -217,5 +217,5 @@ const XMFLOAT3& RandomPositionInSphere(const XMFLOAT3& xmf3Center, float fRadius
 	xmf3Position.y = xmf3Center.y - (nColumn * float(nColumnSpace) / 2.0f) + (nColumn * nColumnSpace) + Random();
 	xmf3Position.z = xmf3Center.z + fRadius * cos(fAngle);
 
-	return(xmf3Position);
+	return xmf3Position;
 }
