@@ -56,6 +56,12 @@
     <Filter Include="소스 파일\Shader">
       <UniqueIdentifier>{e85920e9-8bdc-4b95-a074-13918f2106c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\ModelInfo">
+      <UniqueIdentifier>{06c5ee25-10a3-4913-8f8d-74598caa0f17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Callback">
+      <UniqueIdentifier>{2d34047f-842c-4a17-9dfe-6505f1aba635}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -121,6 +127,21 @@
     <ClInclude Include="AnimationTrack.h">
       <Filter>소스 파일\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="ModelInfo.h">
+      <Filter>소스 파일\ModelInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="CallBack.h">
+      <Filter>소스 파일\Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>소스 파일\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>소스 파일\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedAnimationStandardShader.h">
+      <Filter>소스 파일\Shader</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Angry_Control_Disorder.ico">
@@ -184,6 +205,21 @@
     </ClCompile>
     <ClCompile Include="AnimationTrack.cpp">
       <Filter>소스 파일\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelInfo.cpp">
+      <Filter>소스 파일\ModelInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="CallBack.cpp">
+      <Filter>소스 파일\Callback</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>소스 파일\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>소스 파일\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedAnimationStandardShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

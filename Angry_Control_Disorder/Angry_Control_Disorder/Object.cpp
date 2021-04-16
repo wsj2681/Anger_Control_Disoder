@@ -1,6 +1,28 @@
 #include "framework.h"
+#include "Shader.h"
+#include "AnimationSet.h"
+#include "AnimationController.h"
 #include "Object.h"
 #include "Mesh.h"
+#include "SkinnedMesh.h"
+#include "ModelInfo.h"
+#include "Material.h"
+
+void Object::AddRef()
+{
+	m_nReferences++;
+
+	if (m_pSibling) m_pSibling->AddRef();
+	if (m_pChild) m_pChild->AddRef();
+}
+
+void Object::Release()
+{
+	if (m_pChild) m_pChild->Release();
+	if (m_pSibling) m_pSibling->Release();
+
+	if (--m_nReferences <= 0) delete this;
+}
 
 void Object::BuildMaterials(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
@@ -145,6 +167,51 @@ Texture* Object::FindReplicatedTexture(_TCHAR* pstrTextureName)
 			return(pTexture);
 
 	return nullptr;
+}
+
+void Object::SetMesh(Mesh* pMesh)
+{
+	if (m_pMesh) m_pMesh->Release();
+	m_pMesh = pMesh;
+	if (m_pMesh) m_pMesh->AddRef();
+}
+
+void Object::SetShader(Shader* pShader)
+{
+	m_nMaterials = 1;
+	m_ppMaterials = new Material * [m_nMaterials];
+	m_ppMaterials[0] = new Material(0);
+	m_ppMaterials[0]->SetShader(pShader);
+}
+
+void Object::SetShader(int nMaterial, Shader* pShader)
+{
+	if (m_ppMaterials[nMaterial]) m_ppMaterials[nMaterial]->SetShader(pShader);
+}
+
+void Object::SetMaterial(int nMaterial, Material* pMaterial)
+{
+	if (m_ppMaterials[nMaterial]) m_ppMaterials[nMaterial]->Release();
+	m_ppMaterials[nMaterial] = pMaterial;
+	if (m_ppMaterials[nMaterial]) m_ppMaterials[nMaterial]->AddRef();
+}
+
+void Object::SetChild(Object* pChild, bool bReferenceUpdate)
+{
+	if (pChild)
+	{
+		pChild->m_pParent = this;
+		if (bReferenceUpdate) pChild->AddRef();
+	}
+	if (m_pChild)
+	{
+		if (pChild) pChild->m_pSibling = m_pChild->m_pSibling;
+		m_pChild->m_pSibling = pChild;
+	}
+	else
+	{
+		m_pChild = pChild;
+	}
 }
 
 void Object::SetToParent(const XMFLOAT4X4& toParent)
@@ -489,7 +556,7 @@ Object* Object::LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12Graph
 		}
 		else if (!strcmp(pstrToken, "<Mesh>:"))
 		{
-			CStandardMesh* pMesh = new CStandardMesh(pd3dDevice, pd3dCommandList);
+			StandardMesh* pMesh = new StandardMesh(pd3dDevice, pd3dCommandList);
 			pMesh->LoadMeshFromFile(pd3dDevice, pd3dCommandList, pInFile);
 			pGameObject->SetMesh(pMesh);
 		}

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "framework.h"
 #include "CallBack.h"
 
 #define _WITH_DEBUG_CALLBACK_DATA

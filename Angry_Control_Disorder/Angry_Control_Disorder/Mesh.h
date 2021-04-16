@@ -27,6 +27,7 @@ public:
 
 private:
 
+	int m_nReferences = 0;
 
 protected:
 
@@ -60,6 +61,9 @@ public:
 	char m_pstrMeshName[64] = { 0 };
 
 public:
+
+	void AddRef();
+	void Release();
 
 	virtual void OnPreRender(ID3D12GraphicsCommandList* pd3dCommandList, void* pContext);
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, int nSubSet);

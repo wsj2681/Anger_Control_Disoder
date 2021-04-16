@@ -13,6 +13,8 @@ public:
 
 private:
 
+	int nReferences = 0;
+
 protected:
 
 	ID3DBlob* m_pd3dVertexShaderBlob{ nullptr };
@@ -25,6 +27,9 @@ protected:
 	float m_fElapsedTime{ 0.0f };
 
 public:
+
+	void AddRef();
+	void Release();
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
 	virtual D3D12_RASTERIZER_DESC CreateRasterizerState();

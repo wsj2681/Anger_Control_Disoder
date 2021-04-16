@@ -142,6 +142,7 @@
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AnimationSet.h" />
     <ClInclude Include="AnimationTrack.h" />
+    <ClInclude Include="CallBack.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="d3dx12.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
@@ -149,16 +150,20 @@
     <ClInclude Include="Engine.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="Math.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="ModelInfo.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
+    <ClInclude Include="SkinnedAnimationStandardShader.h" />
     <ClInclude Include="SkinnedMesh.h" />
     <ClInclude Include="StandardMesh.h" />
     <ClInclude Include="StandardShader.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="Texture.h" />
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
@@ -172,19 +177,24 @@
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AnimationSet.cpp" />
     <ClCompile Include="AnimationTrack.cpp" />
+    <ClCompile Include="CallBack.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="Device.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="framework.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="ModelInfo.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="SkinnedAnimationStandardShader.cpp" />
     <ClCompile Include="SkinnedMesh.cpp" />
     <ClCompile Include="StandardMesh.cpp" />
     <ClCompile Include="StandardShader.cpp" />
+    <ClCompile Include="Texture.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
     <ClCompile Include="WinMain.cpp" />
   </ItemGroup>

@@ -9,6 +9,16 @@ Mesh::Mesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 }
 
+void Mesh::AddRef()
+{
+	m_nReferences++;
+}
+
+void Mesh::Release()
+{
+	if (--m_nReferences <= 0) delete this;
+}
+
 void Mesh::OnPreRender(ID3D12GraphicsCommandList* pd3dCommandList, void* pContext)
 {
 	pd3dCommandList->IASetVertexBuffers(m_nSlot, 1, &m_d3dPositionBufferView);

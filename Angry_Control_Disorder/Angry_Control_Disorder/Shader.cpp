@@ -1,6 +1,17 @@
 #include "framework.h"
 #include "Shader.h"
 
+void Shader::AddRef()
+{
+	nReferences++;
+}
+
+void Shader::Release()
+{
+	if (--nReferences <= 0)
+		delete this;
+}
+
 D3D12_SHADER_BYTECODE Shader::CreateVertexShader()
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;

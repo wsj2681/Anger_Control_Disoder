@@ -20,6 +20,8 @@ public:
 
 private:
 
+	int m_nReferences = 0;
+
 protected:
 
 	char m_pstrFrameName[64];
@@ -39,6 +41,9 @@ protected:
 	bool isActive = true;
 
 public:	/* Method */
+
+	void AddRef();
+	void Release();
 
 	virtual void BuildMaterials(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 
@@ -69,6 +74,13 @@ public:	/* Method */
 	Texture* FindReplicatedTexture(_TCHAR* pstrTextureName);
 
 public: /* Get Set */
+
+	void SetMesh(Mesh* pMesh);
+	void SetShader(Shader* pShader);
+	void SetShader(int nMaterial, Shader* pShader);
+	void SetMaterial(int nMaterial, Material* pMaterial);
+
+	void SetChild(Object* pChild, bool bReferenceUpdate = false);
 
 	void SetToParent(const XMFLOAT4X4& toParent);
 	const XMFLOAT4X4& GetToParent();
