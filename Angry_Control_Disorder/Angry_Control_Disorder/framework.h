@@ -111,3 +111,7 @@ extern float ReadFloatFromFile(FILE * pInFile);
 
 // Global Values
 extern UINT gnCbvSrvDescriptorIncrementSize;
+
+extern float Random(float fMin, float fMax);
+extern float Random();
+extern const XMFLOAT3& RandomPositionInSphere(const XMFLOAT3& xmf3Center, float fRadius, int nColumn, int nColumnSpace);

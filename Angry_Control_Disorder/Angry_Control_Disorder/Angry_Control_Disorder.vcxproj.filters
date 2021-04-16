@@ -50,6 +50,12 @@
     <Filter Include="소스 파일\99 Common\Resource">
       <UniqueIdentifier>{083ea05f-6673-425c-b18c-c09d10b165bf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Mesh">
+      <UniqueIdentifier>{c11a5595-5b9f-4a72-aa96-a2701aea8b7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader">
+      <UniqueIdentifier>{e85920e9-8bdc-4b95-a074-13918f2106c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -88,6 +94,10 @@
     <ClInclude Include="targetver.h">
       <Filter>소스 파일\99 Common\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Angry_Control_Disorder.ico">
@@ -124,6 +134,12 @@
     </ClCompile>
     <ClCompile Include="WICTextureLoader12.cpp">
       <Filter>소스 파일\99 Common\TextureLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
