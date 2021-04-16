@@ -1,4 +1,21 @@
 #pragma once
+
+#define VERTEXT_POSITION				0x0001
+#define VERTEXT_COLOR					0x0002
+#define VERTEXT_NORMAL					0x0004
+#define VERTEXT_TANGENT					0x0008
+#define VERTEXT_TEXTURE_COORD0			0x0010
+#define VERTEXT_TEXTURE_COORD1			0x0020
+
+#define VERTEXT_BONE_INDEX_WEIGHT		0x1000
+
+#define VERTEXT_TEXTURE					(VERTEXT_POSITION | VERTEXT_TEXTURE_COORD0)
+#define VERTEXT_DETAIL					(VERTEXT_POSITION | VERTEXT_TEXTURE_COORD0 | VERTEXT_TEXTURE_COORD1)
+#define VERTEXT_NORMAL_TEXTURE			(VERTEXT_POSITION | VERTEXT_NORMAL | VERTEXT_TEXTURE_COORD0)
+#define VERTEXT_NORMAL_TANGENT_TEXTURE	(VERTEXT_POSITION | VERTEXT_NORMAL | VERTEXT_TANGENT | VERTEXT_TEXTURE_COORD0)
+#define VERTEXT_NORMAL_DETAIL			(VERTEXT_POSITION | VERTEXT_NORMAL | VERTEXT_TEXTURE_COORD0 | VERTEXT_TEXTURE_COORD1)
+#define VERTEXT_NORMAL_TANGENT__DETAIL	(VERTEXT_POSITION | VERTEXT_NORMAL | VERTEXT_TANGENT | VERTEXT_TEXTURE_COORD0 | VERTEXT_TEXTURE_COORD1)
+
 class Mesh
 {
 public:
@@ -24,19 +41,19 @@ protected:
 
 	int m_nVertices = 0;
 
-	XMFLOAT3* m_pxmf3Positions = NULL;
+	XMFLOAT3* m_pxmf3Positions = nullptr;
 
-	ID3D12Resource* m_pd3dPositionBuffer = NULL;
-	ID3D12Resource* m_pd3dPositionUploadBuffer = NULL;
+	ID3D12Resource* m_pd3dPositionBuffer = nullptr;
+	ID3D12Resource* m_pd3dPositionUploadBuffer = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW m_d3dPositionBufferView;
 
 	int m_nSubMeshes = 0;
-	int* m_pnSubSetIndices = NULL;
-	UINT** m_ppnSubSetIndices = NULL;
+	int* m_pnSubSetIndices = nullptr;
+	UINT** m_ppnSubSetIndices = nullptr;
 
-	ID3D12Resource** m_ppd3dSubSetIndexBuffers = NULL;
-	ID3D12Resource** m_ppd3dSubSetIndexUploadBuffers = NULL;
-	D3D12_INDEX_BUFFER_VIEW* m_pd3dSubSetIndexBufferViews = NULL;
+	ID3D12Resource** m_ppd3dSubSetIndexBuffers = nullptr;
+	ID3D12Resource** m_ppd3dSubSetIndexUploadBuffers = nullptr;
+	D3D12_INDEX_BUFFER_VIEW* m_pd3dSubSetIndexBufferViews = nullptr;
 
 public:
 

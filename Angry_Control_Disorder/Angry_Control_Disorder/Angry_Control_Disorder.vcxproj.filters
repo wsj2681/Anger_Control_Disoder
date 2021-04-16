@@ -103,6 +103,24 @@
     <ClInclude Include="Mesh.h">
       <Filter>소스 파일\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="StandardMesh.h">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMesh.h">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardShader.h">
+      <Filter>소스 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationController.h">
+      <Filter>소스 파일\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationSet.h">
+      <Filter>소스 파일\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationTrack.h">
+      <Filter>소스 파일\Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Angry_Control_Disorder.ico">
@@ -148,6 +166,24 @@
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardMesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationController.cpp">
+      <Filter>소스 파일\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSet.cpp">
+      <Filter>소스 파일\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTrack.cpp">
+      <Filter>소스 파일\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -36,6 +36,8 @@ protected:
 	Object* m_pChild = nullptr;
 	Object* m_pSibling = nullptr;
 
+	bool isActive = true;
+
 public:	/* Method */
 
 	virtual void BuildMaterials(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
@@ -67,6 +69,12 @@ public:	/* Method */
 	Texture* FindReplicatedTexture(_TCHAR* pstrTextureName);
 
 public: /* Get Set */
+
+	void SetToParent(const XMFLOAT4X4& toParent);
+	const XMFLOAT4X4& GetToParent();
+
+	void SetWorld(const XMFLOAT4X4& world);
+	const XMFLOAT4X4& GetWorld();
 
 	Object* GetParent();
 	const UINT& GetMeshType();
@@ -103,6 +111,7 @@ public: /* Animation Method */
 public: /* Model Method */
 
 	static void LoadAnimationFromFile(FILE* pInFile, ModelInfo* pLoadedModel);
+	void LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, Object* pParent, FILE* pInFile, Shader* pShader);
 	static Object* LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, Object* pParent, FILE* pInFile, Shader* pShader, int* pnSkinnedMeshes);
 	static ModelInfo* LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, char* pstrFileName, Shader* pShader);
 	static void PrintFrameInfo(Object* pGameObject, Object* pParent);
