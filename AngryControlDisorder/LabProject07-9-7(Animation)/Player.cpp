@@ -240,7 +240,7 @@ void Player::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext)
 {
 
-	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", NULL);
+	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxerS.bin", nullptr);
 	SetChild(BoxerModel->m_pModelRootObject, true);
 
 	this->head = FindFrame("Bip01_Head");
