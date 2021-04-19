@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "framework.h"
 #include "Texture.h"
 
 Texture::Texture(int nTextures, UINT nTextureType, int nSamplers)

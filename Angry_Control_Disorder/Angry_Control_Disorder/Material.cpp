@@ -51,8 +51,8 @@ void Material::ReleaseUploadBuffers()
 	}
 }
 
-Shader* Material::m_pSkinnedAnimationShader = NULL;
-Shader* Material::m_pStandardShader = NULL;
+Shader* Material::m_pSkinnedAnimationShader = nullptr;
+Shader* Material::m_pStandardShader = nullptr;
 
 void Material::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {

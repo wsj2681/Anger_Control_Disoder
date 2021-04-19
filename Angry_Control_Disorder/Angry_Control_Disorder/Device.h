@@ -1,4 +1,9 @@
 #pragma once
+
+#include "Camera.h"
+#include "Scene.h"
+
+
 class Device final
 {
 public:
@@ -45,6 +50,9 @@ private:
 #if defined(_DEBUG)
 	ID3D12Debug* debugController = nullptr;
 #endif
+
+	Scene* m_pScene = nullptr;
+	Player* m_pPlayer = nullptr;
 
 public:
 

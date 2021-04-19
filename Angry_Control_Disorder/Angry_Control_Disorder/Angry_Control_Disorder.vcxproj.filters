@@ -62,6 +62,12 @@
     <Filter Include="소스 파일\Callback">
       <UniqueIdentifier>{2d34047f-842c-4a17-9dfe-6505f1aba635}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Light">
+      <UniqueIdentifier>{e20b7630-38ba-4f4b-944d-c9c9153803d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\NewFilter1">
+      <UniqueIdentifier>{1bab07e3-de9b-4eb7-9b48-b50ac5a794fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -142,6 +148,9 @@
     <ClInclude Include="SkinnedAnimationStandardShader.h">
       <Filter>소스 파일\Shader</Filter>
     </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>소스 파일\Light</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Angry_Control_Disorder.ico">
@@ -220,6 +229,9 @@
     </ClCompile>
     <ClCompile Include="SkinnedAnimationStandardShader.cpp">
       <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>소스 파일\Light</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

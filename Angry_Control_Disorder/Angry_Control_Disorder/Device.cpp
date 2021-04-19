@@ -260,6 +260,19 @@ void Device::ChangeSwapChainState()
 
 void Device::BuildObjects()
 {
+	commandList->Reset(commandAllocator, nullptr);
+
+	m_pScene = new Scene();
+	if (m_pScene) m_pScene->BuildObjects(device, commandList);
+
+	commandList->Close();
+	ID3D12CommandList* ppd3dCommandLists[] = { commandList };
+	commandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
+
+	WaitForGpuComplete();
+
+	if (m_pScene) m_pScene->ReleaseUploadBuffers();
+	//if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
 }
 
 void Device::ReleaseObjects()

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+#include "framework.h"
 #include "ModelInfo.h"
 #include "SkinnedMesh.h"
 #include "Object.h"
