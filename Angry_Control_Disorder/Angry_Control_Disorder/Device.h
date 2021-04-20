@@ -3,6 +3,8 @@
 #include "Camera.h"
 #include "Scene.h"
 
+class Player;
+class BoxerPlayer;
 
 class Device final
 {
@@ -51,8 +53,11 @@ private:
 	ID3D12Debug* debugController = nullptr;
 #endif
 
+public:
+
 	Scene* m_pScene = nullptr;
 	Player* m_pPlayer = nullptr;
+	Camera* m_pCamera = nullptr;
 
 public:
 

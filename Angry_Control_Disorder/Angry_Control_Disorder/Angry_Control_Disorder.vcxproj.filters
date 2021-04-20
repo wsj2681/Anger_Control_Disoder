@@ -65,8 +65,11 @@
     <Filter Include="소스 파일\Light">
       <UniqueIdentifier>{e20b7630-38ba-4f4b-944d-c9c9153803d9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\NewFilter1">
+    <Filter Include="소스 파일\Player">
       <UniqueIdentifier>{1bab07e3-de9b-4eb7-9b48-b50ac5a794fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\SkyBox">
+      <UniqueIdentifier>{b85592b0-1d92-46a3-89aa-6934598ebf83}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -151,6 +154,24 @@
     <ClInclude Include="Light.h">
       <Filter>소스 파일\Light</Filter>
     </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxerPlayer.h">
+      <Filter>소스 파일\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxMesh.h">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxShader.h">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxerObject.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Angry_Control_Disorder.ico">
@@ -232,6 +253,24 @@
     </ClCompile>
     <ClCompile Include="Light.cpp">
       <Filter>소스 파일\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxerPlayer.cpp">
+      <Filter>소스 파일\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxMesh.cpp">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxShader.cpp">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxerObject.cpp">
+      <Filter>소스 파일\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

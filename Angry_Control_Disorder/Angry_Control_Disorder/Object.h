@@ -13,7 +13,8 @@ class Object
 {
 public:
 
-	Object() = default;
+	Object();
+	Object(int nMaterials);
 	Object(const Object&) = delete;
 	Object& operator=(const Object&) = delete;
 	virtual ~Object() = default;
@@ -39,6 +40,18 @@ protected:
 	Object* m_pSibling = nullptr;
 
 	bool isActive = true;
+
+	XMFLOAT3 m_xmf3Scale{ 0.f, 0.f, 0.f };
+
+public:
+
+	Object* head = nullptr;	//¸Ó¸®
+	Object* rHand = nullptr;	//¿À¸¥¼Õ
+	Object* lHand = nullptr;	//¿Þ¼Õ
+	Object* lFoot = nullptr;	//¿Þ¹ß
+	Object* rFoot = nullptr;	//¿À¸¥¹ß
+	Object* spine = nullptr;	//Ã´Ãß Áß½É
+
 
 public:	/* Method */
 
@@ -89,23 +102,23 @@ public: /* Get Set */
 	const XMFLOAT4X4& GetWorld();
 
 	Object* GetParent();
-	const UINT& GetMeshType();
+	const UINT GetMeshType();
 
 	void SetPosition(const float& x, const float& y, const float& z);
 	void SetPosition(const XMFLOAT3& position);
-	const XMFLOAT3& GetPosition();
+	const XMFLOAT3 GetPosition();
 
 	void SetLook(const float& x, const float& y, const float& z);
 	void SetLook(const XMFLOAT3& look);
-	const XMFLOAT3& GetLook();
+	const XMFLOAT3 GetLook();
 
 	void SetUp(const float& x, const float& y, const float& z);
 	void SetUp(const XMFLOAT3& up);
-	const XMFLOAT3& GetUp();
+	const XMFLOAT3 GetUp();
 
 	void SetRight(const float& x, const float& y, const float& z);
 	void SetRight(const XMFLOAT3& right);
-	const XMFLOAT3& GetRight();
+	const XMFLOAT3 GetRight();
 
 	void SetScale(const float& x, const float& y, const float& z);
 	void SetScale(const XMFLOAT3& scale);
@@ -125,7 +138,7 @@ public: /* Model Method */
 	static void LoadAnimationFromFile(FILE* pInFile, ModelInfo* pLoadedModel);
 	void LoadMaterialsFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, Object* pParent, FILE* pInFile, Shader* pShader);
 	static Object* LoadFrameHierarchyFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, Object* pParent, FILE* pInFile, Shader* pShader, int* pnSkinnedMeshes);
-	static ModelInfo* LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, char* pstrFileName, Shader* pShader);
+	static ModelInfo* LoadGeometryAndAnimationFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, const char* pstrFileName, Shader* pShader);
 	static void PrintFrameInfo(Object* pGameObject, Object* pParent);
 
 public: /* Custom Method */

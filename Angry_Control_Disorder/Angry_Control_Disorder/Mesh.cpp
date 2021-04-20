@@ -73,7 +73,7 @@ void Mesh::ReleaseUploadBuffers()
 	}
 }
 
-const UINT& Mesh::GetType()
+const UINT Mesh::GetType()
 {
 	return this->m_nType;
 }

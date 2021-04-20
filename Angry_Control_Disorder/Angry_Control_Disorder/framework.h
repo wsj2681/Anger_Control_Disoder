@@ -2,6 +2,7 @@
 
 #include "targetver.h"
 #define WIN32_LEAN_AND_MEAN
+#define _CRT_SECURE_NO_WARNINGS
 
 // Windows 헤더 파일
 #include <windows.h>
@@ -103,8 +104,8 @@ constexpr int FRAME_BUFFER_HEIGHT = 720;
 // Global Functions
 
 extern ID3D12Resource* CreateBufferResource(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, void* pData, UINT nBytes, D3D12_HEAP_TYPE d3dHeapType = D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, ID3D12Resource * *ppd3dUploadBuffer = NULL);
-extern ID3D12Resource* CreateTextureResourceFromDDSFile(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, wchar_t* pszFileName, ID3D12Resource * *ppd3dUploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-extern ID3D12Resource* CreateTextureResourceFromWICFile(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, wchar_t* pszFileName, ID3D12Resource * *ppd3dUploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+extern ID3D12Resource* CreateTextureResourceFromDDSFile(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, const wchar_t* pszFileName, ID3D12Resource * *ppd3dUploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+extern ID3D12Resource* CreateTextureResourceFromWICFile(ID3D12Device * pd3dDevice, ID3D12GraphicsCommandList * pd3dCommandList, const wchar_t* pszFileName, ID3D12Resource * *ppd3dUploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 extern BYTE ReadStringFromFile(FILE * pInFile, char* pstrToken);
 extern int ReadIntegerFromFile(FILE * pInFile);
 extern float ReadFloatFromFile(FILE * pInFile);

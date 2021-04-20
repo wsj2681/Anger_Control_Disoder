@@ -15,14 +15,14 @@ public:
 	~AnimationCallbackHandler() { }
 
 public:
-	virtual void HandleCallback(void* pCallbackData) { }
+	virtual void HandleCallback(void* pCallbackData);
 };
 
-class CSoundCallbackHandler : public AnimationCallbackHandler
+class SoundCallbackHandler : public AnimationCallbackHandler
 {
 public:
-	CSoundCallbackHandler() { }
-	~CSoundCallbackHandler() { }
+	SoundCallbackHandler() { }
+	~SoundCallbackHandler() { }
 
 public:
 	virtual void HandleCallback(void* pCallbackData);

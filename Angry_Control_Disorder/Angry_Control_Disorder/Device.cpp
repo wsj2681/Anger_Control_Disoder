@@ -1,5 +1,6 @@
 #include "framework.h"
 #include "Device.h"
+#include "BoxerPlayer.h"
 
 bool Device::Init(HINSTANCE hInstance, HWND hWnd)
 {
@@ -265,6 +266,11 @@ void Device::BuildObjects()
 	m_pScene = new Scene();
 	if (m_pScene) m_pScene->BuildObjects(device, commandList);
 
+	BoxerPlayer* pPlayer = new BoxerPlayer(device, commandList, m_pScene->GetGraphicsRootSignature());
+
+	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
+	m_pCamera = m_pPlayer->GetCamera();
+
 	commandList->Close();
 	ID3D12CommandList* ppd3dCommandLists[] = { commandList };
 	commandQueue->ExecuteCommandLists(1, ppd3dCommandLists);
@@ -272,7 +278,7 @@ void Device::BuildObjects()
 	WaitForGpuComplete();
 
 	if (m_pScene) m_pScene->ReleaseUploadBuffers();
-	//if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
+	if (m_pPlayer) m_pPlayer->ReleaseUploadBuffers();
 }
 
 void Device::ReleaseObjects()
@@ -311,20 +317,19 @@ bool Device::FrameAdvance()
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = rtvDescHeap->GetCPUDescriptorHandleForHeapStart();
 	d3dRtvCPUDescriptorHandle.ptr += (swapChainBufferIndex * rtvDescIncrementSize);
 
-	float pfClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	commandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, NULL);
+	commandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, Colors::Azure, 0, NULL);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = dsvDescHeap->GetCPUDescriptorHandleForHeapStart();
 	commandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 
 	commandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
-	//if (m_pScene) m_pScene->Render(commandList, m_pCamera);
+	if (m_pScene) m_pScene->Render(commandList, m_pCamera);
 
 #ifdef _WITH_PLAYER_TOP
 	commandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
 #endif
-	//if (m_pPlayer) m_pPlayer->Render(commandList, m_pCamera);
+	if (m_pPlayer) m_pPlayer->Render(commandList, m_pCamera);
 
 	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
 	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_PRESENT;

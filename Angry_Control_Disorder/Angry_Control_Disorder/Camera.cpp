@@ -57,7 +57,7 @@ void Camera::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsComma
 	UINT ncbElementBytes = ((sizeof(VS_CB_CAMERA_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
 	m_pd3dcbCamera = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
 
-	m_pd3dcbCamera->Map(0, nullptr, (void**)&m_pcbMappedCamera);
+	HR(m_pd3dcbCamera->Map(0, nullptr, (void**)&m_pcbMappedCamera));
 }
 
 void Camera::ReleaseShaderVariables()

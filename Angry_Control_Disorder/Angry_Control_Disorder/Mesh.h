@@ -75,6 +75,6 @@ public:
 
 	virtual void ReleaseUploadBuffers();
 
-	const UINT& GetType();
+	const UINT GetType();
 };
 

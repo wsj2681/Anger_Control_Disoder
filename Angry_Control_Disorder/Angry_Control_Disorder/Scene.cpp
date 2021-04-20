@@ -8,6 +8,10 @@
 #include "Material.h"
 #include "CallBack.h"
 #include "AnimationSet.h"
+#include "Player.h"
+#include "BoxerPlayer.h"
+#include "SkyBox.h"
+#include "BoxerObject.h"
 
 
 ID3D12DescriptorHeap* Scene::m_pd3dCbvSrvDescriptorHeap = nullptr;
@@ -32,7 +36,89 @@ Scene::~Scene()
 
 void Scene::BuildDefaultLightsAndMaterials()
 {
+	/*
+	0 ~ 37 = Roof Light
+	38~39 = RedSpotLight
+	40~42 = HallWayLight
+	*/
+	m_nLights = lightsCount;
+	m_nLights += 3;
+	m_pLights = new LIGHT[m_nLights];
+	::ZeroMemory(m_pLights, sizeof(LIGHT) * m_nLights);
 
+	m_xmf4GlobalAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
+
+	for (int i = 0; i < 38; ++i)
+	{
+		if (i % 2)
+		{
+			m_pLights[i].m_bEnable = true;
+		}
+		else
+		{
+			m_pLights[i].m_bEnable = false;
+		}
+		m_pLights[i].m_nType = DIRECTIONAL_LIGHT;
+		m_pLights[i].m_fRange = 120.0f;
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.0f);
+		m_pLights[i].m_xmf3Position = lights.data()[i]->GetPosition();
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, -.5f, 0.0f);
+	}
+
+	for (int i = 38; i < 40; ++i)
+	{
+		m_pLights[i].m_bEnable = true;
+		m_pLights[i].m_nType = SPOT_LIGHT;
+		m_pLights[i].m_fRange = 150.0f;
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.1f, 0.f, 0.f, 1.0f);
+		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.f, 0.f, 1.0f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.3f, 0.f, 0.f, 0.0f);
+		m_pLights[i].m_xmf3Position = lights.data()[i]->GetPosition();
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.f, 60.f, -252.6f);
+		m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+		m_pLights[i].m_fFalloff = 8.0f;
+		m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
+		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+	}
+	m_pLights[40].m_bEnable = false;
+	m_pLights[40].m_nType = SPOT_LIGHT;
+	m_pLights[40].m_fRange = 400.0f;
+	m_pLights[40].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[40].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.f, 1.0f);
+	m_pLights[40].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.f, 0.0f);
+	m_pLights[40].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -750.f);
+	m_pLights[40].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
+	m_pLights[40].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[40].m_fFalloff = 8.0f;
+	m_pLights[40].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
+	m_pLights[40].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+
+	m_pLights[41].m_bEnable = false;
+	m_pLights[41].m_nType = SPOT_LIGHT;
+	m_pLights[41].m_fRange = 400.0f;
+	m_pLights[41].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[41].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.f, 1.0f);
+	m_pLights[41].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.f, 0.0f);
+	m_pLights[41].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -675.f);
+	m_pLights[41].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
+	m_pLights[41].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[41].m_fFalloff = 8.0f;
+	m_pLights[41].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
+	m_pLights[41].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+
+	m_pLights[42].m_bEnable = false;
+	m_pLights[42].m_nType = SPOT_LIGHT;
+	m_pLights[42].m_fRange = 400.0f;
+	m_pLights[42].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[42].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[42].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.f, 0.0f);
+	m_pLights[42].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -550.f);
+	m_pLights[42].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
+	m_pLights[42].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[42].m_fFalloff = 8.0f;
+	m_pLights[42].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
 }
 
 void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
@@ -43,10 +129,36 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 0, 76); //SuperCobra(17), Gunship(2), Player:Mi24(1), Angrybot()
 
 	Material::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	/* Build Object */
+	m_pSkyBox = new SkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena_FBX.bin", NULL);
+	Object* Map = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
+	Map->SetPosition(0.0f, 0.f, 0.0f);
+	hierarchicalGameObjects.push_back(Map);
+	delete MapModel;
+
+	lightsCount = 38;
+
+	char name[30];
+	lights.push_back(Map->FindFrame("light"));
+	for (int i = 1; i < lightsCount; ++i)
+	{
+		sprintf(name, "light%d", i);
+		lights.push_back(Map->FindFrame(name));
+	}
+	lightsCount += 2;
+	lights.push_back(Map->FindFrame("spot_light"));
+	lights.push_back(Map->FindFrame("spot_light_1"));
+
+	BuildDefaultLightsAndMaterials();
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
 }
 
 void Scene::ReleaseObjects()
 {
+	RELEASE(m_pd3dGraphicsRootSignature);
+	RELEASE(m_pd3dCbvSrvDescriptorHeap);
 }
 
 ID3D12RootSignature* Scene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevice)
@@ -243,8 +355,8 @@ ID3D12RootSignature* Scene::CreateGraphicsRootSignature(ID3D12Device* pd3dDevice
 
 	ID3DBlob* pd3dSignatureBlob = NULL;
 	ID3DBlob* pd3dErrorBlob = NULL;
-	D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
-	pd3dDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(), pd3dSignatureBlob->GetBufferSize(), __uuidof(ID3D12RootSignature), (void**)&pd3dGraphicsRootSignature);
+	HR(D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob));
+	HR(pd3dDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(), pd3dSignatureBlob->GetBufferSize(), __uuidof(ID3D12RootSignature), (void**)&pd3dGraphicsRootSignature));
 	if (pd3dSignatureBlob) pd3dSignatureBlob->Release();
 	if (pd3dErrorBlob) pd3dErrorBlob->Release();
 
@@ -258,6 +370,7 @@ bool Scene::ProcessInput(UCHAR* pKeysBuffer)
 
 void Scene::AnimateObjects(float fTimeElapsed)
 {
+	m_fElapsedTime = fTimeElapsed;
 }
 
 void Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera)
@@ -269,24 +382,54 @@ void Scene::Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera)
 	pCamera->UpdateShaderVariables(pd3dCommandList);
 
 	UpdateShaderVariables(pd3dCommandList);
+
+	//D3D12_GPU_VIRTUAL_ADDRESS d3dcbLightsGpuVirtualAddress = m_pd3dcbLights->GetGPUVirtualAddress();
+	//pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
+
+	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
+
+	if (!hierarchicalGameObjects.empty())
+	{
+		for (auto& object : hierarchicalGameObjects)
+		{
+			object->Animate(m_fElapsedTime);
+			if (object->m_pSkinnedAnimationController)
+			{
+				object->UpdateTransform(nullptr);
+			}
+
+			object->Render(pd3dCommandList, pCamera);
+		}
+	}
 }
 
 void Scene::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
+	UINT ncbElementBytes = ((sizeof(LIGHTS) + 255) & ~255); //256ÀÇ ¹è¼ö
+	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbLights->Map(0, NULL, (void**)&m_pcbMappedLights);
 }
 
 void Scene::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 {
+	::memcpy(m_pcbMappedLights->m_pLights, m_pLights, sizeof(LIGHT) * m_nLights);
+	::memcpy(&m_pcbMappedLights->m_xmf4GlobalAmbient, &m_xmf4GlobalAmbient, sizeof(XMFLOAT4));
+	::memcpy(&m_pcbMappedLights->m_nLights, &m_nLights, sizeof(int));
 }
 
 void Scene::ReleaseShaderVariables()
 {
+	if (m_pd3dcbLights)
+	{
+		m_pd3dcbLights->Unmap(0, NULL);
+		m_pd3dcbLights->Release();
+	}
 }
 
 void Scene::ReleaseUploadBuffers()
 {
-	RELEASE(m_pd3dGraphicsRootSignature);
-	RELEASE(m_pd3dCbvSrvDescriptorHeap);
+
 
 	ReleaseShaderVariables();
 }
@@ -308,7 +451,7 @@ void Scene::CreateCbvSrvDescriptorHeaps(ID3D12Device* pd3dDevice, ID3D12Graphics
 	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	d3dDescriptorHeapDesc.NodeMask = 0;
-	pd3dDevice->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)&m_pd3dCbvSrvDescriptorHeap);
+	HR(pd3dDevice->CreateDescriptorHeap(&d3dDescriptorHeapDesc, __uuidof(ID3D12DescriptorHeap), (void**)&m_pd3dCbvSrvDescriptorHeap));
 
 	m_d3dCbvCPUDescriptorNextHandle = m_d3dCbvCPUDescriptorStartHandle = m_pd3dCbvSrvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	m_d3dCbvGPUDescriptorNextHandle = m_d3dCbvGPUDescriptorStartHandle = m_pd3dCbvSrvDescriptorHeap->GetGPUDescriptorHandleForHeapStart();

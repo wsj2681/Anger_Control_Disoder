@@ -3,6 +3,10 @@
 #include "Texture.h"
 #include "Camera.h"
 
+class Player;
+class SkyBox;
+class Object;
+
 class Scene
 {
 public:
@@ -26,6 +30,23 @@ protected:
 	static D3D12_GPU_DESCRIPTOR_HANDLE	m_d3dCbvGPUDescriptorNextHandle;
 	static D3D12_CPU_DESCRIPTOR_HANDLE	m_d3dSrvCPUDescriptorNextHandle;
 	static D3D12_GPU_DESCRIPTOR_HANDLE	m_d3dSrvGPUDescriptorNextHandle;
+
+public:
+	float m_fElapsedTime = 0.0f;
+
+	Player* m_pPlayer = nullptr;
+
+	vector<Object*> hierarchicalGameObjects;
+
+	LIGHT* m_pLights = nullptr;
+	int	m_nLights = 0;
+	XMFLOAT4 m_xmf4GlobalAmbient;
+	ID3D12Resource* m_pd3dcbLights = nullptr;
+	LIGHTS* m_pcbMappedLights = nullptr;
+	int lightsCount = 0;
+	vector<Object*> lights;
+
+	SkyBox* m_pSkyBox = nullptr;
 
 public:
 

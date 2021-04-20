@@ -37,11 +37,6 @@ void Engine::Run()
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-
-		if (msg.message == WM_QUIT)
-		{
-			done = true;
-		}
 		else
 		{
 			if (!FrameAdvance())
@@ -49,6 +44,12 @@ void Engine::Run()
 				done = true;
 			}
 		}
+
+		if (msg.message == WM_QUIT)
+		{
+			done = true;
+		}
+		
 	}
 }
 
@@ -157,8 +158,8 @@ bool Engine::InitWindow(int& windowWidth, int& windowHeight)
 	}
 	else
 	{
-		windowWidth = 800;
-		windowHeight = 600;
+		windowWidth = 1280;
+		windowHeight = 720;
 
 		posX = (GetSystemMetrics(SM_CXSCREEN) - windowWidth) / 2;
 		posY = (GetSystemMetrics(SM_CYSCREEN) - windowHeight) / 2;
