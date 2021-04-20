@@ -10,6 +10,12 @@
 ////SEVER////
 #include "Server.h"
 
+struct CB_ENGINE_INFO
+{
+	float m_fCurrentTime = 0.f;
+	float m_fElapsedTime = 0.f;
+};
+
 class Engine
 {
 public:
@@ -65,6 +71,10 @@ private:
 	POINT m_ptOldCursorPos;
 
 	_TCHAR						frameRate[70];
+
+	ID3D12Resource* m_pd3dcbFrameworkInfo = nullptr;
+	CB_ENGINE_INFO* m_pcbMappedFrameworkInfo = nullptr;
+
 public:
 
 	bool OnCreate(HINSTANCE hInstance, HWND hMainWnd);
@@ -80,6 +90,10 @@ public:
 	void CreateDepthStencilView();
 
 	void ChangeSwapChainState();
+
+	void CreateShaderVariables();
+	void UpdateShaderVariables();
+	void ReleaseShaderVariables();
 
 	void BuildObjects();
 	void ReleaseObjects();

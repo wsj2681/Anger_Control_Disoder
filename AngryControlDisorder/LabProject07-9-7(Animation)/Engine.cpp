@@ -232,6 +232,32 @@ void Engine::ChangeSwapChainState()
 	CreateRenderTargetViews();
 }
 
+void Engine::CreateShaderVariables()
+{
+	UINT ncbElementBytes = ((sizeof(CB_ENGINE_INFO) + 255) & ~255); //256ÀÇ ¹è¼ö
+	m_pd3dcbFrameworkInfo = ::CreateBufferResource(device, commandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbFrameworkInfo->Map(0, NULL, (void**)&m_pcbMappedFrameworkInfo);
+}
+
+void Engine::UpdateShaderVariables()
+{
+	m_pcbMappedFrameworkInfo->m_fCurrentTime = m_GameTimer.GetTotalTime();
+	m_pcbMappedFrameworkInfo->m_fElapsedTime = m_GameTimer.GetTimeElapsed();
+
+	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbFrameworkInfo->GetGPUVirtualAddress();
+	commandList->SetGraphicsRootConstantBufferView(16, d3dGpuVirtualAddress);
+}
+
+void Engine::ReleaseShaderVariables()
+{
+	if (m_pd3dcbFrameworkInfo)
+	{
+		m_pd3dcbFrameworkInfo->Unmap(0, NULL);
+		m_pd3dcbFrameworkInfo->Release();
+	}
+}
+
 void Engine::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	if (m_pScene) m_pScene->OnProcessingMouseMessage(hWnd, nMessageID, wParam, lParam);

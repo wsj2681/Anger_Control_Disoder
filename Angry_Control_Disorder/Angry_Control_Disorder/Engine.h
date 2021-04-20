@@ -2,6 +2,12 @@
 #include "Input.h"
 #include "Device.h"
 
+struct CB_ENGINE_INFO
+{
+	float totalTime = 0.f;
+	float elapsedTime = 0.f;
+};
+
 class Engine final
 {
 public:

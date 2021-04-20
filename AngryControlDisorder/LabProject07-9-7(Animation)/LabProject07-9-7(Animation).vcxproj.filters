@@ -280,9 +280,6 @@
     <ClCompile Include="BoxerObject.cpp">
       <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClCompile>
-    <ClCompile Include="StandardShader.cpp">
-      <Filter>소스 파일\03 Model\Shader\StandardShader</Filter>
-    </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>소스 파일\03 Model\Shader</Filter>
     </ClCompile>
@@ -315,6 +312,9 @@
     </ClCompile>
     <ClCompile Include="CrowdObject.cpp">
       <Filter>소스 파일\03 Model\GameObject\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardShader.cpp">
+      <Filter>소스 파일\03 Model\Shader\StandardShader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
