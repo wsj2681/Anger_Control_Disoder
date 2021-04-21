@@ -28,6 +28,9 @@ D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dCbvGPUDescriptorNextHandle;
 D3D12_CPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvCPUDescriptorNextHandle;
 D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvGPUDescriptorNextHandle;
 
+#define OTHERPLAYER 1
+#define CUBEOBJECT 2
+
 Scene::Scene()
 {
 	SoundManager::Init();
@@ -198,6 +201,15 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	hierarchicalGameObjects.push_back(boxer);
 	if (BoxerModel) delete BoxerModel;
 
+	ModelInfo* cubeModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", nullptr);
+	Object* cube = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, cubeModel, 1);
+	cube->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	cube->isActive = false;
+	cube->SetScale(1.5f, 1.5f, 1.5f);
+	hierarchicalGameObjects.push_back(cube);
+
+	if (cubeModel) delete cubeModel;
+
 	ModelInfo* crowdModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Crowd.bin", NULL);
 
 	int nFloors = 4;
@@ -226,6 +238,8 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	}
 	
 	if (crowdModel) delete crowdModel;
+
+
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -623,15 +637,17 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case VK_RETURN:
 			break;
 		case VK_F4:
-			hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
+			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
 			break;
 		case VK_F5:
-			hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 			break;
 		case VK_F6:
-			hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 6);
+			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 6);
 			break;
-		case VK_F9:
+		case VK_INSERT:
+			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->rHand->GetPosition());
+			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
 			break;
 		default:
 			break;
