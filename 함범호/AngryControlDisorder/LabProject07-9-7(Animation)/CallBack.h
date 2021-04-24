@@ -5,20 +5,20 @@
 struct CALLBACKKEY
 {
 	float  							m_fTime = 0.0f;
-	void* m_pCallbackData = NULL;
+	void* m_pCallbackData = nullptr;
 };
 
-class CAnimationCallbackHandler
+class AnimationCallbackHandler
 {
 public:
-	CAnimationCallbackHandler() { }
-	~CAnimationCallbackHandler() { }
+	AnimationCallbackHandler() { }
+	~AnimationCallbackHandler() { }
 
 public:
 	virtual void HandleCallback(void* pCallbackData) { }
 };
 
-class CSoundCallbackHandler : public CAnimationCallbackHandler
+class CSoundCallbackHandler : public AnimationCallbackHandler
 {
 public:
 	CSoundCallbackHandler() { }

@@ -6,11 +6,11 @@
 #include "ModelInfo.h"
 #include "Camera.h"
 
-class CShader
+class Shader
 {
 public:
-	CShader();
-	virtual ~CShader();
+	Shader();
+	virtual ~Shader();
 
 private:
 	int nReferences{ 0 };
@@ -49,11 +49,11 @@ public:
 	virtual void UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, XMFLOAT4X4 *pxmf4x4World) { }
 
 	virtual void OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList, int nPipelineState=0);
-	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera);
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera);
 
 	virtual void ReleaseUploadBuffers() { }
 
-	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, CLoadedModelInfo *pModel, void *pContext = NULL) { }
+	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, ModelInfo *pModel, void *pContext = NULL) { }
 	virtual void AnimateObjects(float fTimeElapsed) { }
 	virtual void ReleaseObjects() { }
 };

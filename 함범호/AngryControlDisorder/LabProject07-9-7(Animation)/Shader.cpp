@@ -5,29 +5,29 @@
 #include "stdafx.h"
 #include "Shader.h"
 
-CShader::CShader()
+Shader::Shader()
 {
 }
 
-CShader::~CShader()
+Shader::~Shader()
 {
 	ReleaseShaderVariables();
 
 	if (m_pd3dPipelineState) m_pd3dPipelineState->Release();
 }
 
-void CShader::AddRef()
+void Shader::AddRef()
 {
 	nReferences++;
 }
 
-void CShader::Release()
+void Shader::Release()
 {
 	if (--nReferences <= 0)
 		delete this;
 }
 
-D3D12_SHADER_BYTECODE CShader::CreateVertexShader()
+D3D12_SHADER_BYTECODE Shader::CreateVertexShader()
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	d3dShaderByteCode.BytecodeLength = 0;
@@ -36,7 +36,7 @@ D3D12_SHADER_BYTECODE CShader::CreateVertexShader()
 	return(d3dShaderByteCode);
 }
 
-D3D12_SHADER_BYTECODE CShader::CreatePixelShader()
+D3D12_SHADER_BYTECODE Shader::CreatePixelShader()
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	d3dShaderByteCode.BytecodeLength = 0;
@@ -45,7 +45,7 @@ D3D12_SHADER_BYTECODE CShader::CreatePixelShader()
 	return(d3dShaderByteCode);
 }
 
-D3D12_SHADER_BYTECODE CShader::CompileShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile, ID3DBlob **ppd3dShaderBlob)
+D3D12_SHADER_BYTECODE Shader::CompileShaderFromFile(WCHAR *pszFileName, LPCSTR pszShaderName, LPCSTR pszShaderProfile, ID3DBlob **ppd3dShaderBlob)
 {
 	UINT nCompileFlags = 0;
 #if defined(_DEBUG)
@@ -74,7 +74,7 @@ D3D12_SHADER_BYTECODE CShader::CompileShaderFromFile(WCHAR *pszFileName, LPCSTR 
 #include <sstream>
 #endif
 
-D3D12_SHADER_BYTECODE CShader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID3DBlob **ppd3dShaderBlob)
+D3D12_SHADER_BYTECODE Shader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID3DBlob **ppd3dShaderBlob)
 {
 	UINT nReadBytes = 0;
 #ifdef _WITH_WFOPEN
@@ -115,7 +115,7 @@ D3D12_SHADER_BYTECODE CShader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID
 	return(d3dShaderByteCode);
 }
 
-D3D12_INPUT_LAYOUT_DESC CShader::CreateInputLayout()
+D3D12_INPUT_LAYOUT_DESC Shader::CreateInputLayout()
 {
 	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
 	d3dInputLayoutDesc.pInputElementDescs = NULL;
@@ -124,7 +124,7 @@ D3D12_INPUT_LAYOUT_DESC CShader::CreateInputLayout()
 	return(d3dInputLayoutDesc);
 }
 
-D3D12_RASTERIZER_DESC CShader::CreateRasterizerState()
+D3D12_RASTERIZER_DESC Shader::CreateRasterizerState()
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
 	::ZeroMemory(&d3dRasterizerDesc, sizeof(D3D12_RASTERIZER_DESC));
@@ -144,7 +144,7 @@ D3D12_RASTERIZER_DESC CShader::CreateRasterizerState()
 	return(d3dRasterizerDesc);
 }
 
-D3D12_DEPTH_STENCIL_DESC CShader::CreateDepthStencilState()
+D3D12_DEPTH_STENCIL_DESC Shader::CreateDepthStencilState()
 {
 	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
 	::ZeroMemory(&d3dDepthStencilDesc, sizeof(D3D12_DEPTH_STENCIL_DESC));
@@ -166,7 +166,7 @@ D3D12_DEPTH_STENCIL_DESC CShader::CreateDepthStencilState()
 	return(d3dDepthStencilDesc);
 }
 
-D3D12_BLEND_DESC CShader::CreateBlendState()
+D3D12_BLEND_DESC Shader::CreateBlendState()
 {
 	D3D12_BLEND_DESC d3dBlendDesc;
 	::ZeroMemory(&d3dBlendDesc, sizeof(D3D12_BLEND_DESC));
@@ -186,7 +186,7 @@ D3D12_BLEND_DESC CShader::CreateBlendState()
 	return(d3dBlendDesc);
 }
 
-void CShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature)
+void Shader::CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature)
 {
 	::ZeroMemory(&m_d3dPipelineStateDesc, sizeof(D3D12_GRAPHICS_PIPELINE_STATE_DESC));
 	m_d3dPipelineStateDesc.pRootSignature = pd3dGraphicsRootSignature;
@@ -212,12 +212,12 @@ void CShader::CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	if (m_d3dPipelineStateDesc.InputLayout.pInputElementDescs) delete[] m_d3dPipelineStateDesc.InputLayout.pInputElementDescs;
 }
 
-void CShader::OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList, int nPipelineState)
+void Shader::OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList, int nPipelineState)
 {
 	if (m_pd3dPipelineState) pd3dCommandList->SetPipelineState(m_pd3dPipelineState);
 }
 
-void CShader::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+void Shader::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 {
 	OnPrepareRender(pd3dCommandList);
 }

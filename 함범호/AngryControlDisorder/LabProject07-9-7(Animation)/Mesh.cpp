@@ -6,11 +6,11 @@
 #include "Mesh.h"
 #include "Object.h"
 
-CMesh::CMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+Mesh::Mesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
 }
 
-CMesh::~CMesh()
+Mesh::~Mesh()
 {
 	if (m_pd3dPositionBuffer) m_pd3dPositionBuffer->Release();
 
@@ -31,7 +31,7 @@ CMesh::~CMesh()
 	if (m_pxmf3Positions) delete[] m_pxmf3Positions;
 }
 
-void CMesh::ReleaseUploadBuffers()
+void Mesh::ReleaseUploadBuffers()
 {
 	if (m_pd3dPositionUploadBuffer) m_pd3dPositionUploadBuffer->Release();
 	m_pd3dPositionUploadBuffer = NULL;
@@ -47,12 +47,12 @@ void CMesh::ReleaseUploadBuffers()
 	}
 }
 
-void CMesh::OnPreRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+void Mesh::OnPreRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
 	pd3dCommandList->IASetVertexBuffers(m_nSlot, 1, &m_d3dPositionBufferView);
 }
 
-void CMesh::Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet)
+void Mesh::Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet)
 {
 	UpdateShaderVariables(pd3dCommandList);
 
@@ -71,6 +71,6 @@ void CMesh::Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet)
 	}
 }
 
-void CMesh::OnPostRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
+void Mesh::OnPostRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
 }

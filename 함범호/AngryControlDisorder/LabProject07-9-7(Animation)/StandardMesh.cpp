@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "StandardMesh.h"
 
-CStandardMesh::CStandardMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) : CMesh(pd3dDevice, pd3dCommandList)
+CStandardMesh::CStandardMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList) : Mesh(pd3dDevice, pd3dCommandList)
 {
 }
 
@@ -22,7 +22,7 @@ CStandardMesh::~CStandardMesh()
 
 void CStandardMesh::ReleaseUploadBuffers()
 {
-	CMesh::ReleaseUploadBuffers();
+	Mesh::ReleaseUploadBuffers();
 
 	if (m_pd3dTextureCoord0UploadBuffer) m_pd3dTextureCoord0UploadBuffer->Release();
 	m_pd3dTextureCoord0UploadBuffer = NULL;

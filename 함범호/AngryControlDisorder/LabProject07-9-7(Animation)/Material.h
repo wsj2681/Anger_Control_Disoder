@@ -8,15 +8,15 @@
 #define MATERIAL_DETAIL_ALBEDO_MAP	0x20
 #define MATERIAL_DETAIL_NORMAL_MAP	0x40
 
-class CShader;
-class CTexture;
-class CGameObject;
+class Shader;
+class Texture;
+class Object;
 
-class CMaterial final
+class Material final
 {
 public:
-	CMaterial(int nTextures);
-	virtual ~CMaterial();
+	Material(int nTextures);
+	virtual ~Material();
 
 private:
 	int								m_nReferences = 0;
@@ -26,16 +26,16 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 public:
-	CShader* m_pShader = NULL;
+	Shader* m_pShader = NULL;
 
 	XMFLOAT4						m_xmf4AlbedoColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	XMFLOAT4						m_xmf4EmissiveColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	XMFLOAT4						m_xmf4SpecularColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 	XMFLOAT4						m_xmf4AmbientColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
 
-	void SetShader(CShader* pShader);
+	void SetShader(Shader* pShader);
 	void SetMaterialType(UINT nType) { m_nType |= nType; }
-	void SetTexture(CTexture* pTexture, UINT nTexture = 0);
+	void SetTexture(Texture* pTexture, UINT nTexture = 0);
 
 	virtual void UpdateShaderVariable(ID3D12GraphicsCommandList* pd3dCommandList);
 
@@ -53,16 +53,16 @@ public:
 public:
 	int 							m_nTextures = 0;
 	_TCHAR(*m_ppstrTextureNames)[64] = NULL;
-	CTexture** m_ppTextures = NULL; //0:Albedo, 1:Specular, 2:Metallic, 3:Normal, 4:Emission, 5:DetailAlbedo, 6:DetailNormal
+	Texture** m_ppTextures = NULL; //0:Albedo, 1:Specular, 2:Metallic, 3:Normal, 4:Emission, 5:DetailAlbedo, 6:DetailNormal
 
-	void LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nType, UINT nRootParameter, _TCHAR* pwstrTextureName, CTexture** ppTexture, CGameObject* pParent, FILE* pInFile, CShader* pShader);
+	void LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nType, UINT nRootParameter, _TCHAR* pwstrTextureName, Texture** ppTexture, Object* pParent, FILE* pInFile, Shader* pShader);
 
 public:
-	static CShader* m_pStandardShader;
-	static CShader* m_pSkinnedAnimationShader;
+	static Shader* m_pStandardShader;
+	static Shader* m_pSkinnedAnimationShader;
 
-	static void CMaterial::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
+	static void Material::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
 
-	void SetStandardShader() { CMaterial::SetShader(m_pStandardShader); }
-	void SetSkinnedAnimationShader() { CMaterial::SetShader(m_pSkinnedAnimationShader); }
+	void SetStandardShader() { Material::SetShader(m_pStandardShader); }
+	void SetSkinnedAnimationShader() { Material::SetShader(m_pSkinnedAnimationShader); }
 };

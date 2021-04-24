@@ -39,20 +39,43 @@ struct collide {
 };
 #pragma pack(pop)
 
-class CPlayer;
+#pragma pack(push,1)
+struct AttackAndDefend {
 
-class CScene;
+	bool leftHand = false;
+	bool rightHand = false;
+	bool foot = false;
 
-class CGameObject;
+	bool leftGuard = false;
+	bool rightGuard = false;
+	bool middleGuard = false;
 
+};
+#pragma pack(pop)
+
+class Player;
+
+class Scene;
+
+class Object;
+
+
+// hierarchicalGameObjects.data()[1].head->GetPosition();
+// hierarchicalGameObjects.data()[1].head->SetPosition(XMFLOAT3());
+//Object* head	// ¸Ó¸®
+//Object* rHand	// ¿À¸¥¼Õ
+//Object* lHand	// ¿Þ¼Õ
+//Object* lFoot	// ¿Þ¹ß
+//Object* rFoot	// ¿À¸¥¹ß
+//Object* spine	// Ã´Ãß Áß½É
 
 class Server
 {
 
 public:
-	CPlayer* cplayer;
-	CScene* cscene;
-	CGameObject* other_object;
+	Player* cplayer;
+	Scene* cscene;
+	Object* other_object;
 
 	SOCKET sock;
 	int retval = 0;
@@ -70,6 +93,11 @@ public:
 	Thread_id thread_id;
 	collide col;
 
+	AttackAndDefend send_attackAnddefend;
+	AttackAndDefend recv_attackAnddefend;
+
+	bool bScenario{ false };
+
 	int send_count = 0;
 	int recv_count = 0;
 
@@ -79,6 +107,10 @@ public:
 	void Server_send();
 
 	void Server_recv();
+
+	void attackAndGuard_idle();
+
+	void otherPlayerPositionSet();
 
 
 

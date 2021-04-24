@@ -10,7 +10,7 @@ CSkinnedAnimationObjectsShader::~CSkinnedAnimationObjectsShader()
 {
 }
 
-void CSkinnedAnimationObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pModel, void* pContext)
+void CSkinnedAnimationObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, ModelInfo* pModel, void* pContext)
 {
 }
 
@@ -33,7 +33,7 @@ void CSkinnedAnimationObjectsShader::ReleaseUploadBuffers()
 	for (int j = 0; j < m_nObjects; j++) if (m_ppObjects[j]) m_ppObjects[j]->ReleaseUploadBuffers();
 }
 
-void CSkinnedAnimationObjectsShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+void CSkinnedAnimationObjectsShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera)
 {
 	CSkinnedAnimationStandardShader::Render(pd3dCommandList, pCamera);
 

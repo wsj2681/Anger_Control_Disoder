@@ -2,13 +2,13 @@
 #include "StandardMesh.h"
 #define SKINNED_ANIMATION_BONES		128
 
-class CGameObject;
+class Object;
 
-class CSkinnedMesh : public CStandardMesh
+class SkinnedMesh : public CStandardMesh
 {
 public:
-	CSkinnedMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
-	virtual ~CSkinnedMesh();
+	SkinnedMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual ~SkinnedMesh();
 
 protected:
 	int								m_nBonesPerVertex = 4;
@@ -28,7 +28,7 @@ public:
 	int								m_nSkinningBones = 0;
 
 	char(*m_ppstrSkinningBoneNames)[64];
-	CGameObject** m_ppSkinningBoneFrameCaches = NULL; //[m_nSkinningBones]
+	Object** m_ppSkinningBoneFrameCaches = NULL; //[m_nSkinningBones]
 
 	XMFLOAT4X4* m_pxmf4x4BindPoseBoneOffsets = NULL; //Transposed
 
@@ -39,7 +39,7 @@ public:
 	XMFLOAT4X4* m_pcbxmf4x4MappedSkinningBoneTransforms = NULL;
 
 public:
-	void PrepareSkinning(CGameObject* pModelRootObject);
+	void PrepareSkinning(Object* pModelRootObject);
 	void LoadSkinInfoFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, FILE* pInFile);
 
 	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);

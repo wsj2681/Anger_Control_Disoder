@@ -1,21 +1,21 @@
 #pragma once
 
-class CGameObject;
-class CSkinnedMesh;
-class CAnimationSets;
+class Object;
+class SkinnedMesh;
+class AnimationSets;
 
-class CLoadedModelInfo
+class ModelInfo
 {
 public:
-	CLoadedModelInfo() { }
-	~CLoadedModelInfo();
+	ModelInfo() { }
+	~ModelInfo();
 
-	CGameObject* m_pModelRootObject = NULL;
+	Object* m_pModelRootObject = NULL;
 
 	int 							m_nSkinnedMeshes = 0;
-	CSkinnedMesh** m_ppSkinnedMeshes = NULL; //[SkinnedMeshes], Skinned Mesh Cache
+	SkinnedMesh** m_ppSkinnedMeshes = NULL; //[SkinnedMeshes], Skinned Mesh Cache
 
-	CAnimationSets* m_pAnimationSets = NULL;
+	AnimationSets* m_pAnimationSets = NULL;
 
 public:
 	void PrepareSkinning();

@@ -72,6 +72,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(SolutionDir)/FMOD/inc;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)/FMOD/Fx64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -94,7 +96,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);Winmm.lib</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;Winmm.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -149,21 +151,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AngrybotObject.h" />
-    <ClInclude Include="AngrybotObjectsShader.h" />
+    <ClInclude Include="BoxerObject.h" />
+    <ClInclude Include="BoxerObjectsShader.h" />
     <ClInclude Include="AnimationController.h" />
     <ClInclude Include="AnimationSet.h" />
     <ClInclude Include="AnimationTrack.h" />
     <ClInclude Include="CallBack.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CrowdObject.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="EthanObjectsShader.h" />
-    <ClInclude Include="GameFramework.h" />
-    <ClInclude Include="HeightMapGridMesh.h" />
-    <ClInclude Include="HeightMapImage.h" />
-    <ClInclude Include="HeightMapTerrain.h" />
+    <ClInclude Include="Engine.h" />
     <ClInclude Include="LabProject07-9-7(Animation).h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="ModelInfo.h" />
     <ClInclude Include="Object.h" />
@@ -178,30 +179,29 @@
     <ClInclude Include="SkyBox.h" />
     <ClInclude Include="SkyBoxMesh.h" />
     <ClInclude Include="SkyBoxShader.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="StandardMesh.h" />
     <ClInclude Include="StandardObjectsShader.h" />
     <ClInclude Include="StandardShader.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="TerrainShader.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="WayPoint.h" />
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AngrybotObject.cpp" />
-    <ClCompile Include="AngrybotObjectsShader.cpp" />
+    <ClCompile Include="BoxerObject.cpp" />
+    <ClCompile Include="BoxerObjectsShader.cpp" />
     <ClCompile Include="AnimationController.cpp" />
     <ClCompile Include="AnimationSet.cpp" />
     <ClCompile Include="AnimationTrack.cpp" />
     <ClCompile Include="CallBack.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CrowdObject.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="EthanObjectsShader.cpp" />
-    <ClCompile Include="GameFramework.cpp" />
-    <ClCompile Include="HeightMapGridMesh.cpp" />
-    <ClCompile Include="HeightMapImage.cpp" />
-    <ClCompile Include="HeightMapTerrain.cpp" />
+    <ClCompile Include="Engine.cpp" />
     <ClCompile Include="LabProject07-9-7(Animation).cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
@@ -217,6 +217,7 @@
     <ClCompile Include="SkyBox.cpp" />
     <ClCompile Include="SkyBoxMesh.cpp" />
     <ClCompile Include="SkyBoxShader.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="StandardMesh.cpp" />
     <ClCompile Include="StandardObjectsShader.cpp" />
     <ClCompile Include="StandardShader.cpp" />
@@ -226,9 +227,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="WayPoint.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -5,7 +5,7 @@
 
 #include "stdafx.h"
 #include "LabProject07-9-7(Animation).h"
-#include "GameFramework.h"
+#include "Engine.h"
 
 #if defined(DEBUG) | defined(_DEBUG)
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
@@ -17,7 +17,7 @@ HINSTANCE						ghAppInstance;
 TCHAR							szTitle[MAX_LOADSTRING];
 TCHAR							szWindowClass[MAX_LOADSTRING];
 
-CGameFramework					gGameFramework;
+Engine					gEngine;
 
 ATOM MyRegisterClass(HINSTANCE hInstance);
 BOOL InitInstance(HINSTANCE, int);
@@ -53,10 +53,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 		}
 		else
 		{
-			gGameFramework.FrameAdvance();
+			gEngine.FrameAdvance();
 		}
 	}
-	gGameFramework.OnDestroy();
+	gEngine.OnDestroy();
 
 	return((int)msg.wParam);
 }
@@ -93,7 +93,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	if (!hMainWnd) return(FALSE);
 
-	gGameFramework.OnCreate(hInstance, hMainWnd);
+	gEngine.OnCreate(hInstance, hMainWnd);
 
 	::ShowWindow(hMainWnd, nCmdShow);
 	::UpdateWindow(hMainWnd);
@@ -117,7 +117,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_MOUSEMOVE:
 	case WM_KEYDOWN:
 	case WM_KEYUP:
-		gGameFramework.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
+		gEngine.OnProcessingWindowMessage(hWnd, message, wParam, lParam);
 		break;
 	case WM_COMMAND:
 		wmId = LOWORD(wParam);

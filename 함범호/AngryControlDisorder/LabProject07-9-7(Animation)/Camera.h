@@ -13,9 +13,9 @@ struct VS_CB_CAMERA_INFO
 	XMFLOAT3						m_xmf3Position;
 };
 
-class CPlayer;
+class Player;
 
-class CCamera
+class Camera
 {
 protected:
 	XMFLOAT3						m_xmf3Position;
@@ -39,7 +39,7 @@ protected:
 	D3D12_VIEWPORT					m_d3dViewport;
 	D3D12_RECT						m_d3dScissorRect;
 
-	CPlayer							*m_pPlayer = NULL;
+	Player							*m_pPlayer = NULL;
 
 	ID3D12Resource					*m_pd3dcbCamera = NULL;
 	VS_CB_CAMERA_INFO				*m_pcbMappedCamera = NULL;
@@ -47,9 +47,9 @@ protected:
 	
 
 public:
-	CCamera();
-	CCamera(CCamera *pCamera);
-	virtual ~CCamera();
+	Camera();
+	Camera(Camera *pCamera);
+	virtual ~Camera();
 
 	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
 	virtual void ReleaseShaderVariables();
@@ -66,8 +66,8 @@ public:
 
 	virtual void SetViewportsAndScissorRects(ID3D12GraphicsCommandList *pd3dCommandList);
 
-	void SetPlayer(CPlayer *pPlayer) { m_pPlayer = pPlayer; }
-	CPlayer *GetPlayer() { return(m_pPlayer); }
+	void SetPlayer(Player *pPlayer) { m_pPlayer = pPlayer; }
+	Player *GetPlayer() { return(m_pPlayer); }
 
 	void SetMode(DWORD nMode) { m_nMode = nMode; }
 	DWORD GetMode() { return(m_nMode); }
@@ -109,28 +109,28 @@ public:
 	XMFLOAT3 headLook;
 };
 
-class CSpaceShipCamera : public CCamera
+class CSpaceShipCamera : public Camera
 {
 public:
-	CSpaceShipCamera(CCamera *pCamera);
+	CSpaceShipCamera(Camera *pCamera);
 	virtual ~CSpaceShipCamera() { }
 
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f);
 };
 
-class CFirstPersonCamera : public CCamera
+class CFirstPersonCamera : public Camera
 {
 public:
-	CFirstPersonCamera(CCamera *pCamera);
+	CFirstPersonCamera(Camera *pCamera);
 	virtual ~CFirstPersonCamera() { }
 
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f);
 };
 
-class CThirdPersonCamera : public CCamera
+class CThirdPersonCamera : public Camera
 {
 public:
-	CThirdPersonCamera(CCamera *pCamera);
+	CThirdPersonCamera(Camera *pCamera);
 	virtual ~CThirdPersonCamera() { }
 
 	virtual void Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed);

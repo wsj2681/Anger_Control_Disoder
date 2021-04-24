@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "SkyBoxShader.h"
 
-CSkyBoxShader::CSkyBoxShader()
+SkyBoxShader::SkyBoxShader()
 {
 }
 
-CSkyBoxShader::~CSkyBoxShader()
+SkyBoxShader::~SkyBoxShader()
 {
 }
 
-D3D12_INPUT_LAYOUT_DESC CSkyBoxShader::CreateInputLayout()
+D3D12_INPUT_LAYOUT_DESC SkyBoxShader::CreateInputLayout()
 {
 	UINT nInputElementDescs = 1;
 	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
@@ -23,7 +23,7 @@ D3D12_INPUT_LAYOUT_DESC CSkyBoxShader::CreateInputLayout()
 	return(d3dInputLayoutDesc);
 }
 
-D3D12_DEPTH_STENCIL_DESC CSkyBoxShader::CreateDepthStencilState()
+D3D12_DEPTH_STENCIL_DESC SkyBoxShader::CreateDepthStencilState()
 {
 	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
 	d3dDepthStencilDesc.DepthEnable = FALSE;
@@ -44,12 +44,12 @@ D3D12_DEPTH_STENCIL_DESC CSkyBoxShader::CreateDepthStencilState()
 	return(d3dDepthStencilDesc);
 }
 
-D3D12_SHADER_BYTECODE CSkyBoxShader::CreateVertexShader()
+D3D12_SHADER_BYTECODE SkyBoxShader::CreateVertexShader()
 {
-	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSSkyBox", "vs_5_1", &m_pd3dVertexShaderBlob));
+	return(Shader::CompileShaderFromFile(L"Shaders.hlsl", "VSSkyBox", "vs_5_1", &m_pd3dVertexShaderBlob));
 }
 
-D3D12_SHADER_BYTECODE CSkyBoxShader::CreatePixelShader()
+D3D12_SHADER_BYTECODE SkyBoxShader::CreatePixelShader()
 {
-	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSSkyBox", "ps_5_1", &m_pd3dPixelShaderBlob));
+	return(Shader::CompileShaderFromFile(L"Shaders.hlsl", "PSSkyBox", "ps_5_1", &m_pd3dPixelShaderBlob));
 }

@@ -6,16 +6,16 @@
 #include "SkinnedMesh.h"
 #include "Object.h"
 
-CAnimationController::CAnimationController(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, int nAnimationTracks, CLoadedModelInfo* pModel)
+AnimationController::AnimationController(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, int nAnimationTracks, ModelInfo* pModel)
 {
 	m_nAnimationTracks = nAnimationTracks;
-	m_pAnimationTracks = new CAnimationTrack[nAnimationTracks];
+	m_pAnimationTracks = new AnimationTrack[nAnimationTracks];
 
 	m_pAnimationSets = pModel->m_pAnimationSets;
 	m_pAnimationSets->AddRef();
 
 	m_nSkinnedMeshes = pModel->m_nSkinnedMeshes;
-	m_ppSkinnedMeshes = new CSkinnedMesh * [m_nSkinnedMeshes];
+	m_ppSkinnedMeshes = new SkinnedMesh * [m_nSkinnedMeshes];
 	for (int i = 0; i < m_nSkinnedMeshes; i++) m_ppSkinnedMeshes[i] = pModel->m_ppSkinnedMeshes[i];
 
 	m_ppd3dcbSkinningBoneTransforms = new ID3D12Resource * [m_nSkinnedMeshes];
@@ -24,18 +24,18 @@ CAnimationController::CAnimationController(ID3D12Device* pd3dDevice, ID3D12Graph
 	UINT ncbElementBytes = (((sizeof(XMFLOAT4X4) * SKINNED_ANIMATION_BONES) + 255) & ~255); //256ÀÇ ¹è¼ö
 	for (int i = 0; i < m_nSkinnedMeshes; i++)
 	{
-		m_ppd3dcbSkinningBoneTransforms[i] = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
-		m_ppd3dcbSkinningBoneTransforms[i]->Map(0, NULL, (void**)&m_ppcbxmf4x4MappedSkinningBoneTransforms[i]);
+		m_ppd3dcbSkinningBoneTransforms[i] = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+		m_ppd3dcbSkinningBoneTransforms[i]->Map(0, nullptr, (void**)&m_ppcbxmf4x4MappedSkinningBoneTransforms[i]);
 	}
 }
 
-CAnimationController::~CAnimationController()
+AnimationController::~AnimationController()
 {
 	if (m_pAnimationTracks) delete[] m_pAnimationTracks;
 
 	for (int i = 0; i < m_nSkinnedMeshes; i++)
 	{
-		m_ppd3dcbSkinningBoneTransforms[i]->Unmap(0, NULL);
+		m_ppd3dcbSkinningBoneTransforms[i]->Unmap(0, nullptr);
 		m_ppd3dcbSkinningBoneTransforms[i]->Release();
 	}
 	if (m_ppd3dcbSkinningBoneTransforms) delete[] m_ppd3dcbSkinningBoneTransforms;
@@ -46,22 +46,22 @@ CAnimationController::~CAnimationController()
 	if (m_ppSkinnedMeshes) delete[] m_ppSkinnedMeshes;
 }
 
-void CAnimationController::SetCallbackKeys(int nAnimationSet, int nCallbackKeys)
+void AnimationController::SetCallbackKeys(int nAnimationSet, int nCallbackKeys)
 {
 	if (m_pAnimationSets) m_pAnimationSets->SetCallbackKeys(nAnimationSet, nCallbackKeys);
 }
 
-void CAnimationController::SetCallbackKey(int nAnimationSet, int nKeyIndex, float fKeyTime, void* pData)
+void AnimationController::SetCallbackKey(int nAnimationSet, int nKeyIndex, float fKeyTime, void* pData)
 {
 	if (m_pAnimationSets) m_pAnimationSets->SetCallbackKey(nAnimationSet, nKeyIndex, fKeyTime, pData);
 }
 
-void CAnimationController::SetAnimationCallbackHandler(int nAnimationSet, CAnimationCallbackHandler* pCallbackHandler)
+void AnimationController::SetAnimationCallbackHandler(int nAnimationSet, AnimationCallbackHandler* pCallbackHandler)
 {
 	if (m_pAnimationSets) m_pAnimationSets->SetAnimationCallbackHandler(nAnimationSet, pCallbackHandler);
 }
 
-void CAnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet)
+void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet)
 {
 	if (m_pAnimationTracks)
 	{
@@ -70,27 +70,27 @@ void CAnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimat
 	}
 }
 
-void CAnimationController::SetTrackEnable(int nAnimationTrack, bool bEnable)
+void AnimationController::SetTrackEnable(int nAnimationTrack, bool bEnable)
 {
 	if (m_pAnimationTracks) m_pAnimationTracks[nAnimationTrack].SetEnable(bEnable);
 }
 
-void CAnimationController::SetTrackPosition(int nAnimationTrack, float fPosition)
+void AnimationController::SetTrackPosition(int nAnimationTrack, float fPosition)
 {
 	if (m_pAnimationTracks) m_pAnimationTracks[nAnimationTrack].SetPosition(fPosition);
 }
 
-void CAnimationController::SetTrackSpeed(int nAnimationTrack, float fSpeed)
+void AnimationController::SetTrackSpeed(int nAnimationTrack, float fSpeed)
 {
 	if (m_pAnimationTracks) m_pAnimationTracks[nAnimationTrack].SetSpeed(fSpeed);
 }
 
-void CAnimationController::SetTrackWeight(int nAnimationTrack, float fWeight)
+void AnimationController::SetTrackWeight(int nAnimationTrack, float fWeight)
 {
 	if (m_pAnimationTracks) m_pAnimationTracks[nAnimationTrack].SetWeight(fWeight);
 }
 
-void CAnimationController::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+void AnimationController::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	for (int i = 0; i < m_nSkinnedMeshes; i++)
 	{
@@ -99,7 +99,7 @@ void CAnimationController::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3d
 	}
 }
 
-void CAnimationController::AdvanceTime(float fTimeElapsed, CGameObject* pRootGameObject)
+void AnimationController::AdvanceTime(float fTimeElapsed, Object* pRootGameObject)
 {
 	m_fTime += fTimeElapsed;
 	if (m_pAnimationTracks)
@@ -122,6 +122,6 @@ void CAnimationController::AdvanceTime(float fTimeElapsed, CGameObject* pRootGam
 			m_pAnimationSets->m_ppAnimatedBoneFrameCaches[j]->m_xmf4x4ToParent = xmf4x4Transform;
 		}
 
-		pRootGameObject->UpdateTransform(NULL);
+		pRootGameObject->UpdateTransform(nullptr);
 	}
 }

@@ -20,6 +20,12 @@ cbuffer cbGameObjectInfo : register(b2)
 	uint					gnTexturesMask : packoffset(c8);
 };
 
+cbuffer cbFrameworkInfo : register(b5)
+{
+	float		gfCurrentTime : packoffset(c0.x);
+	float		gfElapsedTime : packoffset(c0.y);
+};
+
 #include "Light.hlsl"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

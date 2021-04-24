@@ -7,11 +7,23 @@
 #define DIR_UP					0x10
 #define DIR_DOWN				0x20
 
+#define ANIMATION_IDLE 0x00
+#define ANIMATION_ATTACK_LOOP 0x01
+#define ANIMATION_MOVE_FORWARD 0x02
+#define ANIMATION_MOVE_BACKWARD 0x03
+#define ANIMATION_MOVE_LEFT 0x04
+#define ANIMATION_MOVE_RIGHT 0x05
+#define ANIMATION_ATTACK_KICK 0x06
+#define ANIMATION_CEREMONY 0x07
+#define ANIMATION_GUARD_LEFT_HEAD 0x08
+#define ANIMATION_GUARD_RIGHT_HEAD 0x09
+#define ANIMATION_GUARD_BODY 0x0A
+
 #include "Object.h"
 #include "Camera.h"
-class CAnimationCallbackHandler;
+class AnimationCallbackHandler;
 
-class CPlayer : public CGameObject
+class Player : public Object
 {
 protected:
 	XMFLOAT3					m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -34,13 +46,13 @@ protected:
 	LPVOID						m_pPlayerUpdatedContext = NULL;
 	LPVOID						m_pCameraUpdatedContext = NULL;
 
-	CCamera						*m_pCamera = NULL;
+	Camera						*m_pCamera = NULL;
 
 	
 
 public:
-	CPlayer();
-	virtual ~CPlayer();
+	Player();
+	virtual ~Player();
 
 	XMFLOAT3 GetPosition() { return(m_xmf3Position); }
 	XMFLOAT3 GetLookVector() { return(m_xmf3Look); }
@@ -61,8 +73,8 @@ public:
 	float GetPitch() const { return(m_fPitch); }
 	float GetRoll() const { return(m_fRoll); }
 
-	CCamera *GetCamera() { return(m_pCamera); }
-	void SetCamera(CCamera *pCamera) { m_pCamera = pCamera; }
+	Camera *GetCamera() { return(m_pCamera); }
+	void SetCamera(Camera *pCamera) { m_pCamera = pCamera; }
 
 	void Move(ULONG nDirection, float fDistance, bool bVelocity = false);
 	void Move(const XMFLOAT3& xmf3Shift, bool bVelocity = false);
@@ -81,53 +93,26 @@ public:
 	virtual void ReleaseShaderVariables();
 	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
 
-	CCamera *OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode);
+	Camera *OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode);
 
-	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed) { return(NULL); }
+	virtual Camera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed) { return(NULL); }
 	virtual void OnPrepareRender();
-	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera = NULL);
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera = NULL);
 
 
 public:
-
-	CGameObject* head = NULL;
-	CGameObject* rHand = NULL;
-	CGameObject* lHand = NULL;
-};
-
-class CAirplanePlayer : public CPlayer
-{
-public:
-	CAirplanePlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=NULL);
-	virtual ~CAirplanePlayer();
-
-	CGameObject					*m_pMainRotorFrame = NULL;
-	CGameObject					*m_pTailRotorFrame = NULL;
-
-private:
-	virtual void OnPrepareAnimate();
-	virtual void Animate(float fTimeElapsed);
-
-public:
-	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
-	virtual void OnPrepareRender();
-};
-
-
-
-class CTerrainPlayer : public CPlayer
-{
-public:
-	CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=NULL);
-	virtual ~CTerrainPlayer();
-
-public:
-	virtual CCamera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
-
-	virtual void OnPlayerUpdateCallback(float fTimeElapsed);
-	virtual void OnCameraUpdateCallback(float fTimeElapsed);
 
 	
+};
+
+class BoxingPlayer : public Player
+{
+public:
+	BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=NULL);
+	virtual ~BoxingPlayer();
+
+public:
+	virtual Camera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 
 	virtual void Update(float fTimeElapsed);
 };

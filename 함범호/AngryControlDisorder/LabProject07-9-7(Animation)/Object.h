@@ -6,6 +6,7 @@
 
 #include "Mesh.h"
 #include "Camera.h"
+#include "WayPoint.h"
 
 #define DIR_FORWARD					0x01
 #define DIR_BACKWARD				0x02
@@ -14,15 +15,21 @@
 #define DIR_UP						0x10
 #define DIR_DOWN					0x20
 
-class CShader;
-class CAnimationController;
-class CTexture;
-class CSkinnedMesh;
-class CMaterial;
-class CMesh;
-class CLoadedModelInfo;
+#define STATE_IDLE 0x01
+#define STATE_MOVE 0x02
+#define STATE_GUARD_LEFT_HEAD 0x04
+#define STATE_GUARD_RIGHT_HEAD 0x08
+#define STATE_GUARD_BODY 0x10
 
-class CGameObject
+class Shader;
+class AnimationController;
+class Texture;
+class SkinnedMesh;
+class Material;
+class Mesh;
+class ModelInfo;
+
+class Object
 {
 private:
 	int								m_nReferences = 0;
@@ -32,35 +39,49 @@ public:
 	void Release();
 
 public:
-	CGameObject();
-	CGameObject(int nMaterials);
-    virtual ~CGameObject();
+	Object();
+	Object(int nMaterials);
+    virtual ~Object();
 
 public:
 	char							m_pstrFrameName[64];
 
-	CMesh							*m_pMesh = NULL;
+	Mesh							*m_pMesh = NULL;
 
 	int								m_nMaterials = 0;
-	CMaterial						**m_ppMaterials = NULL;
+	Material						**m_ppMaterials = NULL;
 
 	XMFLOAT4X4						m_xmf4x4ToParent;
 	XMFLOAT4X4						m_xmf4x4World;
 
-	CGameObject 					*m_pParent = NULL;
-	CGameObject 					*m_pChild = NULL;
-	CGameObject 					*m_pSibling = NULL;
+	Object 					*m_pParent = NULL;
+	Object 					*m_pChild = NULL;
+	Object 					*m_pSibling = NULL;
+
+
+	Object* head = NULL;	//머리
+	Object* rHand = NULL;	//오른손
+	Object* lHand = NULL;	//왼손
+	Object* lFoot = NULL;	//왼발
+	Object* rFoot = NULL;	//오른발
+	Object* spine = NULL;	//척추 중심
+
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
+
+
+	UINT nowState = STATE_IDLE;
+
 	bool isActive = true;
 	//충돌처리
 	bool isCollide = false;
+	WayPoint wayPoint{};
 
-	void SetMesh(CMesh *pMesh);
-	void SetShader(CShader *pShader);
-	void SetShader(int nMaterial, CShader *pShader);
-	void SetMaterial(int nMaterial, CMaterial *pMaterial);
+	void SetMesh(Mesh *pMesh);
+	void SetShader(Shader *pShader);
+	void SetShader(int nMaterial, Shader *pShader);
+	void SetMaterial(int nMaterial, Material *pMaterial);
 
-	void SetChild(CGameObject *pChild, bool bReferenceUpdate=false);
+	void SetChild(Object *pChild, bool bReferenceUpdate=false);
 
 	virtual void BuildMaterials(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList) { }
 
@@ -68,14 +89,14 @@ public:
 	virtual void Animate(float fTimeElapsed);
 
 	virtual void OnPrepareRender() { }
-	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera=NULL);
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera=NULL);
 
 	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
 	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
 	virtual void ReleaseShaderVariables();
 
 	virtual void UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, XMFLOAT4X4 *pxmf4x4World);
-	virtual void UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, CMaterial *pMaterial);
+	virtual void UpdateShaderVariable(ID3D12GraphicsCommandList *pd3dCommandList, Material *pMaterial);
 
 	virtual void ReleaseUploadBuffers();
 
@@ -85,10 +106,13 @@ public:
 	XMFLOAT3 GetRight();
 
 	void SetPosition(float x, float y, float z);
+	void SetLook(float x, float y, float z);
 	void SetRight(float x, float y, float z);
 	void SetUp(float x, float y, float z);
-	void SetLook(float x, float y, float z);
 	void SetPosition(XMFLOAT3 xmf3Position);
+	void SetLook(XMFLOAT3 look);
+	void SetRight(XMFLOAT3 right);
+	void SetUp(XMFLOAT3 up);
 	void SetScale(float x, float y, float z);
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
@@ -98,29 +122,32 @@ public:
 	void Rotate(XMFLOAT3 *pxmf3Axis, float fAngle);
 	void Rotate(XMFLOAT4 *pxmf4Quaternion);
 
-	CGameObject *GetParent() { return(m_pParent); }
+	Object *GetParent() { return(m_pParent); }
 	void UpdateTransform(XMFLOAT4X4 *pxmf4x4Parent=NULL);
-	CGameObject *FindFrame(char *pstrFrameName);
+	Object *FindFrame(char *pstrFrameName);
 
-	CTexture *FindReplicatedTexture(_TCHAR *pstrTextureName);
+	Texture *FindReplicatedTexture(_TCHAR *pstrTextureName);
 
 	UINT GetMeshType() { return((m_pMesh) ? m_pMesh->GetType() : 0x00); }
 
 public:
-	CAnimationController 			*m_pSkinnedAnimationController = NULL;
+	AnimationController 			*m_pSkinnedAnimationController = NULL;
 
-	CSkinnedMesh *FindSkinnedMesh(char *pstrSkinnedMeshName);
-	void FindAndSetSkinnedMesh(CSkinnedMesh **ppSkinnedMeshes, int *pnSkinnedMesh);
+	SkinnedMesh *FindSkinnedMesh(char *pstrSkinnedMeshName);
+	void FindAndSetSkinnedMesh(SkinnedMesh **ppSkinnedMeshes, int *pnSkinnedMesh);
 
 	void SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet);
 	void SetTrackAnimationPosition(int nAnimationTrack, float fPosition);
 
-	void LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, CGameObject *pParent, FILE *pInFile, CShader *pShader);
+	void LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, Object *pParent, FILE *pInFile, Shader *pShader);
 
-	static void LoadAnimationFromFile(FILE *pInFile, CLoadedModelInfo *pLoadedModel);
-	static CGameObject *LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, CGameObject *pParent, FILE *pInFile, CShader *pShader, int *pnSkinnedMeshes);
+	static void LoadAnimationFromFile(FILE *pInFile, ModelInfo *pLoadedModel);
+	static Object *LoadFrameHierarchyFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, Object *pParent, FILE *pInFile, Shader *pShader, int *pnSkinnedMeshes);
 
-	static CLoadedModelInfo *LoadGeometryAndAnimationFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, char *pstrFileName, CShader *pShader);
+	static ModelInfo *LoadGeometryAndAnimationFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, char *pstrFileName, Shader *pShader);
 
-	static void PrintFrameInfo(CGameObject *pGameObject, CGameObject *pParent);
+	static void PrintFrameInfo(Object *pGameObject, Object *pParent);
+
+	virtual void MoveTo(XMFLOAT3 destination);
+	virtual void UpdateWayPoints();
 };

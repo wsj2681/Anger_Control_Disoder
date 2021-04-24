@@ -80,7 +80,21 @@ struct Thread_id {
 #pragma pack(push,1)
 struct collide {
 
-	bool check_collide =false;
+	bool check_collide = false;
+
+};
+#pragma pack(pop)
+
+#pragma pack(push,1)
+struct AttackAndDefend {
+
+	bool leftHand = false;
+	bool rightHand = false;
+	bool foot = false;
+
+	bool leftGuard = false;
+	bool rightGuard = false;
+	bool middleGuard = false;
 
 };
 #pragma pack(pop)

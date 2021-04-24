@@ -13,142 +13,238 @@
 #include "CallBack.h"
 #include "AnimationSet.h"
 #include "SkyBox.h"
-#include "AngrybotObject.h"
-#include "HeightMapTerrain.h"
+#include "BoxerObject.h"
+#include "CrowdObject.h"
 
-ID3D12DescriptorHeap *CScene::m_pd3dCbvSrvDescriptorHeap = NULL;
+ID3D12DescriptorHeap *Scene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
-D3D12_CPU_DESCRIPTOR_HANDLE	CScene::m_d3dCbvCPUDescriptorStartHandle;
-D3D12_GPU_DESCRIPTOR_HANDLE	CScene::m_d3dCbvGPUDescriptorStartHandle;
-D3D12_CPU_DESCRIPTOR_HANDLE	CScene::m_d3dSrvCPUDescriptorStartHandle;
-D3D12_GPU_DESCRIPTOR_HANDLE	CScene::m_d3dSrvGPUDescriptorStartHandle;
+D3D12_CPU_DESCRIPTOR_HANDLE	Scene::m_d3dCbvCPUDescriptorStartHandle;
+D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dCbvGPUDescriptorStartHandle;
+D3D12_CPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvCPUDescriptorStartHandle;
+D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvGPUDescriptorStartHandle;
 
-D3D12_CPU_DESCRIPTOR_HANDLE	CScene::m_d3dCbvCPUDescriptorNextHandle;
-D3D12_GPU_DESCRIPTOR_HANDLE	CScene::m_d3dCbvGPUDescriptorNextHandle;
-D3D12_CPU_DESCRIPTOR_HANDLE	CScene::m_d3dSrvCPUDescriptorNextHandle;
-D3D12_GPU_DESCRIPTOR_HANDLE	CScene::m_d3dSrvGPUDescriptorNextHandle;
+D3D12_CPU_DESCRIPTOR_HANDLE	Scene::m_d3dCbvCPUDescriptorNextHandle;
+D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dCbvGPUDescriptorNextHandle;
+D3D12_CPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvCPUDescriptorNextHandle;
+D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvGPUDescriptorNextHandle;
 
-CScene::CScene()
+#define OTHERPLAYER 1
+#define CUBEOBJECT 2
+
+Scene::Scene()
 {
+	SoundManager::Init();
+
+	soundManager = new SoundManager("Sound/ACD_mini.mid", true);
+	
+	soundManager->Play();
 }
 
-CScene::~CScene()
+Scene::~Scene()
 {
+	SoundManager::Release();
 }
 
-void CScene::BuildDefaultLightsAndMaterials()
+void Scene::BuildDefaultLightsAndMaterials()
 {
+	/*
+	0 ~ 37 = Roof Light
+	38~39 = RedSpotLight
+	40~42 = HallWayLight
+	*/
 	m_nLights = lightsCount;
+	m_nLights += 3;
 	m_pLights = new LIGHT[m_nLights];
 	::ZeroMemory(m_pLights, sizeof(LIGHT) * m_nLights);
 
 	m_xmf4GlobalAmbient = XMFLOAT4(1.f, 1.f, 1.f, 1.0f);
-	for (int i = 0; i < m_nLights; ++i)
+	for (int i = 0; i < 38; ++i)
+	{
+		if (i % 2)
+		{
+			m_pLights[i].m_bEnable = true;
+		}
+		else
+		{
+			m_pLights[i].m_bEnable = false;
+		}
+		m_pLights[i].m_nType = DIRECTIONAL_LIGHT;
+		m_pLights[i].m_fRange = 120.0f;
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.01f, 0.01f, 0.01f, 0.0f);
+		m_pLights[i].m_xmf3Position = lights.data()[i]->GetPosition();
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, -.5f, 0.0f);
+	}
+
+	for (int i = 38 ; i < 40; ++i)
 	{
 		m_pLights[i].m_bEnable = true;
-		m_pLights[i].m_nType = DIRECTIONAL_LIGHT;
-		m_pLights[i].m_fRange = 300.0f;
-		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.2f, 0.2f, 0.2f, 1.0f);
-		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.1f, 1.0f);
-		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
+		m_pLights[i].m_nType = SPOT_LIGHT;
+		m_pLights[i].m_fRange = 150.0f;
+		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.1f, 0.f, 0.f, 1.0f);
+		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.f, 0.f, 1.0f);
+		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.3f, 0.f, 0.f, 0.0f);
 		m_pLights[i].m_xmf3Position = lights.data()[i]->GetPosition();
-		m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.001f, 0.0001f);
-		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.0f, -1.0f, 0.0f);
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(0.f, 60.f, -252.6f);
+		m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+		m_pLights[i].m_fFalloff = 8.0f;
 		m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(40.0f));
 		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 	}
+	m_pLights[40].m_bEnable = false;
+	m_pLights[40].m_nType = SPOT_LIGHT;
+	m_pLights[40].m_fRange = 400.0f;
+	m_pLights[40].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[40].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.f, 1.0f);
+	m_pLights[40].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.f, 0.0f);
+	m_pLights[40].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -750.f);
+	m_pLights[40].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
+	m_pLights[40].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[40].m_fFalloff = 8.0f;
+	m_pLights[40].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
+	m_pLights[40].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+
+	m_pLights[41].m_bEnable = false;
+	m_pLights[41].m_nType = SPOT_LIGHT;
+	m_pLights[41].m_fRange = 400.0f;
+	m_pLights[41].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[41].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.f, 1.0f);
+	m_pLights[41].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.f, 0.0f);
+	m_pLights[41].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -675.f);
+	m_pLights[41].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
+	m_pLights[41].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[41].m_fFalloff = 8.0f;
+	m_pLights[41].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
+	m_pLights[41].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+
+	m_pLights[42].m_bEnable = false;
+	m_pLights[42].m_nType = SPOT_LIGHT;
+	m_pLights[42].m_fRange = 400.0f;
+	m_pLights[42].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[42].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[42].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.f, 0.0f);
+	m_pLights[42].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -550.f);
+	m_pLights[42].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
+	m_pLights[42].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[42].m_fFalloff = 8.0f;
+	m_pLights[42].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
+	m_pLights[42].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 }
 
-void CScene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
 
 	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 0, 76); //SuperCobra(17), Gunship(2), Player:Mi24(1), Angrybot()
 
-	CMaterial::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	Material::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	
-	
+	m_pSkyBox = new SkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	m_pSkyBox = new CSkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-
-	//XMFLOAT3 xmf3Scale(8.0f, 2.0f, 8.0f);
-	//XMFLOAT4 xmf4Color(0.0f, 0.3f, 0.0f, 0.0f);
-	//m_pTerrain = new CHeightMapTerrain(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, _T("Terrain/HeightMap.raw"), 257, 257, xmf3Scale, xmf4Color);
-
-	m_nHierarchicalGameObjects = 4;
-	m_ppHierarchicalGameObjects = new CGameObject * [m_nHierarchicalGameObjects];
-
-	CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/arena_fbx.bin", NULL);
-	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
-	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	CAnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
-	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, pAnimationCallbackHandler);
-	//m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
-	m_ppHierarchicalGameObjects[0]->SetPosition(0.0f, 0, 0.0f);
-
-	CLoadedModelInfo* circle = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/boxingComplete.bin", NULL);
-	m_ppHierarchicalGameObjects[1] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, circle, 1);
-	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
-	CAnimationCallbackHandler* circleAnimation = new CSoundCallbackHandler();
-	m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, circleAnimation);
-	//m_ppHierarchicalGameObjects[1]->SetScale(3.f, 5.f, 3.f);
-	m_ppHierarchicalGameObjects[1]->SetPosition(0.0f, 10.f, 0.0f);
-
-	CLoadedModelInfo* texbox = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", NULL);
-	m_ppHierarchicalGameObjects[2] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, texbox, 1);
-	m_ppHierarchicalGameObjects[2]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	CAnimationCallbackHandler* texboxAnimation = new CSoundCallbackHandler();
-	m_ppHierarchicalGameObjects[2]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, texboxAnimation);
-	m_ppHierarchicalGameObjects[2]->SetScale(texScale.x, texScale.y, texScale.z);
-	m_ppHierarchicalGameObjects[2]->SetPosition(0.0f, 12.f, 30.0f);
-
-	CLoadedModelInfo* red = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/hp.bin", NULL);
-	m_ppHierarchicalGameObjects[3] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, red, 1);
-	m_ppHierarchicalGameObjects[3]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	CAnimationCallbackHandler* redAnimation = new CSoundCallbackHandler();
-	m_ppHierarchicalGameObjects[3]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(0, redAnimation);
-	m_ppHierarchicalGameObjects[3]->SetScale(texScale.x, texScale.y, texScale.z);
-	m_ppHierarchicalGameObjects[3]->SetPosition(0.0f, 12.f, -30.0f);
+	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena_FBX.bin", NULL);
+	Object* Map = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
+	Map->SetPosition(0.0f, 0.f, 0.0f);
+	hierarchicalGameObjects.push_back(Map);
+	if (MapModel) delete MapModel;
 
 	//조명 벡터 만들었다.
 	lightsCount = 38;
 	
 	char name[30];
-	lights.push_back(m_ppHierarchicalGameObjects[0]->FindFrame("light"));
+	lights.push_back(Map->FindFrame("light"));
 	for (int i = 1; i < lightsCount; ++i)
 	{
 		sprintf(name, "light%d", i);
-		lights.push_back(m_ppHierarchicalGameObjects[0]->FindFrame(name));
+		lights.push_back(Map->FindFrame(name));
 	}
+	lightsCount += 2;
+	lights.push_back(Map->FindFrame("spot_light"));
+	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
+	/*
+	0 : Idle
+	1 : Beating Loop
+	2 : Step forward
+	3 : Step Backward
+	4 : Step Left
+	5 : Step Right
+	6 : KickCombo
+	7 : ceremony
+	8 : Taunt
+	*/
+	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerS.bin", nullptr);
+	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
+	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	boxer->SetPosition(21.3046f, 10.0f, -769.689f);
 
-	//CLoadedModelInfo* pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/BoxingComplete.bin", NULL);
-	//m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
-	//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	//CAnimationCallbackHandler* pAnimationCallbackHandler = new CSoundCallbackHandler();
-	//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetAnimationCallbackHandler(2, pAnimationCallbackHandler);
-	////m_ppHierarchicalGameObjects[0]->SetScale(10.f, 10.f, 10.f);
-	//m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
-		if (pAngrybotModel) delete pAngrybotModel;
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 10.0f, -551.034f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 1.66975f, -533.916f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -527.249f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -107.806f), 2);
+
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -109.177f), 7);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -94.0986f), 2);
+
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -78.1817f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -36.0f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, -36.0f), 2);
+
+	hierarchicalGameObjects.push_back(boxer);
+	if (BoxerModel) delete BoxerModel;
+
+	ModelInfo* cubeModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", nullptr);
+	Object* cube = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, cubeModel, 1);
+	cube->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	cube->isActive = false;
+	cube->SetScale(1.5f, 1.5f, 1.5f);
+	hierarchicalGameObjects.push_back(cube);
+
+	if (cubeModel) delete cubeModel;
+
+	ModelInfo* crowdModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Crowd.bin", NULL);
+
+	int nFloors = 4;
+	size_t nBaseModels = hierarchicalGameObjects.size();
+	int nCrowds = 9;
+
+	float angle = 0.0f;
+	float radius = 130.0f;
+
+	//TODO: 관중 각도 조절
+	for (int i = 0; i < nFloors; ++i)
+	{
+		angle = -30.0f;
+		for (int j = (int)nBaseModels + i * nCrowds; j < (int)nBaseModels + (i + 1) * nCrowds; ++j)
+		{
+			Object* crowd = new CrowdObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, crowdModel, 1);
+			crowd->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
+			//m_ppHierarchicalGameObjects[i]->SetPosition(0, 1.0f + 4.0f * (int)((i - 4) / 2), 130.0f + 12.5f * (i - 4));
+			crowd->SetPosition(cos(XMConvertToRadians(angle)) * radius, 1.0f + 4.0f * i, sin(XMConvertToRadians(angle)) * radius);
+			//crowd->Rotate(0.0f, angle + 90.f + ((j - nBaseModels) % (nCrowds - 1)) * 30.0f, 0.0f);
+			crowd->Rotate(0.0f, 180.0f, 0.0f);
+			hierarchicalGameObjects.push_back(crowd);
+			angle += 30.f;
+		}
+		radius += 25.0f;
+	}
 	
+	if (crowdModel) delete crowdModel;
 
-	m_nShaders = 0;
-	m_ppShaders = new CShader*[m_nShaders];
 
-	//CEthanObjectsShader *pEthanObjectsShader = new CEthanObjectsShader();
-	//CLoadedModelInfo *pEthanModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Ethan.bin", NULL);
-	//pEthanObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pEthanModel, m_pTerrain);
-
-	//m_ppShaders[0] = nullptr;
-
-	//if (pEthanModel) delete pEthanModel;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
-void CScene::ReleaseObjects()
+void Scene::ReleaseObjects()
 {
 	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
 	if (m_pd3dCbvSrvDescriptorHeap) m_pd3dCbvSrvDescriptorHeap->Release();
@@ -170,13 +266,18 @@ void CScene::ReleaseObjects()
 		delete[] m_ppShaders;
 	}
 
-	if (m_pTerrain) delete m_pTerrain;
 	if (m_pSkyBox) delete m_pSkyBox;
 
-	if (m_ppHierarchicalGameObjects)
+	if (!hierarchicalGameObjects.empty())
 	{
-		for (int i = 0; i < m_nHierarchicalGameObjects; i++) if (m_ppHierarchicalGameObjects[i]) m_ppHierarchicalGameObjects[i]->Release();
-		delete[] m_ppHierarchicalGameObjects;
+		for (auto& obj : hierarchicalGameObjects)
+		{
+			if (obj)
+			{
+				obj->Release();
+			}
+		}
+		hierarchicalGameObjects.clear();
 	}
 
 	ReleaseShaderVariables();
@@ -184,7 +285,7 @@ void CScene::ReleaseObjects()
 	if (m_pLights) delete[] m_pLights;
 }
 
-ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
+ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
 {
 	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;
 
@@ -256,7 +357,7 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dDescriptorRanges[10].RegisterSpace = 0;
 	pd3dDescriptorRanges[10].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER pd3dRootParameters[16];
+	D3D12_ROOT_PARAMETER pd3dRootParameters[17];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 1; //Camera
@@ -339,6 +440,11 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dRootParameters[15].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[10]);
 	pd3dRootParameters[15].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
+	pd3dRootParameters[16].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[16].Descriptor.ShaderRegister = 5; //Framework Info
+	pd3dRootParameters[16].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[16].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
 	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[2];
 
 	pd3dSamplerDescs[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -386,7 +492,7 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	return(pd3dGraphicsRootSignature);
 }
 
-void CScene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
+void Scene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	UINT ncbElementBytes = ((sizeof(LIGHTS) + 255) & ~255); //256의 배수
 	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
@@ -394,14 +500,14 @@ void CScene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	m_pd3dcbLights->Map(0, NULL, (void **)&m_pcbMappedLights);
 }
 
-void CScene::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
+void Scene::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	::memcpy(m_pcbMappedLights->m_pLights, m_pLights, sizeof(LIGHT) * m_nLights);
 	::memcpy(&m_pcbMappedLights->m_xmf4GlobalAmbient, &m_xmf4GlobalAmbient, sizeof(XMFLOAT4));
 	::memcpy(&m_pcbMappedLights->m_nLights, &m_nLights, sizeof(int));
 }
 
-void CScene::ReleaseShaderVariables()
+void Scene::ReleaseShaderVariables()
 {
 	if (m_pd3dcbLights)
 	{
@@ -410,17 +516,16 @@ void CScene::ReleaseShaderVariables()
 	}
 }
 
-void CScene::ReleaseUploadBuffers()
+void Scene::ReleaseUploadBuffers()
 {
 	if (m_pSkyBox) m_pSkyBox->ReleaseUploadBuffers();
-	if (m_pTerrain) m_pTerrain->ReleaseUploadBuffers();
 
 	for (int i = 0; i < m_nShaders; i++) m_ppShaders[i]->ReleaseUploadBuffers();
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->ReleaseUploadBuffers();
-	for (int i = 0; i < m_nHierarchicalGameObjects; i++) m_ppHierarchicalGameObjects[i]->ReleaseUploadBuffers();
+	for (auto& obj : hierarchicalGameObjects) obj->ReleaseUploadBuffers();
 }
 
-void CScene::CreateCbvSrvDescriptorHeaps(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, int nShaderResourceViews)
+void Scene::CreateCbvSrvDescriptorHeaps(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, int nShaderResourceViews)
 {
 	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
 	d3dDescriptorHeapDesc.NumDescriptors = nConstantBufferViews + nShaderResourceViews; //CBVs + SRVs 
@@ -435,7 +540,7 @@ void CScene::CreateCbvSrvDescriptorHeaps(ID3D12Device *pd3dDevice, ID3D12Graphic
 	m_d3dSrvGPUDescriptorNextHandle.ptr = m_d3dSrvGPUDescriptorStartHandle.ptr = m_d3dCbvGPUDescriptorStartHandle.ptr + (::gnCbvSrvDescriptorIncrementSize * nConstantBufferViews);
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE CScene::CreateConstantBufferViews(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, ID3D12Resource *pd3dConstantBuffers, UINT nStride)
+D3D12_GPU_DESCRIPTOR_HANDLE Scene::CreateConstantBufferViews(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, int nConstantBufferViews, ID3D12Resource *pd3dConstantBuffers, UINT nStride)
 {
 	D3D12_GPU_DESCRIPTOR_HANDLE d3dCbvGPUDescriptorHandle = m_d3dCbvGPUDescriptorNextHandle;
 	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = pd3dConstantBuffers->GetGPUVirtualAddress();
@@ -492,7 +597,7 @@ D3D12_SHADER_RESOURCE_VIEW_DESC GetShaderResourceViewDesc(D3D12_RESOURCE_DESC d3
 	return(d3dShaderResourceViewDesc);
 }
 
-D3D12_GPU_DESCRIPTOR_HANDLE CScene::CreateShaderResourceViews(ID3D12Device *pd3dDevice, CTexture *pTexture, UINT nRootParameter, bool bAutoIncrement)
+D3D12_GPU_DESCRIPTOR_HANDLE Scene::CreateShaderResourceViews(ID3D12Device *pd3dDevice, Texture *pTexture, UINT nRootParameter, bool bAutoIncrement)
 {
 	D3D12_GPU_DESCRIPTOR_HANDLE d3dSrvGPUDescriptorHandle = m_d3dSrvGPUDescriptorNextHandle;
 	if (pTexture)
@@ -514,12 +619,12 @@ D3D12_GPU_DESCRIPTOR_HANDLE CScene::CreateShaderResourceViews(ID3D12Device *pd3d
 	return(d3dSrvGPUDescriptorHandle);
 }
 
-bool CScene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+bool Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	return(false);
 }
 
-bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
+bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	switch (nMessageID)
 	{
@@ -531,37 +636,18 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			break;
 		case VK_RETURN:
 			break;
-		case '1':
-			if(m_ppHierarchicalGameObjects[0]->isActive)
-				m_ppHierarchicalGameObjects[0]->isActive = false;
-			else
-				m_ppHierarchicalGameObjects[0]->isActive = true;
-			break;
-		case '2':
-
-			m_ppHierarchicalGameObjects[2]->m_xmf4x4ToParent._11 = 1.f;
-			m_ppHierarchicalGameObjects[2]->m_xmf4x4ToParent._22 = 1.f;
-			m_ppHierarchicalGameObjects[2]->m_xmf4x4ToParent._33 = 1.f;
-			texScale = { 1.f, 1.f, 1.f };
-			m_ppHierarchicalGameObjects[2]->SetScale(1.f, 1.f, 1.f);
-			m_ppHierarchicalGameObjects[2]->isActive = true;
-
-			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 2);
-			break;
-		case '3':
-			//m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
-			m_ppHierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 3);
-			break;
-		case VK_F9:
-			break;
 		case VK_F4:
-			//m_pPlayer->m_pChild->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
+			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
 			break;
 		case VK_F5:
-			m_pPlayer->SetTrackAnimationSet(0, 2);
+			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 			break;
 		case VK_F6:
-			m_pPlayer->m_pChild->SetTrackAnimationSet(0, 3);
+			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 6);
+			break;
+		case VK_INSERT:
+			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->rHand->GetPosition());
+			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
 			break;
 		default:
 			break;
@@ -573,30 +659,54 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	return(false);
 }
 
-bool CScene::ProcessInput(UCHAR *pKeysBuffer)
+void Scene::Scenario()
+{
+	if (bScenario == false)
+	{
+		bScenario = true;
+		hierarchicalGameObjects.data()[1]->SetPosition(XMFLOAT3(21.3046f, 10.0f, -769.689f));
+		hierarchicalGameObjects.data()[1]->wayPoint.SetCurWayPoints(0);
+	}
+	else
+	{
+		bScenario = false;
+	}
+}
+
+bool Scene::ProcessInput(UCHAR *pKeysBuffer)
 {
 	return(false);
 }
 
-void CScene::AnimateObjects(float fTimeElapsed)
+void Scene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime = fTimeElapsed;
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
+	if (bScenario) hierarchicalGameObjects[1]->UpdateWayPoints();
 
-	if (m_pLights)
+	for (int i = 40; i < 43; ++i)
 	{
-		m_pLights[1].m_xmf3Position = XMFLOAT3(m_pPlayer->head->GetPosition().x, m_pPlayer->head->GetPosition().y, m_pPlayer->head->GetPosition().z + 0.4f);
-		m_pLights[1].m_xmf3Direction = m_pPlayer->GetLookVector();
+		if (m_pLights[i].m_xmf3Position.z - 30.f < m_pPlayer->GetPosition().z)
+		{
+			m_pLights[i].m_bEnable = true;
+		}
+		else
+		{
+			m_pLights[i].m_bEnable = false;
+		}
+
+		if (m_pPlayer->GetPosition().z > -300)
+		{
+			m_pLights[i].m_bEnable = false;
+		}
 	}
-	//cout << m_pPlayer->head->GetPosition().x << " / " << m_pPlayer->head->GetPosition().y << " / " << m_pPlayer->head->GetPosition().z << "\t";
-	//cout << m_pPlayer->lHand->GetPosition().x << " / " << m_pPlayer->lHand->GetPosition().y << " / " << m_pPlayer->lHand->GetPosition().z << "\t"; 
-	//cout << m_pPlayer->rHand->GetPosition().x << " / " << m_pPlayer->rHand->GetPosition().y << " / " << m_pPlayer->rHand->GetPosition().z << endl;
+
 
 }
 
-void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
+void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 {
 	if (m_pd3dGraphicsRootSignature) pd3dCommandList->SetGraphicsRootSignature(m_pd3dGraphicsRootSignature);
 	if (m_pd3dCbvSrvDescriptorHeap) pd3dCommandList->SetDescriptorHeaps(1, &m_pd3dCbvSrvDescriptorHeap);
@@ -610,30 +720,24 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	pd3dCommandList->SetGraphicsRootConstantBufferView(2, d3dcbLightsGpuVirtualAddress); //Lights
 
 	if (m_pSkyBox) m_pSkyBox->Render(pd3dCommandList, pCamera);
-	if (m_pTerrain) m_pTerrain->Render(pd3dCommandList, pCamera);
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 
-	for (int i = 0; i < m_nHierarchicalGameObjects; i++)
+	if (!hierarchicalGameObjects.empty())
 	{
-		if (m_ppHierarchicalGameObjects[i])
+		for (auto& object : hierarchicalGameObjects)
 		{
-			m_ppHierarchicalGameObjects[i]->Animate(m_fElapsedTime);
-			
-			//m_ppHierarchicalGameObjects[i]->SetTrackAnimationSet(0, 0);
-			if (!m_ppHierarchicalGameObjects[i]->m_pSkinnedAnimationController) m_ppHierarchicalGameObjects[i]->UpdateTransform(NULL);
-			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
+			object->Animate(m_fElapsedTime);
+			if (object->m_pSkinnedAnimationController)
+			{
+				object->UpdateTransform(nullptr);
+			}
+
+			object->Render(pd3dCommandList, pCamera);
 		}
 	}
 
-	if (texScale.x > 1.1f)
-	{
-		m_ppHierarchicalGameObjects[2]->SetScale(texScale.x -= 0.001f, texScale.y -= 0.001f, texScale.z -= 0.001f);
-	}
-	if (texScale.x < 1.1f)
-	{
-		m_ppHierarchicalGameObjects[2]->SetScale(texScale.x += 0.001f, texScale.y += 0.001f, texScale.z += 0.001f);
-	}
+	soundManager->Update();
 }
 

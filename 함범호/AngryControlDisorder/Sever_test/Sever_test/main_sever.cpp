@@ -25,6 +25,9 @@ Player_world thread_num_2_player;
 
 int thread_empty[MAXTHREAD] = { 0, };
 
+//애니메이션
+AttackAndDefend recv_attackAnddefend[3];
+
 
 //충돌처리
 BoundingOrientedBox obb[3];
@@ -77,7 +80,7 @@ int main()
 		client_addr_len = sizeof(client_addr);
 		client_sock = accept(listen_sock, (SOCKADDR*)&client_addr, &client_addr_len);
 
-	
+
 
 		cout <<
 			"\n[TCP 서버] 클라이언트 접속: IP 주소= " << inet_ntoa(client_addr.sin_addr) <<
@@ -135,8 +138,9 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	XMFLOAT3 player_position;
 
 	ZeroMemory(&buf, sizeof(buf));
-	
+
 	Player_world player;
+	AttackAndDefend attAdef;
 
 
 	getpeername(thread_client_sock, (SOCKADDR*)&client_addr, &thread_client_addr_len);
@@ -152,7 +156,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 
 	//id.thread_id =thread_count;
 
-	
+
 	cout << "lll thread_id = " << thread_id.thread_num << endl;
 	retval = send(thread_client_sock, (char*)&thread_id, sizeof(thread_id), 0);
 	cout << "llll  thread_id = " << thread_id.thread_num << endl;
@@ -170,7 +174,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 
 		//스레드 아이디 초기화
 		thread_id.thread_num = 0;
-		
+
 		retval = recv(thread_client_sock, (char*)&thread_id, sizeof(thread_id), 0);
 		if (retval == SOCKET_ERROR) {
 			display_error("recv : ", WSAGetLastError());
@@ -186,49 +190,71 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		else if (retval == 0)
 			break;
 
+		retval = recv(thread_client_sock, (char*)&attAdef, sizeof(attAdef), 0);
+		if (retval == SOCKET_ERROR) {
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
+		else if (retval == 0)
+			break;
+
 		//충돌박스 만들기
 		player_position.x = player.player_world._41;
-		player_position.y = player.player_world._42 ;
+		player_position.y = player.player_world._42;
 		player_position.z = player.player_world._43;
 		SetOBB(thread_id, player_position, XMFLOAT3(2.2f, 11.f, 2.2f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
-		
+
 		cout << thread_id.thread_num << "     " << player_position.x << endl;
-		cout << thread_id.thread_num << "    "<< obb[thread_id.thread_num].Center.x << endl;
+		cout << thread_id.thread_num << "    " << obb[thread_id.thread_num].Center.x << endl;
 		/*if(cou % 4 == 0)
 		cout << "SETOBB SUCCESS!" << endl;*/
 
-	
+
 		EnterCriticalSection(&cs);
-		
+
 		if (thread_id.thread_num == 1 || thread_id.thread_num == 3) {
-		
+
 			thread_num_1_player = player;
+			recv_attackAnddefend[thread_id.thread_num] = attAdef;
+
+			/*cout << " 111 rightHand   : "<<recv_attackAnddefend[thread_id.thread_num].rightHand << endl;
+			cout << " 111 lefttHand   : " << recv_attackAnddefend[thread_id.thread_num].leftHand << endl;
+			cout << " 111 foot        : " << recv_attackAnddefend[thread_id.thread_num].foot << endl;
+			cout << " 111 rightguard  : " << recv_attackAnddefend[thread_id.thread_num].rightGuard << endl;
+			cout << " 111 leftguard   : " << recv_attackAnddefend[thread_id.thread_num].leftGuard << endl;
+			cout << " 111 middleguard : " << recv_attackAnddefend[thread_id.thread_num].middleGuard << endl;*/
+
 			retval = send(thread_client_sock, (char*)&thread_num_2_player, sizeof(thread_num_2_player), 0);
 			retval = send(thread_client_sock, (char*)&col, sizeof(col), 0);
-			/*cout << "thread_1 of thread_2 value = " << thread_id.thread_num << " / " << thread_num_2_player.player_world._41 << 
+			/*cout << "thread_1 of thread_2 value = " << thread_id.thread_num << " / " << thread_num_2_player.player_world._41 <<
 				" ," << thread_num_2_player.player_world._42 << ", " << thread_num_2_player.player_world._43 << endl;
 		*/
-			
+			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num + 1], sizeof(recv_attackAnddefend[thread_id.thread_num + 1]), 0);
 
 		}
 		else if (thread_id.thread_num == 2 || thread_id.thread_num == 4) {
-			
-			
+
+
 			thread_num_2_player = player;
+			recv_attackAnddefend[thread_id.thread_num] = attAdef;
+			
 			//두번쨰접속 쓰레드한테 충돌처리
 			col.check_collide = checkcollition();
+
+			
 
 			retval = send(thread_client_sock, (char*)&thread_num_1_player, sizeof(thread_num_1_player), 0);
 			retval = send(thread_client_sock, (char*)&col, sizeof(col), 0);
 
-			/*cout << "thread_2 of thread_1 value = " << thread_id.thread_num << " / " << thread_num_1_player.player_world._41 << 
+			/*cout << "thread_2 of thread_1 value = " << thread_id.thread_num << " / " << thread_num_1_player.player_world._41 <<
 				" ," << thread_num_1_player.player_world._42 << ", " << thread_num_1_player.player_world._43 << endl;*/
+			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num - 1], sizeof(recv_attackAnddefend[thread_id.thread_num - 1]), 0);
 
-		
+
 		}
 
 		LeaveCriticalSection(&cs);
-		
+
 
 	}
 	closesocket(thread_client_sock);
@@ -247,9 +273,9 @@ void display_error(const char* msg, int err_no)
 }
 
 void SetOBB(Thread_id id, const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation) {
-	obb[id.thread_num-1].Center = center;
-	obb[id.thread_num-1].Extents = extents;
-	obb[id.thread_num-1].Orientation = orientation;
+	obb[id.thread_num - 1].Center = center;
+	obb[id.thread_num - 1].Extents = extents;
+	obb[id.thread_num - 1].Orientation = orientation;
 }
 bool checkcollition() {
 	if (obb[0].Intersects(obb[1])) {

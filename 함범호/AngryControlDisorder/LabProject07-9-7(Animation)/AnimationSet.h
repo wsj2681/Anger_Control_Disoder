@@ -5,8 +5,8 @@
 #define ANIMATION_TYPE_PINGPONG		2
 
 struct CALLBACKKEY;
-class CAnimationCallbackHandler;
-class CGameObject;
+class AnimationCallbackHandler;
+class Object;
 
 class CAnimationSet
 {
@@ -21,19 +21,19 @@ public:
 	int								m_nFramesPerSecond = 0; //m_fTicksPerSecond
 
 	int								m_nKeyFrames = 0;
-	float* m_pfKeyFrameTimes = NULL;
-	XMFLOAT4X4** m_ppxmf4x4KeyFrameTransforms = NULL;
+	float* m_pfKeyFrameTimes = nullptr;
+	XMFLOAT4X4** m_ppxmf4x4KeyFrameTransforms = nullptr;
 
 #ifdef _WITH_ANIMATION_SRT
 	int								m_nKeyFrameScales = 0;
-	float* m_pfKeyFrameScaleTimes = NULL;
-	XMFLOAT3** m_ppxmf3KeyFrameScales = NULL;
+	float* m_pfKeyFrameScaleTimes = nullptr;
+	XMFLOAT3** m_ppxmf3KeyFrameScales = nullptr;
 	int								m_nKeyFrameRotations = 0;
-	float* m_pfKeyFrameRotationTimes = NULL;
-	XMFLOAT4** m_ppxmf4KeyFrameRotations = NULL;
+	float* m_pfKeyFrameRotationTimes = nullptr;
+	XMFLOAT4** m_ppxmf4KeyFrameRotations = nullptr;
 	int								m_nKeyFrameTranslations = 0;
-	float* m_pfKeyFrameTranslationTimes = NULL;
-	XMFLOAT3** m_ppxmf3KeyFrameTranslations = NULL;
+	float* m_pfKeyFrameTranslationTimes = nullptr;
+	XMFLOAT3** m_ppxmf3KeyFrameTranslations = nullptr;
 #endif
 
 	float 							m_fPosition = 0.0f;
@@ -42,7 +42,7 @@ public:
 	int 							m_nCallbackKeys = 0;
 	CALLBACKKEY* m_pCallbackKeys = NULL;
 
-	CAnimationCallbackHandler* m_pAnimationCallbackHandler = NULL;
+	AnimationCallbackHandler* m_pAnimationCallbackHandler = nullptr;
 
 public:
 	void SetPosition(float fTrackPosition);
@@ -51,12 +51,12 @@ public:
 
 	void SetCallbackKeys(int nCallbackKeys);
 	void SetCallbackKey(int nKeyIndex, float fTime, void* pData);
-	void SetAnimationCallbackHandler(CAnimationCallbackHandler* pCallbackHandler);
+	void SetAnimationCallbackHandler(AnimationCallbackHandler* pCallbackHandler);
 
 	void* GetCallbackData();
 };
 
-class CAnimationSets
+class AnimationSets
 {
 private:
 	int								m_nReferences = 0;
@@ -66,18 +66,18 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 public:
-	CAnimationSets(int nAnimationSets);
-	~CAnimationSets();
+	AnimationSets(int nAnimationSets);
+	~AnimationSets();
 
 public:
 	int								m_nAnimationSets = 0;
-	CAnimationSet** m_pAnimationSets = NULL;
+	CAnimationSet** m_pAnimationSets = nullptr;
 
 	int								m_nAnimatedBoneFrames = 0;
-	CGameObject** m_ppAnimatedBoneFrameCaches = NULL; //[m_nAnimatedBoneFrames]
+	Object** m_ppAnimatedBoneFrameCaches = nullptr; //[m_nAnimatedBoneFrames]
 
 public:
 	void SetCallbackKeys(int nAnimationSet, int nCallbackKeys);
 	void SetCallbackKey(int nAnimationSet, int nKeyIndex, float fTime, void* pData);
-	void SetAnimationCallbackHandler(int nAnimationSet, CAnimationCallbackHandler* pCallbackHandler);
+	void SetAnimationCallbackHandler(int nAnimationSet, AnimationCallbackHandler* pCallbackHandler);
 };

@@ -45,6 +45,8 @@ void Server::Server_send()
 
 		retval = send(sock, (char*)&player, sizeof(player), 0);
 
+		retval = send(sock, (char*)&send_attackAnddefend, sizeof(send_attackAnddefend), 0);
+
 
 	}
 }
@@ -64,34 +66,30 @@ void Server::Server_recv()
 	else {
 		retval = recv(sock, (char*)&other_player, sizeof(other_player), 0);
 		retval = recv(sock, (char*)&col, sizeof(col), 0);
+		retval = recv(sock, (char*)&recv_attackAnddefend, sizeof(recv_attackAnddefend), 0);
+
+
+		//retval = recv(sock, (char*)&bScenario, sizeof(bScenario), 0);
 		//cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
 
 		//save_world.player_world =  cscene->m_ppHierarchicalGameObjects[0]->m_xmf4x4World;
 
-		player_position.x = other_player.player_world._41;
-		player_position.y = other_player.player_world._42;
-		player_position.z = other_player.player_world._43;
-
-		player_right.x = other_player.player_world._11;
-		player_right.y = other_player.player_world._12;
-		player_right.z = other_player.player_world._13;
-
-		player_up.x = other_player.player_world._21;
-		player_up.y = other_player.player_world._22;
-		player_up.z = other_player.player_world._23;
-
-		player_look.x = other_player.player_world._31;
-		player_look.y = other_player.player_world._32;
-		player_look.z = other_player.player_world._33;
+		otherPlayerPositionSet();
 
 
 		//cout << player_position.x << " / " << player_position.y << " / " << player_position.z << endl;
 
+		//상대 클라 위치설정
+		cscene->hierarchicalGameObjects[1]->SetPosition(player_position.x, player_position.y, player_position.z);
+		cscene->hierarchicalGameObjects[1]->SetRight(player_right.x, player_right.y, player_right.z);
+		cscene->hierarchicalGameObjects[1]->SetUp(player_up.x, player_up.y, player_up.z);
+		cscene->hierarchicalGameObjects[1]->SetLook(player_look.x, player_look.y, player_look.z);
 
-		cscene->m_ppHierarchicalGameObjects[1]->SetPosition(player_position.x, player_position.y, player_position.z);
-		cscene->m_ppHierarchicalGameObjects[1]->SetRight(player_right.x, player_right.y, player_right.z);
-		cscene->m_ppHierarchicalGameObjects[1]->SetUp(player_up.x, player_up.y, player_up.z);
-		cscene->m_ppHierarchicalGameObjects[1]->SetLook(player_look.x, player_look.y, player_look.z);
+		// 상대클라 애니메이션
+		if (recv_attackAnddefend.leftHand) {
+			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftHand ? ANIMATION_ATTACK_LOOP : ANIMATION_IDLE);
+		}
+
 
 		if (col.check_collide) {
 			cout << "COLLIDE! " << endl;
@@ -109,3 +107,32 @@ void Server::Server_recv()
 
 }
 
+void Server::attackAndGuard_idle() {
+	send_attackAnddefend.rightHand = false;
+	send_attackAnddefend.leftHand = false;
+	send_attackAnddefend.foot = false;
+
+	send_attackAnddefend.leftGuard = false;
+	send_attackAnddefend.rightGuard = false;
+	send_attackAnddefend.middleGuard = false;
+
+}
+
+void Server::otherPlayerPositionSet()
+{
+	player_position.x = other_player.player_world._41;
+	player_position.y = other_player.player_world._42;
+	player_position.z = other_player.player_world._43;
+
+	player_right.x = other_player.player_world._11;
+	player_right.y = other_player.player_world._12;
+	player_right.z = other_player.player_world._13;
+
+	player_up.x = other_player.player_world._21;
+	player_up.y = other_player.player_world._22;
+	player_up.z = other_player.player_world._23;
+
+	player_look.x = other_player.player_world._31;
+	player_look.y = other_player.player_world._32;
+	player_look.z = other_player.player_world._33;
+}

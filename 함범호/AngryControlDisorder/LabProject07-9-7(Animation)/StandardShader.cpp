@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #include "StandardShader.h"
 
-CStandardShader::CStandardShader()
+StandardShader::StandardShader()
 {
 }
 
-CStandardShader::~CStandardShader()
+StandardShader::~StandardShader()
 {
 }
 
-D3D12_INPUT_LAYOUT_DESC CStandardShader::CreateInputLayout()
+D3D12_INPUT_LAYOUT_DESC StandardShader::CreateInputLayout()
 {
 	UINT nInputElementDescs = 5;
 	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
@@ -27,12 +27,12 @@ D3D12_INPUT_LAYOUT_DESC CStandardShader::CreateInputLayout()
 	return(d3dInputLayoutDesc);
 }
 
-D3D12_SHADER_BYTECODE CStandardShader::CreateVertexShader()
+D3D12_SHADER_BYTECODE StandardShader::CreateVertexShader()
 {
-	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSStandard", "vs_5_1", &m_pd3dVertexShaderBlob));
+	return(Shader::CompileShaderFromFile(L"Shaders.hlsl", "VSStandard", "vs_5_1", &m_pd3dVertexShaderBlob));
 }
 
-D3D12_SHADER_BYTECODE CStandardShader::CreatePixelShader()
+D3D12_SHADER_BYTECODE StandardShader::CreatePixelShader()
 {
-	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSStandard", "ps_5_1", &m_pd3dPixelShaderBlob));
+	return(Shader::CompileShaderFromFile(L"Shaders.hlsl", "PSStandard", "ps_5_1", &m_pd3dPixelShaderBlob));
 }
