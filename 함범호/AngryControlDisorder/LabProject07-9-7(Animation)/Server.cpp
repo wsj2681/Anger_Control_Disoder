@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "Player.h"
 #include "Scene.h"
+#include "AnimationController.h"
 
 Server::Server()
 {
@@ -85,22 +86,44 @@ void Server::Server_recv()
 		cscene->hierarchicalGameObjects[1]->SetUp(player_up.x, player_up.y, player_up.z);
 		cscene->hierarchicalGameObjects[1]->SetLook(player_look.x, player_look.y, player_look.z);
 
+		
+
 		// 상대클라 애니메이션
-		if (recv_attackAnddefend.leftHand) {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftHand ? ANIMATION_ATTACK_LOOP : ANIMATION_IDLE);
-		}
-
-
-		if (col.check_collide) {
-			cout << "COLLIDE! " << endl;
-			other_object->isCollide = true;
-
+		if (recv_attackAnddefend.checkAni) {
+			if (recv_attackAnddefend.leftHand) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftHand ? ANIMATION_ATTACK_LOOP : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.rightHand) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightHand ? ANIMATION_ATTACK_LOOP : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.foot) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.foot ? ANIMATION_ATTACK_KICK : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.rightGuard) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightGuard ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.leftGuard) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftGuard ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.middleGuard) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.middleGuard ? ANIMATION_GUARD_BODY : ANIMATION_IDLE);
+			}
 		}
 		else {
-			cout << "NOT COLLIDE! " << endl;
-			other_object->isCollide = false;
-
+			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE);
+		
 		}
+		////충돌처리확인
+		//if (col.check_collide) {
+		//	cout << "COLLIDE! " << endl;
+		//	other_object->isCollide = true;
+
+		//}
+		//else {
+		//	cout << "NOT COLLIDE! " << endl;
+		//	other_object->isCollide = false;
+
+		//}
 
 	}
 
@@ -115,6 +138,8 @@ void Server::attackAndGuard_idle() {
 	send_attackAnddefend.leftGuard = false;
 	send_attackAnddefend.rightGuard = false;
 	send_attackAnddefend.middleGuard = false;
+
+	send_attackAnddefend.checkAni = false;
 
 }
 

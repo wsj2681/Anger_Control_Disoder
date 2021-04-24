@@ -50,6 +50,8 @@ struct AttackAndDefend {
 	bool rightGuard = false;
 	bool middleGuard = false;
 
+	bool checkAni = false;
+
 };
 #pragma pack(pop)
 

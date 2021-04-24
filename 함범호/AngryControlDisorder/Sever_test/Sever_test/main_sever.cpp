@@ -34,6 +34,7 @@ BoundingOrientedBox obb[3];
 collide col;
 void SetOBB(Thread_id id, const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation);
 bool checkcollition();
+bool checkAnimation(AttackAndDefend attAdef);
 
 
 int cou = 0;
@@ -198,6 +199,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		else if (retval == 0)
 			break;
 
+		attAdef.checkAni = checkAnimation(attAdef);
+
 		//충돌박스 만들기
 		player_position.x = player.player_world._41;
 		player_position.y = player.player_world._42;
@@ -287,4 +290,23 @@ bool checkcollition() {
 		//cout << "NOT  COLLIDE! " << endl;
 		return false;
 	}
+}
+bool checkAnimation(AttackAndDefend attAdef) {
+
+	if (attAdef.leftHand)
+		return true;
+	else if (attAdef.rightHand)
+		return true;
+	else if (attAdef.foot)
+		return true;
+	else if (attAdef.leftGuard)
+		return true;
+	else if (attAdef.rightGuard)
+		return true;
+	else if (attAdef.middleGuard)
+		return true;
+
+	return false;
+
+
 }
