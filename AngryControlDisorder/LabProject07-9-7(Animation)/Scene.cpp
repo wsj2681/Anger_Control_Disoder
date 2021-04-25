@@ -30,6 +30,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvGPUDescriptorNextHandle;
 
 #define OTHERPLAYER 1
 #define CUBEOBJECT 2
+#define SPHEHROBJECT 3
 
 Scene::Scene()
 {
@@ -207,6 +208,13 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	cube->isActive = false;
 	cube->SetScale(1.5f, 1.5f, 1.5f);
 	hierarchicalGameObjects.push_back(cube);
+
+	ModelInfo* sphereModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/sphere.bin", nullptr);
+	Object* sphere = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, sphereModel, 1);
+	sphere->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	sphere->isActive = false;
+	sphere->SetScale(1.5f, 1.5f, 1.5f);
+	hierarchicalGameObjects.push_back(sphere);
 
 	if (cubeModel) delete cubeModel;
 
@@ -698,8 +706,8 @@ void Scene::AnimateObjects(float fTimeElapsed)
 			m_pLights[i].m_bEnable = false;
 		}
 	}
-
-
+	hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+	hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = !hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
@@ -733,26 +741,71 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 			object->Render(pd3dCommandList, pCamera);
 		}
 	}
+
+	// 충돌 할때 막은 상태라면 구를 렌더링 하고
+	// 그게 아니고 맞은 상태라면 정육면체를 렌더링한다.
+
 	if (m_pPlayer->rHand->isCollide)
 	{
-		hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->rHand->GetPosition());
-		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+		// 플레이어-오른손공격 : 아더플레이어-왼손방어
+		if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState != STATE_GUARD_LEFT_HEAD)
+		{
+			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->rHand->GetPosition());
+			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+
+		}
+		else
+		{
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->SetPosition(m_pPlayer->lHand->GetPosition());
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+		}
 	}
 	if (m_pPlayer->lHand->isCollide)
 	{
-		hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->lHand->GetPosition());
-		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+		// 플레이어-왼손공격 : 아더플레이어-오른손방어
+		if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState != STATE_GUARD_RIGHT_HEAD)
+		{
+			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->lHand->GetPosition());
+			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;
+		}
+		else
+		{
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->SetPosition(m_pPlayer->lHand->GetPosition());
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;
+		}
 	}
 	if (m_pPlayer->head->isCollide)
 	{
-		hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->head->GetPosition());
-		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+		// 플레이어-오른손방어 : 아더플레이어-왼손공격
+		if (m_pPlayer->nowState == STATE_GUARD_RIGHT_HEAD && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_LEFT_HOOK)
+		{
+			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->head->GetPosition());
+			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+		}
+	
+		else if (m_pPlayer->nowState == STATE_GUARD_LEFT_HEAD && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_RIGHT_HOOK)
+		{
+			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->spine->GetPosition());
+			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+		}
+		else
+		{
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->SetPosition(m_pPlayer->lHand->GetPosition());
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;
+
+		}
 	}
-	if (m_pPlayer->spine->isCollide)
-	{
-		hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->spine->GetPosition());
-		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
-	}
+
+	// 전면방어를 보여줄 공격
+	//if (m_pPlayer->spine->isCollide)
+	//{
+	//	// 플레이어-전면방어 : 아더플레이어-아무손공격
+	//	if (m_pPlayer->nowState == STATE_GUARD_BODY && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_RIGHT_HOOK)
+	//	{
+	//		hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->spine->GetPosition());
+	//		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+	//	}
+	//}
 
 	soundManager->Update();
 }

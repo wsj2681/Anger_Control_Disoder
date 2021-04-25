@@ -286,6 +286,7 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	{
 		case WM_KEYUP:
 			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_IDLE;
 			switch (wParam)
 			{
 				case VK_ESCAPE:
@@ -475,10 +476,12 @@ void Engine::ProcessInput()
 		if (pKeysBuffer['4'] & 0xF0)
 		{
 			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['4'] & 0xF0 ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_GUARD_LEFT_HEAD;
 		}
 		if (pKeysBuffer['5'] & 0xF0)
 		{
 			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['5'] & 0xF0 ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_GUARD_RIGHT_HEAD;
 		}
 		if (pKeysBuffer['6'] & 0xF0)
 		{

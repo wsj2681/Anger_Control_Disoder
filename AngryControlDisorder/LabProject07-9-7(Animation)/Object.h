@@ -20,6 +20,8 @@
 #define STATE_GUARD_LEFT_HEAD 0x04
 #define STATE_GUARD_RIGHT_HEAD 0x08
 #define STATE_GUARD_BODY 0x10
+#define STATE_ATTACK_RIGHT_HOOK 0x11
+#define STATE_ATTACK_LEFT_HOOK 0x12
 
 class Shader;
 class AnimationController;
