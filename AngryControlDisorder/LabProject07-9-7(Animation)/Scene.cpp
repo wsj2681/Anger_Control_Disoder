@@ -766,18 +766,18 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 	if (m_pPlayer->head->isCollide)
 	{
 		// 플레이어-오른손방어 : 아더플레이어-왼손공격
-		if (m_pPlayer->nowState == STATE_GUARD_RIGHT_HEAD && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_LEFT_HOOK)
+		if (m_pPlayer->nowState == STATE_GUARD_RIGHT_HEAD && ((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_LEFT_HOOK)||(hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_IDLE)))
 		{
 			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->head->GetPosition());
 			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
 		}
 	
-		else if (m_pPlayer->nowState == STATE_GUARD_LEFT_HEAD && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_RIGHT_HOOK)
+		else if (m_pPlayer->nowState == STATE_GUARD_LEFT_HEAD && ((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_RIGHT_HOOK) || (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_IDLE)))
 		{
 			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->spine->GetPosition());
 			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
 		}
-		else
+		else// 공격을 제외한 상태일떄가 너무 많아서 맞으면 그냥 생김..
 		{
 			hierarchicalGameObjects.data()[SPHEHROBJECT]->SetPosition(m_pPlayer->lHand->GetPosition());
 			hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;

@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "Player.h"
 #include "Scene.h"
+#include "AnimationController.h"
 
 Server::Server()
 {
@@ -43,7 +44,16 @@ void Server::Server_send()
 
 		player.player_world = cplayer->m_xmf4x4World;
 
+		player.player_Head = cobject->head->m_xmf4x4World;
+		player.player_rHand = cobject->rHand->m_xmf4x4World;
+		player.player_lHand = cobject->lHand->m_xmf4x4World;
+		player.player_rFoot = cobject->rFoot->m_xmf4x4World;
+		player.player_lFoot = cobject->lFoot->m_xmf4x4World;
+		player.player_Spine = cobject->spine->m_xmf4x4World;
+
 		retval = send(sock, (char*)&player, sizeof(player), 0);
+
+		retval = send(sock, (char*)&send_attackAnddefend, sizeof(send_attackAnddefend), 0);
 
 
 	}
@@ -64,48 +74,121 @@ void Server::Server_recv()
 	else {
 		retval = recv(sock, (char*)&other_player, sizeof(other_player), 0);
 		retval = recv(sock, (char*)&col, sizeof(col), 0);
-		retval = recv(sock, (char*)&bScenario, sizeof(bScenario), 0);
+		retval = recv(sock, (char*)&recv_attackAnddefend, sizeof(recv_attackAnddefend), 0);
+
+
+		//retval = recv(sock, (char*)&bScenario, sizeof(bScenario), 0);
 		//cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
 
 		//save_world.player_world =  cscene->m_ppHierarchicalGameObjects[0]->m_xmf4x4World;
 
-		player_position.x = other_player.player_world._41;
-		player_position.y = other_player.player_world._42;
-		player_position.z = other_player.player_world._43;
-
-		player_right.x = other_player.player_world._11;
-		player_right.y = other_player.player_world._12;
-		player_right.z = other_player.player_world._13;
-
-		player_up.x = other_player.player_world._21;
-		player_up.y = other_player.player_world._22;
-		player_up.z = other_player.player_world._23;
-
-		player_look.x = other_player.player_world._31;
-		player_look.y = other_player.player_world._32;
-		player_look.z = other_player.player_world._33;
+		otherPlayerPositionSet();
 
 
 		//cout << player_position.x << " / " << player_position.y << " / " << player_position.z << endl;
 
+		//상대 클라 위치설정
 		cscene->hierarchicalGameObjects[1]->SetPosition(player_position.x, player_position.y, player_position.z);
 		cscene->hierarchicalGameObjects[1]->SetRight(player_right.x, player_right.y, player_right.z);
 		cscene->hierarchicalGameObjects[1]->SetUp(player_up.x, player_up.y, player_up.z);
 		cscene->hierarchicalGameObjects[1]->SetLook(player_look.x, player_look.y, player_look.z);
 
-		if (col.check_collide) {
+		cscene->hierarchicalGameObjects[1]->nowState = other_player.nowState;
+
+
+		// 상대클라 애니메이션
+		if (recv_attackAnddefend.checkAni) {
+			if (recv_attackAnddefend.leftHand) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftHand ? ANIMATION_HOOK_L : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.rightHand) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightHand ? ANIMATION_HOOK_R : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.jab) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.jab ? ANIMATION_JAB : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.rightGuard) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightGuard ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.leftGuard) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftGuard ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.middleGuard) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.middleGuard ? ANIMATION_GUARD_BODY : ANIMATION_IDLE);
+			}
+		}
+		else {
+			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE);
+
+		}
+		//충돌처리확인
+		/*if (col.check_collide) {
 			cout << "COLLIDE! " << endl;
-			other_object->isCollide = true;
+			cobject->isCollide = true;
 
 		}
 		else {
 			cout << "NOT COLLIDE! " << endl;
-			other_object->isCollide = false;
+			cobject->isCollide = false;
 
+		}*/
+
+		if (col.rHand2Head) {
+			cplayer->rHand->isCollide = true;
+			cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
 		}
+		else
+			cplayer->rHand->isCollide = false;
+
+		if (col.lHand2Head) {
+			cplayer->lHand->isCollide = true;
+			cout << "LEFT HAND - HEAD COLLIDE! " << endl;
+		}
+		else
+			cplayer->lHand->isCollide = false;
+
+		if (col.headHitted) {
+			cplayer->head->isCollide = true;
+		}
+		else
+			cplayer->head->isCollide = false;
+
+		/*if (col.rHand2Spine)
+			cout << "SPINE COLLIDE! " << endl;*/
 
 	}
 
 
 }
 
+void Server::attackAndGuard_idle() {
+	send_attackAnddefend.rightHand = false;
+	send_attackAnddefend.leftHand = false;
+	send_attackAnddefend.jab = false;
+
+	send_attackAnddefend.leftGuard = false;
+	send_attackAnddefend.rightGuard = false;
+	send_attackAnddefend.middleGuard = false;
+
+	send_attackAnddefend.checkAni = false;
+
+}
+
+void Server::otherPlayerPositionSet()
+{
+	player_position.x = other_player.player_world._41;
+	player_position.y = other_player.player_world._42;
+	player_position.z = other_player.player_world._43;
+
+	player_right.x = other_player.player_world._11;
+	player_right.y = other_player.player_world._12;
+	player_right.z = other_player.player_world._13;
+
+	player_up.x = other_player.player_world._21;
+	player_up.y = other_player.player_world._22;
+	player_up.z = other_player.player_world._23;
+
+	player_look.x = other_player.player_world._31;
+	player_look.y = other_player.player_world._32;
+	player_look.z = other_player.player_world._33;
+}

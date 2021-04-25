@@ -20,6 +20,16 @@ struct Player_world {
 
 	XMFLOAT4X4 player_world;
 
+
+	XMFLOAT4X4 player_Head;
+	XMFLOAT4X4 player_rHand;
+	XMFLOAT4X4 player_lHand;
+	XMFLOAT4X4 player_rFoot;
+	XMFLOAT4X4 player_lFoot;
+	XMFLOAT4X4 player_Spine;
+
+	UINT nowState = STATE_IDLE;
+
 };
 #pragma pack(pop)
 
@@ -35,6 +45,41 @@ struct Thread_id {
 struct collide {
 
 	bool check_collide = false;
+
+	bool rHand2rHand = false;
+	bool rHand2lHand = false;
+	bool rHand2Spine = false;
+	bool rHand2Head = false;
+
+	bool lHand2rHand = false;
+	bool lHand2lHand = false;
+	bool lHand2Spine = false;
+	bool lHand2Head = false;
+
+	bool rFoot2Spine = false;
+	bool rFoot2Head = false;
+
+	bool lFoot2Spine = false;
+	bool lFoot2Head = false;
+
+	bool headHitted = false;
+	bool spineHitted = false;
+
+};
+#pragma pack(pop)
+
+#pragma pack(push,1)
+struct AttackAndDefend {
+
+	bool leftHand = false;
+	bool rightHand = false;
+	bool jab = false;
+
+	bool leftGuard = false;
+	bool rightGuard = false;
+	bool middleGuard = false;
+
+	bool checkAni = false;
 
 };
 #pragma pack(pop)
@@ -61,7 +106,7 @@ class Server
 public:
 	Player* cplayer;
 	Scene* cscene;
-	Object* other_object;
+	Object* cobject;
 
 	SOCKET sock;
 	int retval = 0;
@@ -78,6 +123,13 @@ public:
 
 	Thread_id thread_id;
 	collide col;
+
+	AttackAndDefend send_attackAnddefend;
+	AttackAndDefend recv_attackAnddefend;
+
+
+
+
 	bool bScenario{ false };
 
 	int send_count = 0;
@@ -89,6 +141,10 @@ public:
 	void Server_send();
 
 	void Server_recv();
+
+	void attackAndGuard_idle();
+
+	void otherPlayerPositionSet();
 
 
 
