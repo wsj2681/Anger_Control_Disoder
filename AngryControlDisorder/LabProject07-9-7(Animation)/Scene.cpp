@@ -645,10 +645,6 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case VK_F6:
 			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 6);
 			break;
-		case VK_INSERT:
-			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->rHand->GetPosition());
-			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
-			break;
 		default:
 			break;
 		}
@@ -736,6 +732,26 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 
 			object->Render(pd3dCommandList, pCamera);
 		}
+	}
+	if (m_pPlayer->rHand->isCollide)
+	{
+		hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->rHand->GetPosition());
+		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+	}
+	if (m_pPlayer->lHand->isCollide)
+	{
+		hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->lHand->GetPosition());
+		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+	}
+	if (m_pPlayer->head->isCollide)
+	{
+		hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->head->GetPosition());
+		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+	}
+	if (m_pPlayer->spine->isCollide)
+	{
+		hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->spine->GetPosition());
+		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
 	}
 
 	soundManager->Update();
