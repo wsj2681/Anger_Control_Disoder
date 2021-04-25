@@ -773,5 +773,5 @@ void Object::MoveTo(XMFLOAT3 destination)
 
 void Object::UpdateWayPoints()
 {
-	cout << "Object::UpdateWayPoints" << endl;
+	//cout << "Object::UpdateWayPoints" << endl;
 }

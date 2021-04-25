@@ -463,15 +463,18 @@ void Engine::ProcessInput()
 
 		if (pKeysBuffer['1'] & 0xF0)
 		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['1'] & 0xF0 ? ANIMATION_ATTACK_LOOP : ANIMATION_IDLE);
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['1'] & 0xF0 ? ANIMATION_HOOK_L : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_ATTACK_LEFT_HOOK;
 		}
 		if (pKeysBuffer['2'] & 0xF0)
 		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['2'] & 0xF0 ? ANIMATION_ATTACK_LOOP : ANIMATION_IDLE);
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['2'] & 0xF0 ? ANIMATION_HOOK_R : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
 		}
 		if (pKeysBuffer['3'] & 0xF0)
 		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['3'] & 0xF0 ? ANIMATION_ATTACK_KICK : ANIMATION_IDLE);
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['3'] & 0xF0 ? ANIMATION_JAB : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_ATTACK_JAB;
 		}
 		if (pKeysBuffer['4'] & 0xF0)
 		{
@@ -486,6 +489,7 @@ void Engine::ProcessInput()
 		if (pKeysBuffer['6'] & 0xF0)
 		{
 			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['6'] & 0xF0 ? ANIMATION_GUARD_BODY : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_GUARD_BODY;
 		}
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
