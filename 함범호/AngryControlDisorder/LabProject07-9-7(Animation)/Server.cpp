@@ -44,6 +44,13 @@ void Server::Server_send()
 
 		player.player_world = cplayer->m_xmf4x4World;
 
+		player.player_Head = cobject->head->m_xmf4x4World;
+		player.player_rHand = cobject->rHand->m_xmf4x4World;
+		player.player_lHand = cobject->lHand->m_xmf4x4World;
+		player.player_rFoot = cobject->rFoot->m_xmf4x4World;
+		player.player_lFoot = cobject->lFoot->m_xmf4x4World;
+		player.player_Spine = cobject->spine->m_xmf4x4World;
+
 		retval = send(sock, (char*)&player, sizeof(player), 0);
 
 		retval = send(sock, (char*)&send_attackAnddefend, sizeof(send_attackAnddefend), 0);
@@ -113,17 +120,22 @@ void Server::Server_recv()
 			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE);
 		
 		}
-		////面倒贸府犬牢
-		//if (col.check_collide) {
-		//	cout << "COLLIDE! " << endl;
-		//	other_object->isCollide = true;
+		//面倒贸府犬牢
+		if (col.check_collide) {
+			cout << "COLLIDE! " << endl;
+			cobject->isCollide = true;
 
-		//}
-		//else {
-		//	cout << "NOT COLLIDE! " << endl;
-		//	other_object->isCollide = false;
+		}
+		else {
+			cout << "NOT COLLIDE! " << endl;
+			cobject->isCollide = false;
 
-		//}
+		}
+
+		if(col.rHand2Head)
+			cout << "HEAD COLLIDE! " << endl;
+		if(col.rHand2Spine)
+			cout << "SPINE COLLIDE! " << endl;
 
 	}
 

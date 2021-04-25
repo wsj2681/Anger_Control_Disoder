@@ -25,16 +25,27 @@ Player_world thread_num_2_player;
 
 int thread_empty[MAXTHREAD] = { 0, };
 
+void setPosition(XMFLOAT3& fl3x3, XMFLOAT4X4& fl4x4);
+
 //애니메이션
 AttackAndDefend recv_attackAnddefend[3];
-
+bool checkAnimation(AttackAndDefend attAdef);
 
 //충돌처리
-BoundingOrientedBox obb[3];
-collide col;
-void SetOBB(Thread_id id, const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation);
-bool checkcollition();
-bool checkAnimation(AttackAndDefend attAdef);
+BoundingOrientedBox player_obb[3];
+collide col1;
+collide col2;
+void SetOBB(BoundingOrientedBox* obb,Thread_id id, const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation);
+bool checkcollition(BoundingOrientedBox& first_obb, BoundingOrientedBox& second_obb,int i);
+
+BoundingOrientedBox lHand_obb[3];
+BoundingOrientedBox rHand_obb[3];
+BoundingOrientedBox rFoot_obb[3];
+BoundingOrientedBox lFoot_obb[3];
+BoundingOrientedBox Head_obb[3];
+BoundingOrientedBox Spine_obb[3];
+
+
 
 
 int cou = 0;
@@ -136,7 +147,13 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	char buf[2];
 	char GameReady[6];
 
-	XMFLOAT3 player_position;
+	XMFLOAT3 player_position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_rHand = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_lHand = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_rFoot = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_lFoot = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_Head = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_Spine = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	ZeroMemory(&buf, sizeof(buf));
 
@@ -166,9 +183,17 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	////월드좌표계 초기화
 	//XMStoreFloat4x4(&other_player.player_world, XMMatrixIdentity());
 	XMStoreFloat4x4(&player.player_world, XMMatrixIdentity());
-
+	XMStoreFloat4x4(&player.player_Head, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_lFoot, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_lHand, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_rFoot, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_rHand, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_Spine, XMMatrixIdentity());
+	
 	XMStoreFloat4x4(&thread_num_1_player.player_world, XMMatrixIdentity());
 	XMStoreFloat4x4(&thread_num_2_player.player_world, XMMatrixIdentity());
+
+	
 
 
 	while (true) {
@@ -202,13 +227,31 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		attAdef.checkAni = checkAnimation(attAdef);
 
 		//충돌박스 만들기
-		player_position.x = player.player_world._41;
-		player_position.y = player.player_world._42;
-		player_position.z = player.player_world._43;
-		SetOBB(thread_id, player_position, XMFLOAT3(2.2f, 11.f, 2.2f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		setPosition(player_position, player.player_world);
+		
+		SetOBB(player_obb,thread_id, player_position, XMFLOAT3(2.2f, 11.f, 2.2f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+
+		setPosition(player_Head, player.player_Head);
+		SetOBB(Head_obb, thread_id, player_Head, XMFLOAT3(1.0f, 2.f, 1.0f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+
+		setPosition(player_rHand, player.player_rHand);
+		SetOBB(rHand_obb, thread_id, player_rHand, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+
+		setPosition(player_lHand, player.player_lHand);
+		SetOBB(lHand_obb, thread_id, player_lHand, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+
+		setPosition(player_rFoot, player.player_rFoot);
+		SetOBB(rFoot_obb, thread_id, player_rFoot, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+
+		setPosition(player_lFoot, player.player_lFoot);
+		SetOBB(lFoot_obb, thread_id, player_lFoot, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+
+		setPosition(player_Spine, player.player_Spine);
+		SetOBB(Spine_obb, thread_id, player_Spine, XMFLOAT3(1.f, 9.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+
 
 		cout << thread_id.thread_num << "     " << player_position.x << endl;
-		cout << thread_id.thread_num << "    " << obb[thread_id.thread_num].Center.x << endl;
+		cout << thread_id.thread_num << "    " << player_obb[thread_id.thread_num].Center.x << endl;
 		/*if(cou % 4 == 0)
 		cout << "SETOBB SUCCESS!" << endl;*/
 
@@ -227,8 +270,28 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			cout << " 111 leftguard   : " << recv_attackAnddefend[thread_id.thread_num].leftGuard << endl;
 			cout << " 111 middleguard : " << recv_attackAnddefend[thread_id.thread_num].middleGuard << endl;*/
 
+			//첫번쨰접속 쓰레드한테 충돌처리
+			col1.check_collide = checkcollition(player_obb[0], player_obb[1],0);
+
+			// 가드됫을경우
+			col1.rHand2rHand = checkcollition(rHand_obb[0], rHand_obb[1],1);
+			col1.rHand2lHand = checkcollition(rHand_obb[0], lHand_obb[1],2);
+			col1.lHand2rHand = checkcollition(lHand_obb[0], rHand_obb[1],3);
+			col1.lHand2lHand = checkcollition(lHand_obb[0], lHand_obb[1],4);
+			if (!(col1.rHand2rHand || col1.rHand2lHand || col1.lHand2rHand || col1.lHand2lHand)) {
+				//공격 성공
+					//오른손 공격
+				col1.rHand2Head = checkcollition(rHand_obb[0], Head_obb[1],5);
+				col1.rHand2Spine = checkcollition(rHand_obb[0], Spine_obb[1],6);
+				// 왼속공격
+				col1.lHand2Head = checkcollition(lHand_obb[0], Head_obb[1],7);
+				col1.lHand2Spine = checkcollition(lHand_obb[0], Spine_obb[1],8);
+			}
+				
+
+
 			retval = send(thread_client_sock, (char*)&thread_num_2_player, sizeof(thread_num_2_player), 0);
-			retval = send(thread_client_sock, (char*)&col, sizeof(col), 0);
+			retval = send(thread_client_sock, (char*)&col2, sizeof(col2), 0);
 			/*cout << "thread_1 of thread_2 value = " << thread_id.thread_num << " / " << thread_num_2_player.player_world._41 <<
 				" ," << thread_num_2_player.player_world._42 << ", " << thread_num_2_player.player_world._43 << endl;
 		*/
@@ -242,12 +305,26 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			recv_attackAnddefend[thread_id.thread_num] = attAdef;
 			
 			//두번쨰접속 쓰레드한테 충돌처리
-			col.check_collide = checkcollition();
+			col2.check_collide = checkcollition(player_obb[1],player_obb[0],17);
 
+			// 가드됫을경우
+			col2.rHand2rHand = checkcollition(rHand_obb[1], rHand_obb[0],9);
+			col2.rHand2lHand = checkcollition(rHand_obb[1], lHand_obb[0],10);
+			col2.lHand2rHand = checkcollition(lHand_obb[1], rHand_obb[0],11);
+			col2.lHand2lHand = checkcollition(lHand_obb[1], lHand_obb[0],12);
+			if (!(col2.rHand2rHand || col2.rHand2lHand || col2.lHand2rHand || col2.lHand2lHand)) {
+				//공격 성공
+					//오른손 공격
+				col2.rHand2Head = checkcollition(rHand_obb[1], Head_obb[0],13);
+				col2.rHand2Spine = checkcollition(rHand_obb[1], Spine_obb[0],14);
+				// 왼속공격
+				col2.lHand2Head = checkcollition(lHand_obb[1], Head_obb[0],15);
+				col2.lHand2Spine = checkcollition(lHand_obb[1], Spine_obb[0],16);
+			}
 			
 
 			retval = send(thread_client_sock, (char*)&thread_num_1_player, sizeof(thread_num_1_player), 0);
-			retval = send(thread_client_sock, (char*)&col, sizeof(col), 0);
+			retval = send(thread_client_sock, (char*)&col1, sizeof(col1), 0);
 
 			/*cout << "thread_2 of thread_1 value = " << thread_id.thread_num << " / " << thread_num_1_player.player_world._41 <<
 				" ," << thread_num_1_player.player_world._42 << ", " << thread_num_1_player.player_world._43 << endl;*/
@@ -275,14 +352,14 @@ void display_error(const char* msg, int err_no)
 	LocalFree(lpMsgBuf);
 }
 
-void SetOBB(Thread_id id, const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation) {
+void SetOBB(BoundingOrientedBox* obb, Thread_id id, const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation) {
 	obb[id.thread_num - 1].Center = center;
 	obb[id.thread_num - 1].Extents = extents;
 	obb[id.thread_num - 1].Orientation = orientation;
 }
-bool checkcollition() {
-	if (obb[0].Intersects(obb[1])) {
-		cout << "COLLIDE! " << endl;
+bool checkcollition(BoundingOrientedBox& first_obb, BoundingOrientedBox& second_obb,int i) {
+	if (second_obb.Intersects(first_obb)) {
+		cout << i<<" - COLLIDE! " << endl;
 		//충돌됨
 		return true;
 	}
@@ -308,5 +385,12 @@ bool checkAnimation(AttackAndDefend attAdef) {
 
 	return false;
 
+
+}
+
+void setPosition(XMFLOAT3& fl3x3, XMFLOAT4X4& fl4x4) {
+	fl3x3.x = fl4x4._41;
+	fl3x3.y = fl4x4._42;
+	fl3x3.z = fl4x4._43;
 
 }

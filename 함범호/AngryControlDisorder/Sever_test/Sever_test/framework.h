@@ -66,6 +66,13 @@ struct Player_world {
 
 	XMFLOAT4X4 player_world;
 
+	XMFLOAT4X4 player_Head;
+	XMFLOAT4X4 player_rHand;
+	XMFLOAT4X4 player_lHand;
+	XMFLOAT4X4 player_rFoot;
+	XMFLOAT4X4 player_lFoot;
+	XMFLOAT4X4 player_Spine;
+
 };
 #pragma pack(pop)
 
@@ -81,6 +88,22 @@ struct Thread_id {
 struct collide {
 
 	bool check_collide = false;
+	
+	bool rHand2rHand = false;
+	bool rHand2lHand = false;
+	bool rHand2Spine = false;
+	bool rHand2Head = false;
+
+	bool lHand2rHand = false;
+	bool lHand2lHand = false;
+	bool lHand2Spine = false;
+	bool lHand2Head = false;
+
+	bool rFoot2Spine = false;
+	bool rFoot2Head = false;
+
+	bool lFoot2Spine = false;
+	bool lFoot2Head = false;
 
 };
 #pragma pack(pop)

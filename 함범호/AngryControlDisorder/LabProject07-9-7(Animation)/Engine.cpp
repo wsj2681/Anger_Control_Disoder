@@ -402,7 +402,7 @@ void Engine::BuildObjects()
 	////server//////////////
 	server->cplayer = m_pPlayer;
 	server->cscene = m_pScene;
-	server->other_object = m_pScene->hierarchicalGameObjects[1];
+	server->cobject = m_pScene->hierarchicalGameObjects[1];
 	/// /////////////////////////////
 #endif // _WITH_SERVER_CONNECT
 
