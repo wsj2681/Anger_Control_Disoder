@@ -286,6 +286,7 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	{
 		case WM_KEYUP:
 			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_IDLE;
 			switch (wParam)
 			{
 				case VK_ESCAPE:
@@ -462,28 +463,32 @@ void Engine::ProcessInput()
 
 		if (pKeysBuffer['1'] & 0xF0)
 		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['1'] & 0xF0 ? ANIMATION_ATTACK_LOOP : ANIMATION_IDLE);
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['1'] & 0xF0 ? ANIMATION_HOOK_L : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_ATTACK_LEFT_HOOK;
 #ifdef _WITH_SERVER_CONNECT
 			server->send_attackAnddefend.leftHand = true;
 #endif // _WITH_SERVER_CONNECT
 		}
 		if (pKeysBuffer['2'] & 0xF0)
 		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['2'] & 0xF0 ? ANIMATION_ATTACK_LOOP : ANIMATION_IDLE);
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['2'] & 0xF0 ? ANIMATION_HOOK_R : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
 #ifdef _WITH_SERVER_CONNECT
 			server->send_attackAnddefend.rightHand = true;
 #endif // _WITH_SERVER_CONNECT
 		}
 		if (pKeysBuffer['3'] & 0xF0)
 		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['3'] & 0xF0 ? ANIMATION_ATTACK_KICK : ANIMATION_IDLE);
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['3'] & 0xF0 ? ANIMATION_JAB : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_ATTACK_JAB;
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.foot = true;
+			server->send_attackAnddefend.jab = true;
 #endif // _WITH_SERVER_CONNECT
 		}
 		if (pKeysBuffer['4'] & 0xF0)
 		{
 			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['4'] & 0xF0 ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_GUARD_LEFT_HEAD;
 #ifdef _WITH_SERVER_CONNECT
 			server->send_attackAnddefend.leftGuard = true;
 #endif // _WITH_SERVER_CONNECT
@@ -491,6 +496,7 @@ void Engine::ProcessInput()
 		if (pKeysBuffer['5'] & 0xF0)
 		{
 			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['5'] & 0xF0 ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_GUARD_RIGHT_HEAD;
 #ifdef _WITH_SERVER_CONNECT
 			server->send_attackAnddefend.rightGuard = true;
 #endif // _WITH_SERVER_CONNECT
@@ -498,6 +504,7 @@ void Engine::ProcessInput()
 		if (pKeysBuffer['6'] & 0xF0)
 		{
 			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['6'] & 0xF0 ? ANIMATION_GUARD_BODY : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_GUARD_BODY;
 #ifdef _WITH_SERVER_CONNECT
 			server->send_attackAnddefend.middleGuard = true;
 #endif // _WITH_SERVER_CONNECT
@@ -574,12 +581,10 @@ void Engine::FrameAdvance()
 	//if (i == 0) {
 	server->Server_send();
 	server->Server_recv();
-
-	//공격과 방어 초기화
-	server->attackAndGuard_idle();
 	//++i;
 	//}
-
+	//공격과 방어 초기화
+	server->attackAndGuard_idle();
 	//server->Server_send();
 
 	///////////////////////////////////////

@@ -4,6 +4,15 @@
 #define SERVERPORT 9000
 #define BUFSIZE    512
 
+#define STATE_IDLE 0x01
+#define STATE_MOVE 0x02
+#define STATE_ATTACK_LEFT_HOOK 0x03
+#define STATE_ATTACK_RIGHT_HOOK 0x04
+#define STATE_ATTACK_JAB 0x05
+#define STATE_GUARD_LEFT_HEAD 0x06
+#define STATE_GUARD_RIGHT_HEAD 0x07
+#define STATE_GUARD_BODY 0x08
+
 #include <iostream>
 
 using namespace std;
@@ -73,6 +82,8 @@ struct Player_world {
 	XMFLOAT4X4 player_lFoot;
 	XMFLOAT4X4 player_Spine;
 
+	UINT nowState = STATE_IDLE;
+
 };
 #pragma pack(pop)
 
@@ -88,7 +99,7 @@ struct Thread_id {
 struct collide {
 
 	bool check_collide = false;
-	
+
 	bool rHand2rHand = false;
 	bool rHand2lHand = false;
 	bool rHand2Spine = false;
@@ -105,6 +116,9 @@ struct collide {
 	bool lFoot2Spine = false;
 	bool lFoot2Head = false;
 
+	bool headHitted = false;
+	bool spineHitted = false;
+
 };
 #pragma pack(pop)
 
@@ -113,7 +127,7 @@ struct AttackAndDefend {
 
 	bool leftHand = false;
 	bool rightHand = false;
-	bool foot = false;
+	bool jab = false;
 
 	bool leftGuard = false;
 	bool rightGuard = false;

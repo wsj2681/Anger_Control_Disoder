@@ -30,6 +30,7 @@ D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvGPUDescriptorNextHandle;
 
 #define OTHERPLAYER 1
 #define CUBEOBJECT 2
+#define SPHEHROBJECT 3
 
 Scene::Scene()
 {
@@ -164,39 +165,28 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
-	/*
-	0 : Idle
-	1 : Beating Loop
-	2 : Step forward
-	3 : Step Backward
-	4 : Step Left
-	5 : Step Right
-	6 : KickCombo
-	7 : ceremony
-	8 : Taunt
-	*/
-	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerS.bin", nullptr);
+	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerR.bin", nullptr);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	boxer->SetPosition(21.3046f, 10.0f, -769.689f);
 
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 10.0f, -551.034f), 2);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 1.66975f, -533.916f), 2);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -527.249f), 2);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -107.806f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 1.66975f, -533.916f), ANIMATION_MOVE_FORWARD);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -527.249f), ANIMATION_MOVE_FORWARD);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -107.806f), ANIMATION_MOVE_FORWARD);
 
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f), 7);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f), 7);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f), 7);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f), 7);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f), 7);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f), 7);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -109.177f), 7);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -94.0986f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f), ANIMATION_CEREMONY);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f), ANIMATION_CEREMONY);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f), ANIMATION_CEREMONY);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f), ANIMATION_CEREMONY);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f), ANIMATION_CEREMONY);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f), ANIMATION_CEREMONY);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -109.177f), ANIMATION_CEREMONY);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -94.0986f), ANIMATION_MOVE_FORWARD);
 
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -78.1817f), 2);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -36.0f), 2);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, -36.0f), 2);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -78.1817f), ANIMATION_MOVE_FORWARD);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -36.0f), ANIMATION_MOVE_FORWARD);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, -36.0f), ANIMATION_MOVE_FORWARD);
 
 	hierarchicalGameObjects.push_back(boxer);
 	if (BoxerModel) delete BoxerModel;
@@ -207,6 +197,13 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	cube->isActive = false;
 	cube->SetScale(1.5f, 1.5f, 1.5f);
 	hierarchicalGameObjects.push_back(cube);
+
+	ModelInfo* sphereModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/sphere.bin", nullptr);
+	Object* sphere = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, sphereModel, 1);
+	sphere->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	sphere->isActive = false;
+	sphere->SetScale(1.5f, 1.5f, 1.5f);
+	hierarchicalGameObjects.push_back(sphere);
 
 	if (cubeModel) delete cubeModel;
 
@@ -645,10 +642,6 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case VK_F6:
 			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 6);
 			break;
-		case VK_INSERT:
-			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->rHand->GetPosition());
-			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
-			break;
 		default:
 			break;
 		}
@@ -702,8 +695,8 @@ void Scene::AnimateObjects(float fTimeElapsed)
 			m_pLights[i].m_bEnable = false;
 		}
 	}
-
-
+	hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+	hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = !hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
@@ -737,6 +730,71 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 			object->Render(pd3dCommandList, pCamera);
 		}
 	}
+
+	// 충돌 할때 막은 상태라면 구를 렌더링 하고
+	// 그게 아니고 맞은 상태라면 정육면체를 렌더링한다.
+
+	if (m_pPlayer->rHand->isCollide)
+	{
+		// 플레이어-오른손공격 : 아더플레이어-왼손방어
+		if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState != STATE_GUARD_LEFT_HEAD)
+		{
+			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->rHand->GetPosition());
+			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+
+		}
+		else
+		{
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->SetPosition(m_pPlayer->lHand->GetPosition());
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+		}
+	}
+	if (m_pPlayer->lHand->isCollide)
+	{
+		// 플레이어-왼손공격 : 아더플레이어-오른손방어
+		if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState != STATE_GUARD_RIGHT_HEAD)
+		{
+			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->lHand->GetPosition());
+			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;
+		}
+		else
+		{
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->SetPosition(m_pPlayer->lHand->GetPosition());
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;
+		}
+	}
+	if (m_pPlayer->head->isCollide)
+	{
+		// 플레이어-오른손방어 : 아더플레이어-왼손공격
+		if (m_pPlayer->nowState == STATE_GUARD_RIGHT_HEAD && ((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_LEFT_HOOK)||(hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_IDLE)))
+		{
+			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->head->GetPosition());
+			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+		}
+	
+		else if (m_pPlayer->nowState == STATE_GUARD_LEFT_HEAD && ((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_RIGHT_HOOK) || (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_IDLE)))
+		{
+			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->spine->GetPosition());
+			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+		}
+		else// 공격을 제외한 상태일떄가 너무 많아서 맞으면 그냥 생김..
+		{
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->SetPosition(m_pPlayer->lHand->GetPosition());
+			hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;
+
+		}
+	}
+
+	// 전면방어를 보여줄 공격
+	//if (m_pPlayer->spine->isCollide)
+	//{
+	//	// 플레이어-전면방어 : 아더플레이어-아무손공격
+	//	if (m_pPlayer->nowState == STATE_GUARD_BODY && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_RIGHT_HOOK)
+	//	{
+	//		hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->spine->GetPosition());
+	//		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
+	//	}
+	//}
 
 	soundManager->Update();
 }
