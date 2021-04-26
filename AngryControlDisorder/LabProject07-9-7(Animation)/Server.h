@@ -2,10 +2,6 @@
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
-//#define _WITH_SERVER_CONNECT
-
-
-
 using namespace std;
 
 

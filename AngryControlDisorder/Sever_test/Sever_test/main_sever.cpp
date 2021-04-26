@@ -229,22 +229,22 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		//충돌박스 만들기
 		setPosition(player_position, player.player_world);
 
-		SetOBB(player_obb, thread_id, player_position, XMFLOAT3(2.2f, 11.f, 2.2f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(player_obb, thread_id, player_position, XMFLOAT3(2.2f, 11.0f, 2.2f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_Head, player.player_Head);
-		SetOBB(Head_obb, thread_id, player_Head, XMFLOAT3(1.0f, 2.f, 1.0f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(Head_obb, thread_id, player_Head, XMFLOAT3(1.1f, 2.0f, 1.1f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_rHand, player.player_rHand);
-		SetOBB(rHand_obb, thread_id, player_rHand, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(rHand_obb, thread_id, player_rHand, XMFLOAT3(0.7f, 0.5f, 0.7f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_lHand, player.player_lHand);
-		SetOBB(lHand_obb, thread_id, player_lHand, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(lHand_obb, thread_id, player_lHand, XMFLOAT3(0.7f, 0.5f, 0.7f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_rFoot, player.player_rFoot);
-		SetOBB(rFoot_obb, thread_id, player_rFoot, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(rFoot_obb, thread_id, player_rFoot, XMFLOAT3(0.7f, 0.5f, 0.7f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_lFoot, player.player_lFoot);
-		SetOBB(lFoot_obb, thread_id, player_lFoot, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(lFoot_obb, thread_id, player_lFoot, XMFLOAT3(0.7f, 0.5f, 0.7f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_Spine, player.player_Spine);
 		SetOBB(Spine_obb, thread_id, player_Spine, XMFLOAT3(1.f, 9.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
