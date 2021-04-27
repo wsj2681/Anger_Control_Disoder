@@ -75,6 +75,10 @@ struct AttackAndDefend {
 	bool rightGuard = false;
 	bool middleGuard = false;
 
+	bool hitTorsoLeft = false;
+	bool hitTorsoRight = false;
+	bool hitTorsoStright = false;
+
 	bool checkAni = false;
 
 };

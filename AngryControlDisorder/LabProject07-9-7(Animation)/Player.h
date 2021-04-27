@@ -20,6 +20,9 @@
 #define ANIMATION_GUARD_RIGHT_HEAD 0x0A	// Close_One_Block_R
 #define ANIMATION_GUARD_BODY 0x0B		// Close_Both_Block
 #define ANIMATION_CEREMONY 0x0C			// ceremony
+#define ANIMATION_HIT_TORSO_LEFT_A 0x0D			// Hit_Torso_Left_A
+#define ANIMATION_HIT_TORSO_RIGHT_A 0x0E			// Hit_Torso_Right_A
+#define ANIMATION_HIT_TORSO_STRIGHT_A 0x0F			// Hit_Torso_Stright_A
 
 #include "Object.h"
 #include "Camera.h"

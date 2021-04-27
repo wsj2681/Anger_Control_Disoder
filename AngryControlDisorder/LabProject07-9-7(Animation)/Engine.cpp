@@ -509,6 +509,30 @@ void Engine::ProcessInput()
 			server->send_attackAnddefend.middleGuard = true;
 #endif // _WITH_SERVER_CONNECT
 		}
+		if (pKeysBuffer['7'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['7'] & 0xF0 ? ANIMATION_HIT_TORSO_LEFT_A: ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_HIT_TORSO_LEFT;
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.hitTorsoLeft = true;
+#endif // _WITH_SERVER_CONNECT
+		}
+		if (pKeysBuffer['8'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['8'] & 0xF0 ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_HIT_TORSO_RIGHT;
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.hitTorsoRight = true;
+#endif // _WITH_SERVER_CONNECT
+		}
+		if (pKeysBuffer['9'] & 0xF0)
+		{
+			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['9'] & 0xF0 ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_IDLE);
+			this->m_pPlayer->nowState = STATE_HIT_TORSO_STRIGHT;
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.hitTorsoStright = true;
+#endif // _WITH_SERVER_CONNECT
+		}
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;

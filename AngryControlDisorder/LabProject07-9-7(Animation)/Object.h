@@ -23,6 +23,9 @@
 #define STATE_GUARD_LEFT_HEAD 0x06
 #define STATE_GUARD_RIGHT_HEAD 0x07
 #define STATE_GUARD_BODY 0x08
+#define STATE_HIT_TORSO_LEFT 0x09
+#define STATE_HIT_TORSO_RIGHT 0x0A
+#define STATE_HIT_TORSO_STRIGHT 0x0B
 
 class Shader;
 class AnimationController;
