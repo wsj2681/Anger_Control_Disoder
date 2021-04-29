@@ -82,14 +82,14 @@ void Scene::BuildDefaultLightsAndMaterials()
 	{
 		m_pLights[i].m_bEnable = true;
 		m_pLights[i].m_nType = SPOT_LIGHT;
-		m_pLights[i].m_fRange = 300.0f;
+		m_pLights[i].m_fRange = 150.0f;
 		m_pLights[i].m_xmf4Ambient = XMFLOAT4(0.9f, 0.f, 0.f, 1.0f);
 		m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.f, 0.f, 1.0f);
 		m_pLights[i].m_xmf4Specular = XMFLOAT4(0.7f, 0.f, 0.f, 0.0f);
 		m_pLights[i].m_xmf3Position = lights.data()[i]->GetPosition();
 		//m_pLights[i].m_xmf3Direction = XMFLOAT3(0.f, 60.f, -252.6f);
 		m_pLights[i].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-		m_pLights[i].m_fFalloff = 8.0f;
+		m_pLights[i].m_fFalloff = 100.0f;
 		m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
 		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 	}
@@ -102,7 +102,7 @@ void Scene::BuildDefaultLightsAndMaterials()
 	m_pLights[40].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -750.f);
 	m_pLights[40].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
 	m_pLights[40].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights[40].m_fFalloff = 8.0f;
+	m_pLights[40].m_fFalloff = 100.0f;
 	m_pLights[40].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
 	m_pLights[40].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 
@@ -115,7 +115,7 @@ void Scene::BuildDefaultLightsAndMaterials()
 	m_pLights[41].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -675.f);
 	m_pLights[41].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
 	m_pLights[41].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights[41].m_fFalloff = 8.0f;
+	m_pLights[41].m_fFalloff = 100.0f;
 	m_pLights[41].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
 	m_pLights[41].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 
@@ -128,7 +128,7 @@ void Scene::BuildDefaultLightsAndMaterials()
 	m_pLights[42].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -550.f);
 	m_pLights[42].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
 	m_pLights[42].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights[42].m_fFalloff = 8.0f;
+	m_pLights[42].m_fFalloff = 100.0f;
 	m_pLights[42].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
 	m_pLights[42].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 }
@@ -671,6 +671,8 @@ bool Scene::ProcessInput(UCHAR *pKeysBuffer)
 	return(false);
 }
 
+float g_time = 0.f;
+
 void Scene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime = fTimeElapsed;
@@ -680,8 +682,27 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	if (bScenario) hierarchicalGameObjects[1]->UpdateWayPoints();
 
 	// spot light 플레이어 바라보며 빛 비추기
-	m_pLights[38].m_xmf3Direction = XMFLOAT3(Vector3::Normalize(Vector3::Subtract(m_pPlayer->GetPosition(), m_pLights[38].m_xmf3Position)));
-	m_pLights[39].m_xmf3Direction = XMFLOAT3(Vector3::Normalize(Vector3::Subtract(m_pPlayer->GetPosition(), m_pLights[39].m_xmf3Position)));
+	for (int i = 38; i < 40; ++i)
+	{
+		m_pLights[i].m_xmf3Direction = XMFLOAT3(Vector3::Normalize(Vector3::Subtract(m_pPlayer->GetPosition(), m_pLights[i].m_xmf3Position)));
+	
+
+		if (m_pLights[i].m_xmf4Diffuse.x < 1.f)
+		{
+			m_pLights[i].m_xmf4Diffuse = XMFLOAT4(g_time, 0.f, 0.f, 1.f);
+
+		}
+		else if (m_pLights[i].m_xmf4Diffuse.y < 1.f)
+		{
+			m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.f, g_time, 0.f, 1.f);
+		}
+		else if (m_pLights[i].m_xmf4Diffuse.z < 1.f)
+		{
+			m_pLights[i].m_xmf4Diffuse = XMFLOAT4(0.f, 0.f, g_time, 1.f);
+		}
+	}
+	
+	g_time += fTimeElapsed;
 
 	//Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), position);
 	for (int i = 40; i < 43; ++i)
