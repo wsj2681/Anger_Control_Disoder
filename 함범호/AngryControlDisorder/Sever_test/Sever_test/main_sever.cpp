@@ -45,7 +45,7 @@ BoundingOrientedBox lFoot_obb[3];
 BoundingOrientedBox Head_obb[3];
 BoundingOrientedBox Spine_obb[3];
 
-
+XMFLOAT3 saveColPostion[3];
 
 
 int cou = 0;
@@ -255,6 +255,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		/*if(cou % 4 == 0)
 		cout << "SETOBB SUCCESS!" << endl;*/
 
+		// 충돌된 주먹 값 저장.
+		saveColPostion[thread_id.thread_num] = player_rHand;
 
 		EnterCriticalSection(&cs);
 
@@ -263,13 +265,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			thread_num_1_player = player;
 			recv_attackAnddefend[thread_id.thread_num] = attAdef;
 
-			/*cout << " 111 rightHand   : "<<recv_attackAnddefend[thread_id.thread_num].rightHand << endl;
-			cout << " 111 lefttHand   : " << recv_attackAnddefend[thread_id.thread_num].leftHand << endl;
-			cout << " 111 foot        : " << recv_attackAnddefend[thread_id.thread_num].foot << endl;
-			cout << " 111 rightguard  : " << recv_attackAnddefend[thread_id.thread_num].rightGuard << endl;
-			cout << " 111 leftguard   : " << recv_attackAnddefend[thread_id.thread_num].leftGuard << endl;
-			cout << " 111 middleguard : " << recv_attackAnddefend[thread_id.thread_num].middleGuard << endl;*/
-
+		
 			//첫번쨰접속 쓰레드한테 충돌처리
 			col1.check_collide = checkcollition(player_obb[0], player_obb[1], 0);
 
@@ -299,6 +295,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 					col2.headHitted = true;
 				else
 					col2.headHitted = false;
+					// if문을 바로 나가야하지않을까?
 				// 왼속공격
 				col1.lHand2Head = checkcollition(lHand_obb[0], Head_obb[1], 7);
 				col1.lHand2Spine = checkcollition(lHand_obb[0], Spine_obb[1], 8);

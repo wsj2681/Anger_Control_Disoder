@@ -65,6 +65,7 @@ struct collide {
 	bool headHitted = false;
 	bool spineHitted = false;
 
+	XMFLOAT3 collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);			//충돌이 나는 곳의 좌표
 };
 #pragma pack(pop)
 
