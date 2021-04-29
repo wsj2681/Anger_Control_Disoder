@@ -232,19 +232,19 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		SetOBB(player_obb, thread_id, player_position, XMFLOAT3(2.2f, 11.f, 2.2f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_Head, player.player_Head);
-		SetOBB(Head_obb, thread_id, player_Head, XMFLOAT3(1.0f, 2.f, 1.0f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(Head_obb, thread_id, player_Head, XMFLOAT3(0.8f, 1.5f, 0.8f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_rHand, player.player_rHand);
-		SetOBB(rHand_obb, thread_id, player_rHand, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(rHand_obb, thread_id, player_rHand, XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_lHand, player.player_lHand);
-		SetOBB(lHand_obb, thread_id, player_lHand, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(lHand_obb, thread_id, player_lHand, XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_rFoot, player.player_rFoot);
-		SetOBB(rFoot_obb, thread_id, player_rFoot, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(rFoot_obb, thread_id, player_rFoot, XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_lFoot, player.player_lFoot);
-		SetOBB(lFoot_obb, thread_id, player_lFoot, XMFLOAT3(1.f, 1.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(lFoot_obb, thread_id, player_lFoot, XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_Spine, player.player_Spine);
 		SetOBB(Spine_obb, thread_id, player_Spine, XMFLOAT3(1.f, 9.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
@@ -278,17 +278,17 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				col1.rHand2rHand = checkcollition(rHand_obb[0], rHand_obb[1], 1);
 				col1.lHand2rHand = checkcollition(lHand_obb[0], rHand_obb[1], 3);
 				if (col1.rHand2rHand || col1.lHand2rHand)
-					col2.headHitted = true;
-				else
 					col2.headHitted = false;
+				else
+					col2.headHitted = true;
 			}
 			else if (thread_num_1_player.nowState == STATE_GUARD_LEFT_HEAD) {
 				col1.rHand2lHand = checkcollition(rHand_obb[0], lHand_obb[1], 2);
 				col1.lHand2lHand = checkcollition(lHand_obb[0], lHand_obb[1], 4);
 				if (col1.rHand2lHand || col1.lHand2lHand)
-					col2.headHitted = true;
-				else
 					col2.headHitted = false;
+				else
+					col2.headHitted = true;
 			}
 			else{
 				//공격 성공
@@ -332,17 +332,17 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				col2.rHand2rHand = checkcollition(rHand_obb[1], rHand_obb[0], 9);
 				col2.lHand2rHand = checkcollition(lHand_obb[1], rHand_obb[0], 11);
 				if (col2.rHand2rHand || col2.lHand2rHand)
-					col1.headHitted = true;
-				else
 					col1.headHitted = false;
+				else
+					col1.headHitted = true;
 			}
 			else if (thread_num_1_player.nowState == STATE_GUARD_LEFT_HEAD) {
 				col2.rHand2lHand = checkcollition(rHand_obb[1], lHand_obb[0], 10);
 				col2.lHand2lHand = checkcollition(lHand_obb[1], lHand_obb[0], 12);
 				if (col2.rHand2lHand || col2.lHand2lHand)
-					col1.headHitted = true;
-				else
 					col1.headHitted = false;
+				else
+					col1.headHitted = true;
 			}
 			else{
 				//공격 성공
@@ -362,7 +362,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 					col1.headHitted = false;
 			}
 
-			recv_attackAnddefend[thread_id.thread_num - 1].rightGuard = true;
+			//recv_attackAnddefend[thread_id.thread_num - 1].rightGuard = true;
 
 			retval = send(thread_client_sock, (char*)&thread_num_1_player, sizeof(thread_num_1_player), 0);
 			retval = send(thread_client_sock, (char*)&col1, sizeof(col1), 0);
