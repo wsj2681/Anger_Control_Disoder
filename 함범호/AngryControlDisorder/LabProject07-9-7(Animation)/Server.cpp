@@ -155,6 +155,8 @@ void Server::Server_recv()
 
 		/*if (col.rHand2Spine)
 			cout << "SPINE COLLIDE! " << endl;*/
+		cout << "collide _ position - " << col.collidePosition.x << " " << col.collidePosition.y << " " << col.collidePosition.z << endl;
+
 
 	}
 
