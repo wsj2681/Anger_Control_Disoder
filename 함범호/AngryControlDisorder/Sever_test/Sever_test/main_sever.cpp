@@ -202,13 +202,12 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		thread_id.thread_num = 0;
 		
 		// 손, 머리 , 척추, 발 좌표값 초기화
-		player_position = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		player_rHand = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		player_lHand = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		player_rFoot = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		player_lFoot = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		player_Head = XMFLOAT3(0.0f, 0.0f, 0.0f);
-		player_Spine = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		XMStoreFloat4x4(&player.player_Head, XMMatrixIdentity());
+		XMStoreFloat4x4(&player.player_lFoot, XMMatrixIdentity());
+		XMStoreFloat4x4(&player.player_lHand, XMMatrixIdentity());
+		XMStoreFloat4x4(&player.player_rFoot, XMMatrixIdentity());
+		XMStoreFloat4x4(&player.player_rHand, XMMatrixIdentity());
+		XMStoreFloat4x4(&player.player_Spine, XMMatrixIdentity());
 
 		retval = recv(thread_client_sock, (char*)&thread_id, sizeof(thread_id), 0);
 		if (retval == SOCKET_ERROR) {

@@ -147,6 +147,19 @@ void Server::Server_recv()
 		else
 			cplayer->lHand->isCollide = false;
 
+		if(col.rHand2rHand || col.rHand2lHand) {
+			cplayer->rHand->isCollide = true;
+			cout << "RIGHT HAND - Guard " << endl;
+		}
+		else
+			cplayer->rHand->isCollide = false;
+
+		if(col.lHand2rHand || col.lHand2lHand) {
+			cplayer->lHand->isCollide = true;
+			cout << "LEFT HAND - Guard! " << endl;
+		}
+		
+
 		if (col.headHitted) {
 			cplayer->head->isCollide = true;
 		}
