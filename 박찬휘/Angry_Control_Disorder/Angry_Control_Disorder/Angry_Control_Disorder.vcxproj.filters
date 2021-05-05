@@ -1,0 +1,281 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\00 WinMain">
+      <UniqueIdentifier>{19a32304-6923-4a22-b68a-9d3a2c508f23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02 Engine">
+      <UniqueIdentifier>{e2171322-ac95-4b14-ba5a-ddcf0b20468c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01 Device">
+      <UniqueIdentifier>{31411086-644d-4002-bc76-581595e43234}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99 Common">
+      <UniqueIdentifier>{f052afa8-6068-4072-86f3-8387fcc46eee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04 Input">
+      <UniqueIdentifier>{882d217c-94c7-4a84-a888-06d891e59675}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04 Scene">
+      <UniqueIdentifier>{a50ec9a1-c68d-4aec-aa81-934974ba2b24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Camera">
+      <UniqueIdentifier>{11b5abae-4c33-4a34-a01f-27f66453032f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Texture">
+      <UniqueIdentifier>{d087c35b-a348-44f9-8073-fdcb49942553}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Material">
+      <UniqueIdentifier>{a591eb6c-9374-4655-8dd0-cec3a99196ff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Object">
+      <UniqueIdentifier>{66050d83-a5d5-4913-9ab9-bac92d8e76e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Animation">
+      <UniqueIdentifier>{db3ff0b0-4444-44ae-9940-31e55a800bad}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Timer">
+      <UniqueIdentifier>{42158906-41d3-44fb-9316-5116b4b55a44}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\HLSL">
+      <UniqueIdentifier>{844c64ca-79e3-4dae-8c37-054301d910fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99 Common\TextureLoader">
+      <UniqueIdentifier>{6feaaeac-9c06-476c-ba29-ed93af44d5cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99 Common\Resource">
+      <UniqueIdentifier>{083ea05f-6673-425c-b18c-c09d10b165bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Mesh">
+      <UniqueIdentifier>{c11a5595-5b9f-4a72-aa96-a2701aea8b7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Shader">
+      <UniqueIdentifier>{e85920e9-8bdc-4b95-a074-13918f2106c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ModelInfo">
+      <UniqueIdentifier>{06c5ee25-10a3-4913-8f8d-74598caa0f17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Callback">
+      <UniqueIdentifier>{2d34047f-842c-4a17-9dfe-6505f1aba635}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Light">
+      <UniqueIdentifier>{e20b7630-38ba-4f4b-944d-c9c9153803d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Player">
+      <UniqueIdentifier>{1bab07e3-de9b-4eb7-9b48-b50ac5a794fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\SkyBox">
+      <UniqueIdentifier>{b85592b0-1d92-46a3-89aa-6934598ebf83}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>소스 파일\99 Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>소스 파일\02 Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Device.h">
+      <Filter>소스 파일\01 Device</Filter>
+    </ClInclude>
+    <ClInclude Include="Input.h">
+      <Filter>소스 파일\04 Input</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>소스 파일\99 Common</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\04 Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>소스 파일\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>소스 파일\99 Common\TextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader12.h">
+      <Filter>소스 파일\99 Common\TextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader12.h">
+      <Filter>소스 파일\99 Common\TextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>소스 파일\99 Common\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>소스 파일\99 Common\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>소스 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardMesh.h">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMesh.h">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardShader.h">
+      <Filter>소스 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationController.h">
+      <Filter>소스 파일\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationSet.h">
+      <Filter>소스 파일\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationTrack.h">
+      <Filter>소스 파일\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelInfo.h">
+      <Filter>소스 파일\ModelInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="CallBack.h">
+      <Filter>소스 파일\Callback</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>소스 파일\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>소스 파일\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedAnimationStandardShader.h">
+      <Filter>소스 파일\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Light.h">
+      <Filter>소스 파일\Light</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxerPlayer.h">
+      <Filter>소스 파일\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxMesh.h">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxShader.h">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxerObject.h">
+      <Filter>소스 파일\Object</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Angry_Control_Disorder.ico">
+      <Filter>소스 파일\99 Common\Resource</Filter>
+    </Image>
+    <Image Include="small.ico">
+      <Filter>소스 파일\99 Common\Resource</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="WinMain.cpp">
+      <Filter>소스 파일\00 WinMain</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>소스 파일\02 Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Input.cpp">
+      <Filter>소스 파일\04 Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Device.cpp">
+      <Filter>소스 파일\01 Device</Filter>
+    </ClCompile>
+    <ClCompile Include="framework.cpp">
+      <Filter>소스 파일\99 Common</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\04 Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader12.cpp">
+      <Filter>소스 파일\99 Common\TextureLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader12.cpp">
+      <Filter>소스 파일\99 Common\TextureLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardMesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMesh.cpp">
+      <Filter>소스 파일\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationController.cpp">
+      <Filter>소스 파일\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSet.cpp">
+      <Filter>소스 파일\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTrack.cpp">
+      <Filter>소스 파일\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelInfo.cpp">
+      <Filter>소스 파일\ModelInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="CallBack.cpp">
+      <Filter>소스 파일\Callback</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>소스 파일\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>소스 파일\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedAnimationStandardShader.cpp">
+      <Filter>소스 파일\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="Light.cpp">
+      <Filter>소스 파일\Light</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxerPlayer.cpp">
+      <Filter>소스 파일\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxMesh.cpp">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxShader.cpp">
+      <Filter>소스 파일\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxerObject.cpp">
+      <Filter>소스 파일\Object</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Angry_Control_Disorder.rc">
+      <Filter>소스 파일\99 Common\Resource</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
