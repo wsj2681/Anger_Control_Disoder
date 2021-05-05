@@ -65,8 +65,15 @@ void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimati
 {
 	if (m_pAnimationTracks)
 	{
-		this->m_fTime = 0;
 		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
+		for (int i = 0; i < m_nAnimationTracks; ++i)
+		{
+			m_pAnimationTracks[i].m_bEnable = false;
+			if (i == nAnimationTrack)
+			{
+				m_pAnimationTracks[nAnimationTrack].m_bEnable = true;
+			}
+		}
 	}
 }
 
@@ -104,8 +111,17 @@ void AnimationController::AdvanceTime(float fTimeElapsed, Object* pRootGameObjec
 	m_fTime += fTimeElapsed;
 	if (m_pAnimationTracks)
 	{
-		for (int i = 0; i < m_nAnimationTracks; i++) m_pAnimationTracks[i].m_fPosition += (fTimeElapsed * m_pAnimationTracks[i].m_fSpeed);
-
+		for (int i = 0; i < m_nAnimationTracks; i++)
+		{
+			if (m_pAnimationTracks[i].m_bEnable)
+			{
+				m_pAnimationTracks[i].m_fPosition += (fTimeElapsed * m_pAnimationTracks[i].m_fSpeed);
+			}
+			else
+			{
+				m_pAnimationTracks[i].m_fPosition = 0;
+			}
+		}
 		for (int j = 0; j < m_pAnimationSets->m_nAnimatedBoneFrames; j++)
 		{
 			XMFLOAT4X4 xmf4x4Transform = Matrix4x4::Zero();

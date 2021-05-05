@@ -285,7 +285,7 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	switch (nMessageID)
 	{
 		case WM_KEYUP:
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE);
+			//this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE);
 			this->m_pPlayer->nowState = STATE_IDLE;
 			switch (wParam)
 			{

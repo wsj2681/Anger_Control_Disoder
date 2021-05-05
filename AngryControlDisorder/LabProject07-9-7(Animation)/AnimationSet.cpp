@@ -50,10 +50,12 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 		break;
 	}
 	case ANIMATION_TYPE_ONCE:
+		//m_fPosition = m_fPosition > m_fLength ? m_fLength : m_fPosition;
+		//m_fPosition = m_fPosition > m_pfKeyFrameTimes[m_nKeyFrames - 1] ? m_pfKeyFrameTimes[m_nKeyFrames - 1] : m_fPosition;
 		m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]);
-		if (m_fLength >= m_fPosition)
+		if (m_fPosition > m_pfKeyFrameTimes[m_nKeyFrames - 1])
 		{
-			
+			cout << "once" << endl;
 		}
 		break;
 	case ANIMATION_TYPE_PINGPONG:

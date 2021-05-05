@@ -159,6 +159,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena_FBX.bin", NULL);
 	Object* Map = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
+	Map->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_bEnable = true;
 	Map->SetPosition(0.0f, 0.f, 0.0f);
 	hierarchicalGameObjects.push_back(Map);
 	if (MapModel) delete MapModel;

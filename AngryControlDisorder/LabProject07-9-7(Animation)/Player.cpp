@@ -252,6 +252,7 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 
 	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
+	// one track one set
 	m_pSkinnedAnimationController = new AnimationController(pd3dDevice, pd3dCommandList, 1, BoxerModel);
 
 	m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
@@ -331,6 +332,7 @@ void BoxingPlayer::Update(float fTimeElapsed)
 {
 	Player::Update(fTimeElapsed);
 	// TODO : 애니메이션 셋 할때 이쪽으로 와서 한다. 
-	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
-	//SetTrackAnimationSet(0, ::IsZero(fLength) ? ANIMATION_IDLE : ANIMATION_ATTACK_LOOP);
+	//float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
+	//SetTrackAnimationSet(0, ::IsZero(fLength) ? ANIMATION_IDLE : ANIMATION_GUARD_BODY);
+	//if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->AdvanceTime(fTimeElapsed, this);
 }
