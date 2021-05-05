@@ -15,17 +15,7 @@
 #define DIR_UP						0x10
 #define DIR_DOWN					0x20
 
-#define STATE_IDLE 0x01
-#define STATE_MOVE 0x02
-#define STATE_ATTACK_LEFT_HOOK 0x03
-#define STATE_ATTACK_RIGHT_HOOK 0x04
-#define STATE_ATTACK_JAB 0x05
-#define STATE_GUARD_LEFT_HEAD 0x06
-#define STATE_GUARD_RIGHT_HEAD 0x07
-#define STATE_GUARD_BODY 0x08
-#define STATE_HIT_TORSO_LEFT 0x09
-#define STATE_HIT_TORSO_RIGHT 0x0A
-#define STATE_HIT_TORSO_STRIGHT 0x0B
+
 
 class Shader;
 class AnimationController;

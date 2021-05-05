@@ -1,8 +1,6 @@
 #pragma once
 
-#define ANIMATION_TYPE_ONCE			0
-#define ANIMATION_TYPE_LOOP			1
-#define ANIMATION_TYPE_PINGPONG		2
+
 
 struct CALLBACKKEY;
 class AnimationCallbackHandler;

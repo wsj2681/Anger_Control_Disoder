@@ -7,23 +7,6 @@
 #define DIR_UP					0x10
 #define DIR_DOWN				0x20
 
-#define ANIMATION_IDLE 0x00				// Combat_Mode_A
-#define ANIMATION_ATTACK_LOOP 0x01		// Beating_1-2(loop)
-#define ANIMATION_MOVE_FORWARD 0x02		// 1_Steps_Forward
-#define ANIMATION_MOVE_BACKWARD 0x03	// 1_Steps_Backward
-#define ANIMATION_MOVE_LEFT 0x04		// 1_Steps_Left
-#define ANIMATION_MOVE_RIGHT 0x05		// 1_Steps_Right
-#define ANIMATION_HOOK_L 0x06			// Hook_L 
-#define ANIMATION_HOOK_R 0x07			// Hook_R
-#define ANIMATION_JAB 0x08				// Jab
-#define ANIMATION_GUARD_LEFT_HEAD 0x09	// Close_One_Block_L
-#define ANIMATION_GUARD_RIGHT_HEAD 0x0A	// Close_One_Block_R
-#define ANIMATION_GUARD_BODY 0x0B		// Close_Both_Block
-#define ANIMATION_CEREMONY 0x0C			// ceremony
-#define ANIMATION_HIT_TORSO_LEFT_A 0x0D			// Hit_Torso_Left_A
-#define ANIMATION_HIT_TORSO_RIGHT_A 0x0E			// Hit_Torso_Right_A
-#define ANIMATION_HIT_TORSO_STRIGHT_A 0x0F			// Hit_Torso_Stright_A
-
 #include "Object.h"
 #include "Camera.h"
 class AnimationCallbackHandler;
@@ -52,8 +35,6 @@ protected:
 	LPVOID						m_pCameraUpdatedContext = NULL;
 
 	Camera						*m_pCamera = NULL;
-
-	
 
 public:
 	Player();

@@ -79,9 +79,44 @@ extern BYTE ReadStringFromFile(FILE *pInFile, char *pstrToken);
 extern int ReadIntegerFromFile(FILE *pInFile);
 extern float ReadFloatFromFile(FILE *pInFile);
 
-constexpr UINT STATE_IDLE = 0x01;
-constexpr UINT STATE_MOVE = 0x02;
-constexpr UINT STATE_Ceremony = 0x03;
+constexpr UINT STATE_IDLE = 0x00;
+constexpr UINT STATE_MOVE = 0x01;
+constexpr UINT STATE_ATTACK_LEFT_HOOK = 0x02;
+constexpr UINT STATE_ATTACK_RIGHT_HOOK = 0x03;
+constexpr UINT STATE_ATTACK_JAB = 0x04;
+constexpr UINT STATE_GUARD_LEFT_HEAD = 0x05;
+constexpr UINT STATE_GUARD_RIGHT_HEAD = 0x06;
+constexpr UINT STATE_GUARD_BODY = 0x07;
+constexpr UINT STATE_HIT_TORSO_LEFT = 0x08;
+constexpr UINT STATE_HIT_TORSO_RIGHT = 0x09;
+constexpr UINT STATE_HIT_TORSO_STRIGHT = 0x0A;
+constexpr UINT STATE_CEREMONY = 0x0B;
+
+constexpr UINT ANIMATION_TYPE_ONCE = 0x00;
+constexpr UINT ANIMATION_TYPE_LOOP = 0x01;
+constexpr UINT ANIMATION_TYPE_PINGPONG = 0x02;
+
+//----------------------------------------------------------
+// %애니메이션 추가
+//----------------------------------------------------------
+#define ANIMATION_IDLE 0x00					// Combat_Mode_A
+#define ANIMATION_ATTACK_LOOP 0x01			// Beating_1-2(loop)
+#define ANIMATION_MOVE_FORWARD 0x02			// 1_Steps_Forward
+#define ANIMATION_MOVE_BACKWARD 0x03		// 1_Steps_Backward
+#define ANIMATION_MOVE_LEFT 0x04			// 1_Steps_Left
+#define ANIMATION_MOVE_RIGHT 0x05			// 1_Steps_Right
+#define ANIMATION_HOOK_L 0x06				// Hook_L 
+#define ANIMATION_HOOK_R 0x07				// Hook_R
+#define ANIMATION_JAB 0x08					// Jab
+#define ANIMATION_GUARD_LEFT_HEAD 0x09		// Close_One_Block_L
+#define ANIMATION_GUARD_RIGHT_HEAD 0x0A		// Close_One_Block_R
+#define ANIMATION_GUARD_BODY 0x0B			// Close_Both_Block
+#define ANIMATION_CEREMONY 0x0C				// ceremony
+#define ANIMATION_HIT_TORSO_LEFT_A 0x0D		// Hit_Torso_Left_A
+#define ANIMATION_HIT_TORSO_RIGHT_A 0x0E	// Hit_Torso_Right_A
+#define ANIMATION_HIT_TORSO_STRIGHT_A 0x0F	// Hit_Torso_Stright_A
+#define ANIMATION_GROGI	0x10
+//----------------------------------------------------------
 
 //HR
 #if defined(DEBUG) | defined(_DEBUG)
