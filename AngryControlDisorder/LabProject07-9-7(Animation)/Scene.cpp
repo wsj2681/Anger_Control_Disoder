@@ -52,9 +52,10 @@ void Scene::BuildDefaultLightsAndMaterials()
 	0 ~ 37 = Roof Light
 	38~39 = RedSpotLight
 	40~42 = HallWayLight
+	43 = CollideLight
 	*/
 	m_nLights = lightsCount;
-	m_nLights += 3;
+	m_nLights += 4;
 	m_pLights = new LIGHT[m_nLights];
 	::ZeroMemory(m_pLights, sizeof(LIGHT) * m_nLights);
 
@@ -131,6 +132,18 @@ void Scene::BuildDefaultLightsAndMaterials()
 	m_pLights[42].m_fFalloff = 100.0f;
 	m_pLights[42].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
 	m_pLights[42].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
+
+	// Collide Light
+	m_pLights[43].m_bEnable = false;
+	m_pLights[43].m_nType = POINT_LIGHT;
+	m_pLights[43].m_fRange = 20.0f;
+	m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
+	m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.f, 0.0f);
+	m_pLights[43].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -550.f);
+	m_pLights[43].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
+	m_pLights[43].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
+	m_pLights[43].m_fFalloff = 20.0f;
 }
 
 void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
@@ -642,6 +655,20 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case VK_F6:
 			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 6);
 			break;
+		case VK_INSERT:
+			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
+			m_pLights[43].m_xmf4Ambient =  XMFLOAT4(0.9f, 0.f, 0.f, 1.f);
+			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.9f, 0.0f, 0.f, 1.0f);
+			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.9f, 0.0f, 0.f, 0.0f);
+			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
+			break;
+		case VK_DELETE:
+			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
+			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.f, 0.9f, 0.f, 1.f);
+			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.9f, 0.f, 1.0f);
+			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.9f, 0.f, 0.0f);
+			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
+			break;
 		default:
 			break;
 		}
@@ -721,6 +748,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 			m_pLights[i].m_bEnable = false;
 		}
 	}
+
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
@@ -765,6 +793,9 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 		{
 			hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->rHand->GetPosition());
 			hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = true;
+
+			m_pLights[43].m_xmf3Position;
+			m_pLights[43].m_bEnable = true;
 
 		}
 		else

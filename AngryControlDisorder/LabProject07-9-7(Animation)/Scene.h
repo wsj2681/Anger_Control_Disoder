@@ -8,7 +8,7 @@
 #include "Player.h"
 #include "SoundManager.h"
 
-#define MAX_LIGHTS						43
+#define MAX_LIGHTS						50
 
 #define POINT_LIGHT						1
 #define SPOT_LIGHT						2
