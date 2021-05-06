@@ -201,14 +201,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		//스레드 아이디 초기화
 		thread_id.thread_num = 0;
 		
-		// 손, 머리 , 척추, 발 좌표값 초기화
-		XMStoreFloat4x4(&player.player_Head, XMMatrixIdentity());
-		XMStoreFloat4x4(&player.player_lFoot, XMMatrixIdentity());
-		XMStoreFloat4x4(&player.player_lHand, XMMatrixIdentity());
-		XMStoreFloat4x4(&player.player_rFoot, XMMatrixIdentity());
-		XMStoreFloat4x4(&player.player_rHand, XMMatrixIdentity());
-		XMStoreFloat4x4(&player.player_Spine, XMMatrixIdentity());
-
+		
 		retval = recv(thread_client_sock, (char*)&thread_id, sizeof(thread_id), 0);
 		if (retval == SOCKET_ERROR) {
 			display_error("recv : ", WSAGetLastError());
@@ -347,6 +340,10 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			cout << "collide _ position - " << col2.collidePosition.x << " "<< col2.collidePosition.y << " "<<col2.collidePosition.z << endl;
 			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num + 1], sizeof(recv_attackAnddefend[thread_id.thread_num + 1]), 0);
 
+
+			//충돌좌표 초기화
+			col1.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
 		}
 		else if (thread_id.thread_num == 2 || thread_id.thread_num == 4) {
 
@@ -425,6 +422,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				" ," << thread_num_1_player.player_world._42 << ", " << thread_num_1_player.player_world._43 << endl;*/
 			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num - 1], sizeof(recv_attackAnddefend[thread_id.thread_num - 1]), 0);
 
+			//충돌좌표 초기화
+			col2.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 		}
 
