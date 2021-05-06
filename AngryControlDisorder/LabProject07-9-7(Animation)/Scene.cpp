@@ -159,6 +159,8 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena_FBX.bin", NULL);
 	Object* Map = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
+	cageSide = Map->FindFrame("octagon_floor");
+
 	Map->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_bEnable = true;
 	Map->SetPosition(0.0f, 0.f, 0.0f);
 	hierarchicalGameObjects.push_back(Map);
@@ -670,6 +672,11 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.9f, 0.f, 0.0f);
 			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
 			break;
+		case VK_OEM_3:
+			{
+			cout << m_pPlayer->GetPosition().x << " / " << m_pPlayer->GetPosition().y << " / " << m_pPlayer->GetPosition().z << endl;
+			break;
+			}
 		default:
 			break;
 		}
@@ -749,7 +756,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 			m_pLights[i].m_bEnable = false;
 		}
 	}
-
+	CollideCageSide();
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
@@ -867,5 +874,12 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 	//}
 
 	soundManager->Update();
+}
+
+void Scene::CollideCageSide()
+{
+	// cage_side and Player;
+	cout << cageSide->GetPosition().x <<" / "<< cageSide->GetPosition().y << " / " << cageSide->GetPosition().z << endl;
+	cageSide->m_pMesh;
 }
 

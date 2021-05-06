@@ -65,7 +65,7 @@ public:
 	bool ProcessInput(UCHAR *pKeysBuffer);
     void AnimateObjects(float fTimeElapsed);
     void Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera=NULL);
-
+	void CollideCageSide();
 	void ReleaseUploadBuffers();
 
 	Player								*m_pPlayer = NULL;
@@ -128,4 +128,6 @@ public:
 	//SoundManager* soundManager{ nullptr };
 
 	bool bScenario{ false };
+
+	Object* cageSide = nullptr;
 };
