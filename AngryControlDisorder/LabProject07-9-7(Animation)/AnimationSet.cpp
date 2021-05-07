@@ -38,7 +38,7 @@ void* CAnimationSet::GetCallbackData()
 
 void CAnimationSet::SetPosition(float fTrackPosition)
 {
-	m_fPosition = fTrackPosition;
+	//m_fPosition = fTrackPosition;
 	switch (m_nType)
 	{
 	case ANIMATION_TYPE_LOOP:
@@ -53,7 +53,9 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 		//m_fPosition = m_fPosition > m_fLength ? m_fLength : m_fPosition;
 		//m_fPosition = m_fPosition > m_pfKeyFrameTimes[m_nKeyFrames - 1] ? m_pfKeyFrameTimes[m_nKeyFrames - 1] : m_fPosition;
 		m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]);
-		if (m_fPosition > m_pfKeyFrameTimes[m_nKeyFrames - 1])
+		
+		// 플레이어를 특정하고 once를 출력해야한다.
+		if (m_fPosition <= 0.1f)
 		{
 			cout << "once" << endl;
 		}
