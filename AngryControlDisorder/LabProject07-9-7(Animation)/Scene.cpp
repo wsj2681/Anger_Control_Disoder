@@ -116,7 +116,7 @@ void Scene::BuildDefaultLightsAndMaterials()
 	m_pLights[41].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -675.f);
 	m_pLights[41].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
 	m_pLights[41].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights[41].m_fFalloff = 100.0f;
+	m_pLights[41].m_fFalloff = 50.0f;
 	m_pLights[41].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
 	m_pLights[41].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 
@@ -129,7 +129,7 @@ void Scene::BuildDefaultLightsAndMaterials()
 	m_pLights[42].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -550.f);
 	m_pLights[42].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
 	m_pLights[42].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights[42].m_fFalloff = 100.0f;
+	m_pLights[42].m_fFalloff = 50.0f;
 	m_pLights[42].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
 	m_pLights[42].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 
@@ -162,9 +162,9 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	cageSide = Map->FindFrame("octagon_floor");
 	Map->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_bEnable = true;
 	Map->SetPosition(0.0f, 0.f, 0.0f);
+
 	cageCollision.Center = XMFLOAT3(0.f, 10.f, 0.f);
-	cageCollision.Extents = XMFLOAT3(60.f, 60.f, 60.f);
-	cageCollision.Orientation = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	cageCollision.Radius = 60.f;
 
 	hierarchicalGameObjects.push_back(Map);
 	if (MapModel) delete MapModel;
@@ -886,10 +886,12 @@ void Scene::CollideCageSide()
 	if(cageCollision.Intersects(*m_pPlayer->playerCollision))
 	{
 		// 케이지 안에 있을 때 처리
+		cout << "ok\n";
 	}
 	else
 	{
 		// 케이지 밖에 있을 때 처리
 	}
+
 }
 
