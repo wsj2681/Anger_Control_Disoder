@@ -61,19 +61,35 @@ void AnimationController::SetAnimationCallbackHandler(int nAnimationSet, Animati
 	if (m_pAnimationSets) m_pAnimationSets->SetAnimationCallbackHandler(nAnimationSet, pCallbackHandler);
 }
 
-void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet)
+void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT state)
 {
 	if (m_pAnimationTracks)
 	{
-		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
+		bool playOnce = false;
 		for (int i = 0; i < m_nAnimationTracks; ++i)
+			if (m_pAnimationSets->m_pAnimationSets[nAnimationSet]->playOnce == true)
+				playOnce = true;
+		
+		if (playOnce != true)
 		{
-			m_pAnimationTracks[i].m_bEnable = false;
-			if (i == nAnimationTrack)
+			m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
+
+			for (int i = 0; i < m_nAnimationTracks; ++i)
 			{
-				m_pAnimationTracks[nAnimationTrack].m_bEnable = true;
+				m_pAnimationTracks[i].m_bEnable = false;
+
+				if (i == nAnimationTrack)
+				{
+					m_pAnimationTracks[nAnimationTrack].m_bEnable = true;
+					m_pAnimationSets->m_pAnimationSets[nAnimationSet]->m_nType = state;
+					m_pAnimationSets->m_nCurrSet = nAnimationSet;
+
+					if (state == ANIMATION_TYPE_ONCE)
+						m_pAnimationSets->m_pAnimationSets[nAnimationSet]->playOnce = true;
+				}
 			}
 		}
+		
 	}
 }
 
@@ -122,6 +138,7 @@ void AnimationController::AdvanceTime(float fTimeElapsed, Object* pRootGameObjec
 				m_pAnimationTracks[i].m_fPosition = 0;
 			}
 		}
+
 		for (int j = 0; j < m_pAnimationSets->m_nAnimatedBoneFrames; j++)
 		{
 			XMFLOAT4X4 xmf4x4Transform = Matrix4x4::Zero();
@@ -133,6 +150,7 @@ void AnimationController::AdvanceTime(float fTimeElapsed, Object* pRootGameObjec
 					pAnimationSet->SetPosition(m_pAnimationTracks[k].m_fPosition);
 					XMFLOAT4X4 xmf4x4TrackTransform = pAnimationSet->GetSRT(j);
 					xmf4x4Transform = Matrix4x4::Add(xmf4x4Transform, Matrix4x4::Scale(xmf4x4TrackTransform, m_pAnimationTracks[k].m_fWeight));
+				
 				}
 			}
 			m_pAnimationSets->m_ppAnimatedBoneFrameCaches[j]->m_xmf4x4ToParent = xmf4x4Transform;

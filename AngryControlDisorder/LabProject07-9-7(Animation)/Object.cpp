@@ -149,9 +149,9 @@ void Object::UpdateTransform(XMFLOAT4X4 *pxmf4x4Parent)
 	if (m_pChild) m_pChild->UpdateTransform(&m_xmf4x4World);
 }
 
-void Object::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet)
+void Object::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT state)
 {
-	if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->SetTrackAnimationSet(nAnimationTrack, nAnimationSet);
+	if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->SetTrackAnimationSet(nAnimationTrack, nAnimationSet, state);
 }
 
 void Object::SetTrackAnimationPosition(int nAnimationTrack, float fPosition)
@@ -739,7 +739,7 @@ void Object::MoveTo(XMFLOAT3 destination)
 {
 	wayPoint.SetNowState(STATE_MOVE);
 	UINT animation = wayPoint.GetAnimations();
-	m_pSkinnedAnimationController->SetTrackAnimationSet(0, animation);
+	m_pSkinnedAnimationController->SetTrackAnimationSet(0, animation, ANIMATION_TYPE_LOOP);
 	XMFLOAT3 comparePosition = GetPosition();
 	comparePosition = Vector3::Subtract(destination, comparePosition);
 

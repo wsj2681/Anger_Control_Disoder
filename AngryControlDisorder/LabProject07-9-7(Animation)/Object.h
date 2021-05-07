@@ -132,7 +132,7 @@ public:
 	SkinnedMesh *FindSkinnedMesh(char *pstrSkinnedMeshName);
 	void FindAndSetSkinnedMesh(SkinnedMesh **ppSkinnedMeshes, int *pnSkinnedMesh);
 
-	void SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet);
+	void SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT state = ANIMATION_TYPE_LOOP);
 	void SetTrackAnimationPosition(int nAnimationTrack, float fPosition);
 
 	void LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, Object *pParent, FILE *pInFile, Shader *pShader);

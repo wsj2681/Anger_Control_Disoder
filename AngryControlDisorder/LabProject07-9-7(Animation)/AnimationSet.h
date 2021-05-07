@@ -37,6 +37,8 @@ public:
 	float 							m_fPosition = 0.0f;
 	int 							m_nType = ANIMATION_TYPE_ONCE; //Once, Loop, PingPong
 
+	bool playOnce{ false };
+
 	int 							m_nCallbackKeys = 0;
 	CALLBACKKEY* m_pCallbackKeys = NULL;
 
@@ -70,6 +72,7 @@ public:
 public:
 	int								m_nAnimationSets = 0;
 	CAnimationSet** m_pAnimationSets = nullptr;
+	int m_nCurrSet = 0;
 
 	int								m_nAnimatedBoneFrames = 0;
 	Object** m_ppAnimatedBoneFrameCaches = nullptr; //[m_nAnimatedBoneFrames]

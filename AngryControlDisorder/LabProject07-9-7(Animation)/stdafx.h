@@ -92,9 +92,11 @@ constexpr UINT STATE_HIT_TORSO_RIGHT = 0x09;
 constexpr UINT STATE_HIT_TORSO_STRIGHT = 0x0A;
 constexpr UINT STATE_CEREMONY = 0x0B;
 
-constexpr UINT ANIMATION_TYPE_ONCE = 0x00;
-constexpr UINT ANIMATION_TYPE_LOOP = 0x01;
-constexpr UINT ANIMATION_TYPE_PINGPONG = 0x02;
+constexpr UINT ANIMATION_TYPE_ONCE = 0x01;
+constexpr UINT ANIMATION_TYPE_LOOP = 0x02;
+constexpr UINT ANIMATION_TYPE_PINGPONG = 0x03;
+
+constexpr UINT ANIMATION_TRACK = 12;
 
 //----------------------------------------------------------
 // %애니메이션 추가

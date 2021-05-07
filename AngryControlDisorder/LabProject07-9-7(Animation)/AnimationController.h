@@ -30,7 +30,7 @@ public:
 public:
 	void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
 
-	void SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet);
+	void SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT state = ANIMATION_TYPE_LOOP);
 	void SetTrackEnable(int nAnimationTrack, bool bEnable);
 	void SetTrackPosition(int nAnimationTrack, float fPosition);
 	void SetTrackSpeed(int nAnimationTrack, float fSpeed);

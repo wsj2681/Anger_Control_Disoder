@@ -186,7 +186,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	BuildDefaultLightsAndMaterials();
 	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", nullptr);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
-	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0, ANIMATION_TYPE_LOOP);
 	boxer->SetPosition(21.3046f, 10.0f, -769.689f);
 
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);

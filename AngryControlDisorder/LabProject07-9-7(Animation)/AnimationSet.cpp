@@ -2,6 +2,11 @@
 #include "AnimationSet.h"
 #include "CallBack.h"
 #include "Object.h"
+#include "Player.h"
+#include "AnimationController.h"
+#include "AnimationTrack.h"
+
+extern Player* gPlayer;
 
 CAnimationSet::CAnimationSet(float fLength, int nFramesPerSecond, int nKeyFrames, int nAnimatedBones, char* pstrName)
 {
@@ -38,7 +43,11 @@ void* CAnimationSet::GetCallbackData()
 
 void CAnimationSet::SetPosition(float fTrackPosition)
 {
-	//m_fPosition = fTrackPosition;
+	m_fPosition = fTrackPosition;
+	AnimationController* animController = gPlayer->m_pSkinnedAnimationController;
+	AnimationSets* animSets = animController->m_pAnimationSets;
+	CAnimationSet* animSet = animSets->m_pAnimationSets[animSets->m_nCurrSet];
+	
 	switch (m_nType)
 	{
 	case ANIMATION_TYPE_LOOP:
@@ -50,15 +59,37 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 		break;
 	}
 	case ANIMATION_TYPE_ONCE:
+		//m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]);
 		//m_fPosition = m_fPosition > m_fLength ? m_fLength : m_fPosition;
 		//m_fPosition = m_fPosition > m_pfKeyFrameTimes[m_nKeyFrames - 1] ? m_pfKeyFrameTimes[m_nKeyFrames - 1] : m_fPosition;
-		m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]);
-		
-		// 플레이어를 특정하고 once를 출력해야한다.
-		if (m_fPosition <= 0.1f)
+
+		if (playOnce == true)
 		{
-			//cout << "once" << endl;
+			for (int i = 0; i <= animSet->m_nKeyFrames; ++i)
+			{
+				if (i == animSet->m_nKeyFrames)
+				{
+					m_nType = ANIMATION_TYPE_LOOP;
+					
+					animController->m_pAnimationTracks[animSets->m_nCurrSet].m_bEnable = false;
+					
+					playOnce = false;
+					animController->SetTrackAnimationSet(ANIMATION_IDLE, ANIMATION_IDLE, ANIMATION_TYPE_LOOP);
+				}
+				else
+				{
+					//do something
+					animSet->m_fPosition = fmod(fTrackPosition, animSet->m_pfKeyFrameTimes[animSet->m_nKeyFrames - 1]);
+				}
+
+			}
 		}
+		else
+		{
+			//m_nType = ANIMATION_TYPE_LOOP;
+			//animController->SetTrackAnimationSet(ANIMATION_IDLE, ANIMATION_IDLE, ANIMATION_TYPE_LOOP);
+		}
+
 		break;
 	case ANIMATION_TYPE_PINGPONG:
 		break;
