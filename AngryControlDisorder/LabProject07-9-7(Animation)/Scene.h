@@ -130,4 +130,7 @@ public:
 	bool bScenario{ false };
 
 	Object* cageSide = nullptr;
+
+	// 링 바운딩 박스
+	BoundingOrientedBox cageCollision;
 };

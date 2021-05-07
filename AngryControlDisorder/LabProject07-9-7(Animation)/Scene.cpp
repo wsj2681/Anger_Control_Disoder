@@ -160,9 +160,12 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena_FBX.bin", NULL);
 	Object* Map = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
 	cageSide = Map->FindFrame("octagon_floor");
-
 	Map->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_bEnable = true;
 	Map->SetPosition(0.0f, 0.f, 0.0f);
+	cageCollision.Center = XMFLOAT3(0.f, 10.f, 0.f);
+	cageCollision.Extents = XMFLOAT3(60.f, 60.f, 60.f);
+	cageCollision.Orientation = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+
 	hierarchicalGameObjects.push_back(Map);
 	if (MapModel) delete MapModel;
 
@@ -879,7 +882,14 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 void Scene::CollideCageSide()
 {
 	// cage_side and Player;
-	cout << cageSide->GetPosition().x <<" / "<< cageSide->GetPosition().y << " / " << cageSide->GetPosition().z << endl;
-	cageSide->m_pMesh;
+	//cout << cageSide->GetPosition().x <<" / "<< cageSide->GetPosition().y << " / " << cageSide->GetPosition().z << endl;
+	if(cageCollision.Intersects(*m_pPlayer->playerCollision))
+	{
+		// 케이지 안에 있을 때 처리
+	}
+	else
+	{
+		// 케이지 밖에 있을 때 처리
+	}
 }
 

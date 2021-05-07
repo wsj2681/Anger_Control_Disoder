@@ -35,8 +35,8 @@ protected:
 	LPVOID						m_pCameraUpdatedContext = NULL;
 
 	Camera						*m_pCamera = NULL;
-
 public:
+	BoundingOrientedBox* playerCollision;
 	Player();
 	virtual ~Player();
 

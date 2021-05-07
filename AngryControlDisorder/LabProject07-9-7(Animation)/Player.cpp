@@ -175,6 +175,11 @@ void Player::Update(float fTimeElapsed)
 	float fDeceleration = (m_fFriction * fTimeElapsed);
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	m_xmf3Velocity = XMFLOAT3();//Vector3::Add(m_xmf3Velocity, Vector3::ScalarProduct(m_xmf3Velocity, -fDeceleration, true));
+
+	if (spine && playerCollision)
+	{
+		playerCollision->Center = spine->GetPosition();
+	}
 }
 
 Camera *Player::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
@@ -267,6 +272,11 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 
 	SetPosition(XMFLOAT3(0.f, 10.f, -769.689f));
 
+
+	playerCollision = new BoundingOrientedBox();
+	playerCollision->Center = spine->GetPosition();
+	playerCollision->Extents = XMFLOAT3(2.f, 7.f, 2.f);
+	playerCollision->Orientation = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 
 	if (BoxerModel) delete BoxerModel;
 }
