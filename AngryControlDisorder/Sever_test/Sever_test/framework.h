@@ -100,24 +100,26 @@ struct collide {
 
 	bool check_collide = false;
 
-	bool rHand2rHand = false;
-	bool rHand2lHand = false;
-	bool rHand2Spine = false;
-	bool rHand2Head = false;
+	bool rHand2rHand = false; // 오른손공격이 오른손에 막힘
+	bool rHand2lHand = false; // 오른손공격이 왼손에 막힘
+	bool rHand2Spine = false; // 오른손공격이 척추를 떄림
+	bool rHand2Head = false; // 오른손 공격이 대가리를 떄림
 
-	bool lHand2rHand = false;
-	bool lHand2lHand = false;
-	bool lHand2Spine = false;
-	bool lHand2Head = false;
+	bool lHand2rHand = false; // 왼손공격이 오른손에 막힘
+	bool lHand2lHand = false; // 왼손공격이 왼손에 막힘
+	bool lHand2Spine = false; // 왼손공격이 척추를 떄림
+	bool lHand2Head = false; // 왼송격이 대가리르 떄림
 
-	bool rFoot2Spine = false;
-	bool rFoot2Head = false;
+	bool rFoot2Spine = false; // 오른발이  척추를 떄림
+	bool rFoot2Head = false; // 오른발이 대가리를 떄림
 
-	bool lFoot2Spine = false;
-	bool lFoot2Head = false;
+	bool lFoot2Spine = false; // 왼발이 척추를 떄림
+	bool lFoot2Head = false; // 왼발이 대가리르 떄림
 
-	bool headHitted = false;
-	bool spineHitted = false;
+	bool headHitted = false;  // 대가리가 맞음
+	bool spineHitted = false;  // 척추를 맞음
+
+	XMFLOAT3 collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);		//충돌이 나는 곳의 좌표
 
 };
 #pragma pack(pop)
@@ -127,7 +129,11 @@ struct AttackAndDefend {
 
 	bool leftHand = false;
 	bool rightHand = false;
-	bool jab = false;
+	bool jap = false;
+
+	bool hitTorsoLeft = false;
+	bool hitTorsoRight = false;
+	bool hitTorsoStright = false;
 
 	bool leftGuard = false;
 	bool rightGuard = false;

@@ -57,7 +57,7 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 		// 플레이어를 특정하고 once를 출력해야한다.
 		if (m_fPosition <= 0.1f)
 		{
-			cout << "once" << endl;
+			//cout << "once" << endl;
 		}
 		break;
 	case ANIMATION_TYPE_PINGPONG:

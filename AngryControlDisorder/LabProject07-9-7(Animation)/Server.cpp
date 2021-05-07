@@ -104,8 +104,17 @@ void Server::Server_recv()
 			if (recv_attackAnddefend.rightHand) {
 				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightHand ? ANIMATION_HOOK_R : ANIMATION_IDLE);
 			}
-			if (recv_attackAnddefend.jab) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.jab ? ANIMATION_JAB : ANIMATION_IDLE);
+			if (recv_attackAnddefend.jap) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.jap ? ANIMATION_JAB : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.hitTorsoLeft) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoLeft ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.hitTorsoRight) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoRight ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_IDLE);
+			}
+			if (recv_attackAnddefend.hitTorsoStright) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoStright ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_IDLE);
 			}
 			if (recv_attackAnddefend.rightGuard) {
 				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightGuard ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_IDLE);
@@ -147,6 +156,19 @@ void Server::Server_recv()
 		else
 			cplayer->lHand->isCollide = false;
 
+		if (col.rHand2rHand || col.rHand2lHand) {
+			cplayer->rHand->isCollide = true;
+			cout << "RIGHT HAND - Guard " << endl;
+		}
+		else
+			cplayer->rHand->isCollide = false;
+
+		if (col.lHand2rHand || col.lHand2lHand) {
+			cplayer->lHand->isCollide = true;
+			cout << "LEFT HAND - Guard! " << endl;
+		}
+
+
 		if (col.headHitted) {
 			cplayer->head->isCollide = true;
 		}
@@ -155,6 +177,8 @@ void Server::Server_recv()
 
 		/*if (col.rHand2Spine)
 			cout << "SPINE COLLIDE! " << endl;*/
+		cout << "collide _ position - " << col.collidePosition.x << " " << col.collidePosition.y << " " << col.collidePosition.z << endl;
+
 
 	}
 
@@ -162,9 +186,9 @@ void Server::Server_recv()
 }
 
 void Server::attackAndGuard_idle() {
-	send_attackAnddefend.rightHand = false;
-	send_attackAnddefend.leftHand = false;
-	send_attackAnddefend.jab = false;
+	send_attackAnddefend.hitTorsoLeft = false;
+	send_attackAnddefend.hitTorsoRight = false;
+	send_attackAnddefend.hitTorsoStright = false;
 
 	send_attackAnddefend.leftGuard = false;
 	send_attackAnddefend.rightGuard = false;

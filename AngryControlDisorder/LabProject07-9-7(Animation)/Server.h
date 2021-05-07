@@ -2,11 +2,15 @@
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
+//#define _WITH_SERVER_CONNECT
+
+
+
 using namespace std;
 
 
 
-#define SERVERIP   "127.0.0.1"
+#define SERVERIP   "25.70.40.132"
 #define SERVERPORT 9000
 #define BUFSIZE    512
 
@@ -61,6 +65,7 @@ struct collide {
 	bool headHitted = false;
 	bool spineHitted = false;
 
+	XMFLOAT3 collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);			//충돌이 나는 곳의 좌표
 };
 #pragma pack(pop)
 
@@ -69,15 +74,15 @@ struct AttackAndDefend {
 
 	bool leftHand = false;
 	bool rightHand = false;
-	bool jab = false;
-
-	bool leftGuard = false;
-	bool rightGuard = false;
-	bool middleGuard = false;
+	bool jap = false;
 
 	bool hitTorsoLeft = false;
 	bool hitTorsoRight = false;
 	bool hitTorsoStright = false;
+
+	bool leftGuard = false;
+	bool rightGuard = false;
+	bool middleGuard = false;
 
 	bool checkAni = false;
 
