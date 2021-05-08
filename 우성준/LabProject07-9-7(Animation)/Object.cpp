@@ -265,12 +265,14 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 	{
 		case ANIMATION_TYPE_LOOP:
 		{
-			m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames-1]); // m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames-1]) * m_pfKeyFrameTimes[m_nKeyFrames-1];
+			m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames-1]); 
+			 //m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames-1]) * m_pfKeyFrameTimes[m_nKeyFrames-1];
 //			m_fPosition = fmod(fTrackPosition, m_fLength); //if (m_fPosition < 0) m_fPosition += m_fLength;
 //			m_fPosition = fTrackPosition - int(fTrackPosition / m_fLength) * m_fLength;
 			break;
 		}
 		case ANIMATION_TYPE_ONCE:
+
 			break;
 		case ANIMATION_TYPE_PINGPONG:
 			break;
@@ -442,7 +444,6 @@ void CAnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimat
 {
 	if (m_pAnimationTracks)
 	{
-		this->m_fTime = 0;
 		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
 	}
 }
