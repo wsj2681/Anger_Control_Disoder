@@ -117,5 +117,7 @@ public:
 	virtual Camera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 
 	virtual void Update(float fTimeElapsed);
+	virtual void MoveTo(XMFLOAT3 destination);
+	virtual void UpdateWayPoints();
 };
 

@@ -28,7 +28,7 @@ void BoxerObjectsShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCo
 	float fzPitch = 7.0f * 2.5f;
 
 	ModelInfo* boxerModel = pModel;
-	if (!boxerModel) boxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxerR.bin", nullptr);
+	if (!boxerModel) boxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxerA.bin", nullptr);
 
 	int nObjects = 0;
 	for (int x = -xObjects; x <= xObjects; x++)

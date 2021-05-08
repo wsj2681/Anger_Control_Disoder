@@ -310,7 +310,7 @@ void Player::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext)
 {
 
-	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxerR.bin", nullptr);
+	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxerA.bin", nullptr);
 	SetChild(BoxerModel->m_pModelRootObject, true);
 
 	this->head = FindFrame("Bip01_Head");
@@ -343,7 +343,6 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	playerCollision->Center = spine->GetPosition();
 	playerCollision->Extents = XMFLOAT3(2.f, 7.f, 2.f);
 	playerCollision->Orientation = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
-
 
 	if (BoxerModel) delete BoxerModel;
 }
@@ -408,4 +407,53 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 void BoxingPlayer::Update(float fTimeElapsed)
 {
 	Player::Update(fTimeElapsed);
+}
+
+void BoxingPlayer::MoveTo(XMFLOAT3 destination)
+{
+	wayPoint.SetNowState(STATE_MOVE);
+	UINT animation = wayPoint.GetAnimations();
+	m_pSkinnedAnimationController->SetTrackAnimationSet(0, animation);
+	XMFLOAT3 comparePosition = GetPosition();
+	comparePosition = Vector3::Subtract(destination, comparePosition);
+
+	// 이동
+	XMFLOAT3 look = GetLook();
+	XMFLOAT3 position = GetPosition();
+	XMFLOAT3 velocity{};
+
+	if (wayPoint.GetNWayPoints() > 0)
+	{
+
+		XMFLOAT3 dir = Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), position);
+		XMFLOAT3 posVelocity = velocity;
+		velocity = Vector3::Normalize(dir);
+
+		//Rotate(velocity.x, velocity.z, velocity.y); // 각 계산해서 회전
+
+		position = GetPosition();
+		position.x += velocity.x * 50 * 0.016f;	// 50 : 초당 이동 거리, 0.016 : fElapsedTime
+		position.y += velocity.y * 50 * 0.016f;
+		position.z += velocity.z * 50 * 0.016f;
+		SetPosition(position);
+	}
+
+	if (Vector3::Length(Vector3::Subtract(wayPoint.GetWayPoint(wayPoint.GetCurWayPoints()), GetPosition())) < 1.f)
+	{
+		wayPoint.SetCurWayPoints(wayPoint.GetCurWayPoints() + 1);
+	}
+	wayPoint.SetNowState(STATE_MOVE);
+}
+
+void BoxingPlayer::UpdateWayPoints()
+{
+	int curWayPoint = wayPoint.GetCurWayPoints();
+	if (curWayPoint < wayPoint.GetNWayPoints())
+		MoveTo(wayPoint.GetWayPoints()[curWayPoint]);
+	else
+	{
+		SetPosition(XMFLOAT3(0.0f, 10.0f, -36.0f));
+		SetLook(0.0f, 0.0f, 1.0f);
+		m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	}
 }

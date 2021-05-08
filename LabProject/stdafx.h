@@ -111,7 +111,10 @@ constexpr UINT STATE_CEREMONY = 0x0B;
 #define ANIMATION_HIT_TORSO_LEFT_A 0x0D		// Hit_Torso_Left_A
 #define ANIMATION_HIT_TORSO_RIGHT_A 0x0E	// Hit_Torso_Right_A
 #define ANIMATION_HIT_TORSO_STRIGHT_A 0x0F	// Hit_Torso_Stright_A
-#define ANIMATION_GROGI	0x10
+//----------------------------------------------------------
+constexpr UINT DAMAGE_HOOK = 10;
+constexpr UINT DAMAGE_JAB = 7;
+constexpr UINT DAMAGE_STRAIGHT = 15;
 //----------------------------------------------------------
 
 //HR

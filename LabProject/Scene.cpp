@@ -181,7 +181,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
-	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerR.bin", nullptr);
+	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerA.bin", nullptr);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 	boxer->SetPosition(21.3046f, 10.0f, -769.689f);
@@ -694,6 +694,9 @@ void Scene::Scenario()
 		bScenario = true;
 		hierarchicalGameObjects.data()[1]->SetPosition(XMFLOAT3(21.3046f, 10.0f, -769.689f));
 		hierarchicalGameObjects.data()[1]->wayPoint.SetCurWayPoints(0);
+
+		m_pPlayer->SetPosition(XMFLOAT3(-24.907f, 10.0f, -769.689f));
+		m_pPlayer->wayPoint.SetCurWayPoints(0);
 	}
 	else
 	{
@@ -715,7 +718,12 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
-	if (bScenario) hierarchicalGameObjects[1]->UpdateWayPoints();
+	if (bScenario)
+	{
+		hierarchicalGameObjects[1]->UpdateWayPoints();
+		if (m_pPlayer) m_pPlayer->UpdateWayPoints();
+	}
+	
 
 	for (int i = 38; i < 40; ++i)
 	{

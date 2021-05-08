@@ -398,6 +398,26 @@ void Engine::BuildObjects()
 
 	BoxingPlayer *pPlayer = new BoxingPlayer(device, commandList, m_pScene->GetGraphicsRootSignature());
 
+	pPlayer->SetPosition(XMFLOAT3(-24.907f, 10.0f, -769.689f));
+
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-24.907f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-24.907f, 1.66975f, -533.916f), ANIMATION_MOVE_FORWARD);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-24.907f, -5.69284f, -527.249f), ANIMATION_MOVE_FORWARD);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-24.907f, -5.69284f, -107.806f), ANIMATION_MOVE_FORWARD);
+
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f), ANIMATION_CEREMONY);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f), ANIMATION_CEREMONY);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f), ANIMATION_CEREMONY);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f), ANIMATION_CEREMONY);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f), ANIMATION_CEREMONY);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f), ANIMATION_CEREMONY);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -109.177f), ANIMATION_CEREMONY);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -94.0986f), ANIMATION_MOVE_FORWARD);
+
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -78.1817f), ANIMATION_MOVE_FORWARD);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -36.0f), ANIMATION_MOVE_FORWARD);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, -36.0f), ANIMATION_MOVE_FORWARD);
+
 	m_pScene->m_pPlayer = m_pPlayer = gPlayer = pPlayer;
 	m_pCamera = m_pPlayer->GetCamera();
 	m_pScene->hierarchicalGameObjects[1];
@@ -441,7 +461,11 @@ void Engine::ProcessInput()
 	{
 		DWORD dwDirection = 0;
 
-		// temp 이동키
+		if (m_pScene)
+		{
+			if (m_pScene->bScenario == false)
+			{
+				// temp 이동키
 		/*if (pKeysBuffer['S'] & 0xF0)
 		{
 			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['S'] & 0xF0 ? ANIMATION_MOVE_BACKWARD : ANIMATION_IDLE);
@@ -468,127 +492,131 @@ void Engine::ProcessInput()
 
 
 		// 여기가 게임 키
-		if (pKeysBuffer[VK_SPACE] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_SPACE] & 0xF0 ? ANIMATION_MOVE_BACKWARD : ANIMATION_IDLE);
-			dwDirection |= DIR_BACKWARD;
-		}
-		if (pKeysBuffer[VK_LSHIFT] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_LSHIFT] & 0xF0 ? ANIMATION_MOVE_LEFT : ANIMATION_IDLE);
-			dwDirection |= DIR_LEFT;
+				if (pKeysBuffer[VK_SPACE] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_SPACE] & 0xF0 ? ANIMATION_MOVE_BACKWARD : ANIMATION_IDLE);
+					dwDirection |= DIR_BACKWARD;
+				}
+				if (pKeysBuffer[VK_LSHIFT] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_LSHIFT] & 0xF0 ? ANIMATION_MOVE_LEFT : ANIMATION_IDLE);
+					dwDirection |= DIR_LEFT;
 
-		}
-		if (pKeysBuffer[VK_RSHIFT] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_RSHIFT] & 0xF0 ? ANIMATION_MOVE_RIGHT : ANIMATION_IDLE);
-			dwDirection |= DIR_RIGHT;
-		}
-		if (pKeysBuffer[VK_LSHIFT] & pKeysBuffer[VK_RSHIFT] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_LSHIFT] & pKeysBuffer[VK_RSHIFT] & 0xF0 ? ANIMATION_MOVE_FORWARD : ANIMATION_IDLE);
-			dwDirection |= DIR_FORWARD;
-		}
-		//if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
-		//if (pKeysBuffer[VK_RSHIFT] & 0xF0) dwDirection |= DIR_DOWN;
+				}
+				if (pKeysBuffer[VK_RSHIFT] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_RSHIFT] & 0xF0 ? ANIMATION_MOVE_RIGHT : ANIMATION_IDLE);
+					dwDirection |= DIR_RIGHT;
+				}
+				if (pKeysBuffer[VK_LSHIFT] & pKeysBuffer[VK_RSHIFT] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_LSHIFT] & pKeysBuffer[VK_RSHIFT] & 0xF0 ? ANIMATION_MOVE_FORWARD : ANIMATION_IDLE);
+					dwDirection |= DIR_FORWARD;
+				}
+				//if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
+				//if (pKeysBuffer[VK_RSHIFT] & 0xF0) dwDirection |= DIR_DOWN;
 
-		if (pKeysBuffer['A'] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
-			this->m_pPlayer->nowState = STATE_ATTACK_LEFT_HOOK;
+				if (pKeysBuffer['A'] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
+					this->m_pPlayer->nowState = STATE_ATTACK_LEFT_HOOK;
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.leftHand = true;
+					server->send_attackAnddefend.leftHand = true;
 #endif // _WITH_SERVER_CONNECT
-		}
-		if (pKeysBuffer[VK_OEM_7] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_OEM_7] & 0xF0 ? ANIMATION_HOOK_R : ANIMATION_IDLE);
-			this->m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
+				}
+				if (pKeysBuffer[VK_OEM_7] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_OEM_7] & 0xF0 ? ANIMATION_HOOK_R : ANIMATION_IDLE);
+					this->m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.rightHand = true;
+					server->send_attackAnddefend.rightHand = true;
 #endif // _WITH_SERVER_CONNECT
-		}
-		if (pKeysBuffer['S'] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['S'] & 0xF0 ? ANIMATION_JAB : ANIMATION_IDLE);
-			this->m_pPlayer->nowState = STATE_ATTACK_JAB;
+				}
+				if (pKeysBuffer['S'] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['S'] & 0xF0 ? ANIMATION_JAB : ANIMATION_IDLE);
+					this->m_pPlayer->nowState = STATE_ATTACK_JAB;
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.jap = true;
+					server->send_attackAnddefend.jap = true;
 #endif // _WITH_SERVER_CONNECT
-		}
-		if (pKeysBuffer['C'] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['C'] & 0xF0 ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_IDLE);
-			this->m_pPlayer->nowState = STATE_GUARD_LEFT_HEAD;
+				}
+				if (pKeysBuffer['C'] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['C'] & 0xF0 ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_IDLE);
+					this->m_pPlayer->nowState = STATE_GUARD_LEFT_HEAD;
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.leftGuard = true;
+					server->send_attackAnddefend.leftGuard = true;
 #endif // _WITH_SERVER_CONNECT
-		}
-		if (pKeysBuffer[VK_OEM_COMMA] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_OEM_COMMA] & 0xF0 ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_IDLE);
-			this->m_pPlayer->nowState = STATE_GUARD_RIGHT_HEAD;
+				}
+				if (pKeysBuffer[VK_OEM_COMMA] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_OEM_COMMA] & 0xF0 ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_IDLE);
+					this->m_pPlayer->nowState = STATE_GUARD_RIGHT_HEAD;
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.rightGuard = true;
+					server->send_attackAnddefend.rightGuard = true;
 #endif // _WITH_SERVER_CONNECT
-		}
-		if (pKeysBuffer['6'] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['6'] & 0xF0 ? ANIMATION_GUARD_BODY : ANIMATION_IDLE);
-			this->m_pPlayer->nowState = STATE_GUARD_BODY;
+				}
+				if (pKeysBuffer['6'] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['6'] & 0xF0 ? ANIMATION_GUARD_BODY : ANIMATION_IDLE);
+					this->m_pPlayer->nowState = STATE_GUARD_BODY;
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.middleGuard = true;
+					server->send_attackAnddefend.middleGuard = true;
 #endif // _WITH_SERVER_CONNECT
-		}
-		if (pKeysBuffer['7'] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['7'] & 0xF0 ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_IDLE);
-			this->m_pPlayer->nowState = STATE_HIT_TORSO_LEFT;
+				}
+				if (pKeysBuffer['7'] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['7'] & 0xF0 ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_IDLE);
+					this->m_pPlayer->nowState = STATE_HIT_TORSO_LEFT;
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.hitTorsoLeft = true;
+					server->send_attackAnddefend.hitTorsoLeft = true;
 #endif // _WITH_SERVER_CONNECT
-		}
-		if (pKeysBuffer['8'] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['8'] & 0xF0 ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_IDLE);
-			this->m_pPlayer->nowState = STATE_HIT_TORSO_RIGHT;
+				}
+				if (pKeysBuffer['8'] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['8'] & 0xF0 ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_IDLE);
+					this->m_pPlayer->nowState = STATE_HIT_TORSO_RIGHT;
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.hitTorsoRight = true;
+					server->send_attackAnddefend.hitTorsoRight = true;
 #endif // _WITH_SERVER_CONNECT
-		}
-		if (pKeysBuffer['9'] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['9'] & 0xF0 ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_IDLE);
-			this->m_pPlayer->nowState = STATE_HIT_TORSO_STRIGHT;
+				}
+				if (pKeysBuffer['9'] & 0xF0)
+				{
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['9'] & 0xF0 ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_IDLE);
+					this->m_pPlayer->nowState = STATE_HIT_TORSO_STRIGHT;
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.hitTorsoStright = true;
+					server->send_attackAnddefend.hitTorsoStright = true;
 #endif // _WITH_SERVER_CONNECT
-		}
+				}
 
-		float cxDelta = 0.0f, cyDelta = 0.0f;
-		POINT ptCursorPos;
-		if (GetCapture() == this->hWnd)
-		{
-			SetCursor(NULL);
-			GetCursorPos(&ptCursorPos);
-			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
-			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
-			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
-		}
+				float cxDelta = 0.0f, cyDelta = 0.0f;
+				POINT ptCursorPos;
+				if (GetCapture() == this->hWnd)
+				{
+					SetCursor(NULL);
+					GetCursorPos(&ptCursorPos);
+					cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
+					cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
+					SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
+				}
 
-		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
-		{
-			if (cxDelta || cyDelta)
-			{
-				if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-					m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
-				else
-					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+				if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
+				{
+					if (cxDelta || cyDelta)
+					{
+						if (pKeysBuffer[VK_RBUTTON] & 0xF0)
+							m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
+						else
+							m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+					}
+					if (dwDirection) m_pPlayer->Move(dwDirection, 50.25f, true);
+				}
 			}
-			if (dwDirection) m_pPlayer->Move(dwDirection, 50.25f, true);
+
+			m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 		}
+
 	}
-	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
 
 void Engine::AnimateObjects()

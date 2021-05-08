@@ -71,6 +71,7 @@ public:
 
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
 
+	float hp{ 100.f };
 
 	UINT nowState = STATE_IDLE;
 
