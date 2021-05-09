@@ -59,7 +59,7 @@ int main()
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
 
-	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
+	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	/*if (listen_sock == INVALID_SOCKET)
 		err_quit("socket()");*/
 
