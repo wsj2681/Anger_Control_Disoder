@@ -45,6 +45,7 @@ public:
 	AnimationCallbackHandler* m_pAnimationCallbackHandler = nullptr;
 
 	bool isPlayer = false;
+	bool isOtherPlayer = false;
 
 public:
 	void SetPosition(float fTrackPosition);

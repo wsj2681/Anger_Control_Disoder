@@ -288,7 +288,7 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	switch (nMessageID)
 	{
 		case WM_KEYUP:
-			//this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE);
+			//this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 			this->m_pPlayer->nowState = STATE_IDLE;
 			switch (wParam)
 			{
@@ -472,22 +472,22 @@ void Engine::ProcessInput()
 				//// temp 이동키
 				//if (pKeysBuffer['S'] & 0xF0)
 				//{
-				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['S'] & 0xF0 ? ANIMATION_MOVE_BACKWARD : ANIMATION_IDLE);
+				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['S'] & 0xF0 ? ANIMATION_MOVE_BACKWARD : ANIMATION_COMBAT_MODE_A);
 				//	dwDirection |= DIR_BACKWARD;
 				//}
 				//if (pKeysBuffer['A'] & 0xF0)
 				//{
-				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['A'] & 0xF0 ? ANIMATION_MOVE_LEFT : ANIMATION_IDLE);
+				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['A'] & 0xF0 ? ANIMATION_MOVE_LEFT : ANIMATION_COMBAT_MODE_A);
 				//	dwDirection |= DIR_LEFT;
 				//}
 				//if (pKeysBuffer['D'] & 0xF0)
 				//{
-				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['D'] & 0xF0 ? ANIMATION_MOVE_RIGHT : ANIMATION_IDLE);
+				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['D'] & 0xF0 ? ANIMATION_MOVE_RIGHT : ANIMATION_COMBAT_MODE_A);
 				//	dwDirection |= DIR_RIGHT;
 				//}
 				//if (pKeysBuffer['W'] & 0xF0)
 				//{
-				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['W'] & 0xF0 ? ANIMATION_MOVE_FORWARD : ANIMATION_IDLE);
+				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['W'] & 0xF0 ? ANIMATION_MOVE_FORWARD : ANIMATION_COMBAT_MODE_A);
 				//	dwDirection |= DIR_FORWARD;
 				//}
 				//if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
@@ -497,23 +497,23 @@ void Engine::ProcessInput()
 				 //여기가 게임 키
 				if (pKeysBuffer[VK_SPACE] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_SPACE] & 0xF0 ? ANIMATION_MOVE_BACKWARD : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_SPACE] & 0xF0 ? ANIMATION_MOVE_BACKWARD : ANIMATION_COMBAT_MODE_A);
 					dwDirection |= DIR_BACKWARD;
 				}
 				if (pKeysBuffer[VK_LSHIFT] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_LSHIFT] & 0xF0 ? ANIMATION_MOVE_LEFT : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_LSHIFT] & 0xF0 ? ANIMATION_MOVE_LEFT : ANIMATION_COMBAT_MODE_A);
 					dwDirection |= DIR_LEFT;
 
 				}
 				if (pKeysBuffer[VK_RSHIFT] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_RSHIFT] & 0xF0 ? ANIMATION_MOVE_RIGHT : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_RSHIFT] & 0xF0 ? ANIMATION_MOVE_RIGHT : ANIMATION_COMBAT_MODE_A);
 					dwDirection |= DIR_RIGHT;
 				}
 				if (pKeysBuffer[VK_LSHIFT] & pKeysBuffer[VK_RSHIFT] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_LSHIFT] & pKeysBuffer[VK_RSHIFT] & 0xF0 ? ANIMATION_MOVE_FORWARD : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_LSHIFT] & pKeysBuffer[VK_RSHIFT] & 0xF0 ? ANIMATION_MOVE_FORWARD : ANIMATION_COMBAT_MODE_A);
 					dwDirection |= DIR_FORWARD;
 				}
 				//if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
@@ -529,7 +529,7 @@ void Engine::ProcessInput()
 				}
 				if (pKeysBuffer[VK_OEM_7] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_OEM_7] & 0xF0 ? ANIMATION_HOOK_R : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_OEM_7] & 0xF0 ? ANIMATION_HOOK_R : ANIMATION_COMBAT_MODE_A);
 					this->m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
 #ifdef _WITH_SERVER_CONNECT
 					server->send_attackAnddefend.rightHand = true;
@@ -537,7 +537,7 @@ void Engine::ProcessInput()
 				}
 				if (pKeysBuffer['S'] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['S'] & 0xF0 ? ANIMATION_JAB : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['S'] & 0xF0 ? ANIMATION_JAB : ANIMATION_COMBAT_MODE_A);
 					this->m_pPlayer->nowState = STATE_ATTACK_JAB;
 #ifdef _WITH_SERVER_CONNECT
 					server->send_attackAnddefend.jap = true;
@@ -545,7 +545,7 @@ void Engine::ProcessInput()
 				}
 				if (pKeysBuffer['C'] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['C'] & 0xF0 ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['C'] & 0xF0 ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_COMBAT_MODE_A);
 					this->m_pPlayer->nowState = STATE_GUARD_LEFT_HEAD;
 #ifdef _WITH_SERVER_CONNECT
 					server->send_attackAnddefend.leftGuard = true;
@@ -553,7 +553,7 @@ void Engine::ProcessInput()
 				}
 				if (pKeysBuffer[VK_OEM_COMMA] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_OEM_COMMA] & 0xF0 ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_OEM_COMMA] & 0xF0 ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_COMBAT_MODE_A);
 					this->m_pPlayer->nowState = STATE_GUARD_RIGHT_HEAD;
 #ifdef _WITH_SERVER_CONNECT
 					server->send_attackAnddefend.rightGuard = true;
@@ -561,7 +561,7 @@ void Engine::ProcessInput()
 				}
 				if (pKeysBuffer['6'] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['6'] & 0xF0 ? ANIMATION_GUARD_BODY : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['6'] & 0xF0 ? ANIMATION_GUARD_BODY : ANIMATION_COMBAT_MODE_A);
 					this->m_pPlayer->nowState = STATE_GUARD_BODY;
 #ifdef _WITH_SERVER_CONNECT
 					server->send_attackAnddefend.middleGuard = true;
@@ -569,7 +569,7 @@ void Engine::ProcessInput()
 				}
 				if (pKeysBuffer['7'] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['7'] & 0xF0 ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['7'] & 0xF0 ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_COMBAT_MODE_A);
 					this->m_pPlayer->nowState = STATE_HIT_TORSO_LEFT;
 #ifdef _WITH_SERVER_CONNECT
 					server->send_attackAnddefend.hitTorsoLeft = true;
@@ -577,7 +577,7 @@ void Engine::ProcessInput()
 				}
 				if (pKeysBuffer['8'] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['8'] & 0xF0 ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['8'] & 0xF0 ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_COMBAT_MODE_A);
 					this->m_pPlayer->nowState = STATE_HIT_TORSO_RIGHT;
 #ifdef _WITH_SERVER_CONNECT
 					server->send_attackAnddefend.hitTorsoRight = true;
@@ -585,7 +585,7 @@ void Engine::ProcessInput()
 				}
 				if (pKeysBuffer['9'] & 0xF0)
 				{
-					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['9'] & 0xF0 ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_IDLE);
+					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['9'] & 0xF0 ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_COMBAT_MODE_A);
 					this->m_pPlayer->nowState = STATE_HIT_TORSO_STRIGHT;
 #ifdef _WITH_SERVER_CONNECT
 					server->send_attackAnddefend.hitTorsoStright = true;

@@ -3,10 +3,11 @@
 #include "CallBack.h"
 #include "Object.h"
 #include "Player.h"
+#include "Scene.h"
 #include "AnimationController.h"
 #include "AnimationTrack.h"
 
-extern Player* gPlayer;
+extern Scene* gScene;
 
 CAnimationSet::CAnimationSet(float fLength, int nFramesPerSecond, int nKeyFrames, int nAnimatedBones, char* pstrName)
 {
@@ -51,24 +52,33 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 
 		//m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]); 
 		m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames-1]) * m_pfKeyFrameTimes[m_nKeyFrames-1];
-		if (isPlayer)
+		
+		if (((m_pfKeyFrameTimes[(m_nKeyFrames - 1)]) <= m_fPosition + 0.04f)/* && (m_fPosition <= m_pfKeyFrameTimes[i + 1])*/)
 		{
-			if (((m_pfKeyFrameTimes[(m_nKeyFrames - 1)]) <= m_fPosition + 0.04f)/* && (m_fPosition <= m_pfKeyFrameTimes[i + 1])*/)
+			if (isPlayer)
 			{
-				cout << m_fPosition << " / " << m_pfKeyFrameTimes[(m_nKeyFrames - 1)] << endl;
-				gPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-				gPlayer->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.f;
+				//cout << m_fPosition << " / " << m_pfKeyFrameTimes[(m_nKeyFrames - 1)] << endl;
+				gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+				gScene->m_pPlayer->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.f;
+			}
+			if (isOtherPlayer)
+			{
+				//cout << m_fPosition << " / " << m_pfKeyFrameTimes[(m_nKeyFrames - 1)] << endl;
+				gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+				gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.f;
+
 			}
 		}
-
-			//for (int i = 0; i < m_nKeyFrames; ++i)
-			//{
-			//	cout << m_pfKeyFrameTimes[i] << " / ";
-			//}
-			//cout << endl;
 		
-//			m_fPosition = fmod(fTrackPosition, m_fLength); //if (m_fPosition < 0) m_fPosition += m_fLength;
-//			m_fPosition = fTrackPosition - int(fTrackPosition / m_fLength) * m_fLength;
+
+		//for (int i = 0; i < m_nKeyFrames; ++i)
+		//{
+		//	cout << m_pfKeyFrameTimes[i] << " / ";
+		//}
+		//cout << endl;
+		
+//		m_fPosition = fmod(fTrackPosition, m_fLength); //if (m_fPosition < 0) m_fPosition += m_fLength;
+//		m_fPosition = fTrackPosition - int(fTrackPosition / m_fLength) * m_fLength;
 		break;
 	}
 	case ANIMATION_TYPE_ONCE:

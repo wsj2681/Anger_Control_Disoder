@@ -95,22 +95,38 @@ constexpr UINT STATE_CEREMONY = 0x0B;
 //----------------------------------------------------------
 // %애니메이션 추가
 //----------------------------------------------------------
-#define ANIMATION_IDLE 0x00					// Combat_Mode_A
-#define ANIMATION_ATTACK_LOOP 0x01			// Beating_1-2(loop)
-#define ANIMATION_MOVE_FORWARD 0x02			// 1_Steps_Forward
-#define ANIMATION_MOVE_BACKWARD 0x03		// 1_Steps_Backward
-#define ANIMATION_MOVE_LEFT 0x04			// 1_Steps_Left
-#define ANIMATION_MOVE_RIGHT 0x05			// 1_Steps_Right
-#define ANIMATION_HOOK_L 0x06				// Hook_L 
-#define ANIMATION_HOOK_R 0x07				// Hook_R
-#define ANIMATION_JAB 0x08					// Jab
-#define ANIMATION_GUARD_LEFT_HEAD 0x09		// Close_One_Block_L
-#define ANIMATION_GUARD_RIGHT_HEAD 0x0A		// Close_One_Block_R
-#define ANIMATION_GUARD_BODY 0x0B			// Close_Both_Block
-#define ANIMATION_CEREMONY 0x0C				// ceremony
-#define ANIMATION_HIT_TORSO_LEFT_A 0x0D		// Hit_Torso_Left_A
-#define ANIMATION_HIT_TORSO_RIGHT_A 0x0E	// Hit_Torso_Right_A
-#define ANIMATION_HIT_TORSO_STRIGHT_A 0x0F	// Hit_Torso_Stright_A
+constexpr UINT ANIMATION_IDLE_A = 0x00;             // Idle_A (서있는 IDLE)
+constexpr UINT ANIMATION_IDLE_B = 0x01;             // Idle_B (딴짓하는 IDLE)
+constexpr UINT ANIMATION_IDLE_COMBAT = 0x02;        // Idle_Combat (전투 준비)
+constexpr UINT ANIMATION_COMBAT_IDLE = 0x03;        // Combat_Idle (전투 해제)
+constexpr UINT ANIMATION_COMBAT_MODE_A = 0x04;      // Combat_Mode_A (전투 IDLE)
+constexpr UINT ANIMATION_CLAP_LEG = 0x05;           // Clap_Leg (무릎 자학)
+constexpr UINT ANIMATION_CLAP_ON_ARM = 0x06;        // Clap_On_Arm (팔 자학)
+constexpr UINT ANIMATION_CLAP_ON_HEAD = 0x07;       // Clap_On_Head (머리 자학)
+constexpr UINT ANIMATION_COME_HERE_1HAND = 0x08;    // Come_Here_1Hand (한손 도발)
+constexpr UINT ANIMATION_COME_HERE_2HANDS = 0x09;   // Come_Here_2Hands (두손 도발)
+constexpr UINT ANIMATION_COME_HERE_BRUCE_LI = 0x0A; // Come_Here_Bruce_Li (이소룡 도발)
+constexpr UINT ANIMATION_KILL_YOU = 0x0B;           // Kill_You (킬유 도발)
+constexpr UINT ANIMATION_RIZE_AUDITORY = 0x0C;      // Rize_Auditory (관객 호응 유도)
+constexpr UINT ANIMATION_KARATE_FINISH = 0x0D;      // Karate_Finish (가라테 피니시)
+constexpr UINT ANIMATION_OSSUUU = 0x0E;             // OSSUUU (OSSUUU)
+constexpr UINT ANIMATION_CEREMONY = 0x0F;           // Ceremony (커스텀 세레머니)
+constexpr UINT ANIMATION_WINN_BATTLE = 0x10;        // Winn_battle (승리 모션)
+constexpr UINT ANIMATION_LOSTING_BATTLE = 0x11;     // Losting_Battle (패배 모션)
+constexpr UINT ANIMATION_MOVE_FORWARD = 0x12;       // 1_Steps_Forward
+constexpr UINT ANIMATION_MOVE_BACKWARD = 0x13;      // 1_Steps_Backward
+constexpr UINT ANIMATION_MOVE_LEFT = 0x14;			// 1_Steps_Left 
+constexpr UINT ANIMATION_MOVE_RIGHT = 0x15;			// 1_Steps_Right
+constexpr UINT ANIMATION_HOOK_L = 0x16; 			// Hook_L 
+constexpr UINT ANIMATION_HOOK_R = 0x17;				// Hook_R
+constexpr UINT ANIMATION_JAB = 0x18;				// Jab
+constexpr UINT ANIMATION_GUARD_LEFT_HEAD = 0x19;	// Close_One_Block_L
+constexpr UINT ANIMATION_GUARD_RIGHT_HEAD = 0x1A;	// Close_One_Block_R
+constexpr UINT ANIMATION_GUARD_BODY = 0x1B;			// Close_Both_Block
+constexpr UINT ANIMATION_HIT_TORSO_LEFT_A = 0x1C;	// Hit_Torso_Left_A
+constexpr UINT ANIMATION_HIT_TORSO_RIGHT_A = 0x1D;	// Hit_Torso_Right_A
+constexpr UINT ANIMATION_HIT_TORSO_STRIGHT_A = 0x1E;// Hit_Torso_Stright_A
+constexpr UINT ANIMATION_KNOCKDOWN = 0x1F;          // Knockdown
 //----------------------------------------------------------
 constexpr UINT DAMAGE_HOOK = 10;
 constexpr UINT DAMAGE_JAB = 7;

@@ -32,6 +32,8 @@ D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvGPUDescriptorNextHandle;
 #define CUBEOBJECT 2
 #define SPHEHROBJECT 3
 
+vector<Object*> gGameObject{};
+
 Scene::Scene()
 {
 	SoundManager::Init();
@@ -157,7 +159,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	
 	m_pSkyBox = new SkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena_FBX.bin", NULL);
+	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena.bin", NULL);
 	Object* Map = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
 	cageSide = Map->FindFrame("octagon_floor");
 	Map->SetPosition(0.0f, 0.f, 0.0f);
@@ -181,19 +183,24 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
-	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerA.bin", nullptr);
+	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerE.bin", nullptr);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
-	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	boxer->SetPosition(21.3046f, 10.0f, -769.689f);
+	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+	for (int i = 0; i < boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_nAnimationSets; ++i)
+	{
+		boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[i]->isOtherPlayer = true;
+	}
+	boxer->SetPosition(15.3046f, 10.0f, -769.689f);
 
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, 1.66975f, -533.916f), ANIMATION_MOVE_FORWARD);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -527.249f), ANIMATION_MOVE_FORWARD);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(21.3046f, -5.69284f, -107.806f), ANIMATION_MOVE_FORWARD);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(15.3046f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(15.3046f, 1.66975f, -533.916f), ANIMATION_MOVE_FORWARD);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(15.3046f, -5.69284f, -527.249f), ANIMATION_MOVE_FORWARD);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(15.3046f, -5.69284f, -107.806f), ANIMATION_MOVE_FORWARD);
 
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f), ANIMATION_CEREMONY);
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f), ANIMATION_CEREMONY);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f), ANIMATION_CEREMONY);
+	boxer->wayPoint.SetWayPoint(XMFLOAT3(35.3937f, -5.69284f, 77.8565f), ANIMATION_CEREMONY);
+	//boxer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f), ANIMATION_CEREMONY);
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f), ANIMATION_CEREMONY);
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f), ANIMATION_CEREMONY);
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f), ANIMATION_CEREMONY);
@@ -241,7 +248,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 			Object* crowd = new CrowdObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, crowdModel, 1);
 			crowd->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
 			//m_ppHierarchicalGameObjects[i]->SetPosition(0, 1.0f + 4.0f * (int)((i - 4) / 2), 130.0f + 12.5f * (i - 4));
-			crowd->SetPosition(cos(XMConvertToRadians(angle)) * radius, 1.0f + 4.0f * i, sin(XMConvertToRadians(angle)) * radius);
+			crowd->SetPosition(cos(XMConvertToRadians(angle)) * radius, -9.0f + 4.0f * i, sin(XMConvertToRadians(angle)) * radius);
 			//crowd->Rotate(0.0f, angle + 90.f + ((j - nBaseModels) % (nCrowds - 1)) * 30.0f, 0.0f);
 			crowd->Rotate(0.0f, 180.0f, 0.0f);
 			hierarchicalGameObjects.push_back(crowd);
@@ -252,7 +259,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	
 	if (crowdModel) delete crowdModel;
 
-
+	gGameObject = hierarchicalGameObjects;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -650,13 +657,10 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case VK_RETURN:
 			break;
 		case VK_F4:
-			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
 			break;
 		case VK_F5:
-			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 			break;
 		case VK_F6:
-			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 6);
 			break;
 		case VK_INSERT:
 			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
@@ -692,15 +696,18 @@ void Scene::Scenario()
 	if (bScenario == false)
 	{
 		bScenario = true;
-		hierarchicalGameObjects.data()[1]->SetPosition(XMFLOAT3(21.3046f, 10.0f, -769.689f));
+		
+		hierarchicalGameObjects.data()[1]->SetPosition(XMFLOAT3(15.3046f, 10.0f, -769.689f));
 		hierarchicalGameObjects.data()[1]->wayPoint.SetCurWayPoints(0);
 
-		m_pPlayer->SetPosition(XMFLOAT3(-24.907f, 10.0f, -769.689f));
+		m_pPlayer->SetPosition(XMFLOAT3(-14.245930f, 10.0f, -769.689f));
 		m_pPlayer->wayPoint.SetCurWayPoints(0);
+		m_pPlayer->bScenario = true;
 	}
 	else
 	{
 		bScenario = false;
+		m_pPlayer->bScenario = false;
 	}
 }
 

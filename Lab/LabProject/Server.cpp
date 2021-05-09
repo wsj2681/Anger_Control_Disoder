@@ -6,6 +6,7 @@
 #include "Object.h"
 #include "Player.h"
 #include "Scene.h"
+#include "AnimationSet.h"
 #include "AnimationController.h"
 
 Server::Server()
@@ -95,39 +96,40 @@ void Server::Server_recv()
 
 		cscene->hierarchicalGameObjects[1]->nowState = other_player.nowState;
 
+		
 
 		// 상대클라 애니메이션
 		if (recv_attackAnddefend.checkAni) {
 			if (recv_attackAnddefend.leftHand) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftHand ? ANIMATION_HOOK_L : ANIMATION_IDLE);
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
 			}
 			if (recv_attackAnddefend.rightHand) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightHand ? ANIMATION_HOOK_R : ANIMATION_IDLE);
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightHand ? ANIMATION_HOOK_R : ANIMATION_COMBAT_MODE_A);
 			}
 			if (recv_attackAnddefend.jap) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.jap ? ANIMATION_JAB : ANIMATION_IDLE);
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.jap ? ANIMATION_JAB : ANIMATION_COMBAT_MODE_A);
 			}
 			if (recv_attackAnddefend.hitTorsoLeft) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoLeft ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_IDLE);
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoLeft ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_COMBAT_MODE_A);
 			}
 			if (recv_attackAnddefend.hitTorsoRight) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoRight ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_IDLE);
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoRight ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_COMBAT_MODE_A);
 			}
 			if (recv_attackAnddefend.hitTorsoStright) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoStright ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_IDLE);
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoStright ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_COMBAT_MODE_A);
 			}
 			if (recv_attackAnddefend.rightGuard) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightGuard ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_IDLE);
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightGuard ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_COMBAT_MODE_A);
 			}
 			if (recv_attackAnddefend.leftGuard) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftGuard ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_IDLE);
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftGuard ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_COMBAT_MODE_A);
 			}
 			if (recv_attackAnddefend.middleGuard) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.middleGuard ? ANIMATION_GUARD_BODY : ANIMATION_IDLE);
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.middleGuard ? ANIMATION_GUARD_BODY : ANIMATION_COMBAT_MODE_A);
 			}
 		}
 		else {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE);
+			//cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 
 		}
 		//충돌처리확인
