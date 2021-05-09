@@ -186,6 +186,11 @@ void Server::Server_recv()
 }
 
 void Server::attackAndGuard_idle() {
+	send_attackAnddefend.rightHand = false;
+	send_attackAnddefend.leftHand = false;
+	send_attackAnddefend.jap = false;
+
+
 	send_attackAnddefend.hitTorsoLeft = false;
 	send_attackAnddefend.hitTorsoRight = false;
 	send_attackAnddefend.hitTorsoStright = false;
