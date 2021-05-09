@@ -452,8 +452,9 @@ void BoxingPlayer::UpdateWayPoints()
 		MoveTo(wayPoint.GetWayPoints()[curWayPoint]);
 	else
 	{
-		SetPosition(XMFLOAT3(0.0f, 10.0f, -36.0f));
-		SetLook(0.0f, 0.0f, 1.0f);
+		SetPosition(XMFLOAT3(0.0f, 10.0f, 0.0f));
+		// 우리가 돌리자
 		m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+		bScenario = false;
 	}
 }

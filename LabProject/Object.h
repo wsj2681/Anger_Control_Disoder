@@ -79,6 +79,7 @@ public:
 	//충돌처리
 	bool isCollide = false;
 	WayPoint wayPoint{};
+	bool bScenario{ false };
 
 	void SetMesh(Mesh *pMesh);
 	void SetShader(Shader *pShader);

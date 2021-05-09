@@ -306,6 +306,9 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 					if (m_pScene)
 						m_pScene->Scenario();
 					break;
+				case VK_F5:
+					cout << "XMFLOAT3(" << m_pPlayer->GetPosition().x << "f, " << m_pPlayer->GetPosition().y << "f, " << m_pPlayer->GetPosition().z << ")" << endl;
+					break;
 				case VK_F9:
 					ChangeSwapChainState();
 					break;
@@ -398,16 +401,17 @@ void Engine::BuildObjects()
 
 	BoxingPlayer *pPlayer = new BoxingPlayer(device, commandList, m_pScene->GetGraphicsRootSignature());
 
-	pPlayer->SetPosition(XMFLOAT3(-24.907f, 10.0f, -769.689f));
+	pPlayer->SetPosition(XMFLOAT3(-14.245930f, 10.0f, -769.689f));
 
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-24.907f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-24.907f, 1.66975f, -533.916f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-24.907f, -5.69284f, -527.249f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-24.907f, -5.69284f, -107.806f), ANIMATION_MOVE_FORWARD);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, 1.66975f, -533.916f), ANIMATION_MOVE_FORWARD);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, -5.69284f, -527.249f), ANIMATION_MOVE_FORWARD);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, -5.69284f, -107.806f), ANIMATION_MOVE_FORWARD);
 
 	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f), ANIMATION_CEREMONY);
 	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f), ANIMATION_CEREMONY);
+	//pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f), ANIMATION_CEREMONY);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-28.4525f, -5.69284f, 83.0311f), ANIMATION_CEREMONY);
 	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f), ANIMATION_CEREMONY);
 	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f), ANIMATION_CEREMONY);
 	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f), ANIMATION_CEREMONY);
@@ -415,8 +419,8 @@ void Engine::BuildObjects()
 	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -94.0986f), ANIMATION_MOVE_FORWARD);
 
 	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -78.1817f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -36.0f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, -36.0f), ANIMATION_MOVE_FORWARD);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, 0.0f), ANIMATION_MOVE_FORWARD);
+	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, 0.0f), ANIMATION_MOVE_FORWARD);
 
 	m_pScene->m_pPlayer = m_pPlayer = gPlayer = pPlayer;
 	m_pCamera = m_pPlayer->GetCamera();
@@ -461,37 +465,36 @@ void Engine::ProcessInput()
 	{
 		DWORD dwDirection = 0;
 
-		if (m_pScene)
+		if (m_pPlayer)
 		{
-			if (m_pScene->bScenario == false)
+			if (m_pPlayer->bScenario == false)
 			{
-				// temp 이동키
-		/*if (pKeysBuffer['S'] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['S'] & 0xF0 ? ANIMATION_MOVE_BACKWARD : ANIMATION_IDLE);
-			dwDirection |= DIR_BACKWARD;
-		}
-		if (pKeysBuffer['A'] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(1, pKeysBuffer['A'] & 0xF0 ? ANIMATION_MOVE_LEFT : ANIMATION_IDLE);
-			dwDirection |= DIR_LEFT;
+				//// temp 이동키
+				//if (pKeysBuffer['S'] & 0xF0)
+				//{
+				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['S'] & 0xF0 ? ANIMATION_MOVE_BACKWARD : ANIMATION_IDLE);
+				//	dwDirection |= DIR_BACKWARD;
+				//}
+				//if (pKeysBuffer['A'] & 0xF0)
+				//{
+				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['A'] & 0xF0 ? ANIMATION_MOVE_LEFT : ANIMATION_IDLE);
+				//	dwDirection |= DIR_LEFT;
+				//}
+				//if (pKeysBuffer['D'] & 0xF0)
+				//{
+				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['D'] & 0xF0 ? ANIMATION_MOVE_RIGHT : ANIMATION_IDLE);
+				//	dwDirection |= DIR_RIGHT;
+				//}
+				//if (pKeysBuffer['W'] & 0xF0)
+				//{
+				//	this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer['W'] & 0xF0 ? ANIMATION_MOVE_FORWARD : ANIMATION_IDLE);
+				//	dwDirection |= DIR_FORWARD;
+				//}
+				//if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
+				//if (pKeysBuffer[VK_RSHIFT] & 0xF0) dwDirection |= DIR_DOWN;
 
-		}
-		if (pKeysBuffer['D'] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(2, pKeysBuffer['D'] & 0xF0 ? ANIMATION_MOVE_RIGHT : ANIMATION_IDLE);
-			dwDirection |= DIR_RIGHT;
-		}
-		if (pKeysBuffer['W'] & 0xF0)
-		{
-			this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(3, pKeysBuffer['W'] & 0xF0 ? ANIMATION_MOVE_FORWARD : ANIMATION_IDLE);
-			dwDirection |= DIR_FORWARD;
-		}
-		if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
-		if (pKeysBuffer[VK_RSHIFT] & 0xF0) dwDirection |= DIR_DOWN;*/
 
-
-		// 여기가 게임 키
+				 //여기가 게임 키
 				if (pKeysBuffer[VK_SPACE] & 0xF0)
 				{
 					this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, pKeysBuffer[VK_SPACE] & 0xF0 ? ANIMATION_MOVE_BACKWARD : ANIMATION_IDLE);
