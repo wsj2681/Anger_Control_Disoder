@@ -38,6 +38,9 @@ collide col2;
 void SetOBB(BoundingOrientedBox* obb, Thread_id id, const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation);
 bool checkcollition(BoundingOrientedBox& first_obb, BoundingOrientedBox& second_obb, int i);
 
+HeadHitted thread_1_headHitted;
+HeadHitted thread_2_headHitted;
+
 BoundingOrientedBox lHand_obb[3];
 BoundingOrientedBox rHand_obb[3];
 BoundingOrientedBox rFoot_obb[3];
@@ -251,8 +254,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		SetOBB(Spine_obb, thread_id, player_Spine, XMFLOAT3(1.f, 9.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 
-		cout << thread_id.thread_num << "     " << player_position.x << endl;
-		cout << thread_id.thread_num << "    " << player_obb[thread_id.thread_num].Center.x << endl;
+		//cout << thread_id.thread_num << "     " << player_position.x << endl;
+		//cout << thread_id.thread_num << "    " << player_obb[thread_id.thread_num].Center.x << endl;
 		/*if(cou % 4 == 0)
 		cout << "SETOBB SUCCESS!" << endl;*/
 
@@ -271,7 +274,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			col1.check_collide = checkcollition(player_obb[0], player_obb[1], 0);
 
 			// 가드됫을경우
-			if (thread_num_1_player.nowState == STATE_GUARD_RIGHT_HEAD) {
+			if (thread_num_2_player.nowState == STATE_GUARD_RIGHT_HEAD) {
 				col1.rHand2rHand = checkcollition(rHand_obb[0], rHand_obb[1], 1);
 				if (col1.rHand2rHand)
 					col1.collidePosition = player_rHand;
@@ -280,12 +283,13 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				if (col1.lHand2rHand)
 					col1.collidePosition = player_lHand;
 
-				if (col1.rHand2rHand || col1.lHand2rHand)
-					col2.headHitted = false;
+				/*if (col1.rHand2rHand || col1.lHand2rHand)
+
+					thread_2_headHitted = true;
 				else
-					col2.headHitted = true;
+					col2.headHitted = true;*/
 			}
-			else if (thread_num_1_player.nowState == STATE_GUARD_LEFT_HEAD) {
+			else if (thread_num_2_player.nowState == STATE_GUARD_LEFT_HEAD) {
 				col1.rHand2lHand = checkcollition(rHand_obb[0], lHand_obb[1], 2);
 				if (col1.rHand2lHand)
 					col1.collidePosition = player_rHand;
@@ -294,40 +298,36 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				if (col1.lHand2lHand)
 					col1.collidePosition = player_lHand;
 
-				if (col1.rHand2lHand || col1.lHand2lHand)
-					col2.headHitted = false;
+				/*if (col1.rHand2lHand || col1.lHand2lHand)
+					thread_2_headHitted = true;
 				else
-					col2.headHitted = true;
+					col2.headHitted = true;*/
 			}
 			else {
 				//공격 성공
 					//오른손 공격
 				col1.rHand2Head = checkcollition(rHand_obb[0], Head_obb[1], 5);
-				if (col1.rHand2Head)
+				if (col1.rHand2Head) {
 					col1.collidePosition = player_rHand;
-
+					thread_2_headHitted.leftHeadHitted = true;
+				}
 				col1.rHand2Spine = checkcollition(rHand_obb[0], Spine_obb[1], 6);
 				if (col1.rHand2Spine)
 					col1.collidePosition = player_rHand;
 
-				if (col1.rHand2Head)
-					col2.headHitted = true;
-				else
-					col2.headHitted = false;
+				
 				// if문을 바로 나가야하지않을까?
 			// 왼속공격
 				col1.lHand2Head = checkcollition(lHand_obb[0], Head_obb[1], 7);
-				if (col1.lHand2Head)
+				if (col1.lHand2Head) {
 					col1.collidePosition = player_lHand;
-
+					thread_2_headHitted.rightHeadHitted = true;
+				}
 				col1.lHand2Spine = checkcollition(lHand_obb[0], Spine_obb[1], 8);
 				if (col1.lHand2Spine)
 					col1.collidePosition = player_lHand;
 
-				if (col1.lHand2Head)
-					col2.headHitted = true;
-				else
-					col2.headHitted = false;
+				
 			}
 
 
@@ -337,12 +337,16 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			/*cout << "thread_1 of thread_2 value = " << thread_id.thread_num << " / " << thread_num_2_player.player_world._41 <<
 				" ," << thread_num_2_player.player_world._42 << ", " << thread_num_2_player.player_world._43 << endl;
 		*/
-			cout << "collide _ position - " << col2.collidePosition.x << " " << col2.collidePosition.y << " " << col2.collidePosition.z << endl;
+			//cout << "collide _ position - " << col1.collidePosition.x << " " << col1.collidePosition.y << " " << col1.collidePosition.z << endl;
 			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num + 1], sizeof(recv_attackAnddefend[thread_id.thread_num + 1]), 0);
-
+			retval = send(thread_client_sock, (char*)&thread_2_headHitted, sizeof(thread_2_headHitted),0);
 
 			//충돌좌표 초기화
 			col1.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			
+			thread_2_headHitted.leftHeadHitted = false;
+			thread_2_headHitted.rightHeadHitted = false;
+			thread_2_headHitted.straightHtitted = false;
 
 		}
 		else if (thread_id.thread_num == 2 || thread_id.thread_num == 4) {
@@ -364,10 +368,10 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				if (col2.lHand2rHand)
 					col2.collidePosition = player_lHand;
 
-				if (col2.rHand2rHand || col2.lHand2rHand)
-					col1.headHitted = false;
+				/*if (col2.rHand2rHand || col2.lHand2rHand)
+					thread_1_headHitted = false;
 				else
-					col1.headHitted = true;
+					thread_1_headHitted  = true;*/
 			}
 			else if (thread_num_1_player.nowState == STATE_GUARD_LEFT_HEAD) {
 				col2.rHand2lHand = checkcollition(rHand_obb[1], lHand_obb[0], 10);
@@ -378,52 +382,51 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				if (col2.lHand2lHand)
 					col2.collidePosition = player_lHand;
 
-				if (col2.rHand2lHand || col2.lHand2lHand)
-					col1.headHitted = false;
+				/*if (col2.rHand2lHand || col2.lHand2lHand)
+					thread_1_headHitted = false;
 				else
-					col1.headHitted = true;
+					thread_1_headHitted = true;*/
 			}
 			else {
 				//공격 성공
 					//오른손 공격
 				col2.rHand2Head = checkcollition(rHand_obb[1], Head_obb[0], 13);
-				if (col2.rHand2Head)
+				if (col2.rHand2Head) {
 					col2.collidePosition = player_rHand;
-
+					thread_1_headHitted.leftHeadHitted = true;
+				}
 				col2.rHand2Spine = checkcollition(rHand_obb[1], Spine_obb[0], 14);
 				if (col2.rHand2Spine)
 					col2.collidePosition = player_rHand;
 
-				if (col2.rHand2Head)
-					col1.headHitted = true;
-				else
-					col1.headHitted = false;
+				
 				// 왼속공격
 				col2.lHand2Head = checkcollition(lHand_obb[1], Head_obb[0], 15);
-				if (col2.lHand2Head)
+				if (col2.lHand2Head) {
 					col2.collidePosition = player_lHand;
-
+					thread_1_headHitted.rightHeadHitted = true;
+				}
 				col2.lHand2Spine = checkcollition(lHand_obb[1], Spine_obb[0], 16);
 				if (col2.lHand2Spine)
 					col2.collidePosition = player_lHand;
 
-				if (col2.lHand2Head)
-					col1.headHitted = true;
-				else
-					col1.headHitted = false;
 			}
 
 			//recv_attackAnddefend[thread_id.thread_num - 1].rightGuard = true;
 
 			retval = send(thread_client_sock, (char*)&thread_num_1_player, sizeof(thread_num_1_player), 0);
 			retval = send(thread_client_sock, (char*)&col1, sizeof(col1), 0);
-			cout << "collide _ position - " << col1.collidePosition.x << " " << col1.collidePosition.y << " " << col1.collidePosition.z << endl;
+			//cout << "collide _ position - " << col2.collidePosition.x << " " << col2.collidePosition.y << " " << col2.collidePosition.z << endl;
 			/*cout << "thread_2 of thread_1 value = " << thread_id.thread_num << " / " << thread_num_1_player.player_world._41 <<
 				" ," << thread_num_1_player.player_world._42 << ", " << thread_num_1_player.player_world._43 << endl;*/
 			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num - 1], sizeof(recv_attackAnddefend[thread_id.thread_num - 1]), 0);
+			retval = send(thread_client_sock, (char*)&thread_1_headHitted, sizeof(thread_1_headHitted), 0);
 
 			//충돌좌표 초기화
 			col2.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			thread_1_headHitted.leftHeadHitted = false;
+			thread_1_headHitted.rightHeadHitted = false;
+			thread_1_headHitted.straightHtitted = false;
 
 		}
 
@@ -452,7 +455,7 @@ void SetOBB(BoundingOrientedBox* obb, Thread_id id, const XMFLOAT3& center, cons
 	obb[id.thread_num - 1].Orientation = orientation;
 }
 bool checkcollition(BoundingOrientedBox& first_obb, BoundingOrientedBox& second_obb, int i) {
-	if (second_obb.Intersects(first_obb)) {
+	if (first_obb.Intersects(second_obb)) {
 		cout << i << " - COLLIDE! " << endl;
 		//충돌됨
 		return true;

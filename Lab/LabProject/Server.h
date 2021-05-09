@@ -62,8 +62,8 @@ struct collide {
 	bool lFoot2Spine = false;
 	bool lFoot2Head = false;
 
-	bool headHitted = false;
-	bool spineHitted = false;
+	/*bool headHitted = false;
+	bool spineHitted = false;*/
 
 	XMFLOAT3 collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);			//충돌이 나는 곳의 좌표
 };
@@ -89,6 +89,15 @@ struct AttackAndDefend {
 };
 #pragma pack(pop)
 
+#pragma pack(push,1)
+struct HeadHitted {
+
+	bool leftHeadHitted = false;
+	bool rightHeadHitted = false;
+	bool straightHtitted = false;
+
+};
+#pragma pack(pop)
 class Player;
 
 class Scene;
@@ -131,7 +140,7 @@ public:
 
 	AttackAndDefend send_attackAnddefend;
 	AttackAndDefend recv_attackAnddefend;
-
+	HeadHitted headHitted;
 
 
 

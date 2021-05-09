@@ -76,6 +76,7 @@ void Server::Server_recv()
 		retval = recv(sock, (char*)&other_player, sizeof(other_player), 0);
 		retval = recv(sock, (char*)&col, sizeof(col), 0);
 		retval = recv(sock, (char*)&recv_attackAnddefend, sizeof(recv_attackAnddefend), 0);
+		retval = recv(sock, (char*)&headHitted, sizeof(headHitted), 0);
 
 
 		//retval = recv(sock, (char*)&bScenario, sizeof(bScenario), 0);
@@ -143,10 +144,11 @@ void Server::Server_recv()
 			cobject->isCollide = false;
 
 		}*/
-
 		if (col.rHand2Head) {
 			cplayer->rHand->isCollide = true;
 			cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
+			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
+
 		}
 		else
 			cplayer->rHand->isCollide = false;
@@ -154,6 +156,8 @@ void Server::Server_recv()
 		if (col.lHand2Head) {
 			cplayer->lHand->isCollide = true;
 			cout << "LEFT HAND - HEAD COLLIDE! " << endl;
+			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
+
 		}
 		else
 			cplayer->lHand->isCollide = false;
@@ -171,15 +175,25 @@ void Server::Server_recv()
 		}
 
 
-		if (col.headHitted) {
+
+		if (headHitted.leftHeadHitted) {
+			cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
+			send_attackAnddefend.hitTorsoLeft = true;
 			cplayer->head->isCollide = true;
 		}
-		else
+		else if (headHitted.rightHeadHitted) {
+			cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
+			send_attackAnddefend.hitTorsoRight = true;
 			cplayer->head->isCollide = false;
+		}
+		else if (headHitted.straightHtitted)
+		{
+
+		}
 
 		/*if (col.rHand2Spine)
 			cout << "SPINE COLLIDE! " << endl;*/
-		cout << "collide _ position - " << col.collidePosition.x << " " << col.collidePosition.y << " " << col.collidePosition.z << endl;
+		//cout << "collide _ position - " << col.collidePosition.x << " " << col.collidePosition.y << " " << col.collidePosition.z << endl;
 
 
 	}

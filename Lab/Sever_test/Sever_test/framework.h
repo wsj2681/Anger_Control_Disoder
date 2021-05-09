@@ -120,8 +120,8 @@ struct collide {
 	bool lFoot2Spine = false; // 왼발이 척추를 떄림
 	bool lFoot2Head = false; // 왼발이 대가리르 떄림
 
-	bool headHitted = false;  // 대가리가 맞음
-	bool spineHitted = false;  // 척추를 맞음
+	//bool headHitted = false;  // 대가리가 맞음
+	//bool spineHitted = false;  // 척추를 맞음
 
 	XMFLOAT3 collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);		//충돌이 나는 곳의 좌표
 
@@ -147,7 +147,15 @@ struct AttackAndDefend {
 
 };
 #pragma pack(pop)
+#pragma pack(push,1)
+struct HeadHitted {
 
+	bool leftHeadHitted = false;
+	bool rightHeadHitted = false;
+	bool straightHtitted = false;
+
+};
+#pragma pack(pop)
 
 void display_error(const char* msg, int err_no);
 
