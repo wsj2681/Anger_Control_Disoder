@@ -148,7 +148,7 @@ void Server::Server_recv()
 			cplayer->rHand->isCollide = true;
 			cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
 			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-
+		
 		}
 		else
 			cplayer->rHand->isCollide = false;

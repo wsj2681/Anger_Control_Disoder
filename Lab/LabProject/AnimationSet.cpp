@@ -58,15 +58,20 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 			if (isPlayer)
 			{
 				//cout << m_fPosition << " / " << m_pfKeyFrameTimes[(m_nKeyFrames - 1)] << endl;
-				gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+				if (gScene->m_pPlayer->isAlive == true)
+					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+				else
+					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWNED);
 				gScene->m_pPlayer->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.f;
 			}
 			if (isOtherPlayer)
 			{
 				//cout << m_fPosition << " / " << m_pfKeyFrameTimes[(m_nKeyFrames - 1)] << endl;
-				gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+				if (gScene->hierarchicalGameObjects.data()[1]->isAlive == true)
+					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+				else
+					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWNED);
 				gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.f;
-
 			}
 		}
 		

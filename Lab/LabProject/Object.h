@@ -74,10 +74,13 @@ public:
 	float hp{ 100.f };
 
 	UINT nowState = STATE_IDLE;
+	UINT attackType = STATE_IDLE;
 
 	bool isActive = true;
 	//충돌처리
-	bool isCollide = false;
+	bool isAlive{ true };
+	bool isHit{ false };
+	bool isCollide{ false };
 	WayPoint wayPoint{};
 	bool bScenario{ false };
 

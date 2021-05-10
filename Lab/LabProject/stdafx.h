@@ -127,6 +127,7 @@ constexpr UINT ANIMATION_HIT_TORSO_LEFT_A = 0x1C;	// Hit_Torso_Left_A
 constexpr UINT ANIMATION_HIT_TORSO_RIGHT_A = 0x1D;	// Hit_Torso_Right_A
 constexpr UINT ANIMATION_HIT_TORSO_STRIGHT_A = 0x1E;// Hit_Torso_Stright_A
 constexpr UINT ANIMATION_KNOCKDOWN = 0x1F;          // Knockdown
+constexpr UINT ANIMATION_KNOCKDOWNED = 0x20;          // Knockdowned
 //----------------------------------------------------------
 constexpr UINT DAMAGE_HOOK = 10;
 constexpr UINT DAMAGE_JAB = 7;
