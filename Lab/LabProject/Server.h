@@ -10,7 +10,7 @@ using namespace std;
 
 
 
-#define SERVERIP   "127.0.0.1"
+#define SERVERIP   "192.168.123.98"
 #define SERVERPORT 9000
 #define BUFSIZE    512
 
@@ -29,7 +29,7 @@ struct Player_world {
 	XMFLOAT4X4 player_Spine;
 
 	UINT nowState = STATE_IDLE;
-
+	
 };
 #pragma pack(pop)
 
@@ -84,7 +84,10 @@ struct AttackAndDefend {
 	bool rightGuard = false;
 	bool middleGuard = false;
 
+	bool nuckDown = false;
+
 	bool checkAni = false;
+	
 
 };
 #pragma pack(pop)
@@ -95,6 +98,15 @@ struct HeadHitted {
 	bool leftHeadHitted = false;
 	bool rightHeadHitted = false;
 	bool straightHtitted = false;
+
+};
+#pragma pack(pop)
+
+
+#pragma pack(push,1)
+struct PlayerHP {
+
+	float playerHp;
 
 };
 #pragma pack(pop)
@@ -142,6 +154,7 @@ public:
 	AttackAndDefend recv_attackAnddefend;
 	HeadHitted headHitted;
 
+	PlayerHP myHP;
 
 
 	bool bScenario{ false };

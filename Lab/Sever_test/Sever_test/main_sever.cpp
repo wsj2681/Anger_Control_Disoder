@@ -50,6 +50,9 @@ BoundingOrientedBox Spine_obb[3];
 
 XMFLOAT3 saveColPostion[3];
 
+//HP
+PlayerHP player_hp[3];
+
 
 int cou = 0;
 
@@ -227,6 +230,13 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		}
 		else if (retval == 0)
 			break;
+		retval = recv(thread_client_sock, (char*)&player_hp[thread_id.thread_num], sizeof(player_hp[thread_id.thread_num]), 0);
+		if (retval == SOCKET_ERROR) {
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
+		else if (retval == 0)
+			break;
 
 		attAdef.checkAni = checkAnimation(attAdef);
 
@@ -310,6 +320,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				if (col1.rHand2Head) {
 					col1.collidePosition = player_rHand;
 					thread_2_headHitted.leftHeadHitted = true;
+					player_hp[thread_id.thread_num].playerHp = player_hp[thread_id.thread_num].playerHp - 10.0f;
 				}
 				col1.rHand2Spine = checkcollition(rHand_obb[0], Spine_obb[1], 6);
 				if (col1.rHand2Spine)
@@ -322,6 +333,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				if (col1.lHand2Head) {
 					col1.collidePosition = player_lHand;
 					thread_2_headHitted.rightHeadHitted = true;
+					player_hp[thread_id.thread_num].playerHp = player_hp[thread_id.thread_num].playerHp - 10.0f;
 				}
 				col1.lHand2Spine = checkcollition(lHand_obb[0], Spine_obb[1], 8);
 				if (col1.lHand2Spine)
@@ -340,6 +352,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			//cout << "collide _ position - " << col1.collidePosition.x << " " << col1.collidePosition.y << " " << col1.collidePosition.z << endl;
 			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num + 1], sizeof(recv_attackAnddefend[thread_id.thread_num + 1]), 0);
 			retval = send(thread_client_sock, (char*)&thread_2_headHitted, sizeof(thread_2_headHitted),0);
+			retval = send(thread_client_sock, (char*)&player_hp[thread_id.thread_num], sizeof(player_hp[thread_id.thread_num]), 0);
 
 			//충돌좌표 초기화
 			col1.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
@@ -394,6 +407,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				if (col2.rHand2Head) {
 					col2.collidePosition = player_rHand;
 					thread_1_headHitted.leftHeadHitted = true;
+					player_hp[thread_id.thread_num].playerHp = player_hp[thread_id.thread_num].playerHp - 10.0f;
 				}
 				col2.rHand2Spine = checkcollition(rHand_obb[1], Spine_obb[0], 14);
 				if (col2.rHand2Spine)
@@ -405,6 +419,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				if (col2.lHand2Head) {
 					col2.collidePosition = player_lHand;
 					thread_1_headHitted.rightHeadHitted = true;
+					player_hp[thread_id.thread_num].playerHp = player_hp[thread_id.thread_num].playerHp - 10.0f;
 				}
 				col2.lHand2Spine = checkcollition(lHand_obb[1], Spine_obb[0], 16);
 				if (col2.lHand2Spine)
@@ -421,6 +436,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				" ," << thread_num_1_player.player_world._42 << ", " << thread_num_1_player.player_world._43 << endl;*/
 			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num - 1], sizeof(recv_attackAnddefend[thread_id.thread_num - 1]), 0);
 			retval = send(thread_client_sock, (char*)&thread_1_headHitted, sizeof(thread_1_headHitted), 0);
+			retval = send(thread_client_sock, (char*)&player_hp[thread_id.thread_num], sizeof(player_hp[thread_id.thread_num]), 0);
 
 			//충돌좌표 초기화
 			col2.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);

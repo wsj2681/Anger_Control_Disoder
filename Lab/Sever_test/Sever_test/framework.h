@@ -87,6 +87,7 @@ struct Player_world {
 	XMFLOAT4X4 player_Spine;
 
 	UINT nowState = STATE_IDLE;
+	
 
 };
 #pragma pack(pop)
@@ -143,6 +144,8 @@ struct AttackAndDefend {
 	bool rightGuard = false;
 	bool middleGuard = false;
 
+	bool nuckDown = false;
+
 	bool checkAni = false;
 
 };
@@ -153,6 +156,14 @@ struct HeadHitted {
 	bool leftHeadHitted = false;
 	bool rightHeadHitted = false;
 	bool straightHtitted = false;
+
+};
+#pragma pack(pop)
+
+#pragma pack(push,1)
+struct PlayerHP {
+
+	float playerHp;
 
 };
 #pragma pack(pop)
