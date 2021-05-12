@@ -261,6 +261,9 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 	gGameObject = hierarchicalGameObjects;
 
+	particle = new Particle;
+	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
@@ -784,6 +787,9 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	//hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
 	//hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = !hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;
+
+	particle->Update(m_pPlayer->head->GetPosition(), fTimeElapsed);
+
 	CollideCageSide();
 }
 
@@ -818,6 +824,8 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 			object->Render(pd3dCommandList, pCamera);
 		}
 	}
+
+	particle->Render(pd3dCommandList, pCamera);
 
 	// 충돌 할때 막은 상태라면 구를 렌더링 하고
 	// 그게 아니고 맞은 상태라면 정육면체를 렌더링한다.

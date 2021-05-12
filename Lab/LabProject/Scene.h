@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "Player.h"
 #include "SoundManager.h"
+#include "Particle.h"
 
 #define MAX_LIGHTS						50
 
@@ -134,4 +135,6 @@ public:
 
 	// 링 바운딩 박스
 	BoundingSphere cageCollision;
+
+	Particle* particle;
 };

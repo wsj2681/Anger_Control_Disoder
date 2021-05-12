@@ -209,6 +209,7 @@
     <ClInclude Include="CallBack.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
+    <ClInclude Include="Particle.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WICTextureLoader12.cpp">
@@ -315,6 +316,9 @@
     </ClCompile>
     <ClCompile Include="StandardShader.cpp">
       <Filter>소스 파일\03 Model\Shader\StandardShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
