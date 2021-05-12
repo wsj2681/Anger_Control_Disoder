@@ -40,6 +40,9 @@ Scene::Scene()
 
 	soundManager = new SoundManager("Sound/ACD_mini.mid", true);
 	
+	hitSound = new SoundManager("Sound/Hit01.mp3");
+	attackSound = new SoundManager("Sound/Punch01.mp3");
+
 	soundManager->Play();
 }
 
@@ -719,12 +722,17 @@ void Scene::Scenario()
 void Scene::Hit()
 {
 	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp > 0)
+	{
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= m_pPlayer->attackType;
+		//hitSound->Play();
+		//attackSound->Play();
+	}
 	else
 	{
 		hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
 		hierarchicalGameObjects.data()[OTHERPLAYER]->isAlive = false;
 	}
+	m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
 }
 
 bool Scene::ProcessInput(UCHAR *pKeysBuffer)
@@ -932,7 +940,7 @@ void Scene::CollideCageSide()
 	if (cageCollision.Intersects(*m_pPlayer->playerCollision))
 	{
 		// 케이지 안에 있을 때 처리
-		cout << "ok\n";
+		//cout << "ok\n";
 	}
 	else
 	{

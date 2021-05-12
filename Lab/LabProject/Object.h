@@ -71,10 +71,10 @@ public:
 
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
 
-	float hp{ 100.f };
+	float hp{ 10000.f };
 
 	UINT nowState = STATE_IDLE;
-	UINT attackType = STATE_IDLE;
+	UINT attackType = 0;
 
 	bool isActive = true;
 	//충돌처리

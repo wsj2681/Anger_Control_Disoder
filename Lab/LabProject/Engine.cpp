@@ -589,6 +589,22 @@ void Engine::ProcessInput()
 					server->send_attackAnddefend.hitTorsoStright = true;
 #endif // _WITH_SERVER_CONNECT
 				}
+				if (pKeysBuffer['4'] & 0xF0)
+				{
+					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KILL_YOU);
+				}
+				if (pKeysBuffer['5'] & 0xF0)
+				{
+					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_OSSUUU);
+				}
+				if (pKeysBuffer['6'] & 0xF0)
+				{
+					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK);
+				}
+				if (pKeysBuffer['7'] & 0xF0)
+				{
+					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CROSS_BODY);
+				}
 
 				float cxDelta = 0.0f, cyDelta = 0.0f;
 				POINT ptCursorPos;

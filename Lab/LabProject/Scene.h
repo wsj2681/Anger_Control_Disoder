@@ -127,6 +127,8 @@ public:
 	vector<Object*> lights;
 
 	SoundManager* soundManager{ nullptr };
+	SoundManager* hitSound{ nullptr };
+	SoundManager* attackSound{ nullptr };
 	//SoundManager* soundManager{ nullptr };
 
 	bool bScenario{ false };

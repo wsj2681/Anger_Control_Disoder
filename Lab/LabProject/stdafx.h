@@ -57,8 +57,8 @@ using Microsoft::WRL::ComPtr;
 extern HINSTANCE						ghAppInstance;
 
 
-#define FRAME_BUFFER_WIDTH		1280
-#define FRAME_BUFFER_HEIGHT		720
+#define FRAME_BUFFER_WIDTH		800
+#define FRAME_BUFFER_HEIGHT	    600
 #define _WITH_CB_WORLD_MATRIX_DESCRIPTOR_TABLE
 
 #pragma comment(lib, "d3dcompiler.lib")
@@ -127,7 +127,14 @@ constexpr UINT ANIMATION_HIT_TORSO_LEFT_A = 0x1C;	// Hit_Torso_Left_A
 constexpr UINT ANIMATION_HIT_TORSO_RIGHT_A = 0x1D;	// Hit_Torso_Right_A
 constexpr UINT ANIMATION_HIT_TORSO_STRIGHT_A = 0x1E;// Hit_Torso_Stright_A
 constexpr UINT ANIMATION_KNOCKDOWN = 0x1F;          // Knockdown
-constexpr UINT ANIMATION_KNOCKDOWNED = 0x20;          // Knockdowned
+constexpr UINT ANIMATION_KNOCKDOWNED = 0x20;        // Knockdowned
+constexpr UINT ANIMATION_CROSS = 0x21;              // Cross
+constexpr UINT ANIMATION_CROSS_BODY = 0x22;         // Cross_Body
+constexpr UINT ANIMATION_ONE_TWO = 0x23;            // One_Two
+constexpr UINT ANIMATION_LEFT_BODY_HOOK = 0x24;     // Left Body Hook(liver punch)
+constexpr UINT ANIMATION_RIGHT_BODY_HOOK = 0x25;    // Right_BodyHook(Spleen Punch)
+constexpr UINT ANIMATION_UPPER_CUT_L = 0x26;        // UpperCut_L
+constexpr UINT ANIMATION_UPPER_CUT_R = 0x27;        // UpperCut_R
 //----------------------------------------------------------
 constexpr UINT DAMAGE_HOOK = 10;
 constexpr UINT DAMAGE_JAB = 7;

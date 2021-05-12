@@ -214,8 +214,8 @@ void Server::Server_recv()
 		/*if (col.rHand2Spine)
 			cout << "SPINE COLLIDE! " << endl;*/
 		//cout << "collide _ position - " << col.collidePosition.x << " " << col.collidePosition.y << " " << col.collidePosition.z << endl;
-		if (cplayer->hp < 0.0f) {
-			cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+		if (cplayer->hp <= 0.0f) {
+			//cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
 			cplayer->isAlive = false;
 			send_attackAnddefend.nuckDown = true;
 		}

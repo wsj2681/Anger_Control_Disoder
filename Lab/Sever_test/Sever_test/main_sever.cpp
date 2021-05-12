@@ -472,7 +472,7 @@ void SetOBB(BoundingOrientedBox* obb, Thread_id id, const XMFLOAT3& center, cons
 }
 bool checkcollition(BoundingOrientedBox& first_obb, BoundingOrientedBox& second_obb, int i) {
 	if (first_obb.Intersects(second_obb)) {
-		cout << i << " - COLLIDE! " << endl;
+		//cout << i << " - COLLIDE! " << endl;
 		//Ãæµ¹µÊ
 		return true;
 	}
