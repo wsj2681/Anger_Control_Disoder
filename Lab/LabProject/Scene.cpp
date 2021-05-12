@@ -731,6 +731,7 @@ void Scene::Hit()
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= m_pPlayer->attackType;
 		//hitSound->Play();
 		//attackSound->Play();
+		particle->PositionInit(m_pPlayer->head->GetPosition());
 	}
 	else
 	{
