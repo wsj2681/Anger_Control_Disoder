@@ -7,17 +7,17 @@
 
 void Particle::Init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* rootSignatrue)
 {
-	uniform_int_distribution<> uid(-500, 500);
+	uniform_real_distribution<> uid(-1.0, 1.0);
 	default_random_engine dre;
 	if (objects.empty())
 	{
-
-		ModelInfo* cube = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, rootSignatrue, "Model/Cube.bin", nullptr);
-		for (int i = 0; i < 100; ++i)
+		ModelInfo* cube = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, rootSignatrue, "Model/Sphere.bin", nullptr);
+		for (int i = 0; i < 150; ++i)
 		{
 			Object* temp = new BoxerObject(pd3dDevice, pd3dCommandList, rootSignatrue, cube, 1);
 			temp->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-			temp->SetScale(1.5f, 1.5f, 1.5f);
+			temp->SetScale(0.3f, .3f, .3f);
+			temp->particleDir = XMFLOAT3(uid(dre),uid(dre), uid(dre));
 			objects.emplace_back(temp);
 		}
 	}
@@ -25,6 +25,8 @@ void Particle::Init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCom
 
 void Particle::PositionInit(XMFLOAT3 position)
 {
+	ParticleON();
+	lifeTime = 10.f;
 	for (auto& i : objects)
 	{
 		i->SetPosition(position);
@@ -33,6 +35,7 @@ void Particle::PositionInit(XMFLOAT3 position)
 
 void Particle::ParticleON()
 {
+
 	for (auto& i : objects)
 	{
 		i->isActive = true;
@@ -52,28 +55,19 @@ void Particle::Update(XMFLOAT3 position, float eTime)
 	m_fElapsedTime = eTime;
 	lifeTime -= m_fElapsedTime;
 
+	// 한 방향
 	for (auto& i : objects)
 	{
+		i->Move(i->particleDir);
 		i->UpdateTransform(nullptr);
 	}
-	
-	if (lifeTime < 0.f)
-	{
-		// 파티클 off
-	}
-
 }
 
 void Particle::Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera)
 {
 	for (auto& object : objects)
 	{
-		object->Animate(m_fElapsedTime);
-		if (object->m_pSkinnedAnimationController)
-		{
-			object->UpdateTransform(nullptr);
-		}
-
+		object->UpdateTransform(nullptr);
 		object->Render(pd3dCommandList, pCamera);
 	}
 }

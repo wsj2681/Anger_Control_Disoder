@@ -68,7 +68,7 @@ public:
 	Object* lFoot = NULL;	//¿Þ¹ß
 	Object* rFoot = NULL;	//¿À¸¥¹ß
 	Object* spine = NULL;	//Ã´Ãß Áß½É
-
+	XMFLOAT3 particleDir{ 0.f, 0.f, 0.f };
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
 
 	float hp{ 10000.f };
@@ -125,7 +125,7 @@ public:
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
 	void MoveForward(float fDistance = 1.0f);
-
+	void Move(XMFLOAT3 xmfShift);
 	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
 	void Rotate(XMFLOAT3 *pxmf3Axis, float fAngle);
 	void Rotate(XMFLOAT4 *pxmf4Quaternion);

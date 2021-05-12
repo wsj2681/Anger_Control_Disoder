@@ -348,6 +348,15 @@ void Object::MoveForward(float fDistance)
 	Object::SetPosition(xmf3Position);
 }
 
+void Object::Move(XMFLOAT3 xmfShift)
+{
+	XMFLOAT3 xmf3Position = GetPosition();
+	xmf3Position.x += xmfShift.x;
+	xmf3Position.y += xmfShift.y;
+	xmf3Position.z += xmfShift.z;
+	Object::SetPosition(xmf3Position);
+}
+
 void Object::Rotate(float fPitch, float fYaw, float fRoll)
 {
 	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch), XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));

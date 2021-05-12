@@ -687,6 +687,11 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			cout << m_pPlayer->GetPosition().x << " / " << m_pPlayer->GetPosition().y << " / " << m_pPlayer->GetPosition().z << endl;
 			break;
 		}
+		case VK_NUMPAD0:
+		{
+			particle->PositionInit(m_pPlayer->head->GetPosition());
+			break;
+		}
 		default:
 			break;
 		}

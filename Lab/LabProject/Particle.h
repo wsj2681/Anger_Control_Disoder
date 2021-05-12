@@ -16,7 +16,7 @@ private:
 	XMFLOAT3 dir{ 0.f, 0.f, 0.f };
 	XMFLOAT3 rotateAxis{ 0.f, 0.f, 0.f };
 
-	float lifeTime = 3.f;
+	float lifeTime = 10.f;
 	float m_fElapsedTime = 0.f;
 	vector<Object*> objects;
 
