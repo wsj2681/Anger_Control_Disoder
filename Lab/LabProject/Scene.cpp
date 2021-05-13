@@ -140,15 +140,17 @@ void Scene::BuildDefaultLightsAndMaterials()
 
 	// Collide Light
 	m_pLights[43].m_bEnable = false;
-	m_pLights[43].m_nType = POINT_LIGHT;
-	m_pLights[43].m_fRange = 20.0f;
-	m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
-	m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
-	m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.f, 0.0f);
+	m_pLights[43].m_nType = SPOT_LIGHT;
+	m_pLights[43].m_fRange = 100.0f;
+	m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.1f, 0.0f, 0.0f, .3f);
+	m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.8f, 0.0f, 0.0f, .3f);
+	m_pLights[43].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
 	m_pLights[43].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -550.f);
 	m_pLights[43].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
 	m_pLights[43].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights[43].m_fFalloff = 20.0f;
+	m_pLights[43].m_fFalloff = 8.0f;
+	m_pLights[43].m_fPhi = (float)cos(XMConvertToRadians(90.0f));
+	m_pLights[42].m_fTheta = (float)cos(XMConvertToRadians(30.0f));
 }
 
 void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
@@ -670,16 +672,18 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			break;
 		case VK_INSERT:
 			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.9f, 0.f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.9f, 0.0f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.9f, 0.0f, 0.f, 0.0f);
+			m_pLights[43].m_xmf3Position.y = m_pPlayer->head->GetPosition().y + 50.f;
+			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.1f, 0.0f, 0.0f, .3f);
+			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.8f, 0.0f, 0.0f, .3f);
+			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
 			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
 			break;
 		case VK_DELETE:
 			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.f, 0.9f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.9f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.9f, 0.f, 0.0f);
+			m_pLights[43].m_xmf3Position.y = m_pPlayer->head->GetPosition().y + 50.f;
+			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.f, 0.11f, 0.f, .3f);
+			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.f, .3f);
+			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.f, 0.0f);
 			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
 			break;
 		case VK_OEM_3:
@@ -689,7 +693,7 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		}
 		case VK_NUMPAD0:
 		{
-			particle->PositionInit(m_pPlayer->head->GetPosition());
+			particle->PositionInit(m_pPlayer->rHand->GetPosition());
 			break;
 		}
 		default:

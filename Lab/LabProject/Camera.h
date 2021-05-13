@@ -5,6 +5,7 @@
 #define FIRST_PERSON_CAMERA			0x01
 #define SPACESHIP_CAMERA			0x02
 #define THIRD_PERSON_CAMERA			0x03
+#define THIRD_PERSON_CAMERA2		0x04
 
 struct VS_CB_CAMERA_INFO
 {
@@ -137,3 +138,12 @@ public:
 	virtual void SetLookAt(XMFLOAT3& vLookAt);
 };
 
+class CThirdPersonCamera2 : public Camera
+{
+public:
+	CThirdPersonCamera2(Camera* pCamera);
+	virtual ~CThirdPersonCamera2() { }
+
+	virtual void Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed);
+	virtual void SetLookAt(XMFLOAT3& vLookAt);
+};
