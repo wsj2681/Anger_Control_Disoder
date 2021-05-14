@@ -85,152 +85,147 @@ void Server::Server_recv()
 		
 
 
+		//HP설정
+		cplayer->hp = myHP.playerHp;
+
+		//retval = recv(sock, (char*)&bScenario, sizeof(bScenario), 0);
+		//cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
+
+		//save_world.player_world =  cscene->m_ppHierarchicalGameObjects[0]->m_xmf4x4World;
+
+		otherPlayerPositionSet();
+
+
+		//cout << player_position.x << " / " << player_position.y << " / " << player_position.z << endl;
+
+		//상대 클라 위치설정
+		cscene->hierarchicalGameObjects[1]->SetPosition(player_position.x, player_position.y, player_position.z);
+		cscene->hierarchicalGameObjects[1]->SetRight(player_right.x, player_right.y, player_right.z);
+		cscene->hierarchicalGameObjects[1]->SetUp(player_up.x, player_up.y, player_up.z);
+		cscene->hierarchicalGameObjects[1]->SetLook(player_look.x, player_look.y, player_look.z);
+
+		cscene->hierarchicalGameObjects[1]->nowState = other_player.nowState;
+
 		
 
-	}
-
-
-}
-
-void Server::Server_update() {
-
-	//HP설정
-	cplayer->hp = myHP.playerHp;
-
-	//retval = recv(sock, (char*)&bScenario, sizeof(bScenario), 0);
-	//cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
-
-	//save_world.player_world =  cscene->m_ppHierarchicalGameObjects[0]->m_xmf4x4World;
-
-	otherPlayerPositionSet();
-
-
-	//cout << player_position.x << " / " << player_position.y << " / " << player_position.z << endl;
-
-	//상대 클라 위치설정
-	cscene->hierarchicalGameObjects[1]->SetPosition(player_position.x, player_position.y, player_position.z);
-	cscene->hierarchicalGameObjects[1]->SetRight(player_right.x, player_right.y, player_right.z);
-	cscene->hierarchicalGameObjects[1]->SetUp(player_up.x, player_up.y, player_up.z);
-	cscene->hierarchicalGameObjects[1]->SetLook(player_look.x, player_look.y, player_look.z);
-
-	cscene->hierarchicalGameObjects[1]->nowState = other_player.nowState;
-
-
-
-	// 상대클라 애니메이션
-	if (recv_attackAnddefend.checkAni) {
-		if (recv_attackAnddefend.leftHand) {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
+		// 상대클라 애니메이션
+		if (recv_attackAnddefend.checkAni) {
+			if (recv_attackAnddefend.leftHand) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
+			}
+			if (recv_attackAnddefend.rightHand) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightHand ? ANIMATION_HOOK_R : ANIMATION_COMBAT_MODE_A);
+			}
+			if (recv_attackAnddefend.jap) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.jap ? ANIMATION_JAB : ANIMATION_COMBAT_MODE_A);
+			}
+			if (recv_attackAnddefend.hitTorsoLeft) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoLeft ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_COMBAT_MODE_A);
+			}
+			if (recv_attackAnddefend.hitTorsoRight) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoRight ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_COMBAT_MODE_A);
+			}
+			if (recv_attackAnddefend.hitTorsoStright) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoStright ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_COMBAT_MODE_A);
+			}
+			if (recv_attackAnddefend.rightGuard) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightGuard ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_COMBAT_MODE_A);
+			}
+			if (recv_attackAnddefend.leftGuard) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftGuard ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_COMBAT_MODE_A);
+			}
+			if (recv_attackAnddefend.middleGuard) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.middleGuard ? ANIMATION_GUARD_BODY : ANIMATION_COMBAT_MODE_A);
+			}
+			if (recv_attackAnddefend.nuckDown) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.nuckDown ? ANIMATION_KNOCKDOWN : ANIMATION_COMBAT_MODE_A);
+				cscene->hierarchicalGameObjects[1]->isAlive = false;
+			}
 		}
-		if (recv_attackAnddefend.rightHand) {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightHand ? ANIMATION_HOOK_R : ANIMATION_COMBAT_MODE_A);
+		else {
+			//cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+
 		}
-		if (recv_attackAnddefend.jap) {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.jap ? ANIMATION_JAB : ANIMATION_COMBAT_MODE_A);
+		//충돌처리확인
+		/*if (col.check_collide) {
+			cout << "COLLIDE! " << endl;
+			cobject->isCollide = true;
+
 		}
-		if (recv_attackAnddefend.hitTorsoLeft) {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoLeft ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_COMBAT_MODE_A);
+		else {
+			cout << "NOT COLLIDE! " << endl;
+			cobject->isCollide = false;
+
+		}*/
+		if (col.rHand2Head) {
+			cplayer->rHand->isCollide = true;
+			cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
+			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
+		
 		}
-		if (recv_attackAnddefend.hitTorsoRight) {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoRight ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_COMBAT_MODE_A);
+		else
+			cplayer->rHand->isCollide = false;
+
+		if (col.lHand2Head) {
+			cplayer->lHand->isCollide = true;
+			cout << "LEFT HAND - HEAD COLLIDE! " << endl;
+			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
+
 		}
-		if (recv_attackAnddefend.hitTorsoStright) {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoStright ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_COMBAT_MODE_A);
+		else
+			cplayer->lHand->isCollide = false;
+
+		if (col.rHand2rHand || col.rHand2lHand) {
+			cplayer->rHand->isCollide = true;
+			cout << "RIGHT HAND - Guard " << endl;
 		}
-		if (recv_attackAnddefend.rightGuard) {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightGuard ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_COMBAT_MODE_A);
+		else
+			cplayer->rHand->isCollide = false;
+
+		if (col.lHand2rHand || col.lHand2lHand) {
+			cplayer->lHand->isCollide = true;
+			cout << "LEFT HAND - Guard! " << endl;
 		}
-		if (recv_attackAnddefend.leftGuard) {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftGuard ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_COMBAT_MODE_A);
+
+
+		cplayer->isHit = false;
+
+		if (headHitted.leftHeadHitted) {
+			cplayer->isHit = true;
+			cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
+			send_attackAnddefend.hitTorsoLeft = true;
+			
+
+			cplayer->head->isCollide = true;
 		}
-		if (recv_attackAnddefend.middleGuard) {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.middleGuard ? ANIMATION_GUARD_BODY : ANIMATION_COMBAT_MODE_A);
+		else if (headHitted.rightHeadHitted) {
+			cplayer->isHit = true;
+			cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
+			send_attackAnddefend.hitTorsoRight = true;
+			
+
+			cplayer->head->isCollide = false;
 		}
-		if (recv_attackAnddefend.nuckDown) {
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.nuckDown ? ANIMATION_KNOCKDOWN : ANIMATION_COMBAT_MODE_A);
-			cscene->hierarchicalGameObjects[1]->isAlive = false;
+		else if (headHitted.straightHtitted)
+		{
+
 		}
-	}
-	else {
-		//cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 
-	}
-	//충돌처리확인
-	/*if (col.check_collide) {
-		cout << "COLLIDE! " << endl;
-		cobject->isCollide = true;
-
-	}
-	else {
-		cout << "NOT COLLIDE! " << endl;
-		cobject->isCollide = false;
-
-	}*/
-	if (col.rHand2Head) {
-		cplayer->rHand->isCollide = true;
-		cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
-		cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-
-	}
-	else
-		cplayer->rHand->isCollide = false;
-
-	if (col.lHand2Head) {
-		cplayer->lHand->isCollide = true;
-		cout << "LEFT HAND - HEAD COLLIDE! " << endl;
-		cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
-
-	}
-	else
-		cplayer->lHand->isCollide = false;
-
-	if (col.rHand2rHand || col.rHand2lHand) {
-		cplayer->rHand->isCollide = true;
-		cout << "RIGHT HAND - Guard " << endl;
-	}
-	else
-		cplayer->rHand->isCollide = false;
-
-	if (col.lHand2rHand || col.lHand2lHand) {
-		cplayer->lHand->isCollide = true;
-		cout << "LEFT HAND - Guard! " << endl;
-	}
-
-
-	cplayer->isHit = false;
-
-	if (headHitted.leftHeadHitted) {
-		cplayer->isHit = true;
-		cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-		send_attackAnddefend.hitTorsoLeft = true;
-
-
-		cplayer->head->isCollide = true;
-	}
-	else if (headHitted.rightHeadHitted) {
-		cplayer->isHit = true;
-		cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
-		send_attackAnddefend.hitTorsoRight = true;
-
-
-		cplayer->head->isCollide = false;
-	}
-	else if (headHitted.straightHtitted)
-	{
-
-	}
-
-	/*if (col.rHand2Spine)
-		cout << "SPINE COLLIDE! " << endl;*/
+		/*if (col.rHand2Spine)
+			cout << "SPINE COLLIDE! " << endl;*/
 		//cout << "collide _ position - " << col.collidePosition.x << " " << col.collidePosition.y << " " << col.collidePosition.z << endl;
-	if (cplayer->hp <= 0.0f) {
-		//cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
-		cplayer->isAlive = false;
-		send_attackAnddefend.nuckDown = true;
+		if (cplayer->hp <= 0.0f) {
+			//cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+			cplayer->isAlive = false;
+			send_attackAnddefend.nuckDown = true;
+		}
+
 	}
 
 
 }
+
+
 
 void Server::attackAndGuard_idle() {
 	send_attackAnddefend.rightHand = false;

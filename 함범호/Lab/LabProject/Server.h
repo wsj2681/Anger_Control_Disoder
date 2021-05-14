@@ -169,7 +169,8 @@ public:
 	void Server_send();
 
 	void Server_recv();
-	void Server_update();
+	
+	
 
 	void attackAndGuard_idle();
 

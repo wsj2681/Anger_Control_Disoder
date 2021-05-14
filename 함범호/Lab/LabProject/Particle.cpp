@@ -26,7 +26,6 @@ void Particle::Init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCom
 void Particle::PositionInit(XMFLOAT3 position)
 {
 	ParticleON();
-	lifeTime = 10.f;
 	for (auto& i : objects)
 	{
 		i->SetPosition(position);
@@ -35,7 +34,7 @@ void Particle::PositionInit(XMFLOAT3 position)
 
 void Particle::ParticleON()
 {
-
+	lifeTime = 1.f;
 	for (auto& i : objects)
 	{
 		i->isActive = true;
@@ -60,6 +59,10 @@ void Particle::Update(XMFLOAT3 position, float eTime)
 	{
 		i->Move(i->particleDir);
 		i->UpdateTransform(nullptr);
+	}
+	if (lifeTime < 0.f)
+	{
+		ParticleOFF();
 	}
 }
 

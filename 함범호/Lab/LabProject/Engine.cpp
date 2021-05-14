@@ -297,12 +297,11 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 					break;
 				case VK_RETURN:
 					break;
+				case VK_F1:
+				case VK_F2:
 				case VK_F3:
-					m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
-					break;
 				case VK_F4:
-					if (m_pScene)
-						m_pScene->Scenario();
+					m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 					break;
 				case VK_F9:
 					ChangeSwapChainState();
@@ -396,7 +395,7 @@ void Engine::BuildObjects()
 
 	BoxingPlayer *pPlayer = new BoxingPlayer(device, commandList, m_pScene->GetGraphicsRootSignature());
 
-	pPlayer->SetPosition(XMFLOAT3(-14.245930f, 10.0f, -769.689f));
+	pPlayer->SetPosition(XMFLOAT3(0.f, 10.0f, 0.f));
 
 	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);
 	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, 1.66975f, -533.916f), ANIMATION_MOVE_FORWARD);
@@ -683,7 +682,9 @@ void Engine::FrameAdvance()
 	server->Server_recv();
 	//++i;
 	//}
-	server->Server_update();
+
+	
+
 	//공격과 방어 초기화
 	server->attackAndGuard_idle();
 	//server->Server_send();

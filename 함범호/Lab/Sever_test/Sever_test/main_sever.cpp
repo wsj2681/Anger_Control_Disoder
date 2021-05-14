@@ -161,6 +161,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	XMFLOAT3 player_Head = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	XMFLOAT3 player_Spine = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
+	bool colledFrist = false;
+
 	ZeroMemory(&buf, sizeof(buf));
 
 	Player_world player;
