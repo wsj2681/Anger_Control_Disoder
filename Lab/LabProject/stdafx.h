@@ -5,7 +5,7 @@
 
 #pragma once
 
-#define _WITH_SERVER_CONNECT			// 서버 연결및 해제
+//#define _WITH_SERVER_CONNECT			// 서버 연결및 해제
 #define WIN32_LEAN_AND_MEAN             // 거의 사용되지 않는 내용은 Windows 헤더에서 제외합니다.
 #define _CRT_SECURE_NO_WARNINGS
 // Windows 헤더 파일:
@@ -26,6 +26,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <random>
 
 /////////////SEVER///////////
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
@@ -135,6 +136,16 @@ constexpr UINT ANIMATION_LEFT_BODY_HOOK = 0x24;     // Left Body Hook(liver punc
 constexpr UINT ANIMATION_RIGHT_BODY_HOOK = 0x25;    // Right_BodyHook(Spleen Punch)
 constexpr UINT ANIMATION_UPPER_CUT_L = 0x26;        // UpperCut_L
 constexpr UINT ANIMATION_UPPER_CUT_R = 0x27;        // UpperCut_R
+//----------------데모 애니메이션-------------------
+constexpr UINT ANIMATION_BLOCKS_AND_EVASION = 0x28; // Blocks_and_Evasion
+constexpr UINT ANIMATION_COMBOS = 0x29;             // Combos
+constexpr UINT ANIMATION_ELBOWS = 0x2A;             // Elbows
+constexpr UINT ANIMATION_GENERAL = 0x2B;            // General
+constexpr UINT ANIMATION_HANDS = 0x2C;              // Hands
+constexpr UINT ANIMATION_HITS = 0x2D;               // Hits
+constexpr UINT ANIMATION_LEGS = 0x2E;               // Legs
+constexpr UINT ANIMATION_MOVES = 0x2F;              // Moves
+constexpr UINT ANIMATION_TURNS = 0x30;              // Turns
 //----------------------------------------------------------
 constexpr UINT DAMAGE_HOOK = 10;
 constexpr UINT DAMAGE_JAB = 7;

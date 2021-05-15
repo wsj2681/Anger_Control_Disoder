@@ -1,7 +1,6 @@
 //-----------------------------------------------------------------------------
 // File: CScene.cpp
 //-----------------------------------------------------------------------------
-
 #include "stdafx.h"
 #include "Scene.h"
 #include "Texture.h"
@@ -33,6 +32,12 @@ D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvGPUDescriptorNextHandle;
 #define SPHEHROBJECT 3
 
 vector<Object*> gGameObject{};
+
+std::random_device rd{};
+std::default_random_engine dre{ rd() };
+//uniform_int_distribution<> uid{ STATE_MOVE, STATE_GUARD_RIGHT_HEAD }; TODO: 이동 처리
+std::uniform_int_distribution<> uid{ STATE_ATTACK_LEFT_HOOK, STATE_GUARD_RIGHT_HEAD };
+
 
 Scene::Scene()
 {
@@ -188,14 +193,16 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
-	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", nullptr);
+	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerD.bin", nullptr);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 	for (int i = 0; i < boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_nAnimationSets; ++i)
 	{
 		boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[i]->isOtherPlayer = true;
 	}
-	boxer->SetPosition(15.3046f, 10.0f, -769.689f);
+	//boxer->SetPosition(15.3046f, 10.0f, -769.689f);
+	boxer->SetPosition(-1.0f, 8.5f, 30.0f);
+	boxer->Rotate(0.0f, 180.0f, 0.0f);
 
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(15.3046f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);
 	boxer->wayPoint.SetWayPoint(XMFLOAT3(15.3046f, 1.66975f, -533.916f), ANIMATION_MOVE_FORWARD);
@@ -809,6 +816,9 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	particle->Update(m_pPlayer->head->GetPosition(), fTimeElapsed);
 
 	CollideCageSide();
+
+	if (hierarchicalGameObjects[OTHERPLAYER]->nowState == STATE_IDLE)
+		hierarchicalGameObjects[OTHERPLAYER]->nowState = uid(dre);
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)

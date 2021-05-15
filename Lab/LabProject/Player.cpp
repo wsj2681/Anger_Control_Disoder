@@ -313,7 +313,7 @@ void Player::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext)
 {
 
-	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", nullptr);
+	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxerD.bin", nullptr);
 	SetChild(BoxerModel->m_pModelRootObject, true);
 
 	this->head = FindFrame("Bip01_Head");
@@ -340,7 +340,7 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	SetPlayerUpdatedContext(pContext);
 	SetCameraUpdatedContext(pContext);
 
-	SetPosition(XMFLOAT3(0.f, 10.f, -769.689f));
+	SetPosition(XMFLOAT3(0.f, 8.5f, -769.689f));
 
 	playerCollision = new BoundingOrientedBox();
 	playerCollision->Center = spine->GetPosition();
@@ -472,7 +472,7 @@ void BoxingPlayer::UpdateWayPoints()
 		MoveTo(wayPoint.GetWayPoints()[curWayPoint]);
 	else
 	{
-		SetPosition(XMFLOAT3(0.0f, 10.0f, -32.0f));
+		SetPosition(XMFLOAT3(0.0f, 8.5f, -32.0f));
 		// 우리가 돌리자
 		m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 		bScenario = false;
