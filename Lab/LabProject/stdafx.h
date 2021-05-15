@@ -92,6 +92,7 @@ constexpr UINT STATE_HIT_TORSO_LEFT = 0x08;
 constexpr UINT STATE_HIT_TORSO_RIGHT = 0x09;
 constexpr UINT STATE_HIT_TORSO_STRIGHT = 0x0A;
 constexpr UINT STATE_CEREMONY = 0x0B;
+constexpr UINT STATE_KNOCKDOWN = 0x0C;
 
 //----------------------------------------------------------
 // %애니메이션 추가

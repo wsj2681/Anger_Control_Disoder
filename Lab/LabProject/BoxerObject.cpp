@@ -13,15 +13,24 @@ BoxerObject::BoxerObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	m_pSkinnedAnimationController = new AnimationController(pd3dDevice, pd3dCommandList, nAnimationTracks, boxerModel);
 
 	this->head = FindFrame("Bip01_Head");
+	if (this->head)
+		this->head->objectCollision = new BoundingOrientedBox(this->head->GetPosition(), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 	this->rHand = FindFrame("Bip01_R_Hand");
+	if (this->rHand)
+		this->rHand->objectCollision = new BoundingOrientedBox(this->rHand->GetPosition(), XMFLOAT3(0.7f, 0.5f, 0.7f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 	this->lHand = FindFrame("Bip01_L_Hand");
-	this->rFoot = FindFrame("Bip01_L_Foot");
-	this->lFoot = FindFrame("Bip01_R_Foot");
+	if (this->lHand)
+		this->lHand->objectCollision = new BoundingOrientedBox(this->lHand->GetPosition(), XMFLOAT3(0.7f, 0.5f, 0.7f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+	this->rFoot = FindFrame("Bip01_L_Foot"); //
+	this->lFoot = FindFrame("Bip01_R_Foot"); //
 	this->spine = FindFrame("Bip01_Spine1");
+	if (this->spine)
+		this->spine->objectCollision = new BoundingOrientedBox(this->spine->GetPosition(), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
 }
 
 BoxerObject::~BoxerObject()
 {
+
 }
 
 void BoxerObject::UpdateWayPoints()

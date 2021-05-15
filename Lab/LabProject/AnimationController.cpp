@@ -67,6 +67,8 @@ void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimati
 	{
 		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
 	}
+	if (m_pAnimationSets->m_pAnimationSets[nAnimationSet])
+		m_pAnimationSets->m_pAnimationSets[nAnimationSet]->m_fPosition = 0.0f;
 }
 
 void AnimationController::SetTrackEnable(int nAnimationTrack, bool bEnable)
