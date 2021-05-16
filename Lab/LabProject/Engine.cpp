@@ -301,6 +301,7 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				case VK_F1:
 				case VK_F2:
 				case VK_F3:
+					m_pScene->CollidePVE();
 				case VK_F4:
 					m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 					break;
@@ -497,7 +498,7 @@ void Engine::ProcessInput()
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
 						m_pPlayer->nowState = STATE_ATTACK_LEFT_HOOK;
-						m_pPlayer->attackType = DAMAGE_HOOK;
+						m_pPlayer->attackType = DAMAGE_HOOK_L;
 #ifdef _WITH_SERVER_CONNECT
 						server->send_attackAnddefend.leftHand = true;
 #endif // _WITH_SERVER_CONNECT
@@ -506,7 +507,7 @@ void Engine::ProcessInput()
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R);
 						m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
-						m_pPlayer->attackType = DAMAGE_HOOK;
+						m_pPlayer->attackType = DAMAGE_HOOK_R;
 #ifdef _WITH_SERVER_CONNECT
 						server->send_attackAnddefend.rightHand = true;
 #endif // _WITH_SERVER_CONNECT
@@ -574,7 +575,7 @@ void Engine::ProcessInput()
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
 						m_pPlayer->nowState = STATE_ATTACK_LEFT_HOOK;
-						m_pPlayer->attackType = DAMAGE_HOOK;
+						m_pPlayer->attackType = DAMAGE_HOOK_L;
 #ifdef _WITH_SERVER_CONNECT
 						server->send_attackAnddefend.leftHand = true;
 #endif // _WITH_SERVER_CONNECT
@@ -583,7 +584,7 @@ void Engine::ProcessInput()
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R);
 						m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
-						m_pPlayer->attackType = DAMAGE_HOOK;
+						m_pPlayer->attackType = DAMAGE_HOOK_R;
 #ifdef _WITH_SERVER_CONNECT
 						server->send_attackAnddefend.rightHand = true;
 #endif // _WITH_SERVER_CONNECT
@@ -624,39 +625,39 @@ void Engine::ProcessInput()
 				}
 				if (pKeysBuffer['1'] & 0xF0)
 				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_BLOCKS_AND_EVASION);
+					m_pScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_BLOCKS_AND_EVASION);
 				}
 				if (pKeysBuffer['2'] & 0xF0)
 				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBOS);
+					m_pScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBOS);
 				}
 				if (pKeysBuffer['3'] & 0xF0)
 				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ELBOWS);
+					m_pScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ELBOWS);
 				}
 				if (pKeysBuffer['4'] & 0xF0)
 				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GENERAL);
+					m_pScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GENERAL);
 				}
 				if (pKeysBuffer['5'] & 0xF0)
 				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HANDS);
+					m_pScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HANDS);
 				}
 				if (pKeysBuffer['6'] & 0xF0)
 				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITS);
+					m_pScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITS);
 				}
 				if (pKeysBuffer['7'] & 0xF0)
 				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEGS);
+					m_pScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEGS);
 				}
 				if (pKeysBuffer['8'] & 0xF0)
 				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVES);
+					m_pScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVES);
 				}
 				if (pKeysBuffer['9'] & 0xF0)
 				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_TURNS);
+					m_pScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_TURNS);
 				}
 				float cxDelta = 0.0f, cyDelta = 0.0f;
 				POINT ptCursorPos;
