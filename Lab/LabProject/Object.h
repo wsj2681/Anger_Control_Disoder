@@ -72,8 +72,9 @@ public:
 	bool isAlive{ true };
 	bool isHit{ false };
 	bool isCollide{ false };
+	bool canMove[4]{ true };
 	WayPoint wayPoint{};
-	bool bScenario{ false };
+	
 
 	BoundingOrientedBox* objectCollision = nullptr;
 

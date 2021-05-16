@@ -91,6 +91,7 @@ public:
 public:
 
 	BoundingOrientedBox* playerCollision = nullptr;
+	bool bScenario{ false };
 };
 
 class BoxingPlayer : public Player
@@ -98,7 +99,6 @@ class BoxingPlayer : public Player
 public:
 	BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=NULL);
 	virtual ~BoxingPlayer();
-
 public:
 	virtual Camera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
 
