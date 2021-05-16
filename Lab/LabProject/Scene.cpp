@@ -676,7 +676,6 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case VK_RETURN:
 			break;
 		case VK_F4:
-			CollidePVE();
 			break;
 		case VK_F5:
 			break;
@@ -747,8 +746,9 @@ void Scene::Hit()
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= m_pPlayer->attackType;
 		//hitSound->Play();
 		//attackSound->Play();
-		particle->PositionInit(m_pPlayer->head->GetPosition());
 		hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, m_pPlayer->nowState);
+	
+		
 	}
 	else
 	{
@@ -973,6 +973,7 @@ void Scene::CollideCageSide()
 	{
 		// 케이지 안에 있을 때 처리
 		//cout << "ok\n";
+
 		for (int i = 0; i < 4; ++i)
 			m_pPlayer->canMove[i] = true;
 	}
@@ -1053,7 +1054,7 @@ void Scene::CollidePVE()
 
 		switch (hierarchicalGameObjects[OTHERPLAYER]->nowState)
 		{
-			/*case STATE_ATTACK_LEFT_HOOK:
+			case STATE_ATTACK_LEFT_HOOK:
 				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
 				break;
 			case STATE_ATTACK_RIGHT_HOOK:
@@ -1064,33 +1065,21 @@ void Scene::CollidePVE()
 				break;
 			case STATE_GUARD_LEFT_HEAD:
 				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD);
-				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-				hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 				break;
 			case STATE_GUARD_RIGHT_HEAD:
 				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD);
-				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-				hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 				break;
 			case STATE_GUARD_BODY:
 				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY);
-				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-				hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
-				break;*/
+				break;
 		case STATE_HIT_TORSO_LEFT:
 			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-			hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 			break;
 		case STATE_HIT_TORSO_RIGHT:
 			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
-			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-			hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 			break;
 		case STATE_HIT_TORSO_STRIGHT:
 			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_A);
-			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-			hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 			break;
 		case STATE_KNOCKDOWN:
 			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
@@ -1098,6 +1087,11 @@ void Scene::CollidePVE()
 			break;
 		}
 
+		if (hierarchicalGameObjects[OTHERPLAYER]->isAlive && hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->IsAnimate())
+		{
+			hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
+			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+		}
 		if (m_pPlayer->rHand->objectCollision->Intersects(*hierarchicalGameObjects[OTHERPLAYER]->head->objectCollision) && !m_pPlayer->rHand->isCollide)	// 오른손과 머리
 		{
 			m_pPlayer->rHand->isCollide = true;
@@ -1121,6 +1115,7 @@ void Scene::CollidePVE()
 		{
 			m_pPlayer->rHand->isCollide = true;
 			cout << "RIGHT HAND - Guard " << endl;
+			hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 
 		}
 		else
@@ -1130,6 +1125,7 @@ void Scene::CollidePVE()
 		{
 			m_pPlayer->lHand->isCollide = true;
 			cout << "LEFT HAND - Guard! " << endl;
+			hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 		}
 		else
 			m_pPlayer->lHand->isCollide = false;
@@ -1160,6 +1156,7 @@ void Scene::CollidePVE()
 		{
 			hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = true;
 			//cout << "RIGHT HAND - Guard " << endl;
+			hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 		}
 		else
 			hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = false;
@@ -1168,6 +1165,7 @@ void Scene::CollidePVE()
 		{
 			hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = true;
 			//cout << "LEFT HAND - Guard! " << endl;
+			hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 		}
 		else
 			hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = false;

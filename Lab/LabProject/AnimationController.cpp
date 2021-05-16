@@ -63,12 +63,8 @@ void AnimationController::SetAnimationCallbackHandler(int nAnimationSet, Animati
 
 void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet)
 {
-	if (m_pAnimationTracks)
-	{
-		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
-	}
-	if (m_pAnimationSets->m_pAnimationSets[nAnimationSet])
-		m_pAnimationSets->m_pAnimationSets[nAnimationSet]->m_fPosition = 0.0f;
+	if (m_pAnimationTracks) m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
+	if (m_pAnimationSets->m_pAnimationSets[nAnimationSet]) m_pAnimationSets->m_pAnimationSets[nAnimationSet]->m_fPosition = 0.0f;
 }
 
 void AnimationController::SetTrackEnable(int nAnimationTrack, bool bEnable)
@@ -125,4 +121,14 @@ void AnimationController::AdvanceTime(float fTimeElapsed, Object* pRootGameObjec
 
 		pRootGameObject->UpdateTransform(nullptr);
 	}
+}
+
+bool AnimationController::IsAnimate()
+{
+	return m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks[0].m_nAnimationSet]->IsAnimate();;
+}
+
+bool AnimationController::IsAnimate(int nAnimationSet)
+{
+	return m_pAnimationSets->m_pAnimationSets[nAnimationSet]->IsAnimate();
 }

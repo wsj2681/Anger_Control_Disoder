@@ -57,6 +57,7 @@ public:
 	void SetAnimationCallbackHandler(AnimationCallbackHandler* pCallbackHandler);
 
 	void* GetCallbackData();
+	bool IsAnimate();
 };
 
 class AnimationSets

@@ -41,4 +41,6 @@ public:
 	void SetAnimationCallbackHandler(int nAnimationSet, AnimationCallbackHandler* pCallbackHandler);
 
 	void AdvanceTime(float fElapsedTime, Object* pRootGameObject);
+	bool IsAnimate();
+	bool IsAnimate(int nAnimationSet);
 };

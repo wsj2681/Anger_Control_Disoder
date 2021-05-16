@@ -42,6 +42,11 @@ void* CAnimationSet::GetCallbackData()
 	return nullptr;
 }
 
+bool CAnimationSet::IsAnimate()
+{
+	return (m_pfKeyFrameTimes[(m_nKeyFrames - 1)]) <= m_fPosition + 0.04f /* && (m_fPosition <= m_pfKeyFrameTimes[i + 1])*/;
+}
+
 void CAnimationSet::SetPosition(float fTrackPosition)
 {
 	m_fPosition = fTrackPosition;
@@ -53,7 +58,7 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 		//m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]); 
 		m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames-1]) * m_pfKeyFrameTimes[m_nKeyFrames-1];
 		
-		if (((m_pfKeyFrameTimes[(m_nKeyFrames - 1)]) <= m_fPosition + 0.04f)/* && (m_fPosition <= m_pfKeyFrameTimes[i + 1])*/)
+		if (IsAnimate())
 		{
 			if (isPlayer)
 			{
