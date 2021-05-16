@@ -227,13 +227,7 @@ void Server::Server_recv()
 
 void Server::Server_make_thread() {
 
-	vector<thread> threads;
-
-	threads.emplace_back(thread(&Server::Server_thread));
-
-	for (auto& thread : threads)
-		thread.join();
-
+	
 }
 
 void Server::Server_thread() {
