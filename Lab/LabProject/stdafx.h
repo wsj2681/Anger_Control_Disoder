@@ -148,7 +148,8 @@ constexpr UINT ANIMATION_LEGS = 0x2E;               // Legs
 constexpr UINT ANIMATION_MOVES = 0x2F;              // Moves
 constexpr UINT ANIMATION_TURNS = 0x30;              // Turns
 //----------------------------------------------------------
-constexpr UINT DAMAGE_HOOK = 10;
+constexpr UINT DAMAGE_HOOK_L = 10;
+constexpr UINT DAMAGE_HOOK_R = 10;
 constexpr UINT DAMAGE_JAB = 7;
 constexpr UINT DAMAGE_STRAIGHT = 15;
 //----------------------------------------------------------
