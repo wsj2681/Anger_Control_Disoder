@@ -26,6 +26,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <thread>
 
 /////////////SEVER///////////
 #define _WINSOCK_DEPRECATED_NO_WARNINGS

@@ -157,6 +157,7 @@ public:
 
 	PlayerHP myHP;
 
+	
 
 	bool bScenario{ false };
 
@@ -170,7 +171,9 @@ public:
 
 	void Server_recv();
 	
-	
+	void Server_make_thread();
+	void Server_thread();
+
 
 	void attackAndGuard_idle();
 

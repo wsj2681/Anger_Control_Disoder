@@ -425,6 +425,12 @@ void Engine::BuildObjects()
 	server->cplayer = m_pPlayer;
 	server->cscene = m_pScene;
 	server->cobject = m_pScene->hierarchicalGameObjects[1];
+
+	//쓰레드생성
+	server->Server_make_thread();
+	
+	
+	
 	/// /////////////////////////////
 #endif // _WITH_SERVER_CONNECT
 
@@ -678,15 +684,15 @@ void Engine::FrameAdvance()
 #ifdef _WITH_SERVER_CONNECT
 	/////////////////server////////////////
 	//if (i == 0) {
-	server->Server_send();
-	server->Server_recv();
-	//++i;
-	//}
+	//server->Server_send();
+	//server->Server_recv();
+	////++i;
+	////}
 
-	
+	//
 
-	//공격과 방어 초기화
-	server->attackAndGuard_idle();
+	////공격과 방어 초기화
+	//server->attackAndGuard_idle();
 	//server->Server_send();
 
 	///////////////////////////////////////

@@ -225,6 +225,30 @@ void Server::Server_recv()
 
 }
 
+void Server::Server_make_thread() {
+
+	vector<thread> threads;
+
+	threads.emplace_back(thread(&Server::Server_thread));
+
+	for (auto& thread : threads)
+		thread.join();
+
+}
+
+void Server::Server_thread() {
+	while (true) {
+		Server_send();
+		Server_recv();
+		//++i;
+		//}
+
+
+
+		//공격과 방어 초기화
+		attackAndGuard_idle();
+	}
+}
 
 
 void Server::attackAndGuard_idle() {
