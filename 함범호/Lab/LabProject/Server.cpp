@@ -227,20 +227,24 @@ void Server::Server_recv()
 
 void Server::Server_make_thread() {
 
-	
+	thread t1(&Server::Server_thread, this);
+	t1.join();
 }
 
 void Server::Server_thread() {
 	while (true) {
-		Server_send();
-		Server_recv();
-		//++i;
-		//}
+
+		if (checkSR) {
+			Server_send();
+			Server_recv();
+			//++i;
+			//}
+			//공격과 방어 초기화
+			attackAndGuard_idle();
+			checkSR = false;
+		}
 
 
-
-		//공격과 방어 초기화
-		attackAndGuard_idle();
 	}
 }
 

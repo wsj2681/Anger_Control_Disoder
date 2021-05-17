@@ -157,7 +157,7 @@ public:
 
 	PlayerHP myHP;
 
-	
+	bool checkSR = false;
 
 	bool bScenario{ false };
 

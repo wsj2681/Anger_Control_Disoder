@@ -695,6 +695,8 @@ void Engine::FrameAdvance()
 	//server->attackAndGuard_idle();
 	//server->Server_send();
 
+	server->checkSR = true;
+
 	///////////////////////////////////////
 #endif // _WITH_SERVER_CONNECT
 
