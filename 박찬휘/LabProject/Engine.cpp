@@ -466,7 +466,7 @@ void Engine::ProcessInput()
 
 		if (m_pPlayer)
 		{
-			if (!m_pPlayer->bScenario && m_pPlayer->isAlive && !m_pPlayer->isHit)
+			if (!m_pPlayer->bScenario && m_pPlayer->isAlive)
 			{
 				if (onTempKey)
 				{

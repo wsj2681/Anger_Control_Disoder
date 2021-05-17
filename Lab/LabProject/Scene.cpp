@@ -676,7 +676,6 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case VK_RETURN:
 			break;
 		case VK_F4:
-			CollidePVE();
 			break;
 		case VK_F5:
 			break;
@@ -747,7 +746,6 @@ void Scene::Hit()
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= m_pPlayer->attackType;
 		//hitSound->Play();
 		//attackSound->Play();
-		particle->PositionInit(m_pPlayer->head->GetPosition());
 		hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, m_pPlayer->nowState);
 	}
 	else
@@ -831,6 +829,8 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	particle->Update(m_pPlayer->head->GetPosition(), fTimeElapsed);
 
 	CollideCageSide();
+
+	CollidePVE();
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
@@ -876,22 +876,12 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 		if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState != STATE_GUARD_LEFT_HEAD)
 		{
 			// 피격 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->rHand->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.9f, 0.f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.9f, 0.0f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.9f, 0.0f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
 
 			Hit();
 		}
 		else
 		{
 			// 가드 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->rHand->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.f, 0.9f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.9f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.9f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
 		}
 	}
 	if (m_pPlayer->lHand->isCollide)
@@ -899,23 +889,10 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 		// 플레이어-왼손공격 : 아더플레이어-오른손방어
 		if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState != STATE_GUARD_RIGHT_HEAD)
 		{
-			// 피격 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->lHand->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.9f, 0.f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.9f, 0.0f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.9f, 0.0f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
-
 			Hit();
 		}
 		else
 		{
-			// 가드 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->lHand->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.f, 0.9f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.9f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.9f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
 		}
 	}
 	if (m_pPlayer->head->isCollide)
@@ -923,32 +900,14 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 		// 플레이어-오른손방어 : 아더플레이어-왼손공격
 		if (m_pPlayer->nowState == STATE_GUARD_RIGHT_HEAD && ((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_LEFT_HOOK)||(hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_IDLE)))
 		{
-			// 가드 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.9f, 0.f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.9f, 0.0f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.9f, 0.0f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
 		}
 	
 		else if (m_pPlayer->nowState == STATE_GUARD_LEFT_HEAD && ((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_RIGHT_HOOK) || (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_IDLE)))
 		{
-			// 가드 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.9f, 0.f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.9f, 0.0f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.9f, 0.0f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
 		}
 		else// 공격을 제외한 상태일떄가 너무 많아서 맞으면 그냥 생김..
 		{
 			// 피격 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.f, 0.9f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.9f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.9f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
-
 			Hit();
 		}
 	}
@@ -1079,17 +1038,14 @@ void Scene::CollidePVE()
 				break;*/
 		case STATE_HIT_TORSO_LEFT:
 			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 			hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 			break;
 		case STATE_HIT_TORSO_RIGHT:
 			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
-			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 			hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 			break;
 		case STATE_HIT_TORSO_STRIGHT:
 			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_A);
-			hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 			hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
 			break;
 		case STATE_KNOCKDOWN:

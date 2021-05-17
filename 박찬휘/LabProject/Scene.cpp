@@ -741,14 +741,27 @@ void Scene::Scenario()
 
 void Scene::Hit()
 {
+	UINT animation = 0;
 	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp > 0)
 	{
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= m_pPlayer->attackType;
 		//hitSound->Play();
 		//attackSound->Play();
-		hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, m_pPlayer->nowState);
-	
-		
+		switch (m_pPlayer->attackType)
+		{
+		case DAMAGE_HOOK_L:
+			animation = ANIMATION_HIT_TORSO_LEFT_A;
+			break;
+
+		case DAMAGE_HOOK_R:
+			animation = ANIMATION_HIT_TORSO_RIGHT_A;
+			break;
+		case DAMAGE_JAB:
+			animation = ANIMATION_HIT_TORSO_STRIGHT_A;
+			break;
+		}
+
+		hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, animation);
 	}
 	else
 	{
@@ -759,12 +772,27 @@ void Scene::Hit()
 
 void Scene::PlayerHit()
 {
+	UINT animation = 0;
 if (m_pPlayer->hp > 0)
 	{
+		
 		m_pPlayer->hp -= m_pPlayer->attackType;
 		//hitSound->Play();
 		//attackSound->Play();
-		m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, m_pPlayer->nowState);
+		switch (m_pPlayer->attackType)
+		{
+		case DAMAGE_HOOK_L:
+			animation = ANIMATION_HIT_TORSO_LEFT_A;
+			break;
+
+		case DAMAGE_HOOK_R:
+			animation = ANIMATION_HIT_TORSO_RIGHT_A;
+			break;
+		case DAMAGE_JAB:
+			animation = ANIMATION_HIT_TORSO_STRIGHT_A;
+			break;
+		}
+		m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, animation);
 
 
 	}
@@ -836,15 +864,22 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	//hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
 	//hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = !hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;
 
-	m_pPlayer->head->objectCollision->Center = m_pPlayer->head->GetPosition();
-	m_pPlayer->lHand->objectCollision->Center = m_pPlayer->lHand->GetPosition();
-	m_pPlayer->rHand->objectCollision->Center = m_pPlayer->rHand->GetPosition();
-	m_pPlayer->spine->objectCollision->Center = m_pPlayer->spine->GetPosition();
-	hierarchicalGameObjects[OTHERPLAYER]->head->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->head->GetPosition();
-	hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->lHand->GetPosition();
-	hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->rHand->GetPosition();
-	hierarchicalGameObjects[OTHERPLAYER]->spine->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->spine->GetPosition();
-
+	if (m_pPlayer)
+	{
+		m_pPlayer->head->objectCollision->Center = m_pPlayer->head->GetPosition();
+		//m_pPlayer->head->objectCollision->Center = XMFLOAT3(m_pPlayer->head->GetPosition().x * 2, m_pPlayer->head->GetPosition().y * 2, m_pPlayer->head->GetPosition().z * 2);
+		m_pPlayer->lHand->objectCollision->Center = m_pPlayer->lHand->GetPosition();
+		m_pPlayer->rHand->objectCollision->Center = m_pPlayer->rHand->GetPosition();
+		m_pPlayer->spine->objectCollision->Center = m_pPlayer->spine->GetPosition();
+	}
+	if (hierarchicalGameObjects[OTHERPLAYER])
+	{
+		hierarchicalGameObjects[OTHERPLAYER]->head->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->head->GetPosition();
+		//hierarchicalGameObjects[OTHERPLAYER]->head->objectCollision->Center = XMFLOAT3(hierarchicalGameObjects[OTHERPLAYER]->head->GetPosition().x * 2, hierarchicalGameObjects[OTHERPLAYER]->head->GetPosition().y * 2, hierarchicalGameObjects[OTHERPLAYER]->head->GetPosition().z * 2);
+		hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->lHand->GetPosition();
+		hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->rHand->GetPosition();
+		hierarchicalGameObjects[OTHERPLAYER]->spine->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->spine->GetPosition();
+	}
 	particle->Update(m_pPlayer->head->GetPosition(), fTimeElapsed);
 
 	CollideCageSide();
@@ -893,7 +928,7 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 		// 플레이어-오른손공격 : 아더플레이어-왼손방어
 		if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState != STATE_GUARD_LEFT_HEAD)
 		{
-			Hit();
+
 		}
 		else
 		{
@@ -906,7 +941,7 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 		if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState != STATE_GUARD_RIGHT_HEAD)
 		{
 			// 피격 시
-			Hit();
+
 		}
 		else
 		{
@@ -928,7 +963,7 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 		else// 공격을 제외한 상태일떄가 너무 많아서 맞으면 그냥 생김..
 		{
 			// 피격 시
-			Hit();
+
 		}
 	}
 
@@ -1040,7 +1075,7 @@ void Scene::CollidePVE()
 				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R);
 				break;
 			case STATE_ATTACK_JAB:
-				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_JAB);
+				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R);
 				break;
 			case STATE_GUARD_LEFT_HEAD:
 				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD);
@@ -1050,17 +1085,6 @@ void Scene::CollidePVE()
 				break;
 			case STATE_GUARD_BODY:
 				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY);
-				break;
-			case STATE_HIT_TORSO_LEFT:
-				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-				break;
-			case STATE_HIT_TORSO_RIGHT:
-				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
-
-				break;
-			case STATE_HIT_TORSO_STRIGHT:
-				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_A);
-
 				break;
 			case STATE_KNOCKDOWN:
 				hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
@@ -1074,7 +1098,7 @@ void Scene::CollidePVE()
 				{
 					m_pPlayer->rHand->isCollide = true;
 					cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
-					hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_HIT_TORSO_LEFT;
+					Hit();
 					particle->PositionInit(m_pPlayer->rHand->GetPosition());
 				}
 				else m_pPlayer->rHand->isCollide = false;
@@ -1083,7 +1107,7 @@ void Scene::CollidePVE()
 				{
 					m_pPlayer->lHand->isCollide = true;
 					cout << "LEFT HAND - HEAD COLLIDE! " << endl;
-					hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_HIT_TORSO_RIGHT;
+					Hit();
 					particle->PositionInit(m_pPlayer->lHand->GetPosition());
 				}
 				else
@@ -1118,46 +1142,52 @@ void Scene::CollidePVE()
 			}
 			if (m_pPlayer->isHit)
 			{
-				if (hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Intersects(*m_pPlayer->head->objectCollision) && !hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide)	// 오른손과 머리
+				if (hierarchicalGameObjects[OTHERPLAYER]->nowState == STATE_ATTACK_RIGHT_HOOK || hierarchicalGameObjects[OTHERPLAYER]->nowState == STATE_ATTACK_JAB)
 				{
-					hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = true;
-					cout << "Player RIGHT HAND - HEAD COLLIDE! " << endl;
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-					particle->PositionInit(hierarchicalGameObjects[OTHERPLAYER]->rHand->GetPosition());
-					PlayerHit();
+					if (hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Intersects(*m_pPlayer->head->objectCollision) && !hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide)	// 오른손과 머리
+					{
+						hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = true;
+						cout << "Player RIGHT HAND - HEAD COLLIDE! " << endl;
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
+						particle->PositionInit(hierarchicalGameObjects[OTHERPLAYER]->rHand->GetPosition());
+						PlayerHit();
 
+					}
+					else hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = false;
 				}
-				else hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = false;
-
-				if (hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Intersects(*m_pPlayer->head->objectCollision) && !hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide)	// 왼손과 머리
+				
+				
+				if (hierarchicalGameObjects[OTHERPLAYER]->nowState == STATE_ATTACK_LEFT_HOOK)
 				{
-					hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = true;
-					cout << "Player LEFT HAND - HEAD COLLIDE! " << endl;
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
-					particle->PositionInit(hierarchicalGameObjects[OTHERPLAYER]->lHand->GetPosition());
-					PlayerHit();
+					if (hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Intersects(*m_pPlayer->head->objectCollision) && !hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide)	// 왼손과 머리
+					{
+						hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = true;
+						cout << "Player LEFT HAND - HEAD COLLIDE! " << endl;
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
+						particle->PositionInit(hierarchicalGameObjects[OTHERPLAYER]->lHand->GetPosition());
+						PlayerHit();
+					}
+					else
+						hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = false;
 				}
-				else
-					hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = false;
+				//if ((hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Intersects(*m_pPlayer->rHand->objectCollision)) || (hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Intersects(*m_pPlayer->lHand->objectCollision)) && (hierarchicalGameObjects[OTHERPLAYER]->nowState == STATE_GUARD_RIGHT_HEAD) && !hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide) // 오른손과 오른/왼손 - 가드
+				//{
+				//	hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = true;
+				//	cout << "Player RIGHT HAND - Guard " << endl;
+				//	m_pPlayer->nowState = STATE_IDLE;
+				//}
+				//else
+				//	hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = false;
 
-				if ((hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Intersects(*m_pPlayer->rHand->objectCollision)) || (hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Intersects(*m_pPlayer->lHand->objectCollision)) && (hierarchicalGameObjects[OTHERPLAYER]->nowState == STATE_GUARD_RIGHT_HEAD) && !hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide) // 오른손과 오른/왼손 - 가드
-				{
-					hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = true;
-					cout << "Player RIGHT HAND - Guard " << endl;
-					m_pPlayer->nowState = STATE_IDLE;
-				}
-				else
-					hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = false;
-
-				if ((hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Intersects(*m_pPlayer->rHand->objectCollision)) || (hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Intersects(*m_pPlayer->lHand->objectCollision)) && (hierarchicalGameObjects[OTHERPLAYER]->nowState == STATE_GUARD_RIGHT_HEAD) && !hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide) // 왼손과 오른/왼손 - 가드
-				{
-					hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = true;
-					cout << "Player LEFT HAND - Guard! " << endl;
-					m_pPlayer->nowState = STATE_IDLE;
-				}
-				else
-					hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = false;
-				m_pPlayer->isHit = false;
+				//if ((hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Intersects(*m_pPlayer->rHand->objectCollision)) || (hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Intersects(*m_pPlayer->lHand->objectCollision)) && (hierarchicalGameObjects[OTHERPLAYER]->nowState == STATE_GUARD_RIGHT_HEAD) && !hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide) // 왼손과 오른/왼손 - 가드
+				//{
+				//	hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = true;
+				//	cout << "Player LEFT HAND - Guard! " << endl;
+				//	m_pPlayer->nowState = STATE_IDLE;
+				//}
+				//else
+				//	hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = false;
+				//m_pPlayer->isHit = false;
 			}
 			else
 			{
