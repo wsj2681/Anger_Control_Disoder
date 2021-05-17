@@ -427,7 +427,7 @@ void Engine::BuildObjects()
 	server->cobject = m_pScene->hierarchicalGameObjects[1];
 
 	//쓰레드생성
-	server->Server_make_thread();
+	//server->Server_make_thread();
 	
 	
 	
@@ -684,18 +684,22 @@ void Engine::FrameAdvance()
 #ifdef _WITH_SERVER_CONNECT
 	/////////////////server////////////////
 	//if (i == 0) {
-	//server->Server_send();
-	//server->Server_recv();
-	////++i;
-	////}
+	server->Server_send();
+	server->Server_recv();
+	//++i;
+	//}
 
-	//
+	
 
-	////공격과 방어 초기화
-	//server->attackAndGuard_idle();
-	//server->Server_send();
+	//공격과 방어 초기화
+	server->attackAndGuard_idle();
+	server->Server_send();
+	/*if (server->co == 0) {
+		server->Server_make_thread();
+		++(server->co);
+	}
 
-	server->checkSR = true;
+	server->checkSR = true;*/
 
 	///////////////////////////////////////
 #endif // _WITH_SERVER_CONNECT
