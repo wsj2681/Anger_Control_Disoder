@@ -234,7 +234,7 @@ void Server::Server_make_thread() {
 void Server::Server_thread() {
 	while (true) {
 
-		if (checkSR) {
+		if (checkSR == true) {
 			Server_send();
 			Server_recv();
 			//++i;

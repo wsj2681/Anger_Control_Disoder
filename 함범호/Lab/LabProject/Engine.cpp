@@ -427,7 +427,7 @@ void Engine::BuildObjects()
 	server->cobject = m_pScene->hierarchicalGameObjects[1];
 
 	//쓰레드생성
-	server->Server_make_thread();
+	//server->Server_make_thread();
 	
 	
 	
@@ -684,18 +684,17 @@ void Engine::FrameAdvance()
 #ifdef _WITH_SERVER_CONNECT
 	/////////////////server////////////////
 	//if (i == 0) {
+	server->Server_send();
+	
+	//공격과 방어 초기화
+	server->attackAndGuard_idle();
 	//server->Server_send();
-	//server->Server_recv();
-	////++i;
-	////}
+	/*if (server->co == 0) {
+		server->Server_make_thread();
+		++(server->co);
+	}
 
-	//
-
-	////공격과 방어 초기화
-	//server->attackAndGuard_idle();
-	//server->Server_send();
-
-	server->checkSR = true;
+	server->checkSR = true;*/
 
 	///////////////////////////////////////
 #endif // _WITH_SERVER_CONNECT
@@ -758,5 +757,11 @@ void Engine::FrameAdvance()
 	XMFLOAT3 xmf3Position = m_pPlayer->GetPosition();
 	_stprintf_s(frameRate + nLength, 70 - nLength, _T("(%4f, %4f, %4f)"), xmf3Position.x, xmf3Position.y, xmf3Position.z);
 	::SetWindowText(this->hWnd, frameRate);
+
+
+
+#ifdef _WITH_SERVER_CONNECT
+	server->Server_recv();
+#endif // _WITH_SERVER_CONNECT
 }
 

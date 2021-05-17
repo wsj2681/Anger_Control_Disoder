@@ -158,6 +158,7 @@ public:
 	PlayerHP myHP;
 
 	bool checkSR = false;
+	int co = 0;
 
 	bool bScenario{ false };
 
