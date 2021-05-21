@@ -1,5 +1,8 @@
 #pragma once
 #include "Object.h"
+
+class CollideCubeObject;
+
 class BoxerObject : public Object
 {
 public:
@@ -7,4 +10,6 @@ public:
 	virtual ~BoxerObject();
 
 	virtual void UpdateWayPoints();
+
+	map<string, CollideCubeObject*> boundBoxs;
 };

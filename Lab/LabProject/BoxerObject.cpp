@@ -2,6 +2,7 @@
 #include "BoxerObject.h"
 #include "ModelInfo.h"
 #include "AnimationController.h"
+#include "CollideCubeObject.h"
 
 BoxerObject::BoxerObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, ModelInfo* pModel, int nAnimationTracks)
 {
@@ -14,7 +15,10 @@ BoxerObject::BoxerObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 	this->head = FindFrame("Bip01_Head");
 	if (this->head)
+	{
 		this->head->objectCollision = new BoundingOrientedBox(this->head->GetPosition(), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+		boundBoxs["Bip01_Head"] = new CollideCubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	}
 	this->rHand = FindFrame("Bip01_R_Hand");
 	if (this->rHand)
 		this->rHand->objectCollision = new BoundingOrientedBox(this->rHand->GetPosition(), XMFLOAT3(0.7f, 0.5f, 0.7f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));

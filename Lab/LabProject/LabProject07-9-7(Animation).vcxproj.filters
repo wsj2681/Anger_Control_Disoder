@@ -209,7 +209,18 @@
     <ClInclude Include="CallBack.h">
       <Filter>소스 파일</Filter>
     </ClInclude>
-    <ClInclude Include="Particle.h" />
+    <ClInclude Include="CollideCubeMesh.h">
+      <Filter>소스 파일\03 Model\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CollideCubeObject.h">
+      <Filter>소스 파일\03 Model\GameObject\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="DiffusedShader.h">
+      <Filter>소스 파일\03 Model\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>소스 파일\03 Model\GameObject\Object</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WICTextureLoader12.cpp">
@@ -317,8 +328,17 @@
     <ClCompile Include="StandardShader.cpp">
       <Filter>소스 파일\03 Model\Shader\StandardShader</Filter>
     </ClCompile>
+    <ClCompile Include="CollideCubeMesh.cpp">
+      <Filter>소스 파일\03 Model\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="DiffusedShader.cpp">
+      <Filter>소스 파일\03 Model\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="CollideCubeObject.cpp">
+      <Filter>소스 파일\03 Model\GameObject\Object</Filter>
+    </ClCompile>
     <ClCompile Include="Particle.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
