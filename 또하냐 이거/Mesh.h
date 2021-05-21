@@ -26,6 +26,38 @@ class CGameObject;
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
+
+class CVertex {
+protected:
+	//정점의 위치 벡터이다(모든 정점은 최소한 위치 벡터를 가져야 한다).
+	XMFLOAT3 m_xmf3Position{ (XMFLOAT3(0.f, 0.f, 0.f)) };
+
+public:
+	CVertex() {}
+	CVertex(XMFLOAT3 xmf3Position) { m_xmf3Position = xmf3Position; }
+	~CVertex() { }
+};
+
+class CDiffusedVertex : public CVertex {
+protected:
+	//정점의 색상이다.
+	XMFLOAT4 m_xmf4Diffuse{};
+public:
+	CDiffusedVertex() {
+		m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		m_xmf4Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	}
+	CDiffusedVertex(float x, float y, float z, XMFLOAT4 xmf4Diffuse) {
+		m_xmf3Position = XMFLOAT3(x, y, z);
+		m_xmf4Diffuse = xmf4Diffuse;
+	}
+	CDiffusedVertex(XMFLOAT3 xmf3Position, XMFLOAT4 xmf4Diffuse) {
+		m_xmf3Position = xmf3Position;
+		m_xmf4Diffuse = xmf4Diffuse;
+	}
+	~CDiffusedVertex() { }
+};
+
 class CMesh
 {
 public:
@@ -42,11 +74,14 @@ public:
 public:
 	char							m_pstrMeshName[64] = { 0 };
 
+	BoundingOrientedBox obb;
+	BoundingSphere bs;
+
 protected:
 	UINT							m_nType = 0x00;
 
-	XMFLOAT3						m_xmf3AABBCenter = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	XMFLOAT3						m_xmf3AABBExtents = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3						m_xmf3OBBCenter = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3						m_xmf3OBBExtents = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	D3D12_PRIMITIVE_TOPOLOGY		m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	UINT							m_nSlot = 0;
@@ -81,6 +116,8 @@ public:
 	virtual void OnPreRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet);
 	virtual void OnPostRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+
+	virtual bool isIntersect(BoundingOrientedBox& otherBox);
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -154,6 +191,24 @@ class CSkyBoxMesh : public CMesh
 public:
 	CSkyBoxMesh(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, float fWidth = 20.0f, float fHeight = 20.0f, float fDepth = 20.0f);
 	virtual ~CSkyBoxMesh();
+};
+
+class CubeMesh : public CMesh
+{
+public:
+	CubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth = 10.0f, float fHeight = 10.0f, float fDepth = 10.0f);
+	virtual ~CubeMesh();
+
+private:
+
+	ID3D12Resource* m_pd3dIndexBuffer = NULL;
+	ID3D12Resource* m_pd3dIndexUploadBuffer = NULL;
+	D3D12_VERTEX_BUFFER_VIEW m_d3dIndexBufferView;
+
+public:
+
+	
+
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

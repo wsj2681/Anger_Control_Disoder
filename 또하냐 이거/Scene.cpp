@@ -181,6 +181,15 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	m_ppShaders[0] = pEthanObjectsShader;
 
+	m_nGameObjects = 2;
+	m_ppGameObjects = new CGameObject * [m_nGameObjects];
+
+	CubeObject* cube1 = new CubeObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	CubeObject* cube2 = new CubeObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+
+	m_ppGameObjects[0] = cube1;
+	m_ppGameObjects[1] = cube2;
+
 	if (pEthanModel) delete pEthanModel;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -568,7 +577,14 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	m_fElapsedTime = fTimeElapsed;
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
+	m_ppGameObjects[0]->SetPosition(m_pPlayer->GetPosition());
+	m_ppGameObjects[1]->SetPosition(m_ppHierarchicalGameObjects[0]->GetPosition());
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
+
+	if (m_ppGameObjects[0]->m_pMesh->isIntersect(m_ppGameObjects[1]->m_pMesh->obb))
+	{
+		std::cout << "collide\n";
+	}
 
 	if (m_pLights)
 	{

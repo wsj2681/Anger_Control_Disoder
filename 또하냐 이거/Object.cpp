@@ -1468,4 +1468,24 @@ CEagleObject::~CEagleObject()
 {
 }
 
+CubeObject::CubeObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
+{
+	CubeMesh* pSkyBoxMesh = new CubeMesh(pd3dDevice, pd3dCommandList, 20.0f, 20.0f, 20.0f);
+	SetMesh(pSkyBoxMesh);
 
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	DiffusedShader* pSkyBoxShader = new DiffusedShader();
+	pSkyBoxShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	pSkyBoxShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	CMaterial* pSkyBoxMaterial = new CMaterial(0);
+	pSkyBoxMaterial->SetShader(pSkyBoxShader);
+
+	//SetMaterial(0, pSkyBoxMaterial);
+	SetShader(pSkyBoxShader);
+}
+
+CubeObject::~CubeObject()
+{
+}

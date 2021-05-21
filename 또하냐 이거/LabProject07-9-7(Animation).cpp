@@ -1,9 +1,15 @@
 ﻿// LabProject07-9-7.cpp : 응용 프로그램에 대한 진입점을 정의합니다.
 //
 
+#if defined(DEBUG) | defined(_DEBUG)
+#pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
+#endif
+
 #include "stdafx.h"
 #include "LabProject07-9-7(Animation).h"
 #include "GameFramework.h"
+
+
 
 #define MAX_LOADSTRING 100
 
