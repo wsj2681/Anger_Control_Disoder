@@ -24,12 +24,12 @@ CAnimationSet::CAnimationSet(float fLength, int nFramesPerSecond, int nKeyFrames
 
 CAnimationSet::~CAnimationSet()
 {
-	if (m_pfKeyFrameTimes) delete[] m_pfKeyFrameTimes;
-	for (int j = 0; j < m_nKeyFrames; j++) if (m_ppxmf4x4KeyFrameTransforms[j]) delete[] m_ppxmf4x4KeyFrameTransforms[j];
-	if (m_ppxmf4x4KeyFrameTransforms) delete[] m_ppxmf4x4KeyFrameTransforms;
+	SAFE_DELETEARR(m_pfKeyFrameTimes);
+	for (int j = 0; j < m_nKeyFrames; j++) SAFE_DELETEARR(m_ppxmf4x4KeyFrameTransforms[j]);
+	SAFE_DELETEARR(m_ppxmf4x4KeyFrameTransforms);
 
-	if (m_pCallbackKeys) delete[] m_pCallbackKeys;
-	if (m_pAnimationCallbackHandler) delete m_pAnimationCallbackHandler;
+	SAFE_DELETEARR(m_pCallbackKeys);
+	SAFE_DELETE(m_pAnimationCallbackHandler);
 }
 
 void* CAnimationSet::GetCallbackData()
@@ -187,10 +187,10 @@ AnimationSets::AnimationSets(int nAnimationSets)
 
 AnimationSets::~AnimationSets()
 {
-	for (int i = 0; i < m_nAnimationSets; i++) if (m_pAnimationSets[i]) delete m_pAnimationSets[i];
-	if (m_pAnimationSets) delete[] m_pAnimationSets;
+	for (int i = 0; i < m_nAnimationSets; i++) SAFE_DELETE(m_pAnimationSets[i]);
+	SAFE_DELETEARR(m_pAnimationSets);
 
-	if (m_ppAnimatedBoneFrameCaches) delete[] m_ppAnimatedBoneFrameCaches;
+	SAFE_DELETEARR(m_ppAnimatedBoneFrameCaches);
 }
 
 void AnimationSets::SetCallbackKeys(int nAnimationSet, int nCallbackKeys)

@@ -9,17 +9,17 @@ SkinnedMesh::SkinnedMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 SkinnedMesh::~SkinnedMesh()
 {
 	//TODO : Delete Scalar
-	if (m_pxmn4BoneIndices) delete[] m_pxmn4BoneIndices;
-	if (m_pxmf4BoneWeights) delete[] m_pxmf4BoneWeights;
+	SAFE_DELETEARR(m_pxmn4BoneIndices);
+	SAFE_DELETEARR(m_pxmf4BoneWeights);
 
-	if (m_ppSkinningBoneFrameCaches) delete[] m_ppSkinningBoneFrameCaches;
-	if (m_ppstrSkinningBoneNames) delete[] m_ppstrSkinningBoneNames;
+	SAFE_DELETEARR(m_ppSkinningBoneFrameCaches);
+	SAFE_DELETEARR(m_ppstrSkinningBoneNames);
 
-	if (m_pxmf4x4BindPoseBoneOffsets) delete[] m_pxmf4x4BindPoseBoneOffsets;
-	if (m_pd3dcbBindPoseBoneOffsets) m_pd3dcbBindPoseBoneOffsets->Release();
+	SAFE_DELETEARR(m_pxmf4x4BindPoseBoneOffsets);
+	SAFE_RELEASE(m_pd3dcbBindPoseBoneOffsets);
 
-	if (m_pd3dBoneIndexBuffer) m_pd3dBoneIndexBuffer->Release();
-	if (m_pd3dBoneWeightBuffer) m_pd3dBoneWeightBuffer->Release();
+	SAFE_RELEASE(m_pd3dBoneIndexBuffer);
+	SAFE_RELEASE(m_pd3dBoneWeightBuffer);
 
 	ReleaseShaderVariables();
 }
@@ -56,11 +56,8 @@ void SkinnedMesh::ReleaseUploadBuffers()
 {
 	CStandardMesh::ReleaseUploadBuffers();
 
-	if (m_pd3dBoneIndexUploadBuffer) m_pd3dBoneIndexUploadBuffer->Release();
-	m_pd3dBoneIndexUploadBuffer = NULL;
-
-	if (m_pd3dBoneWeightUploadBuffer) m_pd3dBoneWeightUploadBuffer->Release();
-	m_pd3dBoneWeightUploadBuffer = NULL;
+	SAFE_RELEASE(m_pd3dBoneIndexUploadBuffer);
+	SAFE_RELEASE(m_pd3dBoneWeightUploadBuffer);
 }
 
 void SkinnedMesh::PrepareSkinning(Object* pModelRootObject)
@@ -100,7 +97,7 @@ void SkinnedMesh::LoadSkinInfoFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsC
 				for (int i = 0; i < m_nSkinningBones; i++)
 				{
 					::ReadStringFromFile(pInFile, m_ppstrSkinningBoneNames[i]);
-					m_ppSkinningBoneFrameCaches[i] = NULL;
+					m_ppSkinningBoneFrameCaches[i] = nullptr;
 				}
 			}
 		}
@@ -113,8 +110,8 @@ void SkinnedMesh::LoadSkinInfoFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsC
 				nReads = (UINT)::fread(m_pxmf4x4BindPoseBoneOffsets, sizeof(XMFLOAT4X4), m_nSkinningBones, pInFile);
 
 				UINT ncbElementBytes = (((sizeof(XMFLOAT4X4) * SKINNED_ANIMATION_BONES) + 255) & ~255); //256ÀÇ ¹è¼ö
-				m_pd3dcbBindPoseBoneOffsets = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
-				m_pd3dcbBindPoseBoneOffsets->Map(0, NULL, (void**)&m_pcbxmf4x4MappedBindPoseBoneOffsets);
+				m_pd3dcbBindPoseBoneOffsets = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
+				m_pd3dcbBindPoseBoneOffsets->Map(0, nullptr, (void**)&m_pcbxmf4x4MappedBindPoseBoneOffsets);
 
 				for (int i = 0; i < m_nSkinningBones; i++)
 				{

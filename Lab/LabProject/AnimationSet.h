@@ -40,7 +40,7 @@ public:
 	int 							m_nType = ANIMATION_TYPE_LOOP; //Once, Loop, PingPong
 
 	int 							m_nCallbackKeys = 0;
-	CALLBACKKEY* m_pCallbackKeys = NULL;
+	CALLBACKKEY* m_pCallbackKeys = nullptr;
 
 	AnimationCallbackHandler* m_pAnimationCallbackHandler = nullptr;
 

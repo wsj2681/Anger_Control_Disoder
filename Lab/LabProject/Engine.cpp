@@ -3,20 +3,14 @@
 //-----------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "Engine.h"
+#include "Scene.h"
+#include "Player.h"
+#include "Server.h"
 #include "AnimationController.h"
+#include "Engine.h"
 
 Scene* gScene = nullptr;
 bool onTempKey{ true };
-
-Engine::Engine()
-{
-	_tcscpy_s(frameRate, _T("AngerControlDisorder("));
-}
-
-Engine::~Engine()
-{
-}
 
 bool Engine::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
@@ -29,11 +23,12 @@ bool Engine::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	CreateSwapChain();
 	CreateDepthStencilView();
 
-	CoInitialize(NULL);
+	if (CoInitialize(nullptr) != 0)
+		cout << "Initialize Failed" << endl;
 
 	BuildObjects();
 
-	return(true);
+	return true;
 }
 
 void Engine::CreateSwapChain()
@@ -74,19 +69,19 @@ void Engine::CreateDirect3DDevice()
 {
 	UINT nDXGIFactoryFlags = 0;
 #if defined(_DEBUG)
-	ID3D12Debug *pd3dDebugController = NULL;
+	ID3D12Debug *pd3dDebugController = nullptr;
 	HR(D3D12GetDebugInterface(__uuidof(ID3D12Debug), (void **)&pd3dDebugController));
 	if (pd3dDebugController)
 	{
 		pd3dDebugController->EnableDebugLayer();
-		pd3dDebugController->Release();
+		SAFE_RELEASE(pd3dDebugController);
 	}
 	nDXGIFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
 #endif
 
 	HR(::CreateDXGIFactory2(nDXGIFactoryFlags, __uuidof(IDXGIFactory4), (void **)&factory));
 
-	IDXGIAdapter1 *pd3dAdapter = NULL;
+	IDXGIAdapter1 *pd3dAdapter = nullptr;
 
 	for (UINT i = 0; DXGI_ERROR_NOT_FOUND != factory->EnumAdapters1(i, &pd3dAdapter); i++)
 	{
@@ -120,9 +115,9 @@ void Engine::CreateDirect3DDevice()
 	HR(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), (void **)&fence));
 	for (UINT i = 0; i < swapChainBuffers; i++) fenceValues[i] = 0;
 
-	fenceEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
+	fenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
 
-	if (pd3dAdapter) pd3dAdapter->Release();
+	SAFE_RELEASE(pd3dAdapter);
 }
 
 void Engine::CreateCommandQueueAndList()
@@ -135,7 +130,7 @@ void Engine::CreateCommandQueueAndList()
 	
 	HR(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), (void **)&commandAllocator));
 	
-	HR(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, NULL, __uuidof(ID3D12GraphicsCommandList), (void **)&commandList));
+	HR(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, nullptr, __uuidof(ID3D12GraphicsCommandList), (void **)&commandList));
 	HR(commandList->Close());
 }
 
@@ -159,10 +154,10 @@ void Engine::CreateRtvAndDsvDescriptorHeaps()
 void Engine::CreateRenderTargetViews()
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = rtvDescHeap->GetCPUDescriptorHandleForHeapStart();
-	for (UINT i = 0; i < swapChainBuffers; i++)
+	for (UINT i = 0; i < swapChainBuffers; ++i)
 	{
 		swapChain->GetBuffer(i, __uuidof(ID3D12Resource), (void **)&swapChainBackBuffers[i]);
-		device->CreateRenderTargetView(swapChainBackBuffers[i], NULL, d3dRtvCPUDescriptorHandle);
+		device->CreateRenderTargetView(swapChainBackBuffers[i], nullptr, d3dRtvCPUDescriptorHandle);
 		d3dRtvCPUDescriptorHandle.ptr += rtvDescIncrementSize;
 	}
 }
@@ -225,7 +220,7 @@ void Engine::ChangeSwapChainState()
 	dxgiTargetParameters.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	HR(swapChain->ResizeTarget(&dxgiTargetParameters));
 
-	for (int i = 0; i < swapChainBuffers; i++) if (swapChainBackBuffers[i]) swapChainBackBuffers[i]->Release();
+	for (int i = 0; i < swapChainBuffers; i++) SAFE_RELEASE(swapChainBackBuffers[i]);
 
 	DXGI_SWAP_CHAIN_DESC dxgiSwapChainDesc;
 	HR(swapChain->GetDesc(&dxgiSwapChainDesc));
@@ -239,9 +234,9 @@ void Engine::ChangeSwapChainState()
 void Engine::CreateShaderVariables()
 {
 	UINT ncbElementBytes = ((sizeof(CB_ENGINE_INFO) + 255) & ~255); //256의 배수
-	m_pd3dcbFrameworkInfo = ::CreateBufferResource(device, commandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+	m_pd3dcbFrameworkInfo = ::CreateBufferResource(device, commandList, nullptr, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
 
-	m_pd3dcbFrameworkInfo->Map(0, NULL, (void**)&m_pcbMappedFrameworkInfo);
+	m_pd3dcbFrameworkInfo->Map(0, nullptr, (void**)&m_pcbMappedFrameworkInfo);
 }
 
 void Engine::UpdateShaderVariables()
@@ -257,8 +252,8 @@ void Engine::ReleaseShaderVariables()
 {
 	if (m_pd3dcbFrameworkInfo)
 	{
-		m_pd3dcbFrameworkInfo->Unmap(0, NULL);
-		m_pd3dcbFrameworkInfo->Release();
+		m_pd3dcbFrameworkInfo->Unmap(0, nullptr);
+		SAFE_RELEASE(m_pd3dcbFrameworkInfo);
 	}
 }
 
@@ -289,7 +284,7 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	switch (nMessageID)
 	{
 		case WM_KEYUP:
-			//this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+			// TODO: 코드 위치 생각해보기
 			this->m_pPlayer->nowState = STATE_IDLE;
 			switch (wParam)
 			{
@@ -345,37 +340,37 @@ LRESULT CALLBACK Engine::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, W
 			OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 			break;
 	}
-	return(0);
+	return 0;
 }
 
 void Engine::OnDestroy()
 {
-    ReleaseObjects();
+    Release();
 
 	::CloseHandle(fenceEvent);
 
-	if (depthStencilBuffer) depthStencilBuffer->Release();
-	if (dsvDescHeap) dsvDescHeap->Release();
+	SAFE_RELEASE(depthStencilBuffer);
+	SAFE_RELEASE(dsvDescHeap);
 
-	for (int i = 0; i < swapChainBuffers; i++) if (swapChainBackBuffers[i]) swapChainBackBuffers[i]->Release();
-	if (rtvDescHeap) rtvDescHeap->Release();
+	for (int i = 0; i < swapChainBuffers; i++) SAFE_RELEASE(swapChainBackBuffers[i]);
+	SAFE_RELEASE(rtvDescHeap);
 
-	if (commandAllocator) commandAllocator->Release();
-	if (commandQueue) commandQueue->Release();
-	if (commandList) commandList->Release();
+	SAFE_RELEASE(commandAllocator);
+	SAFE_RELEASE(commandQueue);
+	SAFE_RELEASE(commandList);
 
-	if (fence) fence->Release();
+	SAFE_RELEASE(fence);
 
-	swapChain->SetFullscreenState(FALSE, NULL);
-	if (swapChain) swapChain->Release();
-    if (device) device->Release();
-	if (factory) factory->Release();
+	swapChain->SetFullscreenState(false, nullptr);
+	SAFE_RELEASE(swapChain);
+	SAFE_RELEASE(device);
+	SAFE_RELEASE(factory);
 
 #if defined(_DEBUG)
-	IDXGIDebug1	*pdxgiDebug = NULL;
+	IDXGIDebug1	*pdxgiDebug = nullptr;
 	DXGIGetDebugInterface1(0, __uuidof(IDXGIDebug1), (void **)&pdxgiDebug);
 	HRESULT hResult = pdxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);
-	pdxgiDebug->Release();
+	SAFE_RELEASE(pdxgiDebug);
 #endif
 }
 
@@ -385,12 +380,8 @@ void Engine::BuildObjects()
 {
 
 #ifdef _WITH_SERVER_CONNECT
-	/////SERVER///
 	server = new Server();
-
-	////////////////////////
 #endif // _WITH_SERVER_CONNECT
-
 
 	commandList->Reset(commandAllocator, nullptr);
 
@@ -398,41 +389,17 @@ void Engine::BuildObjects()
 	if (m_pScene) m_pScene->BuildObjects(device, commandList);
 
 	BoxingPlayer *pPlayer = new BoxingPlayer(device, commandList, m_pScene->GetGraphicsRootSignature());
-
 	pPlayer->SetPosition(XMFLOAT3(-1.0f, 8.5f, -30.0f));
 	
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, 1.66975f, -533.916f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, -5.69284f, -527.249f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, -5.69284f, -107.806f), ANIMATION_MOVE_FORWARD);
-
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f), ANIMATION_CEREMONY);
-	//pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-28.4525f, -5.69284f, 83.0311f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -109.177f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -94.0986f), ANIMATION_MOVE_FORWARD);
-
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -78.1817f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -32.0f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, -32.0f), ANIMATION_MOVE_FORWARD);
-
 	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
 	m_pCamera = m_pPlayer->GetCamera();
 	gScene = m_pScene;
 
 #ifdef _WITH_SERVER_CONNECT
-	////server//////////////
 	server->cplayer = m_pPlayer;
 	server->cscene = m_pScene;
 	server->cobject = m_pScene->hierarchicalGameObjects[1];
-	/// /////////////////////////////
 #endif // _WITH_SERVER_CONNECT
-
-	
 
 	commandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { commandList };
@@ -446,12 +413,11 @@ void Engine::BuildObjects()
 	m_GameTimer.Reset();
 }
 
-void Engine::ReleaseObjects()
+void Engine::Release()
 {
-	if (m_pPlayer) m_pPlayer->Release();
-
-	if (m_pScene) m_pScene->ReleaseObjects();
-	if (m_pScene) delete m_pScene;
+	SAFE_RELEASE(m_pPlayer);
+	SAFE_RELEASE(m_pScene);
+	SAFE_DELETE(m_pScene);
 }
 
 void Engine::ProcessInput()
@@ -493,11 +459,7 @@ void Engine::ProcessInput()
 					if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
 					if (pKeysBuffer[VK_RSHIFT] & 0xF0) dwDirection |= DIR_DOWN;
 
-					if (pKeysBuffer['Z'] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
-						m_pPlayer->nowState = STATE_ATTACK_LEFT_HOOK;
-						m_pPlayer->attackType = DAMAGE_HOOK;
+					PLAYER_SET_ANIMATION('Z', ANIMATION_HOOK_L, STATE_ATTACK_LEFT_HOOK, DAMAGE_HOOK)
 #ifdef _WITH_SERVER_CONNECT
 						server->send_attackAnddefend.leftHand = true;
 #endif // _WITH_SERVER_CONNECT
@@ -662,7 +624,7 @@ void Engine::ProcessInput()
 				POINT ptCursorPos;
 				if (GetCapture() == this->hWnd)
 				{
-					SetCursor(NULL);
+					SetCursor(nullptr);
 					GetCursorPos(&ptCursorPos);
 					cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
 					cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
@@ -712,7 +674,6 @@ void Engine::WaitForGpuComplete()
 void Engine::MoveToNextFrame()
 {
 	swapChainBufferIndex = swapChain->GetCurrentBackBufferIndex();
-	//swapChainBufferIndex = (swapChainBufferIndex + 1) % swapChainBuffers;
 
 	UINT64 nFenceValue = ++fenceValues[swapChainBufferIndex];
 	HR(commandQueue->Signal(fence, nFenceValue));
@@ -729,7 +690,6 @@ void Engine::MoveToNextFrame()
 void Engine::FrameAdvance()
 {    
 #ifdef _WITH_SERVER_CONNECT
-	/////////////////server////////////////
 	//if (i == 0) {
 	server->Server_send();
 	server->Server_recv();
@@ -738,8 +698,6 @@ void Engine::FrameAdvance()
 	//공격과 방어 초기화
 	server->attackAndGuard_idle();
 	//server->Server_send();
-
-	///////////////////////////////////////
 #endif // _WITH_SERVER_CONNECT
 
 	m_GameTimer.Tick(60.0f);
@@ -765,17 +723,17 @@ void Engine::FrameAdvance()
 	d3dRtvCPUDescriptorHandle.ptr += (swapChainBufferIndex * rtvDescIncrementSize);
 
 	float pfClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	commandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, NULL);
+	commandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, nullptr);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = dsvDescHeap->GetCPUDescriptorHandleForHeapStart();
-	commandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
+	commandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	commandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
 	if (m_pScene) m_pScene->Render(commandList, m_pCamera);
 
 #ifdef _WITH_PLAYER_TOP
-	commandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
+	commandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 #endif
 	if (m_pPlayer) m_pPlayer->Render(commandList, m_pCamera);
 
@@ -794,11 +752,9 @@ void Engine::FrameAdvance()
 	swapChain->Present(0, 0);
 
 	MoveToNextFrame();
-
-	m_GameTimer.GetFrameRate(frameRate + 12, 37);
+	m_GameTimer.GetFrameRate(frameRate + 21, 37);
 	size_t nLength = _tcslen(frameRate);
 	XMFLOAT3 xmf3Position = m_pPlayer->GetPosition();
 	_stprintf_s(frameRate + nLength, 70 - nLength, _T("(%4f, %4f, %4f)"), xmf3Position.x, xmf3Position.y, xmf3Position.z);
 	::SetWindowText(this->hWnd, frameRate);
 }
-

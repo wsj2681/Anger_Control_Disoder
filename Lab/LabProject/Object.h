@@ -40,25 +40,25 @@ public:
 public:
 	char							m_pstrFrameName[64];
 
-	Mesh							*m_pMesh = NULL;
+	Mesh							*m_pMesh = nullptr;
 
 	int								m_nMaterials = 0;
-	Material						**m_ppMaterials = NULL;
+	Material						**m_ppMaterials = nullptr;
 
 	XMFLOAT4X4						m_xmf4x4ToParent;
 	XMFLOAT4X4						m_xmf4x4World;
 
-	Object 					*m_pParent = NULL;
-	Object 					*m_pChild = NULL;
-	Object 					*m_pSibling = NULL;
+	Object 					*m_pParent = nullptr;
+	Object 					*m_pChild = nullptr;
+	Object 					*m_pSibling = nullptr;
 
 
-	Object* head = NULL;	//¸Ó¸®
-	Object* rHand = NULL;	//¿À¸¥¼Õ
-	Object* lHand = NULL;	//¿Þ¼Õ
-	Object* lFoot = NULL;	//¿Þ¹ß
-	Object* rFoot = NULL;	//¿À¸¥¹ß
-	Object* spine = NULL;	//Ã´Ãß Áß½É
+	Object* head = nullptr;	//¸Ó¸®
+	Object* rHand = nullptr;	//¿À¸¥¼Õ
+	Object* lHand = nullptr;	//¿Þ¼Õ
+	Object* lFoot = nullptr;	//¿Þ¹ß
+	Object* rFoot = nullptr;	//¿À¸¥¹ß
+	Object* spine = nullptr;	//Ã´Ãß Áß½É
 	XMFLOAT3 particleDir{ 0.f, 0.f, 0.f };
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
 
@@ -91,7 +91,7 @@ public:
 	virtual void Animate(float fTimeElapsed);
 
 	virtual void OnPrepareRender() { }
-	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera=NULL);
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera=nullptr);
 
 	virtual void CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList);
 	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList);
@@ -125,7 +125,7 @@ public:
 	void Rotate(XMFLOAT4 *pxmf4Quaternion);
 
 	Object *GetParent() { return(m_pParent); }
-	void UpdateTransform(XMFLOAT4X4 *pxmf4x4Parent=NULL);
+	void UpdateTransform(XMFLOAT4X4 *pxmf4x4Parent=nullptr);
 	Object *FindFrame(char *pstrFrameName);
 
 	Texture *FindReplicatedTexture(_TCHAR *pstrTextureName);
@@ -133,7 +133,7 @@ public:
 	UINT GetMeshType() { return((m_pMesh) ? m_pMesh->GetType() : 0x00); }
 
 public:
-	AnimationController 			*m_pSkinnedAnimationController = NULL;
+	AnimationController 			*m_pSkinnedAnimationController = nullptr;
 
 	SkinnedMesh *FindSkinnedMesh(char *pstrSkinnedMeshName);
 	void FindAndSetSkinnedMesh(SkinnedMesh **ppSkinnedMeshes, int *pnSkinnedMesh);

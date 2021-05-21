@@ -10,12 +10,12 @@ public:
 	ModelInfo() { }
 	~ModelInfo();
 
-	Object* m_pModelRootObject = NULL;
+	Object* m_pModelRootObject = nullptr;
 
 	int 							m_nSkinnedMeshes = 0;
-	SkinnedMesh** m_ppSkinnedMeshes = NULL; //[SkinnedMeshes], Skinned Mesh Cache
+	SkinnedMesh** m_ppSkinnedMeshes = nullptr; //[SkinnedMeshes], Skinned Mesh Cache
 
-	AnimationSets* m_pAnimationSets = NULL;
+	AnimationSets* m_pAnimationSets = nullptr;
 
 public:
 	void PrepareSkinning();

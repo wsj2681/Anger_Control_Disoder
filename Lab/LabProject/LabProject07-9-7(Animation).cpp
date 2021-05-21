@@ -42,7 +42,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 
 	while (1)
 	{
-		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		if (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
 			if (!::TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
@@ -73,9 +73,9 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
 	wcex.hIcon = ::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_LABPROJECT0797ANIMATION));
-	wcex.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+	wcex.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.lpszMenuName = NULL;//MAKEINTRESOURCE(IDC_LABPROJECT0797ANIMATION);
+	wcex.lpszMenuName = nullptr;//MAKEINTRESOURCE(IDC_LABPROJECT0797ANIMATION);
 	wcex.lpszClassName = szWindowClass;
 	wcex.hIconSm = ::LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -89,7 +89,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	RECT rc = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT };
 	DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
 	AdjustWindowRect(&rc, dwStyle, FALSE);
-	HWND hMainWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
+	HWND hMainWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
 
 	if (!hMainWnd) return(FALSE);
 

@@ -24,14 +24,14 @@ private:
 	UINT							m_nTextureType = RESOURCE_TEXTURE2D;
 
 	int								m_nTextures = 0;
-	ID3D12Resource** m_ppd3dTextures = NULL;
+	ID3D12Resource** m_ppd3dTextures = nullptr;
 	ID3D12Resource** m_ppd3dTextureUploadBuffers;
 
 	int								m_nSamplers = 0;
-	D3D12_GPU_DESCRIPTOR_HANDLE* m_pd3dSamplerGpuDescriptorHandles = NULL;
+	D3D12_GPU_DESCRIPTOR_HANDLE* m_pd3dSamplerGpuDescriptorHandles = nullptr;
 
 public:
-	SRVROOTARGUMENTINFO* m_pRootArgumentInfos = NULL;
+	SRVROOTARGUMENTINFO* m_pRootArgumentInfos = nullptr;
 
 public:
 	void AddRef() { m_nReferences++; }

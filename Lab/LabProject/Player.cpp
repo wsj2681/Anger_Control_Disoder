@@ -18,7 +18,7 @@
 
 Player::Player()
 {
-	m_pCamera = NULL;
+	m_pCamera = nullptr;
 
 	m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_xmf3Right = XMFLOAT3(1.0f, 0.0f, 0.0f);
@@ -35,15 +35,15 @@ Player::Player()
 	m_fRoll = 0.0f;
 	m_fYaw = 0.0f;
 
-	m_pPlayerUpdatedContext = NULL;
-	m_pCameraUpdatedContext = NULL;
+	m_pPlayerUpdatedContext = nullptr;
+	m_pCameraUpdatedContext = nullptr;
 }
 
 Player::~Player()
 {
 	ReleaseShaderVariables();
 
-	if (m_pCamera) delete m_pCamera;
+	SAFE_DELETE(m_pCamera);
 }
 
 void Player::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -252,7 +252,7 @@ void Player::Update(float fTimeElapsed)
 
 Camera *Player::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
 {
-	Camera *pNewCamera = NULL;
+	Camera *pNewCamera = nullptr;
 	switch (nNewCameraMode)
 	{
 		case FIRST_PERSON_CAMERA:
@@ -292,7 +292,7 @@ Camera *Player::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
 		pNewCamera->SetPlayer(this);
 	}
 
-	if (m_pCamera) delete m_pCamera;
+	SAFE_DELETE(m_pCamera);
 
 	return(pNewCamera);
 }
@@ -351,14 +351,12 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	SetPlayerUpdatedContext(pContext);
 	SetCameraUpdatedContext(pContext);
 
-	SetPosition(XMFLOAT3(0.f, 8.5f, -769.689f));
-
 	playerCollision = new BoundingOrientedBox();
 	playerCollision->Center = spine->GetPosition();
 	playerCollision->Extents = XMFLOAT3(2.f, 7.f, 2.f);
 	playerCollision->Orientation = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 
-	if (BoxerModel) delete BoxerModel;
+	SAFE_DELETE(BoxerModel);
 }
 
 BoxingPlayer::~BoxingPlayer()

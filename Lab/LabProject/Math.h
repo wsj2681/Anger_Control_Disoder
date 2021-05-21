@@ -212,7 +212,7 @@ namespace Matrix4x4
 	inline XMFLOAT4X4 Inverse(const XMFLOAT4X4& xmmtx4x4Matrix)
 	{
 		XMFLOAT4X4 xmf4x4Result;
-		XMStoreFloat4x4(&xmf4x4Result, XMMatrixInverse(NULL, XMLoadFloat4x4(&xmmtx4x4Matrix)));
+		XMStoreFloat4x4(&xmf4x4Result, XMMatrixInverse(nullptr, XMLoadFloat4x4(&xmmtx4x4Matrix)));
 		return(xmf4x4Result);
 	}
 

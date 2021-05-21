@@ -31,10 +31,10 @@ protected:
 	float           			m_fMaxVelocityY = 0.0f;
 	float           			m_fFriction = 0.0f;
 
-	LPVOID						m_pPlayerUpdatedContext = NULL;
-	LPVOID						m_pCameraUpdatedContext = NULL;
+	LPVOID						m_pPlayerUpdatedContext = nullptr;
+	LPVOID						m_pCameraUpdatedContext = nullptr;
 
-	Camera						*m_pCamera = NULL;
+	Camera						*m_pCamera = nullptr;
 
 	
 
@@ -83,9 +83,9 @@ public:
 
 	Camera *OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode);
 
-	virtual Camera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed) { return(NULL); }
+	virtual Camera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed) { return(nullptr); }
 	virtual void OnPrepareRender();
-	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera = NULL);
+	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera = nullptr);
 
 
 public:
@@ -97,7 +97,7 @@ public:
 class BoxingPlayer : public Player
 {
 public:
-	BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=NULL);
+	BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=nullptr);
 	virtual ~BoxingPlayer();
 public:
 	virtual Camera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);

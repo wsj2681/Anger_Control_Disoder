@@ -18,7 +18,7 @@ void StandardObjectsShader::ReleaseObjects()
 {
 	if (m_ppObjects)
 	{
-		for (int j = 0; j < m_nObjects; j++) if (m_ppObjects[j]) m_ppObjects[j]->Release();
+		for (int j = 0; j < m_nObjects; j++) SAFE_RELEASE(m_ppObjects[j]);
 		delete[] m_ppObjects;
 	}
 }
@@ -42,7 +42,7 @@ void StandardObjectsShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, C
 		if (m_ppObjects[j])
 		{
 			m_ppObjects[j]->Animate(m_fElapsedTime);
-			m_ppObjects[j]->UpdateTransform(NULL);
+			m_ppObjects[j]->UpdateTransform(nullptr);
 			m_ppObjects[j]->Render(pd3dCommandList, pCamera);
 		}
 	}

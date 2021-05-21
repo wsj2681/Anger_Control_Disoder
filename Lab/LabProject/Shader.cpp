@@ -13,7 +13,7 @@ Shader::~Shader()
 {
 	ReleaseShaderVariables();
 
-	if (m_pd3dPipelineState) m_pd3dPipelineState->Release();
+	SAFE_RELEASE(m_pd3dPipelineState);
 }
 
 void Shader::AddRef()
@@ -31,7 +31,7 @@ D3D12_SHADER_BYTECODE Shader::CreateVertexShader()
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	d3dShaderByteCode.BytecodeLength = 0;
-	d3dShaderByteCode.pShaderBytecode = NULL;
+	d3dShaderByteCode.pShaderBytecode = nullptr;
 
 	return(d3dShaderByteCode);
 }
@@ -40,7 +40,7 @@ D3D12_SHADER_BYTECODE Shader::CreatePixelShader()
 {
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	d3dShaderByteCode.BytecodeLength = 0;
-	d3dShaderByteCode.pShaderBytecode = NULL;
+	d3dShaderByteCode.pShaderBytecode = nullptr;
 
 	return(d3dShaderByteCode);
 }
@@ -52,9 +52,9 @@ D3D12_SHADER_BYTECODE Shader::CompileShaderFromFile(WCHAR *pszFileName, LPCSTR p
 	nCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
-	ID3DBlob *pd3dErrorBlob = NULL;
-	HRESULT hResult = ::D3DCompileFromFile(pszFileName, NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, pszShaderName, pszShaderProfile, nCompileFlags, 0, ppd3dShaderBlob, &pd3dErrorBlob);
-	char *pErrorString = NULL;
+	ID3DBlob *pd3dErrorBlob = nullptr;
+	HRESULT hResult = ::D3DCompileFromFile(pszFileName, nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, pszShaderName, pszShaderProfile, nCompileFlags, 0, ppd3dShaderBlob, &pd3dErrorBlob);
+	char *pErrorString = nullptr;
 	if (pd3dErrorBlob) pErrorString = (char *)pd3dErrorBlob->GetBufferPointer();
 
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
@@ -78,7 +78,7 @@ D3D12_SHADER_BYTECODE Shader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID3
 {
 	UINT nReadBytes = 0;
 #ifdef _WITH_WFOPEN
-	FILE *pFile = NULL;
+	FILE *pFile = nullptr;
 	::_wfopen_s(&pFile, pszFileName, L"rb");
 	::fseek(pFile, 0, SEEK_END);
 	int nFileSize = ::ftell(pFile);
@@ -100,7 +100,7 @@ D3D12_SHADER_BYTECODE Shader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID3
 	D3D12_SHADER_BYTECODE d3dShaderByteCode;
 	if (ppd3dShaderBlob)
 	{
-		*ppd3dShaderBlob = NULL;
+		*ppd3dShaderBlob = nullptr;
 		HRESULT hResult = D3DCreateBlob(nReadBytes, ppd3dShaderBlob);
 		memcpy((*ppd3dShaderBlob)->GetBufferPointer(), pByteCode, nReadBytes);
 		d3dShaderByteCode.BytecodeLength = (*ppd3dShaderBlob)->GetBufferSize();
@@ -118,7 +118,7 @@ D3D12_SHADER_BYTECODE Shader::ReadCompiledShaderFromFile(WCHAR *pszFileName, ID3
 D3D12_INPUT_LAYOUT_DESC Shader::CreateInputLayout()
 {
 	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
-	d3dInputLayoutDesc.pInputElementDescs = NULL;
+	d3dInputLayoutDesc.pInputElementDescs = nullptr;
 	d3dInputLayoutDesc.NumElements = 0;
 
 	return(d3dInputLayoutDesc);
@@ -206,10 +206,10 @@ void Shader::CreateShader(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	HRESULT hResult = pd3dDevice->CreateGraphicsPipelineState(&m_d3dPipelineStateDesc, __uuidof(ID3D12PipelineState), (void **)&m_pd3dPipelineState);
 
-	if (m_pd3dVertexShaderBlob) m_pd3dVertexShaderBlob->Release();
-	if (m_pd3dPixelShaderBlob) m_pd3dPixelShaderBlob->Release();
+	SAFE_RELEASE(m_pd3dVertexShaderBlob);
+	SAFE_RELEASE(m_pd3dPixelShaderBlob);
 
-	if (m_d3dPipelineStateDesc.InputLayout.pInputElementDescs) delete[] m_d3dPipelineStateDesc.InputLayout.pInputElementDescs;
+	SAFE_DELETEARR(m_d3dPipelineStateDesc.InputLayout.pInputElementDescs);
 }
 
 void Shader::OnPrepareRender(ID3D12GraphicsCommandList *pd3dCommandList, int nPipelineState)

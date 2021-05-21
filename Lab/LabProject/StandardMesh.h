@@ -8,32 +8,32 @@ public:
 	virtual ~CStandardMesh();
 
 protected:
-	XMFLOAT4* m_pxmf4Colors = NULL;
-	XMFLOAT3* m_pxmf3Normals = NULL;
-	XMFLOAT3* m_pxmf3Tangents = NULL;
-	XMFLOAT3* m_pxmf3BiTangents = NULL;
+	XMFLOAT4* m_pxmf4Colors = nullptr;
+	XMFLOAT3* m_pxmf3Normals = nullptr;
+	XMFLOAT3* m_pxmf3Tangents = nullptr;
+	XMFLOAT3* m_pxmf3BiTangents = nullptr;
 
-	XMFLOAT2* m_pxmf2TextureCoords0 = NULL;
-	XMFLOAT2* m_pxmf2TextureCoords1 = NULL;
+	XMFLOAT2* m_pxmf2TextureCoords0 = nullptr;
+	XMFLOAT2* m_pxmf2TextureCoords1 = nullptr;
 
-	ID3D12Resource* m_pd3dTextureCoord0Buffer = NULL;
-	ID3D12Resource* m_pd3dTextureCoord0UploadBuffer = NULL;
+	ID3D12Resource* m_pd3dTextureCoord0Buffer = nullptr;
+	ID3D12Resource* m_pd3dTextureCoord0UploadBuffer = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW		m_d3dTextureCoord0BufferView;
 
-	ID3D12Resource* m_pd3dTextureCoord1Buffer = NULL;
-	ID3D12Resource* m_pd3dTextureCoord1UploadBuffer = NULL;
+	ID3D12Resource* m_pd3dTextureCoord1Buffer = nullptr;
+	ID3D12Resource* m_pd3dTextureCoord1UploadBuffer = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW		m_d3dTextureCoord1BufferView;
 
-	ID3D12Resource* m_pd3dNormalBuffer = NULL;
-	ID3D12Resource* m_pd3dNormalUploadBuffer = NULL;
+	ID3D12Resource* m_pd3dNormalBuffer = nullptr;
+	ID3D12Resource* m_pd3dNormalUploadBuffer = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW		m_d3dNormalBufferView;
 
-	ID3D12Resource* m_pd3dTangentBuffer = NULL;
-	ID3D12Resource* m_pd3dTangentUploadBuffer = NULL;
+	ID3D12Resource* m_pd3dTangentBuffer = nullptr;
+	ID3D12Resource* m_pd3dTangentUploadBuffer = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW		m_d3dTangentBufferView;
 
-	ID3D12Resource* m_pd3dBiTangentBuffer = NULL;
-	ID3D12Resource* m_pd3dBiTangentUploadBuffer = NULL;
+	ID3D12Resource* m_pd3dBiTangentBuffer = nullptr;
+	ID3D12Resource* m_pd3dBiTangentUploadBuffer = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW		m_d3dBiTangentBufferView;
 
 public:

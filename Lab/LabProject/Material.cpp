@@ -12,33 +12,33 @@ Material::Material(int nTextures)
 
 	m_ppTextures = new Texture * [m_nTextures];
 	m_ppstrTextureNames = new _TCHAR[m_nTextures][64];
-	for (int i = 0; i < m_nTextures; i++) m_ppTextures[i] = NULL;
+	for (int i = 0; i < m_nTextures; i++) m_ppTextures[i] = nullptr;
 	for (int i = 0; i < m_nTextures; i++) m_ppstrTextureNames[i][0] = '\0';
 }
 
 Material::~Material()
 {
-	if (m_pShader) m_pShader->Release();
+	SAFE_RELEASE(m_pShader);
 
 	if (m_nTextures > 0)
 	{
-		for (int i = 0; i < m_nTextures; i++) if (m_ppTextures[i]) m_ppTextures[i]->Release();
+		for (int i = 0; i < m_nTextures; i++) SAFE_RELEASE(m_ppTextures[i]);
 		delete[] m_ppTextures;
 
-		if (m_ppstrTextureNames) delete[] m_ppstrTextureNames;
+		SAFE_DELETEARR(m_ppstrTextureNames);
 	}
 }
 
 void Material::SetShader(Shader* pShader)
 {
-	if (m_pShader) m_pShader->Release();
+	SAFE_RELEASE(m_pShader);
 	m_pShader = pShader;
 	if (m_pShader) m_pShader->AddRef();
 }
 
 void Material::SetTexture(Texture* pTexture, UINT nTexture)
 {
-	if (m_ppTextures[nTexture]) m_ppTextures[nTexture]->Release();
+	SAFE_RELEASE(m_ppTextures[nTexture]);
 	m_ppTextures[nTexture] = pTexture;
 	if (m_ppTextures[nTexture]) m_ppTextures[nTexture]->AddRef();
 }
@@ -51,8 +51,8 @@ void Material::ReleaseUploadBuffers()
 	}
 }
 
-Shader* Material::m_pSkinnedAnimationShader = NULL;
-Shader* Material::m_pStandardShader = NULL;
+Shader* Material::m_pSkinnedAnimationShader = nullptr;
+Shader* Material::m_pStandardShader = nullptr;
 
 void Material::PrepareShaders(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {

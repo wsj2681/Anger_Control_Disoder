@@ -14,6 +14,6 @@ void CSoundCallbackHandler::HandleCallback(void* pCallbackData)
 #ifdef _WITH_SOUND_RESOURCE
 	PlaySound(pWavName, ::ghAppInstance, SND_RESOURCE | SND_ASYNC);
 #else
-	PlaySound(pWavName, NULL, SND_FILENAME | SND_ASYNC);
+	PlaySound(pWavName, nullptr, SND_FILENAME | SND_ASYNC);
 #endif
 }

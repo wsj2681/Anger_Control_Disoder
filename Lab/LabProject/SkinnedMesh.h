@@ -13,30 +13,30 @@ public:
 protected:
 	int								m_nBonesPerVertex = 4;
 
-	XMINT4* m_pxmn4BoneIndices = NULL;
-	XMFLOAT4* m_pxmf4BoneWeights = NULL;
+	XMINT4* m_pxmn4BoneIndices = nullptr;
+	XMFLOAT4* m_pxmf4BoneWeights = nullptr;
 
-	ID3D12Resource* m_pd3dBoneIndexBuffer = NULL;
-	ID3D12Resource* m_pd3dBoneIndexUploadBuffer = NULL;
+	ID3D12Resource* m_pd3dBoneIndexBuffer = nullptr;
+	ID3D12Resource* m_pd3dBoneIndexUploadBuffer = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW		m_d3dBoneIndexBufferView;
 
-	ID3D12Resource* m_pd3dBoneWeightBuffer = NULL;
-	ID3D12Resource* m_pd3dBoneWeightUploadBuffer = NULL;
+	ID3D12Resource* m_pd3dBoneWeightBuffer = nullptr;
+	ID3D12Resource* m_pd3dBoneWeightUploadBuffer = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW		m_d3dBoneWeightBufferView;
 
 public:
 	int								m_nSkinningBones = 0;
 
 	char(*m_ppstrSkinningBoneNames)[64];
-	Object** m_ppSkinningBoneFrameCaches = NULL; //[m_nSkinningBones]
+	Object** m_ppSkinningBoneFrameCaches = nullptr; //[m_nSkinningBones]
 
-	XMFLOAT4X4* m_pxmf4x4BindPoseBoneOffsets = NULL; //Transposed
+	XMFLOAT4X4* m_pxmf4x4BindPoseBoneOffsets = nullptr; //Transposed
 
-	ID3D12Resource* m_pd3dcbBindPoseBoneOffsets = NULL;
-	XMFLOAT4X4* m_pcbxmf4x4MappedBindPoseBoneOffsets = NULL;
+	ID3D12Resource* m_pd3dcbBindPoseBoneOffsets = nullptr;
+	XMFLOAT4X4* m_pcbxmf4x4MappedBindPoseBoneOffsets = nullptr;
 
-	ID3D12Resource* m_pd3dcbSkinningBoneTransforms = NULL;
-	XMFLOAT4X4* m_pcbxmf4x4MappedSkinningBoneTransforms = NULL;
+	ID3D12Resource* m_pd3dcbSkinningBoneTransforms = nullptr;
+	XMFLOAT4X4* m_pcbxmf4x4MappedSkinningBoneTransforms = nullptr;
 
 public:
 	void PrepareSkinning(Object* pModelRootObject);
