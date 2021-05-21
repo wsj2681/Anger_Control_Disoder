@@ -883,7 +883,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	particle->Update(m_pPlayer->head->GetPosition(), fTimeElapsed);
 
 	CollideCageSide();
-	CollidePVE();
+//	CollidePVE();
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)

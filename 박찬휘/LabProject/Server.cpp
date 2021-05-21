@@ -161,7 +161,7 @@ void Server::Server_recv()
 			cplayer->rHand->isCollide = true;
 			cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
 			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-		
+			cscene->particle->PositionInit(cplayer->rHand->GetPosition());
 		}
 		else
 			cplayer->rHand->isCollide = false;
@@ -170,7 +170,7 @@ void Server::Server_recv()
 			cplayer->lHand->isCollide = true;
 			cout << "LEFT HAND - HEAD COLLIDE! " << endl;
 			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
-
+			cscene->particle->PositionInit(cplayer->lHand->GetPosition());
 		}
 		else
 			cplayer->lHand->isCollide = false;
