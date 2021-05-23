@@ -9,6 +9,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
+
+extern CScene* gScene;
+
 CTexture::CTexture(int nTextures, UINT nTextureType, int nSamplers)
 {
 	m_nTextureType = nTextureType;
@@ -258,28 +261,46 @@ void *CAnimationSet::GetCallbackData()
 	return(NULL);
 }
 
+bool CAnimationSet::IsAnimate()
+{
+	return (m_pfKeyFrameTimes[(m_nKeyFrames - 1)]) <= m_fPosition + 0.04f;
+}
+
 void CAnimationSet::SetPosition(float fTrackPosition)
 {
 	m_fPosition = fTrackPosition;
 	switch (m_nType)
 	{
-		case ANIMATION_TYPE_LOOP:
+	case ANIMATION_TYPE_LOOP:
+	{
+		m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]);
+		break;
+	}
+	case ANIMATION_TYPE_ONCE:
+	{
+		m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames - 1]) * m_pfKeyFrameTimes[m_nKeyFrames - 1];
+		if (IsAnimate())
 		{
-			m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames-1]); // m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames-1]) * m_pfKeyFrameTimes[m_nKeyFrames-1];
-//			m_fPosition = fmod(fTrackPosition, m_fLength); //if (m_fPosition < 0) m_fPosition += m_fLength;
-//			m_fPosition = fTrackPosition - int(fTrackPosition / m_fLength) * m_fLength;
+			if (isPlayer)
+			{
+				if (true)
+					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+				else
+					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+				gScene->m_pPlayer->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.0f;
+				m_fPosition = 0.0f;
+			}
 			break;
 		}
-		case ANIMATION_TYPE_ONCE:
-			break;
-		case ANIMATION_TYPE_PINGPONG:
-			break;
+	case ANIMATION_TYPE_PINGPONG:
+		break;
 	}
 
 	if (m_pAnimationCallbackHandler)
 	{
-		void *pCallbackData = GetCallbackData();
+		void* pCallbackData = GetCallbackData();
 		if (pCallbackData) m_pAnimationCallbackHandler->HandleCallback(pCallbackData);
+	}
 	}
 }
 
@@ -1371,7 +1392,40 @@ CAngrybotObject::CAngrybotObject(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	if (!pAngrybotModel) pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Player.bin", NULL);
 
 	SetChild(pAngrybotModel->m_pModelRootObject, true);
-	m_pSkinnedAnimationController = new CAnimationController(pd3dDevice, pd3dCommandList, nAnimationTracks, pAngrybotModel);
+
+	if (this->bones["Head"] = FindFrame("Bip01_Head"))
+	{
+		this->boundBoxs["Head"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.3f, 0.3f, 0.3f);
+	}
+	if (this->bones["rHand"] = FindFrame("Bip01_R_Hand"))
+	{
+		this->boundBoxs["rHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["lHand"] = FindFrame("Bip01_L_Hand"))
+	{
+		this->boundBoxs["lHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["lFoot"] = FindFrame("Bip01_L_Foot"))
+	{
+		this->boundBoxs["lFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["rFoot"] = FindFrame("Bip01_R_Foot"))
+	{
+		this->boundBoxs["rFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["Spine"] = FindFrame("Bip01_Spine1"))
+	{
+		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.6f, 0.3f, 0.3f);
+	}
+
+	m_pSkinnedAnimationController = new CAnimationController(pd3dDevice, pd3dCommandList, 1, pAngrybotModel);
+	m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+	for (int i = 0; i < m_pSkinnedAnimationController->m_pAnimationSets->m_nAnimationSets; ++i)
+	{
+		m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[i]->isPlayer = true;
+		m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[i]->m_nType = ANIMATION_TYPE_ONCE;
+	}
+
 }
 
 CAngrybotObject::~CAngrybotObject()
@@ -1486,6 +1540,31 @@ CubeObject::CubeObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3d
 	SetShader(pSkyBoxShader);
 }
 
+CubeObject::CubeObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, const float& x, const float& y, const float& z)
+{
+	CubeMesh* pSkyBoxMesh = new CubeMesh(pd3dDevice, pd3dCommandList, x, y, z);
+	SetMesh(pSkyBoxMesh);
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	DiffusedShader* pSkyBoxShader = new DiffusedShader();
+	pSkyBoxShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	pSkyBoxShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	CMaterial* pSkyBoxMaterial = new CMaterial(0);
+	pSkyBoxMaterial->SetShader(pSkyBoxShader);
+
+	//SetMaterial(0, pSkyBoxMaterial);
+	SetShader(pSkyBoxShader);
+}
+
 CubeObject::~CubeObject()
 {
+
+}
+
+void CubeObject::Update(const float& fElapsedTime, CGameObject* bone)
+{
+	this->m_xmf4x4World = bone->m_xmf4x4World;
+	m_pMesh->Update(bone);
 }

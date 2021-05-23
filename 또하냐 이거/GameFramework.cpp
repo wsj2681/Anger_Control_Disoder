@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "GameFramework.h"
 
+CScene* gScene = nullptr;
+
 CGameFramework::CGameFramework()
 {
 	m_pdxgiFactory = NULL;
@@ -402,6 +404,7 @@ void CGameFramework::BuildObjects()
 
 	m_pScene = new CScene();
 	if (m_pScene) m_pScene->BuildObjects(m_pd3dDevice, m_pd3dCommandList);
+	gScene = m_pScene;
 
 #ifdef _WITH_TERRAIN_PLAYER
 	CTerrainPlayer *pPlayer = new CTerrainPlayer(m_pd3dDevice, m_pd3dCommandList, m_pScene->GetGraphicsRootSignature(), m_pScene->m_pTerrain);
@@ -513,7 +516,7 @@ void CGameFramework::MoveToNextFrame()
 
 void CGameFramework::FrameAdvance()
 {    
-	m_GameTimer.Tick(30.0f);
+	m_GameTimer.Tick(60.0f);
 	
 	ProcessInput();
 

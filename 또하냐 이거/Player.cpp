@@ -353,11 +353,42 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 {
 	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
-	CLoadedModelInfo *pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL);
-	SetChild(pAngrybotModel->m_pModelRootObject, true);
+	CLoadedModelInfo *pBoxerModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxerD.bin", NULL);
+	SetChild(pBoxerModel->m_pModelRootObject, true);
 
-	m_pSkinnedAnimationController = new CAnimationController(pd3dDevice, pd3dCommandList, 1, pAngrybotModel);
-	m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	if (this->bones["Head"] = FindFrame("Bip01_Head"))
+	{
+		this->boundBoxs["Head"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.3f, 0.3f, 0.3f);
+	}
+	if (this->bones["rHand"] = FindFrame("Bip01_R_Hand"))
+	{
+		this->boundBoxs["rHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["lHand"] = FindFrame("Bip01_L_Hand"))
+	{
+		this->boundBoxs["lHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["lFoot"] = FindFrame("Bip01_L_Foot"))
+	{
+		this->boundBoxs["lFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["rFoot"] = FindFrame("Bip01_R_Foot"))
+	{
+		this->boundBoxs["rFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["Spine"] = FindFrame("Bip01_Spine1"))
+	{
+		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.6f, 0.3f, 0.3f);
+	}
+
+	m_pSkinnedAnimationController = new CAnimationController(pd3dDevice, pd3dCommandList, 1, pBoxerModel);
+	m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+	for (int i = 0; i < m_pSkinnedAnimationController->m_pAnimationSets->m_nAnimationSets; ++i)
+	{
+		m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[i]->isPlayer = true;
+		m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[i]->m_nType = ANIMATION_TYPE_ONCE;
+	}
+
 
 	m_pSkinnedAnimationController->SetCallbackKeys(1, 3);
 #ifdef _WITH_SOUND_RESOURCE
@@ -380,7 +411,7 @@ CTerrainPlayer::CTerrainPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	CHeightMapTerrain *pTerrain = (CHeightMapTerrain *)pContext;
 	SetPosition(XMFLOAT3(310.0f, pTerrain->GetHeight(310.0f, 590.0f), 590.0f));
 
-	if (pAngrybotModel) delete pAngrybotModel;
+	if (pBoxerModel) delete pBoxerModel;
 }
 
 CTerrainPlayer::~CTerrainPlayer()
@@ -479,7 +510,4 @@ void CTerrainPlayer::OnCameraUpdateCallback(float fTimeElapsed)
 void CTerrainPlayer::Update(float fTimeElapsed)
 {
 	CPlayer::Update(fTimeElapsed);
-
-	float fLength = sqrtf(m_xmf3Velocity.x * m_xmf3Velocity.x + m_xmf3Velocity.z * m_xmf3Velocity.z);
-	SetTrackAnimationSet(0, ::IsZero(fLength) ? 0 : 1);
 }

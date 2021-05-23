@@ -100,9 +100,9 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_nHierarchicalGameObjects = 13;
 	m_ppHierarchicalGameObjects = new CGameObject*[m_nHierarchicalGameObjects];
 
-	CLoadedModelInfo *pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Angrybot.bin", NULL);
+	CLoadedModelInfo *pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerD.bin", NULL);
 	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
-	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 	m_ppHierarchicalGameObjects[0]->SetPosition(410.0f, m_pTerrain->GetHeight(410.0f, 735.0f), 735.0f);
 	if (pAngrybotModel) delete pAngrybotModel;
 
@@ -180,16 +180,6 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	pEthanObjectsShader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pEthanModel, m_pTerrain);
 
 	m_ppShaders[0] = pEthanObjectsShader;
-
-	m_nGameObjects = 2;
-	m_ppGameObjects = new CGameObject * [m_nGameObjects];
-
-	CubeObject* cube1 = new CubeObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	CubeObject* cube2 = new CubeObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-
-	m_ppGameObjects[0] = cube1;
-	m_ppGameObjects[1] = cube2;
-
 	if (pEthanModel) delete pEthanModel;
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -560,6 +550,28 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	switch (nMessageID)
 	{
 	case WM_KEYDOWN:
+		switch (wParam)
+		{
+		case '1':
+		{
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBOS);
+			break;
+		}
+		case '2':
+		{
+			break;
+		}
+		case '3':
+		{
+			break;
+		}
+		case '4':
+		{
+			break;
+		}
+		default:
+			break;
+		}
 		break;
 	default:
 		break;
@@ -577,13 +589,31 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	m_fElapsedTime = fTimeElapsed;
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
-	m_ppGameObjects[0]->SetPosition(m_pPlayer->GetPosition());
-	m_ppGameObjects[1]->SetPosition(m_ppHierarchicalGameObjects[0]->GetPosition());
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
-
-	if (m_ppGameObjects[0]->m_pMesh->isIntersect(m_ppGameObjects[1]->m_pMesh->obb))
+	
+	for (auto& boundBox : m_pPlayer->boundBoxs)
 	{
-		std::cout << "collide\n";
+		boundBox.second->Update(fTimeElapsed, m_pPlayer->bones[boundBox.first]);
+	}
+	for (auto& boundBox : m_ppHierarchicalGameObjects[0]->boundBoxs)
+	{
+		boundBox.second->Update(fTimeElapsed, m_ppHierarchicalGameObjects[0]->bones[boundBox.first]);
+	}
+
+	static int collideCount = 0;
+
+	for (auto& otherPlayerBoundBox : m_ppHierarchicalGameObjects[0]->boundBoxs)
+	{
+		for (auto& PlayerBoundBox : m_pPlayer->boundBoxs)
+		{
+			if (otherPlayerBoundBox.second->m_pMesh->isIntersect(PlayerBoundBox.second->m_pMesh->obb))
+			{
+				
+				cout << "collide" << collideCount++ << endl;
+				break;
+			}
+		}
+
 	}
 
 	if (m_pLights)
@@ -620,6 +650,23 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 			if (!m_ppHierarchicalGameObjects[i]->m_pSkinnedAnimationController) m_ppHierarchicalGameObjects[i]->UpdateTransform(NULL);
 			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
 		}
+
+		if (!m_ppHierarchicalGameObjects[i]->boundBoxs.empty())
+		{
+			for (auto& o : m_ppHierarchicalGameObjects[i]->boundBoxs)
+			{
+				o.second->Render(pd3dCommandList, pCamera);
+			}
+		}
 	}
+
+	if (!m_pPlayer->boundBoxs.empty())
+	{
+		for (auto& o : m_pPlayer->boundBoxs)
+		{
+			o.second->Render(pd3dCommandList, pCamera);
+		}
+	}
+
 }
 

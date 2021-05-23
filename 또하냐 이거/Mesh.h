@@ -118,6 +118,8 @@ public:
 	virtual void OnPostRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
 
 	virtual bool isIntersect(BoundingOrientedBox& otherBox);
+	virtual void Update(CGameObject* bone) {}
+
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,7 +200,7 @@ class CubeMesh : public CMesh
 public:
 	CubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth = 10.0f, float fHeight = 10.0f, float fDepth = 10.0f);
 	virtual ~CubeMesh();
-
+	
 private:
 
 	ID3D12Resource* m_pd3dIndexBuffer = NULL;
@@ -207,7 +209,7 @@ private:
 
 public:
 
-	
+	virtual void Update(CGameObject* bone);
 
 };
 
