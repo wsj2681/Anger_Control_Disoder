@@ -182,6 +182,9 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[0] = pEthanObjectsShader;
 	if (pEthanModel) delete pEthanModel;
 
+	particle = new Particle();
+	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
@@ -219,6 +222,11 @@ void CScene::ReleaseObjects()
 	ReleaseShaderVariables();
 
 	if (m_pLights) delete[] m_pLights;
+
+	if (particle)
+	{
+		particle->Destroy();
+	}
 }
 
 ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
@@ -599,7 +607,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	{
 		boundBox.second->Update(fTimeElapsed, m_ppHierarchicalGameObjects[0]->bones[boundBox.first]);
 	}
-
+	particle->Update(m_pPlayer->GetPosition(), fTimeElapsed);
 	static int collideCount = 0;
 
 	for (auto& otherPlayerBoundBox : m_ppHierarchicalGameObjects[0]->boundBoxs)
@@ -610,6 +618,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 			{
 				
 				cout << "collide" << collideCount++ << endl;
+				particle->PositionInit(PlayerBoundBox.second->GetPosition());
 				break;
 			}
 		}
@@ -658,6 +667,11 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 				o.second->Render(pd3dCommandList, pCamera);
 			}
 		}
+	}
+
+	if (particle)
+	{
+		particle->Render(pd3dCommandList, pCamera);
 	}
 
 	if (!m_pPlayer->boundBoxs.empty())

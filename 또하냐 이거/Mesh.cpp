@@ -767,7 +767,7 @@ CubeMesh::CubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComm
 {
 
 	obb.Center = m_xmf3OBBCenter;
-	obb.Extents = XMFLOAT3(fWidth * 2, fHeight * 2, fDepth * 2);
+	obb.Extents = XMFLOAT3(fWidth, fHeight, fDepth);
 	
 	//직육면체는 6개의 면 가로(x-축) 길이
 	m_nVertices = 36;
@@ -860,7 +860,7 @@ void CubeMesh::Update(CGameObject* bone)
 	this->obb.Center = bone->GetPosition();
 }
 
-bool CMesh::isIntersect(BoundingOrientedBox& otherBox)
+bool CMesh::isIntersect(BoundingBox& otherBox)
 {
 	if (obb.Intersects(otherBox))
 	{

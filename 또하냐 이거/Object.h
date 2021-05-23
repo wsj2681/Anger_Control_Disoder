@@ -354,6 +354,7 @@ public:
 
 	map<string, CubeObject*> boundBoxs;
 	map<string, CGameObject*> bones;
+	bool isActive = true;
 
 	void SetMesh(CMesh *pMesh);
 	void SetShader(CShader *pShader);
@@ -391,6 +392,7 @@ public:
 	void MoveStrafe(float fDistance = 1.0f);
 	void MoveUp(float fDistance = 1.0f);
 	void MoveForward(float fDistance = 1.0f);
+	void Move(const XMFLOAT3& direction);
 
 	void Rotate(float fPitch = 10.0f, float fYaw = 10.0f, float fRoll = 10.0f);
 	void Rotate(XMFLOAT3 *pxmf3Axis, float fAngle);
@@ -469,6 +471,15 @@ public:
 	CubeObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, const float& x, const float& y, const float& z);
 	virtual ~CubeObject();
 	virtual void Update(const float& fElapsedTime, CGameObject* bone);
+};
+
+class SphereObject : public CGameObject
+{
+public:
+	SphereObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pModel);
+	virtual ~SphereObject();
+
+	XMFLOAT3 direction{};
 };
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -585,3 +596,31 @@ public:
 	virtual ~CEagleObject();
 };
 
+class Particle
+{
+public:
+	Particle() = default;
+	Particle(const Particle&) = delete;
+	Particle& operator=(const Particle&) = delete;
+	~Particle() = default;
+
+private:
+
+	XMFLOAT3 position{ 0.f, 0.f, 0.f };
+	XMFLOAT3 dir{ 0.f, 0.f, 0.f };
+	XMFLOAT3 rotateAxis{ 0.f, 0.f, 0.f };
+
+	float lifeTime = 10.f;
+	float m_fElapsedTime = 0.f;
+	vector<SphereObject*> objects;
+
+public:
+
+	void Init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* rootSignatrue);
+	void PositionInit(XMFLOAT3 position);
+	void ParticleON();
+	void ParticleOFF();
+	void Destroy();
+	void Update(XMFLOAT3 position, float eTime);
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+};

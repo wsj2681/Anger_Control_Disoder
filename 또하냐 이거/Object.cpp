@@ -695,29 +695,32 @@ void CGameObject::Animate(float fTimeElapsed)
 
 void CGameObject::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera)
 {
-	if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->UpdateShaderVariables(pd3dCommandList);
-
-	if (m_pMesh)
+	if (isActive)
 	{
-		UpdateShaderVariable(pd3dCommandList, &m_xmf4x4World);
+		if (m_pSkinnedAnimationController) m_pSkinnedAnimationController->UpdateShaderVariables(pd3dCommandList);
 
-		if (m_nMaterials > 0)
+		if (m_pMesh)
 		{
-			for (int i = 0; i < m_nMaterials; i++)
-			{
-				if (m_ppMaterials[i])
-				{
-					if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
-					m_ppMaterials[i]->UpdateShaderVariable(pd3dCommandList);
-				}
+			UpdateShaderVariable(pd3dCommandList, &m_xmf4x4World);
 
-				m_pMesh->Render(pd3dCommandList, i);
+			if (m_nMaterials > 0)
+			{
+				for (int i = 0; i < m_nMaterials; i++)
+				{
+					if (m_ppMaterials[i])
+					{
+						if (m_ppMaterials[i]->m_pShader) m_ppMaterials[i]->m_pShader->Render(pd3dCommandList, pCamera);
+						m_ppMaterials[i]->UpdateShaderVariable(pd3dCommandList);
+					}
+
+					m_pMesh->Render(pd3dCommandList, i);
+				}
 			}
 		}
-	}
 
-	if (m_pSibling) m_pSibling->Render(pd3dCommandList, pCamera);
-	if (m_pChild) m_pChild->Render(pd3dCommandList, pCamera);
+		if (m_pSibling) m_pSibling->Render(pd3dCommandList, pCamera);
+		if (m_pChild) m_pChild->Render(pd3dCommandList, pCamera);
+	}
 }
 
 void CGameObject::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -819,6 +822,15 @@ void CGameObject::MoveForward(float fDistance)
 	XMFLOAT3 xmf3Position = GetPosition();
 	XMFLOAT3 xmf3Look = GetLook();
 	xmf3Position = Vector3::Add(xmf3Position, xmf3Look, fDistance);
+	CGameObject::SetPosition(xmf3Position);
+}
+
+void CGameObject::Move(const XMFLOAT3& direction)
+{
+	XMFLOAT3 xmf3Position = GetPosition();
+	xmf3Position.x += direction.x;
+	xmf3Position.y += direction.y;
+	xmf3Position.z += direction.z;
 	CGameObject::SetPosition(xmf3Position);
 }
 
@@ -1567,4 +1579,96 @@ void CubeObject::Update(const float& fElapsedTime, CGameObject* bone)
 {
 	this->m_xmf4x4World = bone->m_xmf4x4World;
 	m_pMesh->Update(bone);
+}
+
+void Particle::Init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* rootSignatrue)
+{
+	uniform_real_distribution<> uid(-1.0, 1.0);
+	default_random_engine dre;
+	if (objects.empty())
+	{
+		CLoadedModelInfo* cube = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, rootSignatrue, "Model/Sphere.bin", nullptr);
+		for (int i = 0; i < 150; ++i)
+		{
+			SphereObject* temp = new SphereObject(pd3dDevice, pd3dCommandList, rootSignatrue, cube);
+			temp->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
+			temp->SetScale(0.3f, .3f, .3f);
+			temp->direction = XMFLOAT3(uid(dre), uid(dre), uid(dre));
+			objects.emplace_back(temp);
+		}
+	}
+}
+
+void Particle::PositionInit(XMFLOAT3 position)
+{
+	ParticleON();
+	for (auto& i : objects)
+	{
+		i->SetPosition(position);
+	}
+}
+
+void Particle::ParticleON()
+{
+	lifeTime = 1.f;
+	for (auto& i : objects)
+	{
+		i->isActive = true;
+	}
+}
+
+void Particle::ParticleOFF()
+{
+	for (auto& i : objects)
+	{
+		i->isActive = false;
+	}
+}
+
+void Particle::Destroy()
+{
+	for (auto& i : objects)
+	{
+		delete i;
+	}
+	objects.clear();
+}
+
+void Particle::Update(XMFLOAT3 position, float eTime)
+{
+	m_fElapsedTime = eTime;
+	lifeTime -= m_fElapsedTime;
+
+	// ÇÑ ¹æÇâ
+	for (auto& i : objects)
+	{
+		i->Move(i->direction);
+		i->UpdateTransform(nullptr);
+	}
+	if (lifeTime < 0.f)
+	{
+		ParticleOFF();
+	}
+}
+
+void Particle::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera)
+{
+	for (auto& object : objects)
+	{
+		object->UpdateTransform(nullptr);
+		object->Render(pd3dCommandList, pCamera);
+	}
+}
+
+SphereObject::SphereObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pModel)
+{
+	CLoadedModelInfo* pSphereModel = pModel;
+	if (!pSphereModel) pSphereModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Sphere.bin", NULL);
+
+	SetChild(pSphereModel->m_pModelRootObject, true);
+	m_pSkinnedAnimationController = new CAnimationController(pd3dDevice, pd3dCommandList, 1, pSphereModel);
+}
+
+SphereObject::~SphereObject()
+{
 }

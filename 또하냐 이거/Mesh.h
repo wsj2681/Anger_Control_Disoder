@@ -74,7 +74,7 @@ public:
 public:
 	char							m_pstrMeshName[64] = { 0 };
 
-	BoundingOrientedBox obb;
+	BoundingBox obb;
 	BoundingSphere bs;
 
 protected:
@@ -117,7 +117,7 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet);
 	virtual void OnPostRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
 
-	virtual bool isIntersect(BoundingOrientedBox& otherBox);
+	virtual bool isIntersect(BoundingBox& otherBox);
 	virtual void Update(CGameObject* bone) {}
 
 };
