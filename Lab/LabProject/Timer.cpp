@@ -21,10 +21,6 @@ GameTimer::GameTimer()
 	m_fFPSTimeElapsed = 0.0f;
 }
 
-GameTimer::~GameTimer()
-{
-}
-
 void GameTimer::Tick(float fLockFPS)
 {
 	if (m_bStopped)
@@ -77,18 +73,19 @@ unsigned long GameTimer::GetFrameRate(LPTSTR lpszString, int nCharacters)
         wcscat_s(lpszString, nCharacters, _T(" FPS)"));
     } 
 
-    return(m_nCurrentFrameRate);
+    return m_nCurrentFrameRate;
 }
 
 float GameTimer::GetTimeElapsed() 
 {
-    return(m_fTimeElapsed);
+    return m_fTimeElapsed;
 }
 
 float GameTimer::GetTotalTime()
 {
-	if (m_bStopped) return(float(((m_nStopPerformanceCounter - m_nPausedPerformanceCounter) - m_nBasePerformanceCounter) * m_fTimeScale));
-	return(float(((m_nCurrentPerformanceCounter - m_nPausedPerformanceCounter) - m_nBasePerformanceCounter) * m_fTimeScale));
+	if (m_bStopped)
+		return float(((m_nStopPerformanceCounter - m_nPausedPerformanceCounter) - m_nBasePerformanceCounter) * m_fTimeScale);
+	return float(((m_nCurrentPerformanceCounter - m_nPausedPerformanceCounter) - m_nBasePerformanceCounter) * m_fTimeScale);
 }
 
 void GameTimer::Reset()

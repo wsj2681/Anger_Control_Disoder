@@ -3,24 +3,17 @@
 // File: GameTimer.h
 //-----------------------------------------------------------------------------
 
-const ULONG MAX_SAMPLE_COUNT = 50; // Maximum frame time sample count
+constexpr ULONG MAX_SAMPLE_COUNT = 50; // Maximum frame time sample count
 
-class GameTimer
+class GameTimer final
 {
 public:
 	GameTimer();
-	GameTimer();
-	virtual ~GameTimer();
-
-	void Tick(float fLockFPS = 0.0f);
-	void Start();
-	void Stop();
-	void Reset();
-
-    unsigned long GetFrameRate(LPTSTR lpszString = nullptr, int nCharacters=0);
-    float GetTimeElapsed();
-	float GetTotalTime();
-
+	GameTimer(const GameTimer&) = delete;
+	GameTimer& operator=(const GameTimer&) = delete;
+	GameTimer(GameTimer&&) = delete;
+	GameTimer& operator=(GameTimer&&) = delete;
+	~GameTimer() = default;
 private:
 	double	m_fTimeScale{};
 	float m_fTimeElapsed{};
@@ -41,4 +34,13 @@ private:
 	float m_fFPSTimeElapsed{};
 
 	bool m_bStopped{};
+public:
+	void Tick(float fLockFPS = 0.0f);
+	void Start();
+	void Stop();
+	void Reset();
+
+    unsigned long GetFrameRate(LPTSTR lpszString = nullptr, int nCharacters=0);
+    float GetTimeElapsed();
+	float GetTotalTime();
 };

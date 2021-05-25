@@ -15,7 +15,7 @@ public:
 	~ModelInfo();
 public:
 	void PrepareSkinning();
-private:
+public:
 	Object* m_pModelRootObject = nullptr;
 	int m_nSkinnedMeshes = 0;
 	SkinnedMesh** m_ppSkinnedMeshes = nullptr; //[SkinnedMeshes], Skinned Mesh Cache
