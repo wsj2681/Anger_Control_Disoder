@@ -4,19 +4,20 @@ class Object;
 class SkinnedMesh;
 class AnimationSets;
 
-class ModelInfo
+class ModelInfo final
 {
 public:
-	ModelInfo() { }
+	ModelInfo() = default;
+	ModelInfo(const ModelInfo&) = delete;
+	ModelInfo& operator=(const ModelInfo&) = delete;
+	ModelInfo(ModelInfo&&) = delete;
+	ModelInfo& operator=(ModelInfo&&) = delete;
 	~ModelInfo();
-
-	Object* m_pModelRootObject = nullptr;
-
-	int 							m_nSkinnedMeshes = 0;
-	SkinnedMesh** m_ppSkinnedMeshes = nullptr; //[SkinnedMeshes], Skinned Mesh Cache
-
-	AnimationSets* m_pAnimationSets = nullptr;
-
 public:
 	void PrepareSkinning();
+private:
+	Object* m_pModelRootObject = nullptr;
+	int m_nSkinnedMeshes = 0;
+	SkinnedMesh** m_ppSkinnedMeshes = nullptr; //[SkinnedMeshes], Skinned Mesh Cache
+	AnimationSets* m_pAnimationSets = nullptr;
 };

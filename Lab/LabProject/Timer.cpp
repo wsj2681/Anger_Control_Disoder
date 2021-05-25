@@ -1,11 +1,11 @@
 //-----------------------------------------------------------------------------
-// File: CGameTimer.cpp
+// File: GameTimer.cpp
 //-----------------------------------------------------------------------------
 
 #include "stdafx.h"
 #include "Timer.h"
 
-CGameTimer::CGameTimer()
+GameTimer::GameTimer()
 {
 	::QueryPerformanceFrequency((LARGE_INTEGER *)&m_nPerformanceFrequencyPerSec);
 	::QueryPerformanceCounter((LARGE_INTEGER *)&m_nLastPerformanceCounter); 
@@ -21,11 +21,11 @@ CGameTimer::CGameTimer()
 	m_fFPSTimeElapsed = 0.0f;
 }
 
-CGameTimer::~CGameTimer()
+GameTimer::~GameTimer()
 {
 }
 
-void CGameTimer::Tick(float fLockFPS)
+void GameTimer::Tick(float fLockFPS)
 {
 	if (m_bStopped)
 	{
@@ -69,7 +69,7 @@ void CGameTimer::Tick(float fLockFPS)
     if (m_nSampleCount > 0) m_fTimeElapsed /= m_nSampleCount;
 }
 
-unsigned long CGameTimer::GetFrameRate(LPTSTR lpszString, int nCharacters) 
+unsigned long GameTimer::GetFrameRate(LPTSTR lpszString, int nCharacters) 
 {
     if (lpszString)
     {
@@ -80,18 +80,18 @@ unsigned long CGameTimer::GetFrameRate(LPTSTR lpszString, int nCharacters)
     return(m_nCurrentFrameRate);
 }
 
-float CGameTimer::GetTimeElapsed() 
+float GameTimer::GetTimeElapsed() 
 {
     return(m_fTimeElapsed);
 }
 
-float CGameTimer::GetTotalTime()
+float GameTimer::GetTotalTime()
 {
 	if (m_bStopped) return(float(((m_nStopPerformanceCounter - m_nPausedPerformanceCounter) - m_nBasePerformanceCounter) * m_fTimeScale));
 	return(float(((m_nCurrentPerformanceCounter - m_nPausedPerformanceCounter) - m_nBasePerformanceCounter) * m_fTimeScale));
 }
 
-void CGameTimer::Reset()
+void GameTimer::Reset()
 {
 	__int64 nPerformanceCounter;
 	::QueryPerformanceCounter((LARGE_INTEGER*)&nPerformanceCounter);
@@ -102,7 +102,7 @@ void CGameTimer::Reset()
 	m_bStopped = false;
 }
 
-void CGameTimer::Start()
+void GameTimer::Start()
 {
 	__int64 nPerformanceCounter;
 	::QueryPerformanceCounter((LARGE_INTEGER *)&nPerformanceCounter);
@@ -115,7 +115,7 @@ void CGameTimer::Start()
 	}
 }
 
-void CGameTimer::Stop()
+void GameTimer::Stop()
 {
 	if (!m_bStopped)
 	{

@@ -11,6 +11,10 @@ class SoundManager final
 public:
 	SoundManager() = default;
 	SoundManager(const char* path, bool isLoop = false);
+	SoundManager(const SoundManager&) = delete;
+	SoundManager& operator=(const SoundManager&) = delete;
+	SoundManager(SoundManager&&) = delete;
+	SoundManager& operator=(SoundManager&&) = delete;
 	~SoundManager();
 private:
 	static FMOD_SYSTEM* system;
@@ -23,6 +27,7 @@ private:
 public:
 	static void Init();
 	static void Release();
+	//
 	void Play();
 	void Resume();
 	void Stop();

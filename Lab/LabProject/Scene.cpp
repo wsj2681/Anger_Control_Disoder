@@ -41,7 +41,7 @@ std::uniform_int_distribution<> uid{ ANIMATION_HOOK_L, ANIMATION_GUARD_RIGHT_HEA
 
 UINT aniNum{ ANIMATION_HOOK_L };
 
-CGameTimer countTimer{};
+GameTimer countTimer{};
 
 Scene::Scene()
 {

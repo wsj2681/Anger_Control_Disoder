@@ -64,8 +64,9 @@ void Texture::ReleaseUploadBuffers()
 {
 	if (m_ppd3dTextureUploadBuffers)
 	{
-		for (int i = 0; i < m_nTextures; i++) SAFE_RELEASE(m_ppd3dTextureUploadBuffers[i]);
+		for (int i = 0; i < m_nTextures; i++) if (m_ppd3dTextureUploadBuffers[i]) m_ppd3dTextureUploadBuffers[i]->Release();
 		delete[] m_ppd3dTextureUploadBuffers;
+		m_ppd3dTextureUploadBuffers = nullptr;
 	}
 }
 

@@ -61,7 +61,7 @@ private:
 	ID3D12Debug* debugController = nullptr;
 #endif
 
-	CGameTimer m_GameTimer{};
+	GameTimer m_GameTimer{};
 
 	Scene* m_pScene = nullptr;
 	Player* m_pPlayer = nullptr;
