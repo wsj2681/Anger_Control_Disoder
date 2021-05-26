@@ -624,28 +624,3 @@ public:
 	void Update(XMFLOAT3 position, float eTime);
 	void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 };
-
-
-
-class UserInterface : public CGameObject
-{
-public:
-	UserInterface() = default;
-	UserInterface(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature);
-	UserInterface(const UserInterface&) = delete;
-	UserInterface& operator=(const UserInterface&) = delete;
-	virtual ~UserInterface() = default;
-
-private:
-
-	int frame = 0;
-	
-public:
-
-	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
-	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
-	virtual void ReleaseShaderVariables();
-
-	void SetLookAt(XMFLOAT3& target);
-	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
-};
