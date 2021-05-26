@@ -182,12 +182,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[0] = pEthanObjectsShader;
 	if (pEthanModel) delete pEthanModel;
 
-	UserInterfaceShader* shader = new UserInterfaceShader();
-	shader->CreateShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	shader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
-	shader->BuildObjects(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-
-	ui["TEST"] = shader;
+	ui["TEST"] = new UserInterfaceShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/rkqwkrl.dds");
 
 	particle = new Particle();
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);

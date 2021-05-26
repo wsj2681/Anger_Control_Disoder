@@ -205,6 +205,7 @@ class UserInterfaceShader : public CShader
 {
 public:
 	UserInterfaceShader();
+	UserInterfaceShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
 	virtual ~UserInterfaceShader();
 
 protected:
@@ -213,6 +214,7 @@ protected:
 
 	bool active = true;
 
+
 public:
 
 
@@ -220,7 +222,7 @@ public:
 
 	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
-	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext = NULL);
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
 	
 	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
 	bool isActive() const { return this->active; }

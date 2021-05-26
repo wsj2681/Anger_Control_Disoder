@@ -720,6 +720,11 @@ UserInterfaceShader::UserInterfaceShader()
 {
 }
 
+UserInterfaceShader::UserInterfaceShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	BuildObjects(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, filePath);
+}
+
 UserInterfaceShader::~UserInterfaceShader()
 {
 }
@@ -749,10 +754,13 @@ D3D12_SHADER_BYTECODE UserInterfaceShader::CreatePixelShader()
 	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSTextureUI", "ps_5_1", &m_pd3dPixelShaderBlob));
 }
 
-void UserInterfaceShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext)
+void UserInterfaceShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
 {
+	CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
 	m_pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, L"Model/Textures/rkqwkrl.dds", 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
 	CScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
 }
 
