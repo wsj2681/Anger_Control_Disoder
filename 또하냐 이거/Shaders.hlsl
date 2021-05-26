@@ -283,21 +283,7 @@ struct VS_TEXTURE_UI_OUTOUT
 	float2 uv : TEXCOORD;
 };
 
-VS_TEXTURE_UI_OUTOUT VSTextureUI(VS_TEXTURE_UI_INPUT input)
-{
-	VS_TEXTURE_UI_OUTOUT output;
-	output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxGameObject), gmtxView), gmtxProjection);
-	output.uv = input.uv;
-	return output;
-}
-
-float4 PSTextureUI(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
-{
-	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
-
-}
-
-VS_TEXTURE_UI_OUTOUT VSUITexture2(uint nVertexID : SV_VertexID)
+VS_TEXTURE_UI_OUTOUT VSTextureUI(uint nVertexID : SV_VertexID)
 {
 	VS_TEXTURE_UI_OUTOUT output;
 
@@ -310,10 +296,8 @@ VS_TEXTURE_UI_OUTOUT VSUITexture2(uint nVertexID : SV_VertexID)
 
 	return output;
 }
-float4 PSUITexture2(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET //«»ºøΩ¶¿Ã¥ı 
+
+float4 PSTextureUI(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
 {
-
-	float4 cColor = gtxtUITexture.Sample(gtxtUISampler, input.uv);
-
-	return(cColor);
+	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
 }
