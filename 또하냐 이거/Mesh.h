@@ -58,6 +58,18 @@ public:
 	~CDiffusedVertex() { }
 };
 
+class CTexturedVertex : public CVertex
+{
+public:
+	XMFLOAT2 m_xmf2TexCoord{};
+
+public:
+	CTexturedVertex() { m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f); m_xmf2TexCoord = XMFLOAT2(0.0f, 0.0f); }
+	CTexturedVertex(float x, float y, float z, XMFLOAT2 xmf2TexCoord) { m_xmf3Position = XMFLOAT3(x, y, z); m_xmf2TexCoord = xmf2TexCoord; }
+	CTexturedVertex(XMFLOAT3 xmf3Position, XMFLOAT2 xmf2TexCoord = XMFLOAT2(0.0f, 0.0f)) { m_xmf3Position = xmf3Position; m_xmf2TexCoord = xmf2TexCoord; }
+	~CTexturedVertex() { }
+};
+
 class CMesh
 {
 public:
@@ -307,4 +319,23 @@ public:
 	virtual void ReleaseUploadBuffers();
 
 	virtual void OnPreRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+};
+
+class CTexturedRectMesh :public CMesh
+{
+public:
+	CTexturedRectMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth, float fHeight, float fDepth, float fxPosition, float fyPosition, float fzPosition);
+	virtual ~CTexturedRectMesh();
+
+public:
+
+	XMFLOAT2* m_pxmf2TextureCoords0 = nullptr;
+	ID3D12Resource* m_pd3dTextureCoord0Buffer = nullptr;
+	ID3D12Resource* m_pd3dTextureCoord0UploadBuffer = nullptr;
+	D3D12_VERTEX_BUFFER_VIEW m_d3dTextureCoord0BufferView{};
+	
+public:
+
+	virtual void OnPreRender(ID3D12GraphicsCommandList* pd3dCommandList, void* pContext = NULL);
+	void Render(ID3D12GraphicsCommandList* pd3dCommandList, int nSubSet = 0);
 };

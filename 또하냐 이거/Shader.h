@@ -201,3 +201,28 @@ public:
 	virtual void BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, CLoadedModelInfo *pModel, void *pContext = NULL);
 };
 
+class UserInterfaceShader : public CShader
+{
+public:
+	UserInterfaceShader();
+	virtual ~UserInterfaceShader();
+
+protected:
+
+	CTexture* m_pTexture = nullptr;
+
+	bool active = true;
+
+public:
+
+
+	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
+
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, void* pContext = NULL);
+	
+	virtual void Render(ID3D12GraphicsCommandList* pd3dCommandList, CCamera* pCamera);
+	bool isActive() const { return this->active; }
+	void SetActive(bool active) { this->active = active; }
+};

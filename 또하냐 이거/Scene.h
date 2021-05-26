@@ -120,4 +120,5 @@ public:
 
 	Particle* particle = nullptr;
 
+	map<string, UserInterfaceShader*> ui;
 };
