@@ -655,8 +655,8 @@ void CScene::AnimateObjects(float fTimeElapsed)
 			{
 				// 충돌 박스가 너무 작았다.
 				// 
-				if (otherPlayerBoundBox.second->m_pMesh == m_ppHierarchicalGameObjects[0]->boundBoxs["rHand"]->m_pMesh ||
-					otherPlayerBoundBox.second->m_pMesh == m_ppHierarchicalGameObjects[0]->boundBoxs["lHand"]->m_pMesh)
+				if (otherPlayerBoundBox.second == m_ppHierarchicalGameObjects[0]->boundBoxs["rHand"] ||
+					otherPlayerBoundBox.second == m_ppHierarchicalGameObjects[0]->boundBoxs["lHand"])
 				{
 					
 				}
