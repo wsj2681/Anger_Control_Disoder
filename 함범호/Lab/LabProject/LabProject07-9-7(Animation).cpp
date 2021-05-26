@@ -39,7 +39,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	if (!InitInstance(hInstance, nCmdShow)) return(FALSE);
 
 #ifdef _WITH_SERVER_CONNECT
-	thread t1(&Server::Server_thread);
+	Server* ser;
+
+	thread t1{ &Server::Server_thread,ser };
+	t1.join();
 
 #endif // _WITH_SERVER_CONNECT
 
