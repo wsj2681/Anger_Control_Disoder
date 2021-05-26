@@ -765,10 +765,8 @@ void CSkinnedMesh::OnPreRender(ID3D12GraphicsCommandList *pd3dCommandList, void 
 CubeMesh::CubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, float fWidth, float fHeight, float fDepth)
 	:CMesh(pd3dDevice, pd3dCommandList)
 {
+	Vector3::ScalarProduct(obb.Extents, 1.3f);
 
-	obb.Center = m_xmf3OBBCenter;
-	obb.Extents = XMFLOAT3(fWidth, fHeight, fDepth);
-	
 	//직육면체는 6개의 면 가로(x-축) 길이
 	m_nVertices = 36;
 	m_nOffset = 0;
@@ -776,7 +774,7 @@ CubeMesh::CubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComm
 	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	//fWidth: 직육면체 가로(x-축) 길이, fHeight: 직육면체 세로(y-축) 길이, fDepth: 직육면체 깊이(z-축) 길이
-	float fx = obb.Extents.x * 0.5f, fy = obb.Extents.y * 0.5f, fz = obb.Extents.z * 0.5f;
+	float fx = obb.Extents.x * 0.5f * 0.3f, fy = obb.Extents.y * 0.5f * 0.3f, fz = obb.Extents.z * 0.5f * 0.3f;
 	
 	CDiffusedVertex pVertices[36];
 
@@ -860,7 +858,7 @@ void CubeMesh::Update(CGameObject* bone)
 	this->obb.Center = bone->GetPosition();
 }
 
-bool CMesh::isIntersect(BoundingBox& otherBox)
+bool CMesh::isIntersect(BoundingOrientedBox& otherBox)
 {
 	if (obb.Intersects(otherBox))
 	{

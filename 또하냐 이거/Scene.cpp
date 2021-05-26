@@ -183,7 +183,6 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	if (pEthanModel) delete pEthanModel;
 
 	ui["TEST"] = new UserInterfaceShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/rkqwkrl.dds");
-
 	particle = new Particle();
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -654,13 +653,26 @@ void CScene::AnimateObjects(float fTimeElapsed)
 		{
 			if (otherPlayerBoundBox.second->m_pMesh->isIntersect(PlayerBoundBox.second->m_pMesh->obb))
 			{
-				
-				cout << "collide" << collideCount++ << endl;
-				particle->PositionInit(PlayerBoundBox.second->GetPosition());
-				break;
+				// 충돌 박스가 너무 작았다.
+				// 
+				if (otherPlayerBoundBox.second->m_pMesh == m_ppHierarchicalGameObjects[0]->boundBoxs["rHand"]->m_pMesh ||
+					otherPlayerBoundBox.second->m_pMesh == m_ppHierarchicalGameObjects[0]->boundBoxs["lHand"]->m_pMesh)
+				{
+					
+				}
+				else
+				{
+					// TODO : Spine 크기 조정, collide box Extants 크기 조정
+					cout << otherPlayerBoundBox.first << " is collide" << collideCount++ << " / ";
+					cout <<
+						otherPlayerBoundBox.second->GetPosition().x << " / " <<
+						otherPlayerBoundBox.second->GetPosition().y << " / " <<
+						otherPlayerBoundBox.second->GetPosition().z << endl;
+					particle->PositionInit(PlayerBoundBox.second->GetPosition());
+					break;
+				}
 			}
 		}
-
 	}
 
 	if (m_pLights)
@@ -695,7 +707,7 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 		{
 			m_ppHierarchicalGameObjects[i]->Animate(m_fElapsedTime);
 			if (!m_ppHierarchicalGameObjects[i]->m_pSkinnedAnimationController) m_ppHierarchicalGameObjects[i]->UpdateTransform(NULL);
-			m_ppHierarchicalGameObjects[i]->Render(pd3dCommandList, pCamera);
+			m_ppHierarchicalGameObjects[0]->Render(pd3dCommandList, pCamera);
 		}
 
 		if (!m_ppHierarchicalGameObjects[i]->boundBoxs.empty())
