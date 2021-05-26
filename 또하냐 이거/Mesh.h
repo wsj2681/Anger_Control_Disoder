@@ -58,6 +58,18 @@ public:
 	~CDiffusedVertex() { }
 };
 
+class CTexturedVertex : public CVertex
+{
+public:
+	XMFLOAT2 m_xmf2TexCoord{};
+
+public:
+	CTexturedVertex() { m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f); m_xmf2TexCoord = XMFLOAT2(0.0f, 0.0f); }
+	CTexturedVertex(float x, float y, float z, XMFLOAT2 xmf2TexCoord) { m_xmf3Position = XMFLOAT3(x, y, z); m_xmf2TexCoord = xmf2TexCoord; }
+	CTexturedVertex(XMFLOAT3 xmf3Position, XMFLOAT2 xmf2TexCoord = XMFLOAT2(0.0f, 0.0f)) { m_xmf3Position = xmf3Position; m_xmf2TexCoord = xmf2TexCoord; }
+	~CTexturedVertex() { }
+};
+
 class CMesh
 {
 public:
@@ -74,7 +86,7 @@ public:
 public:
 	char							m_pstrMeshName[64] = { 0 };
 
-	BoundingBox obb;
+	BoundingOrientedBox obb;
 	BoundingSphere bs;
 
 protected:
@@ -117,7 +129,7 @@ public:
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet);
 	virtual void OnPostRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
 
-	virtual bool isIntersect(BoundingBox& otherBox);
+	virtual bool isIntersect(BoundingOrientedBox& otherBox);
 	virtual void Update(CGameObject* bone) {}
 
 };
