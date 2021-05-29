@@ -154,6 +154,7 @@
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="LabProject07-9-7(Animation).h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="MissonSystem.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
@@ -170,6 +171,7 @@
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="LabProject07-9-7(Animation).cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="MissonSystem.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
