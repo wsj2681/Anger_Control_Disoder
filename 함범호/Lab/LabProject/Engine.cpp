@@ -7,6 +7,7 @@
 #include "AnimationController.h"
 
 Scene* gScene = nullptr;
+extern Server* server;
 
 Engine::Engine()
 {
@@ -382,7 +383,7 @@ void Engine::BuildObjects()
 
 #ifdef _WITH_SERVER_CONNECT
 	/////SERVER///
-	server = new Server(0);
+	//server = new Server(0);
 
 	////////////////////////
 #endif // _WITH_SERVER_CONNECT
@@ -681,7 +682,21 @@ void Engine::MoveToNextFrame()
 
 void Engine::FrameAdvance()
 {    
+#ifdef _WITH_SERVER_CONNECT
 
+	//server->Server_send();
+	//
+
+	////공격과 방어 초기화
+	//server->attackAndGuard_idle();
+
+	//server->Server_recv();
+
+	//문제가 생길것 같다.
+	server->checkSR = true;
+
+	///////////////////////////////////////
+#endif // _WITH_SERVER_CONNECT
 
 	m_GameTimer.Tick(60.0f);
 	
@@ -743,18 +758,6 @@ void Engine::FrameAdvance()
 	::SetWindowText(this->hWnd, frameRate);
 
 
-#ifdef _WITH_SERVER_CONNECT
 
-	//server->Server_send();
-	//
-
-	////공격과 방어 초기화
-	//server->attackAndGuard_idle();
-
-	//server->Server_recv();
-	//server->checkSR = true;
-
-	///////////////////////////////////////
-#endif // _WITH_SERVER_CONNECT
 }
 
