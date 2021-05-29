@@ -382,7 +382,7 @@ void Engine::BuildObjects()
 
 #ifdef _WITH_SERVER_CONNECT
 	/////SERVER///
-	server = new Server();
+	server = new Server(0);
 
 	////////////////////////
 #endif // _WITH_SERVER_CONNECT
@@ -681,23 +681,7 @@ void Engine::MoveToNextFrame()
 
 void Engine::FrameAdvance()
 {    
-#ifdef _WITH_SERVER_CONNECT
-	/////////////////server////////////////
-	//if (i == 0) {
-	//server->Server_send();
-	
-	//공격과 방어 초기화
-	//server->attackAndGuard_idle();
-	//server->Server_send();
-	/*if (server->co == 0) {
-		server->Server_make_thread();
-		++(server->co);
-	}*/
 
-	server->checkSR = true;
-
-	///////////////////////////////////////
-#endif // _WITH_SERVER_CONNECT
 
 	m_GameTimer.Tick(60.0f);
 	
@@ -759,9 +743,18 @@ void Engine::FrameAdvance()
 	::SetWindowText(this->hWnd, frameRate);
 
 
-
 #ifdef _WITH_SERVER_CONNECT
-	server->Server_recv();
+
+	//server->Server_send();
+	//
+
+	////공격과 방어 초기화
+	//server->attackAndGuard_idle();
+
+	//server->Server_recv();
+	//server->checkSR = true;
+
+	///////////////////////////////////////
 #endif // _WITH_SERVER_CONNECT
 }
 
