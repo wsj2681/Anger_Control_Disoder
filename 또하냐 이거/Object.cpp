@@ -308,7 +308,7 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 					gScene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 					gScene->m_ppHierarchicalGameObjects[0]->state = DEAD;
 				}
-				gScene->m_pPlayer->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.0f;
+				gScene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.0f;
 				m_fPosition = 0.0f;
 			}
 			break;

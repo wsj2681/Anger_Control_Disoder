@@ -353,6 +353,7 @@ public:
 	CGameObject 					*m_pChild = NULL;
 	CGameObject 					*m_pSibling = NULL;
 
+	bool boundBoxRender = true;
 	map<string, CubeObject*> boundBoxs;
 	map<string, CGameObject*> bones;
 	bool isActive = true;

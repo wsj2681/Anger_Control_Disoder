@@ -637,6 +637,18 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			ui["TEST"]->SetActive(!ui["TEST"]->isActive());
 			break;
 		}
+		case '5':
+		{
+			for (auto& o : m_ppHierarchicalGameObjects[0]->boundBoxs)
+			{
+				o.second->boundBoxRender = !o.second->boundBoxRender;
+			}
+			for (auto& o : m_pPlayer->boundBoxs)
+			{
+				o.second->boundBoxRender = !o.second->boundBoxRender;
+			}
+			break;
+		}
 		default:
 			break;
 		}
@@ -756,7 +768,10 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 		{
 			for (auto& o : m_ppHierarchicalGameObjects[i]->boundBoxs)
 			{
-				o.second->Render(pd3dCommandList, pCamera);
+				if (o.second->boundBoxRender)
+				{
+					o.second->Render(pd3dCommandList, pCamera);
+				}
 			}
 		}
 	}
@@ -770,7 +785,10 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	{
 		for (auto& o : m_pPlayer->boundBoxs)
 		{
-			o.second->Render(pd3dCommandList, pCamera);
+			if (o.second->boundBoxRender)
+			{
+				o.second->Render(pd3dCommandList, pCamera);
+			}
 		}
 	}
 
