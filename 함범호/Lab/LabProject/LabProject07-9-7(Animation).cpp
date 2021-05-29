@@ -18,11 +18,22 @@ TCHAR							szTitle[MAX_LOADSTRING];
 TCHAR							szWindowClass[MAX_LOADSTRING];
 
 Engine					gEngine;
+#ifdef _WITH_SERVER_CONNECT
+
+Server*					gServer;
+HANDLE					gThread;
+int						Servercount = 0;
+#endif // _WITH_SERVER_CONNECT
+
 
 ATOM MyRegisterClass(HINSTANCE hInstance);
 BOOL InitInstance(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
+
+DWORD WINAPI server(LPVOID);
+
+
 
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
@@ -39,11 +50,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	if (!InitInstance(hInstance, nCmdShow)) return(FALSE);
 
 #ifdef _WITH_SERVER_CONNECT
-	Server* ser;
-
-	thread t1{ &Server::Server_thread,ser };
-	t1.join();
-
+	gServer = new Server();
+	/*thread t1{ server };
+	t1.join();*/
+	
 #endif // _WITH_SERVER_CONNECT
 
 
@@ -59,9 +69,14 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				::TranslateMessage(&msg);
 				::DispatchMessage(&msg);
 			}
+			if (Servercount == 0) {
+				gThread = CreateThread(nullptr, 0, server, (LPVOID)0, 0, NULL);
+				Servercount++;
+			}
 		}
 		else
 		{
+
 			gEngine.FrameAdvance();
 		}
 	}
@@ -172,4 +187,22 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return((INT_PTR)FALSE);
+}
+
+DWORD WINAPI server(LPVOID arg) {
+
+	while (true) {
+
+		if (gServer->checkSR == true) {
+			gServer->Server_send();
+			gServer->Server_recv();
+
+			//공격과 방어 초기화
+			gServer->attackAndGuard_idle();
+			gServer->checkSR = false;
+		}
+
+
+	}
+
 }

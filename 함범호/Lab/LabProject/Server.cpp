@@ -12,6 +12,12 @@
 Server::Server()
 {
 
+
+}
+Server::~Server() {
+
+}
+Server::Server(int i) {
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		cout << "WSAStartup Error" << endl;
@@ -227,7 +233,7 @@ void Server::Server_recv()
 
 void Server::Server_make_thread() {
 
-	thread t1(&Server::Server_thread, this);
+	thread t1{ &Server::Server_thread, this };
 	t1.join();
 }
 
@@ -237,8 +243,7 @@ void Server::Server_thread() {
 		if (checkSR == true) {
 			Server_send();
 			Server_recv();
-			//++i;
-			//}
+			
 			//공격과 방어 초기화
 			attackAndGuard_idle();
 			checkSR = false;

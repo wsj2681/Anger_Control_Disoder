@@ -10,7 +10,7 @@ using namespace std;
 
 
 
-#define SERVERIP   "127.0.0.1"
+#define SERVERIP   "192.168.0.13"
 //#define SERVERIP   "192.168.123.98"
 #define SERVERPORT 9000
 #define BUFSIZE    512
@@ -166,7 +166,12 @@ public:
 	int recv_count = 0;
 
 	Server();
+	Server(int i);
+	Server(const Server&) = delete;
+	Server& operator=(const Server&) = delete;
 	~Server();
+
+	
 
 	void Server_send();
 
