@@ -124,6 +124,11 @@ constexpr UINT DAMAGE_HOOK_L = 10;
 constexpr UINT DAMAGE_HOOK_R = 10;
 constexpr UINT DAMAGE_JAB = 7;
 constexpr UINT DAMAGE_STRAIGHT = 15;
+//-----------------State-----------------------------
+constexpr UINT IDLE = 1;
+constexpr UINT ATTACK = 2;
+constexpr UINT HIT = 3;
+constexpr UINT DEAD = 3;
 
 extern ID3D12Resource *CreateBufferResource(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, void *pData, UINT nBytes, D3D12_HEAP_TYPE d3dHeapType = D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, ID3D12Resource **ppd3dUploadBuffer = NULL);
 extern ID3D12Resource *CreateTextureResourceFromDDSFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, wchar_t *pszFileName, ID3D12Resource **ppd3dUploadBuffer, D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);

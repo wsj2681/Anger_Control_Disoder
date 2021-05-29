@@ -183,6 +183,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	if (pEthanModel) delete pEthanModel;
 
 	ui["TEST"] = new UserInterfaceShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/rkqwkrl.dds");
+	ui["TEST"]->SetActive(false);
 	particle = new Particle();
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -598,20 +599,42 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		{
 		case '1':
 		{
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBOS);
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO);
 			break;
 		}
 		case '2':
 		{
-			ui["TEST"]->SetActive(!ui["TEST"]->isActive());
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK);
 			break;
 		}
 		case '3':
 		{
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK);
+			break;
+		}
+		case 'Q':
+		{
+			m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO);
+			break;
+		}
+		case 'W':
+		{
+			m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK);
+			break;
+		}
+		case 'E':
+		{
+			m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK);
+			break;
+		}
+		case 'R':
+		{
+			cout << "Player State is " << m_pPlayer->state << " / Other Player State is " << m_ppHierarchicalGameObjects[0]->state << endl;
 			break;
 		}
 		case '4':
 		{
+			ui["TEST"]->SetActive(!ui["TEST"]->isActive());
 			break;
 		}
 		default:
@@ -647,33 +670,52 @@ void CScene::AnimateObjects(float fTimeElapsed)
 	particle->Update(m_pPlayer->GetPosition(), fTimeElapsed);
 	static int collideCount = 0;
 
+	// TODO : Spine 크기 조정, collide box Extants 크기 조정
 	for (auto& otherPlayerBoundBox : m_ppHierarchicalGameObjects[0]->boundBoxs)
 	{
 		for (auto& PlayerBoundBox : m_pPlayer->boundBoxs)
 		{
 			if (otherPlayerBoundBox.second->m_pMesh->isIntersect(PlayerBoundBox.second->m_pMesh->obb))
 			{
-				// 충돌 박스가 너무 작았다.
-				// 
-				if (otherPlayerBoundBox.second == m_ppHierarchicalGameObjects[0]->boundBoxs["rHand"] ||
-					otherPlayerBoundBox.second == m_ppHierarchicalGameObjects[0]->boundBoxs["lHand"])
+				if (m_ppHierarchicalGameObjects[0]->state == IDLE && m_pPlayer->state == ATTACK)
 				{
-					
+					if (otherPlayerBoundBox.first == "Head")
+					{
+						m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_A);
+						cout << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						m_ppHierarchicalGameObjects[0]->state = HIT;
+					}
+					else if (otherPlayerBoundBox.first == "Spine")
+					{
+						m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+						cout << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						m_ppHierarchicalGameObjects[0]->state = HIT;
+					}
 				}
-				else
+				if (m_pPlayer->state == IDLE && m_ppHierarchicalGameObjects[0]->state == ATTACK)
 				{
-					// TODO : Spine 크기 조정, collide box Extants 크기 조정
-					cout << otherPlayerBoundBox.first << " is collide" << collideCount++ << " / ";
-					cout <<
-						otherPlayerBoundBox.second->GetPosition().x << " / " <<
-						otherPlayerBoundBox.second->GetPosition().y << " / " <<
-						otherPlayerBoundBox.second->GetPosition().z << endl;
-					particle->PositionInit(PlayerBoundBox.second->GetPosition());
-					break;
+
+					if (PlayerBoundBox.first == "Head")
+					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_A);
+						cout << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						m_pPlayer->state = HIT;
+					}
+					else if (PlayerBoundBox.first == "Spine")
+					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+						cout << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						m_pPlayer->state = HIT;
+					}
 				}
 			}
 		}
 	}
+	
 
 	if (m_pLights)
 	{

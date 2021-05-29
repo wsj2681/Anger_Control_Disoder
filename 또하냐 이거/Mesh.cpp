@@ -774,7 +774,7 @@ CubeMesh::CubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComm
 	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	//fWidth: 직육면체 가로(x-축) 길이, fHeight: 직육면체 세로(y-축) 길이, fDepth: 직육면체 깊이(z-축) 길이
-	float fx = obb.Extents.x * 0.5f * 0.3f, fy = obb.Extents.y * 0.5f * 0.3f, fz = obb.Extents.z * 0.5f * 0.3f;
+	float fx = obb.Extents.x * 0.5f * 0.2f, fy = obb.Extents.y * 0.5f * 0.2f, fz = obb.Extents.z * 0.5f * 0.2f;
 	
 	CDiffusedVertex pVertices[36];
 

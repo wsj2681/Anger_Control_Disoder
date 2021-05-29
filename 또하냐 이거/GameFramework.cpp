@@ -436,6 +436,7 @@ void CGameFramework::ReleaseObjects()
 	if (m_pScene) delete m_pScene;
 }
 
+// TODO : 한발짝 움직이기
 void CGameFramework::ProcessInput()
 {
 	static UCHAR pKeysBuffer[256];

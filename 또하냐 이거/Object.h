@@ -202,7 +202,7 @@ public:
 	CAnimationCallbackHandler 		*m_pAnimationCallbackHandler = NULL;
 
 	bool isPlayer = false;
-
+	bool isOtherPlayer = false;
 public:
 	void SetPosition(float fTrackPosition);
 
@@ -315,6 +315,7 @@ public:
 	void SetCallbackKey(int nAnimationSet, int nKeyIndex, float fTime, void *pData);
 	void SetAnimationCallbackHandler(int nAnimationSet, CAnimationCallbackHandler *pCallbackHandler);
 
+	int GetNowTrackAnimationSet(int nAnimationTrack);
 	void AdvanceTime(float fElapsedTime, CGameObject *pRootGameObject);
 };
 
@@ -355,6 +356,8 @@ public:
 	map<string, CubeObject*> boundBoxs;
 	map<string, CGameObject*> bones;
 	bool isActive = true;
+	UINT state = IDLE;
+	bool isAlive = true;
 
 	void SetMesh(CMesh *pMesh);
 	void SetShader(CShader *pShader);
