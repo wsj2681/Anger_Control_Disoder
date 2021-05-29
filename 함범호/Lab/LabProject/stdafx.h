@@ -56,7 +56,9 @@ using namespace DirectX::PackedVector;
 using Microsoft::WRL::ComPtr;
 
 extern HINSTANCE						ghAppInstance;
+/////////////SEVER///////////
 
+/////////////////////////////
 
 #define FRAME_BUFFER_WIDTH		800
 #define FRAME_BUFFER_HEIGHT	    600

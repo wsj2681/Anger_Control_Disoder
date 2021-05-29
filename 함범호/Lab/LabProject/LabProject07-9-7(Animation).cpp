@@ -20,7 +20,7 @@ TCHAR							szWindowClass[MAX_LOADSTRING];
 Engine					gEngine;
 #ifdef _WITH_SERVER_CONNECT
 
-Server*					gServer;
+Server*					server;
 HANDLE					gThread;
 int						Servercount = 0;
 #endif // _WITH_SERVER_CONNECT
@@ -31,7 +31,7 @@ BOOL InitInstance(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
 
-DWORD WINAPI server(LPVOID);
+DWORD WINAPI serverThread(LPVOID);
 
 
 
@@ -47,14 +47,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	::LoadString(hInstance, IDC_LABPROJECT0797ANIMATION, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
 
+#ifdef _WITH_SERVER_CONNECT
+	server = new Server(0);
+
+
+#endif // _WITH_SERVER_CONNECT
+
 	if (!InitInstance(hInstance, nCmdShow)) return(FALSE);
 
-#ifdef _WITH_SERVER_CONNECT
-	gServer = new Server();
-	/*thread t1{ server };
-	t1.join();*/
-	
-#endif // _WITH_SERVER_CONNECT
+
 
 
 	hAccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT0797ANIMATION));
@@ -70,7 +71,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				::DispatchMessage(&msg);
 			}
 			if (Servercount == 0) {
-				gThread = CreateThread(nullptr, 0, server, (LPVOID)0, 0, NULL);
+				gThread = CreateThread(nullptr, 0, serverThread, (LPVOID)0, 0, NULL);
 				Servercount++;
 			}
 		}
@@ -189,17 +190,17 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	return((INT_PTR)FALSE);
 }
 
-DWORD WINAPI server(LPVOID arg) {
+DWORD WINAPI serverThread(LPVOID arg) {
 
 	while (true) {
 
-		if (gServer->checkSR == true) {
-			gServer->Server_send();
-			gServer->Server_recv();
+		if (server->checkSR == true) {
+			server->Server_send();
+			server->Server_recv();
 
 			//공격과 방어 초기화
-			gServer->attackAndGuard_idle();
-			gServer->checkSR = false;
+			server->attackAndGuard_idle();
+			server->checkSR = false;
 		}
 
 

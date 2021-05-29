@@ -110,7 +110,7 @@ public:
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 
 	///////////server/////////////
-	Server* server = NULL;
+	//Server* Eserver = NULL;
 
 	/////////////////////////////
 };
