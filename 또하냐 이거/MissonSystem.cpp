@@ -23,7 +23,7 @@ void MissonSystem::SetMissionType(const char* missionName)
 
 const string& MissonSystem::GetMissionType()
 {
-	
+	return string();
 }
 
 void MissonSystem::MissionUpdate()

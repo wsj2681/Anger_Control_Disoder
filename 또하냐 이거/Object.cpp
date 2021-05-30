@@ -153,6 +153,7 @@ void CMaterial::PrepareShaders(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandLi
 	m_pStandardShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	m_pStandardShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
+	// TODO : 이거 주석하니까 모델 드레스 포즈 나온다.
 	m_pSkinnedAnimationShader = new CSkinnedAnimationStandardShader();
 	m_pSkinnedAnimationShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	m_pSkinnedAnimationShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
@@ -1483,6 +1484,8 @@ CAngrybotObject::CAngrybotObject(ID3D12Device *pd3dDevice, ID3D12GraphicsCommand
 	if (this->bones["Spine"] = FindFrame("Bip01_Spine1"))
 	{
 		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.6f, 0.3f, 0.3f);
+		//this->boundBoxs["SpineLeft"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.6f, 0.3f, 0.3f, "SpineLeft");
+		//this->boundBoxs["SpineRight"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.6f, 0.3f, 0.3f, "SpineRight");
 	}
 
 	m_pSkinnedAnimationController = new CAnimationController(pd3dDevice, pd3dCommandList, 1, pAngrybotModel);
@@ -1610,6 +1613,24 @@ CubeObject::CubeObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3d
 CubeObject::CubeObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, const float& x, const float& y, const float& z)
 {
 	CubeMesh* pSkyBoxMesh = new CubeMesh(pd3dDevice, pd3dCommandList, x, y, z);
+	SetMesh(pSkyBoxMesh);
+
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	DiffusedShader* pSkyBoxShader = new DiffusedShader();
+	pSkyBoxShader->CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	pSkyBoxShader->CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	CMaterial* pSkyBoxMaterial = new CMaterial(0);
+	pSkyBoxMaterial->SetShader(pSkyBoxShader);
+
+	//SetMaterial(0, pSkyBoxMaterial);
+	SetShader(pSkyBoxShader);
+}
+
+CubeObject::CubeObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, const float& x, const float& y, const float& z, const char* name)
+{
+	CubeMesh* pSkyBoxMesh = new CubeMesh(pd3dDevice, pd3dCommandList, name, x, y, z);
 	SetMesh(pSkyBoxMesh);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);

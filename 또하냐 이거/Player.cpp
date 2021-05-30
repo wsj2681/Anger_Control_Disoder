@@ -85,7 +85,7 @@ void CPlayer::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
 void CPlayer::Rotate(float x, float y, float z)
 {
 	DWORD nCurrentCameraMode = m_pCamera->GetMode();
-	if ((nCurrentCameraMode == FIRST_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA))
+	if ((nCurrentCameraMode == FIRST_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2))
 	{
 		if (x != 0.0f)
 		{
@@ -161,9 +161,14 @@ void CPlayer::Update(float fTimeElapsed)
 	if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
 
 	DWORD nCurrentCameraMode = m_pCamera->GetMode();
+	
 	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->Update(m_xmf3Position, fTimeElapsed);
+	if (nCurrentCameraMode == THIRD_PERSON_CAMERA2 && bones["Head"]) m_pCamera->Update(bones["Head"]->GetPosition() , fTimeElapsed);
+	
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
+
 	if (nCurrentCameraMode == THIRD_PERSON_CAMERA) m_pCamera->SetLookAt(m_xmf3Position);
+	if (nCurrentCameraMode == THIRD_PERSON_CAMERA2 && bones["Head"]) m_pCamera->SetLookAt(bones["Head"]->GetPosition());
 	m_pCamera->RegenerateViewMatrix();
 
 	fLength = Vector3::Length(m_xmf3Velocity);
@@ -182,6 +187,9 @@ CCamera *CPlayer::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
 			break;
 		case THIRD_PERSON_CAMERA:
 			pNewCamera = new CThirdPersonCamera(m_pCamera);
+			break;
+		case THIRD_PERSON_CAMERA2:
+			pNewCamera = new CThirdPersonCamera2(m_pCamera);
 			break;
 		case SPACESHIP_CAMERA:
 			pNewCamera = new CSpaceShipCamera(m_pCamera);
@@ -230,6 +238,7 @@ void CPlayer::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamer
 {
 	DWORD nCameraMode = (pCamera) ? pCamera->GetMode() : 0x00;
 	if (nCameraMode == THIRD_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
+	if (nCameraMode == THIRD_PERSON_CAMERA2) CGameObject::Render(pd3dCommandList, pCamera);
 	if (nCameraMode == FIRST_PERSON_CAMERA) CGameObject::Render(pd3dCommandList, pCamera);
 }
 
@@ -316,6 +325,18 @@ CCamera *CAirplanePlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityXZ(25.5f);
 			SetMaxVelocityY(20.0f);
 			m_pCamera = OnChangeCamera(THIRD_PERSON_CAMERA, nCurrentCameraMode);
+			m_pCamera->SetTimeLag(0.25f);
+			m_pCamera->SetOffset(XMFLOAT3(0.0f, 15.0f, -30.0f));
+			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
+			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
+			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+			break;
+		case THIRD_PERSON_CAMERA2:
+			SetFriction(20.5f);
+			SetGravity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+			SetMaxVelocityXZ(25.5f);
+			SetMaxVelocityY(20.0f);
+			m_pCamera = OnChangeCamera(THIRD_PERSON_CAMERA2, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.25f);
 			m_pCamera->SetOffset(XMFLOAT3(0.0f, 15.0f, -30.0f));
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
@@ -461,6 +482,18 @@ CCamera *CTerrainPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 			break;
+		case THIRD_PERSON_CAMERA2:
+			SetFriction(20.5f);
+			SetGravity(XMFLOAT3(0.0f, 0.0f, 0.0f));
+			SetMaxVelocityXZ(25.5f);
+			SetMaxVelocityY(20.0f);
+			m_pCamera = OnChangeCamera(THIRD_PERSON_CAMERA2, nCurrentCameraMode);
+			m_pCamera->SetTimeLag(0.25f);
+			m_pCamera->SetOffset(XMFLOAT3(0.0f, 0.0f, 0.0f));
+			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
+			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
+			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
+			break;
 		default:
 			break;
 	}
@@ -504,6 +537,11 @@ void CTerrainPlayer::OnCameraUpdateCallback(float fTimeElapsed)
 		{
 			CThirdPersonCamera *p3rdPersonCamera = (CThirdPersonCamera *)m_pCamera;
 			p3rdPersonCamera->SetLookAt(GetPosition());
+		}
+		else if(m_pCamera->GetMode() == THIRD_PERSON_CAMERA2)
+		{
+			CThirdPersonCamera2* p3rdPersonCamera = (CThirdPersonCamera2*)m_pCamera;
+			p3rdPersonCamera->SetLookAt(bones["Head"]->GetPosition());
 		}
 	}
 }
