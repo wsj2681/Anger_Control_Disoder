@@ -359,6 +359,7 @@ public:
 	bool isActive = true;
 	UINT state = IDLE;
 	bool isAlive = true;
+	float hp = 100;
 
 	void SetMesh(CMesh *pMesh);
 	void SetShader(CShader *pShader);

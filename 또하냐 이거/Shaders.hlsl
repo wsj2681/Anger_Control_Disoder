@@ -271,6 +271,12 @@ float4 PSDiffused(VS_DIFFUSED_OUTPUT input) : SV_TARGET {
 // ÅØ½ºÃÄ UI
 Texture2D gtxtUITexture : register(t14);
 SamplerState gtxtUISampler : register(s2);
+
+cbuffer cbHP_INFO : register(b3)
+{
+	float hp : packoffset(c0);
+};
+
 struct VS_TEXTURE_UI_INPUT
 {
 	float3 position : POSITION;
@@ -298,6 +304,50 @@ VS_TEXTURE_UI_OUTOUT VSTextureUI(uint nVertexID : SV_VertexID)
 }
 
 float4 PSTextureUI(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
+{
+	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+}
+
+VS_TEXTURE_UI_OUTOUT VSTextureUI_HP(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_UI_OUTOUT output;
+	float x1 = -1.0f;
+	float x2 = -0.2f / (hp / 100.f);
+	float y1 = +1.0f;
+	float y2 = +0.9f;
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSTextureUI_HP(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
+{
+	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+}
+
+VS_TEXTURE_UI_OUTOUT VSTextureUI_HP2(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_UI_OUTOUT output;
+	float x1 = +0.2f / (hp / 100.f);
+	float x2 = +1.0f;
+	float y1 = +1.0f;
+	float y2 = +0.9f;
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSTextureUI_HP2(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
 {
 	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
 }

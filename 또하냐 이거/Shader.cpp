@@ -6,6 +6,8 @@
 #include "Shader.h"
 #include "Scene.h"
 
+extern CScene* gScene;
+
 CShader::CShader()
 {
 }
@@ -773,4 +775,151 @@ void UserInterfaceShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, CCa
 
 		pd3dCommandList->DrawInstanced(6, 1, 0, 0);
 	}
+}
+
+UI_HP::UI_HP()
+{
+}
+
+UI_HP::UI_HP(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	BuildObjects(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, filePath);
+}
+
+UI_HP::~UI_HP()
+{
+}
+
+void UI_HP::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(VS_CB_HP_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbHPInfo = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbHPInfo->Map(0, NULL, (void**)&m_pcbMappedHPInfo);
+}
+
+void UI_HP::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	::memcpy(&m_pcbMappedHPInfo->hp, &gScene->m_pPlayer->hp, sizeof(float));
+
+	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbHPInfo->GetGPUVirtualAddress();
+	pd3dCommandList->SetGraphicsRootConstantBufferView(16, d3dGpuVirtualAddress);
+}
+
+void UI_HP::ReleaseShaderVariables()
+{
+	if (m_pd3dcbHPInfo)
+	{
+		m_pd3dcbHPInfo->Unmap(0, NULL);
+		m_pd3dcbHPInfo->Release();
+	}
+}
+
+D3D12_INPUT_LAYOUT_DESC UI_HP::CreateInputLayout()
+{
+	UINT nInputElementDescs = 2;
+	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0 };
+
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+
+	return(d3dInputLayoutDesc);
+}
+
+D3D12_SHADER_BYTECODE UI_HP::CreateVertexShader()
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSTextureUI_HP", "vs_5_1", &m_pd3dVertexShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE UI_HP::CreatePixelShader()
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSTextureUI_HP", "ps_5_1", &m_pd3dPixelShaderBlob));
+}
+
+void UI_HP::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	m_pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
+	CScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
+}
+
+UI_HP2::UI_HP2()
+{
+}
+
+UI_HP2::UI_HP2(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	BuildObjects(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, filePath);
+}
+
+UI_HP2::~UI_HP2()
+{
+}
+
+void UI_HP2::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(VS_CB_HP_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbHPInfo = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbHPInfo->Map(0, NULL, (void**)&m_pcbMappedHPInfo);
+}
+
+void UI_HP2::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	// other player hp info
+	::memcpy(&m_pcbMappedHPInfo->hp, &gScene->m_ppHierarchicalGameObjects[0]->hp, sizeof(float));
+
+	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbHPInfo->GetGPUVirtualAddress();
+	pd3dCommandList->SetGraphicsRootConstantBufferView(16, d3dGpuVirtualAddress);
+}
+
+void UI_HP2::ReleaseShaderVariables()
+{
+	if (m_pd3dcbHPInfo)
+	{
+		m_pd3dcbHPInfo->Unmap(0, NULL);
+		m_pd3dcbHPInfo->Release();
+	}
+}
+
+D3D12_INPUT_LAYOUT_DESC UI_HP2::CreateInputLayout()
+{
+	UINT nInputElementDescs = 2;
+	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0 };
+
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+
+	return(d3dInputLayoutDesc);
+}
+
+D3D12_SHADER_BYTECODE UI_HP2::CreateVertexShader()
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSTextureUI_HP2", "vs_5_1", &m_pd3dVertexShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE UI_HP2::CreatePixelShader()
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSTextureUI_HP2", "ps_5_1", &m_pd3dPixelShaderBlob));
+}
+
+void UI_HP2::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	m_pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
+	CScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
 }

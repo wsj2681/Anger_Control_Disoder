@@ -182,8 +182,12 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppShaders[0] = pEthanObjectsShader;
 	if (pEthanModel) delete pEthanModel;
 
-	ui["TEST"] = new UserInterfaceShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/rkqwkrl.dds");
+	ui["TEST"] = new UserInterfaceShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/HP.dds");
 	ui["TEST"]->SetActive(false);
+	ui["PlayerHP"] = new UI_HP(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/HP.dds");
+	ui["OtherPlayerHP"] = new UI_HP2(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/HP.dds");
+	ui["OtherPlayerHP"]->SetActive(true);
+
 	particle = new Particle();
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -314,7 +318,7 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dDescriptorRanges[10].RegisterSpace = 0;
 	pd3dDescriptorRanges[10].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER pd3dRootParameters[16];
+	D3D12_ROOT_PARAMETER pd3dRootParameters[17];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 1; //Camera
@@ -397,6 +401,11 @@ ID3D12RootSignature *CScene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevic
 	pd3dRootParameters[15].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[10]);
 	pd3dRootParameters[15].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
+	pd3dRootParameters[16].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[16].Descriptor.ShaderRegister = 3; //HP_INFO
+	pd3dRootParameters[16].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[16].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
 	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[3];
 
 	pd3dSamplerDescs[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
@@ -470,6 +479,7 @@ void CScene::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
 	::memcpy(m_pcbMappedLights->m_pLights, m_pLights, sizeof(LIGHT) * m_nLights);
 	::memcpy(&m_pcbMappedLights->m_xmf4GlobalAmbient, &m_xmf4GlobalAmbient, sizeof(XMFLOAT4));
 	::memcpy(&m_pcbMappedLights->m_nLights, &m_nLights, sizeof(int));
+	
 }
 
 void CScene::ReleaseShaderVariables()
@@ -649,6 +659,14 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			}
 			break;
 		}
+		case '6':
+		{
+			m_pPlayer->hp -= 5.f;
+			cout << "Player HP = "<<m_pPlayer->hp << endl;
+			m_ppHierarchicalGameObjects[0]->hp -= 5.f;
+			cout << "OtherPlayer HP = " << m_ppHierarchicalGameObjects[0]->hp << endl;
+			break;
+		}
 		default:
 			break;
 		}
@@ -796,6 +814,7 @@ void CScene::Render(ID3D12GraphicsCommandList *pd3dCommandList, CCamera *pCamera
 	{
 		for (auto& i : ui)
 		{
+			i.second->UpdateShaderVariables(pd3dCommandList);
 			i.second->Render(pd3dCommandList, pCamera);
 		}
 	}
