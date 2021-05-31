@@ -356,6 +356,7 @@ public:
 	bool boundBoxRender = true;
 	map<string, CubeObject*> boundBoxs;
 	map<string, CGameObject*> bones;
+	XMFLOAT3 oldSpinePosition;
 	bool isActive = true;
 	UINT state = IDLE;
 	bool isAlive = true;

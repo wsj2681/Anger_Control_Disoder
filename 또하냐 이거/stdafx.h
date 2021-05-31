@@ -109,15 +109,7 @@ constexpr UINT ANIMATION_RIGHT_BODY_HOOK = 0x25;    // Right_BodyHook(Spleen Pun
 constexpr UINT ANIMATION_UPPER_CUT_L = 0x26;        // UpperCut_L
 constexpr UINT ANIMATION_UPPER_CUT_R = 0x27;        // UpperCut_R
 //----------------데모 애니메이션-------------------
-constexpr UINT ANIMATION_BLOCKS_AND_EVASION = 0x28; // Blocks_and_Evasion
-constexpr UINT ANIMATION_COMBOS = 0x29;             // Combos
-constexpr UINT ANIMATION_ELBOWS = 0x2A;             // Elbows
-constexpr UINT ANIMATION_GENERAL = 0x2B;            // General
-constexpr UINT ANIMATION_HANDS = 0x2C;              // Hands
-constexpr UINT ANIMATION_HITS = 0x2D;               // Hits
-constexpr UINT ANIMATION_LEGS = 0x2E;               // Legs
-constexpr UINT ANIMATION_MOVES = 0x2F;              // Moves
-constexpr UINT ANIMATION_TURNS = 0x30;              // Turns
+constexpr UINT ANIMATION_HITA = 0x28; // Blocks_and_Evasion
 //----------------------------------------------------------
 constexpr UINT DAMAGE_HOOK = 10;
 constexpr UINT DAMAGE_HOOK_L = 10;
@@ -255,6 +247,11 @@ namespace Vector3
 	inline XMFLOAT3 TransformCoord(XMFLOAT3& xmf3Vector, XMFLOAT4X4& xmmtx4x4Matrix)
 	{
 		return(TransformCoord(xmf3Vector, XMLoadFloat4x4(&xmmtx4x4Matrix)));
+	}
+
+	inline bool Compare(XMFLOAT3& xmf3Vector1, XMFLOAT3& xmf3Vector2)
+	{
+		return (xmf3Vector1.x == xmf3Vector2.x) && (xmf3Vector1.y == xmf3Vector2.y) && (xmf3Vector1.z == xmf3Vector2.z);
 	}
 }
 

@@ -3,7 +3,7 @@
 #define ASPECT_RATIO				(float(FRAME_BUFFER_WIDTH) / float(FRAME_BUFFER_HEIGHT))
 
 #define FIRST_PERSON_CAMERA			0x01
-#define SPACESHIP_CAMERA			0x02
+#define SECOND_PERSON_CAMERA		0x02
 #define THIRD_PERSON_CAMERA			0x03
 #define THIRD_PERSON_CAMERA2		0x04
 
@@ -103,11 +103,11 @@ public:
 	virtual void SetLookAt(XMFLOAT3& xmf3LookAt) { }
 };
 
-class CSpaceShipCamera : public CCamera
+class CSecondPersonCamera : public CCamera
 {
 public:
-	CSpaceShipCamera(CCamera *pCamera);
-	virtual ~CSpaceShipCamera() { }
+	CSecondPersonCamera(CCamera *pCamera);
+	virtual ~CSecondPersonCamera() { }
 
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f);
 };

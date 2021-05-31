@@ -126,5 +126,6 @@ public:
 	virtual void OnCameraUpdateCallback(float fTimeElapsed);
 
 	virtual void Update(float fTimeElapsed);
+	void CameraRotate();
 };
 

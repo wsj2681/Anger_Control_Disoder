@@ -270,6 +270,7 @@ bool CAnimationSet::IsAnimate()
 void CAnimationSet::SetPosition(float fTrackPosition)
 {
 	m_fPosition = fTrackPosition;
+
 	switch (m_nType)
 	{
 	case ANIMATION_TYPE_LOOP:
@@ -279,11 +280,27 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 	}
 	case ANIMATION_TYPE_ONCE:
 	{
+		//cout << "APosition(" << gScene->m_pPlayer->GetPosition().x << ", " << gScene->m_pPlayer->GetPosition().y << ", " << gScene->m_pPlayer->GetPosition().z << ")" << endl;
+		//cout << "Position(" << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().x << ", " << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().y << ", " << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().z << ")" << endl;
+		//cout << "BPosition(" << gScene->m_pPlayer->bones["Head"]->GetPosition().x<< ", " << gScene->m_pPlayer->bones["Head"]->GetPosition().y << ", " << gScene->m_pPlayer->bones["Head"]->GetPosition().z << ")" << endl;
 		m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames - 1]) * m_pfKeyFrameTimes[m_nKeyFrames - 1];
+		//if (isPlayer)
+		//	gScene->m_pPlayer->GetCamera()->SetPosition(gScene->m_pPlayer->GetPosition());
+
 		if (IsAnimate())
 		{
 			if (isPlayer) // 애니메이션이 끝났을 때
 			{
+				if (!Vector3::Compare(gScene->m_pPlayer->bones["Spine"]->GetPosition(), gScene->m_pPlayer->oldSpinePosition))
+				{
+					gScene->m_pPlayer->SetPosition(gScene->m_pPlayer->bones["lFoot"]->GetPosition());
+					//gScene->m_pPlayer->SetPosition(gScene->m_pPlayer.);
+					// TODO : 축이 이동하는 애니메이션에 대한 처리
+					// SOLUTION : 계층 모델에 대해서 애니메이션을 지정했을 때의 좌표와 애니메이션 실행이 끝났을 때의 좌표가 다르다면
+					//            애니메이션 실행이 끝났을 때의 좌표로 이동하게 함
+					// 해결해야하는 부분 : 메쉬와 본, 바운딩박스의 좌표 전부를 바꿔야 하는가?
+					//                     그냥 월드 변환 좌표를 변경하면 알아서 다 따라가나?
+				}
 				if ((gScene->m_pPlayer->isAlive) && (gScene->m_pPlayer->state != IDLE))
 				{
 					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
@@ -503,7 +520,15 @@ void CAnimationController::SetAnimationCallbackHandler(int nAnimationSet, CAnima
 
 void CAnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet)
 {
-	if (m_pAnimationTracks) m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
+	if (m_pAnimationTracks)
+	{
+		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
+		if (gScene)
+		{
+			if (gScene->m_pPlayer)
+				gScene->m_pPlayer->oldSpinePosition = gScene->m_pPlayer->bones["Spine"]->GetPosition();
+		}
+	}
 }
 
 void CAnimationController::SetTrackEnable(int nAnimationTrack, bool bEnable)

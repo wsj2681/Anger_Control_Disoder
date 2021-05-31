@@ -100,7 +100,7 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_nHierarchicalGameObjects = 13;
 	m_ppHierarchicalGameObjects = new CGameObject*[m_nHierarchicalGameObjects];
 
-	CLoadedModelInfo *pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerD.bin", NULL);
+	CLoadedModelInfo *pAngrybotModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerA.bin", NULL);
 	m_ppHierarchicalGameObjects[0] = new CAngrybotObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, pAngrybotModel, 1);
 	m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 	m_ppHierarchicalGameObjects[0]->SetPosition(XMFLOAT3(310.0f, m_pTerrain->GetHeight(310.0f, 590.0f), 590.0f));
@@ -660,6 +660,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			}
 			break;
 		}
+<<<<<<< Updated upstream
 		case '6':
 		{
 			m_pPlayer->hp -= 5.f;
@@ -668,6 +669,12 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			cout << "OtherPlayer HP = " << m_ppHierarchicalGameObjects[0]->hp << endl;
 			break;
 		}
+=======
+		case 'B':
+			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITA);
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITA);
+			break;
+>>>>>>> Stashed changes
 		default:
 			break;
 		}
