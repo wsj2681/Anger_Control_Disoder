@@ -184,10 +184,11 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	ui["TEST"] = new UserInterfaceShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/HP.dds");
 	ui["TEST"]->SetActive(false);
-	ui["PlayerHP"] = new UI_HP(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/HP.dds");
-	ui["OtherPlayerHP"] = new UI_HP2(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/HP.dds");
+	ui["PlayerHP"] = new UI_HP_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/HP.dds");
+	ui["OtherPlayerHP"] = new UI_HP_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/HP.dds");
 	ui["OtherPlayerHP"]->SetActive(true);
-
+	ui["Right_Shift_Black"] = new UI_KeyInput_Right_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/shift_black.dds");
+	ui["Right_Shift_Red"] = new UI_KeyInput_Left_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/shift_red.dds");
 	particle = new Particle();
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -670,7 +671,6 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		default:
 			break;
 		}
-		break;
 	default:
 		break;
 	}

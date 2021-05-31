@@ -351,3 +351,47 @@ float4 PSTextureUI_HP2(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
 {
 	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
 }
+
+VS_TEXTURE_UI_OUTOUT VSTextureUI_KeyRightShift(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_UI_OUTOUT output;
+	float x1 = -1.0f;
+	float x2 = -0.6f;
+	float y1 = -0.4f;
+	float y2 = -0.6f;
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSTextureUI_KeyRightShift(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
+{
+	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+}
+
+VS_TEXTURE_UI_OUTOUT VSTextureUI_KeyLeftShift(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_UI_OUTOUT output;
+	float x1 = +0.6f;
+	float x2 = +1.0f;
+	float y1 = -0.4f;
+	float y2 = -0.6f;
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSTextureUI_KeyLeftShift(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
+{
+	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+}

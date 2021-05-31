@@ -232,12 +232,12 @@ struct VS_CB_HP_INFO
 	float hp = 0;
 };
 
-class UI_HP : public UserInterfaceShader
+class UI_HP_Player : public UserInterfaceShader
 {
 public:
-	UI_HP();
-	UI_HP(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
-	virtual ~UI_HP();
+	UI_HP_Player();
+	UI_HP_Player(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
+	virtual ~UI_HP_Player();
 
 private:
 
@@ -257,12 +257,12 @@ public:
 	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
 };
 
-class UI_HP2 : public UserInterfaceShader
+class UI_HP_OtherPlayer : public UserInterfaceShader
 {
 public:
-	UI_HP2();
-	UI_HP2(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
-	virtual ~UI_HP2();
+	UI_HP_OtherPlayer();
+	UI_HP_OtherPlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
+	virtual ~UI_HP_OtherPlayer();
 
 private:
 
@@ -274,6 +274,36 @@ public:
 	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
 	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
 	virtual void ReleaseShaderVariables();
+
+	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
+
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
+};
+
+class UI_KeyInput_Right_Shift : public UserInterfaceShader
+{
+public:
+
+	UI_KeyInput_Right_Shift();
+	UI_KeyInput_Right_Shift(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
+	virtual ~UI_KeyInput_Right_Shift();
+
+	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
+
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
+};
+
+class UI_KeyInput_Left_Shift : public UserInterfaceShader
+{
+public:
+
+	UI_KeyInput_Left_Shift();
+	UI_KeyInput_Left_Shift(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
+	virtual ~UI_KeyInput_Left_Shift();
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
 
