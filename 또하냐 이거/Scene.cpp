@@ -187,8 +187,8 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	ui["PlayerHP"] = new UI_HP_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/HP.dds");
 	ui["OtherPlayerHP"] = new UI_HP_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/HP.dds");
 	ui["OtherPlayerHP"]->SetActive(true);
-	ui["Right_Shift_Black"] = new UI_KeyInput_Right_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/shift_black.dds");
-	ui["Right_Shift_Red"] = new UI_KeyInput_Left_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"Model/Textures/shift_red.dds");
+	ui["Right_Shift_Black"] = new UI_KeyInput_Right_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDS/KeyLeftShift.dds");
+	ui["Right_Shift_Red"] = new UI_KeyInput_Left_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDS/KeyRightShift.dds");
 	particle = new Particle();
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -660,7 +660,6 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			}
 			break;
 		}
-<<<<<<< Updated upstream
 		case '6':
 		{
 			m_pPlayer->hp -= 5.f;
@@ -669,12 +668,10 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			cout << "OtherPlayer HP = " << m_ppHierarchicalGameObjects[0]->hp << endl;
 			break;
 		}
-=======
 		case 'B':
 			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITA);
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITA);
 			break;
->>>>>>> Stashed changes
 		default:
 			break;
 		}
