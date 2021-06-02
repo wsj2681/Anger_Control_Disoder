@@ -184,11 +184,12 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 
 	//ui["TEST"] = new UserInterfaceShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/HPBar.png");
 	//ui["TEST"]->SetActive(false);
-	ui["PlayerHP"] = new UI_HP_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/HPBar.png");
-	ui["OtherPlayerHP"] = new UI_HP_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/HPBar_Other.png");
+	ui["PlayerHP"] = new UI_HP_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/HPBar_Other.png");
+	ui["OtherPlayerHP"] = new UI_HP_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/HPBar.png");
 	ui["OtherPlayerHP"]->SetActive(true);
 	ui["Right_Shift_Black"] = new UI_KeyInput_Right_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Key_Left_Shift.png");
 	ui["Right_Shift_Red"] = new UI_KeyInput_Left_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Key_Right_Shift.png");
+	ui["Space"] = new UI_KeyInput_Space(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Key_Space.png");
 	particle = new Particle();
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
