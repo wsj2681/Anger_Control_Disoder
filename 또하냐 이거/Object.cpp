@@ -293,7 +293,12 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 			{
 				if (!Vector3::Compare(gScene->m_pPlayer->bones["Spine"]->GetPosition(), gScene->m_pPlayer->oldSpinePosition))
 				{
-					gScene->m_pPlayer->SetPosition(gScene->m_pPlayer->bones["lFoot"]->GetPosition());
+					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) >= ANIMATION_HITA)
+					{
+						gScene->m_pPlayer->SetPosition(gScene->m_pPlayer->bones["lFoot"]->GetPosition());
+						//gScene->m_pPlayer->GetCamera()->SetPosition();
+						gScene->m_pPlayer->GetCamera()->SetPosition(XMFLOAT3(gScene->m_pPlayer->bones["Head"]->GetPosition().x, 0.0f, gScene->m_pPlayer->bones["Head"]->GetPosition().z));
+					}
 					//gScene->m_pPlayer->SetPosition(gScene->m_pPlayer.);
 					// TODO : 축이 이동하는 애니메이션에 대한 처리
 					// SOLUTION : 계층 모델에 대해서 애니메이션을 지정했을 때의 좌표와 애니메이션 실행이 끝났을 때의 좌표가 다르다면

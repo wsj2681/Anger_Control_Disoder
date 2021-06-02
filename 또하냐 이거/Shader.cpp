@@ -762,7 +762,7 @@ void UserInterfaceShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsC
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	m_pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0, false);
 	CScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
 }
 
@@ -846,7 +846,7 @@ void UI_HP_Player::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandL
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	m_pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0, false);
 	CScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
 }
 
@@ -920,7 +920,7 @@ void UI_HP_OtherPlayer::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	m_pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0, false);
 	CScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
 }
 
@@ -968,7 +968,7 @@ void UI_KeyInput_Right_Shift::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graph
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	m_pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0, false);
 	CScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
 }
 
@@ -1016,6 +1016,6 @@ void UI_KeyInput_Left_Shift::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Graphi
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	m_pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
-	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0, false);
 	CScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
 }

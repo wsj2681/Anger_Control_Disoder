@@ -108,7 +108,7 @@ constexpr UINT ANIMATION_LEFT_BODY_HOOK = 0x24;     // Left Body Hook(liver punc
 constexpr UINT ANIMATION_RIGHT_BODY_HOOK = 0x25;    // Right_BodyHook(Spleen Punch)
 constexpr UINT ANIMATION_UPPER_CUT_L = 0x26;        // UpperCut_L
 constexpr UINT ANIMATION_UPPER_CUT_R = 0x27;        // UpperCut_R
-//----------------데모 애니메이션-------------------
+//----------------축 이동 애니메이션-------------------
 constexpr UINT ANIMATION_HITA = 0x28; // Blocks_and_Evasion
 //----------------------------------------------------------
 constexpr UINT DAMAGE_HOOK = 10;
