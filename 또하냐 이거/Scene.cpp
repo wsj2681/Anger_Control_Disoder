@@ -190,6 +190,25 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	ui["Right_Shift_Black"] = new UI_KeyInput_Right_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Key_Left_Shift.png");
 	ui["Right_Shift_Red"] = new UI_KeyInput_Left_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Key_Right_Shift.png");
 	ui["Space"] = new UI_KeyInput_Space(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Key_Space.png");
+	
+	ui["0_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Points_Empty.png");
+	ui["1_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Points_L1.png");
+	ui["2_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Points_L2.png");
+	ui["3_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Points_Full.png");
+	ui["0_PlayerTotalScore"]->SetActive(true);
+	ui["1_PlayerTotalScore"]->SetActive(false);
+	ui["2_PlayerTotalScore"]->SetActive(false);
+	ui["3_PlayerTotalScore"]->SetActive(false);
+
+
+	ui["0_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Points_Empty.png");
+	ui["1_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Points_R1.png");
+	ui["2_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Points_R2.png");
+	ui["3_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/Points_Full.png");
+	ui["0_OtherPlayerTotalScore"]->SetActive(true);
+	ui["1_OtherPlayerTotalScore"]->SetActive(false);
+	ui["2_OtherPlayerTotalScore"]->SetActive(false);
+	ui["3_OtherPlayerTotalScore"]->SetActive(false);
 	particle = new Particle();
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -673,6 +692,48 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITA);
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITA);
 			break;
+		case 'P':
+		{
+			if (ui["0_OtherPlayerTotalScore"]->isActive())
+			{
+				ui["0_OtherPlayerTotalScore"]->SetActive(false);
+				ui["1_OtherPlayerTotalScore"]->SetActive(true);
+			}
+			else if (ui["1_OtherPlayerTotalScore"]->isActive())
+			{
+				ui["1_OtherPlayerTotalScore"]->SetActive(false);
+				ui["2_OtherPlayerTotalScore"]->SetActive(true);
+			}
+			else if (ui["2_OtherPlayerTotalScore"]->isActive())
+			{
+				ui["2_OtherPlayerTotalScore"]->SetActive(false);
+				ui["3_OtherPlayerTotalScore"]->SetActive(true);
+			}
+			m_pPlayer->hp = 100.f;
+			m_ppHierarchicalGameObjects[0]->hp = 100.f;
+			break;
+		}
+		case 'O':
+		{
+			if (ui["0_PlayerTotalScore"]->isActive())
+			{
+				ui["0_PlayerTotalScore"]->SetActive(false);
+				ui["1_PlayerTotalScore"]->SetActive(true);
+			}
+			else if (ui["1_PlayerTotalScore"]->isActive())
+			{
+				ui["1_PlayerTotalScore"]->SetActive(false);
+				ui["2_PlayerTotalScore"]->SetActive(true);
+			}
+			else if (ui["2_PlayerTotalScore"]->isActive())
+			{
+				ui["2_PlayerTotalScore"]->SetActive(false);
+				ui["3_PlayerTotalScore"]->SetActive(true);
+			}
+			m_pPlayer->hp = 100.f;
+			m_ppHierarchicalGameObjects[0]->hp = 100.f;
+			break;
+		}
 		default:
 			break;
 		}
@@ -719,6 +780,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 						m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_A);
 						cout << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						m_ppHierarchicalGameObjects[0]->hp -= 10.f;
 						m_ppHierarchicalGameObjects[0]->state = HIT;
 					}
 					else if (otherPlayerBoundBox.first == "Spine")
@@ -726,6 +788,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 						m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
 						cout << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						m_ppHierarchicalGameObjects[0]->hp -= 20.f;
 						m_ppHierarchicalGameObjects[0]->state = HIT;
 					}
 				}
@@ -750,8 +813,48 @@ void CScene::AnimateObjects(float fTimeElapsed)
 			}
 		}
 	}
-	
+	if (m_ppHierarchicalGameObjects[0]->hp <= 0.f)
+	{
+		if (ui["0_OtherPlayerTotalScore"]->isActive())
+		{
+			ui["0_OtherPlayerTotalScore"]->SetActive(false);
+			ui["1_OtherPlayerTotalScore"]->SetActive(true);
+		}
+		else if (ui["1_OtherPlayerTotalScore"]->isActive())
+		{
+			ui["1_OtherPlayerTotalScore"]->SetActive(false);
+			ui["2_OtherPlayerTotalScore"]->SetActive(true);
+		}
+		else if (ui["2_OtherPlayerTotalScore"]->isActive())
+		{
+			ui["2_OtherPlayerTotalScore"]->SetActive(false);
+			ui["3_OtherPlayerTotalScore"]->SetActive(true);
+		}
+		m_pPlayer->hp = 100.f;
+		m_ppHierarchicalGameObjects[0]->hp = 100.f;
+	}
 
+	if (m_pPlayer->hp <= 0.f)
+	{
+		if (ui["0_PlayerTotalScore"]->isActive())
+		{
+			ui["0_PlayerTotalScore"]->SetActive(false);
+			ui["1_PlayerTotalScore"]->SetActive(true);
+		}
+		else if (ui["1_PlayerTotalScore"]->isActive())
+		{
+			ui["1_PlayerTotalScore"]->SetActive(false);
+			ui["2_PlayerTotalScore"]->SetActive(true);
+		}
+		else if (ui["2_PlayerTotalScore"]->isActive())
+		{
+			ui["2_PlayerTotalScore"]->SetActive(false);
+			ui["3_PlayerTotalScore"]->SetActive(true);
+		}
+		m_pPlayer->hp = 100.f;
+		m_ppHierarchicalGameObjects[0]->hp = 100.f;
+	}
+		
 	if (m_pLights)
 	{
 		m_pLights[1].m_xmf3Position = m_pPlayer->GetPosition();

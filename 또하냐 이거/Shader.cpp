@@ -1067,3 +1067,99 @@ void UI_KeyInput_Space::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCom
 	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0, false);
 	CScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
 }
+
+UI_PlayerTotalScore::UI_PlayerTotalScore()
+{
+}
+
+UI_PlayerTotalScore::UI_PlayerTotalScore(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	BuildObjects(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, filePath);
+}
+
+UI_PlayerTotalScore::~UI_PlayerTotalScore()
+{
+}
+
+D3D12_INPUT_LAYOUT_DESC UI_PlayerTotalScore::CreateInputLayout()
+{
+	UINT nInputElementDescs = 2;
+	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0 };
+
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+
+	return(d3dInputLayoutDesc);
+}
+
+D3D12_SHADER_BYTECODE UI_PlayerTotalScore::CreateVertexShader()
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSTextureUI_PlayerTotalScore", "vs_5_1", &m_pd3dVertexShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE UI_PlayerTotalScore::CreatePixelShader()
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSTextureUI_PlayerTotalScore", "ps_5_1", &m_pd3dPixelShaderBlob));
+}
+
+void UI_PlayerTotalScore::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	m_pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0, false);
+	CScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
+}
+
+UI_OtherPlayerTotalScore::UI_OtherPlayerTotalScore()
+{
+}
+
+UI_OtherPlayerTotalScore::UI_OtherPlayerTotalScore(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	BuildObjects(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, filePath);
+}
+
+UI_OtherPlayerTotalScore::~UI_OtherPlayerTotalScore()
+{
+}
+
+D3D12_INPUT_LAYOUT_DESC UI_OtherPlayerTotalScore::CreateInputLayout()
+{
+	UINT nInputElementDescs = 2;
+	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0 };
+
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+
+	return(d3dInputLayoutDesc);
+}
+
+D3D12_SHADER_BYTECODE UI_OtherPlayerTotalScore::CreateVertexShader()
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "VSTextureUI_OtherPlayerTotalScore", "vs_5_1", &m_pd3dVertexShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE UI_OtherPlayerTotalScore::CreatePixelShader()
+{
+	return(CShader::CompileShaderFromFile(L"Shaders.hlsl", "PSTextureUI_OtherPlayerTotalScore", "ps_5_1", &m_pd3dPixelShaderBlob));
+}
+
+void UI_OtherPlayerTotalScore::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	m_pTexture = new CTexture(1, RESOURCE_TEXTURE2D, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0, false);
+	CScene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 15, false);
+}
