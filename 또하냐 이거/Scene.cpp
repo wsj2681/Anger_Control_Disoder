@@ -690,7 +690,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		}
 		case 'B':
 			//m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITA);
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITA);
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_LEFT_B);
 			break;
 		case 'P':
 		{
@@ -777,7 +777,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 				{
 					if (otherPlayerBoundBox.first == "Head")
 					{
-						m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_A);
+						m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
 						cout << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(PlayerBoundBox.second->GetPosition());
 						m_ppHierarchicalGameObjects[0]->hp -= 10.f;
@@ -797,7 +797,7 @@ void CScene::AnimateObjects(float fTimeElapsed)
 
 					if (PlayerBoundBox.first == "Head")
 					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_A);
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
 						cout << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
 						m_pPlayer->state = HIT;

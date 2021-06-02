@@ -293,7 +293,7 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 			{
 				if (!Vector3::Compare(gScene->m_pPlayer->bones["Spine"]->GetPosition(), gScene->m_pPlayer->oldSpinePosition))
 				{
-					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) >= ANIMATION_HITA)
+					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) >= ANIMATION_HIT_HEAD_LEFT_B)
 					{
 						gScene->m_pPlayer->SetPosition({ gScene->m_pPlayer->bones["Spine"]->GetPosition().x, 100.f, gScene->m_pPlayer->bones["Spine"]->GetPosition().z });
 						//gScene->m_pPlayer->GetCamera()->SetPosition();
