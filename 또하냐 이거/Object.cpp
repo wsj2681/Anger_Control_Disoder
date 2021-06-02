@@ -295,9 +295,9 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 				{
 					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) >= ANIMATION_HITA)
 					{
-						gScene->m_pPlayer->SetPosition(gScene->m_pPlayer->bones["lFoot"]->GetPosition());
+						gScene->m_pPlayer->SetPosition({ gScene->m_pPlayer->bones["Spine"]->GetPosition().x, 100.f, gScene->m_pPlayer->bones["Spine"]->GetPosition().z });
 						//gScene->m_pPlayer->GetCamera()->SetPosition();
-						gScene->m_pPlayer->GetCamera()->SetPosition(XMFLOAT3(gScene->m_pPlayer->bones["Head"]->GetPosition().x, 0.0f, gScene->m_pPlayer->bones["Head"]->GetPosition().z));
+						//gScene->m_pPlayer->GetCamera()->SetPosition(XMFLOAT3(gScene->m_pPlayer->bones["Head"]->GetPosition().x, 0.0f, gScene->m_pPlayer->bones["Head"]->GetPosition().z));
 					}
 					//gScene->m_pPlayer->SetPosition(gScene->m_pPlayer.);
 					// TODO : 축이 이동하는 애니메이션에 대한 처리
