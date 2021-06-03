@@ -10,10 +10,10 @@ using namespace std;
 
 
 //범호 집
-#define SERVERIP   "192.168.0.13"
+//#define SERVERIP   "192.168.0.13"
 
 //로컬
-//#define SERVERIP "127.0.0.1"
+#define SERVERIP "127.0.0.1"
 
 //#define SERVERIP   "192.168.123.98"
 #define SERVERPORT 9000

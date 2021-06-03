@@ -693,7 +693,8 @@ void Engine::FrameAdvance()
 	//server->Server_recv();
 
 	//문제가 생길것 같다.
-	server->checkSR = true;
+	if(server->checkSR == false)
+		server->checkSR = true;
 
 	///////////////////////////////////////
 #endif // _WITH_SERVER_CONNECT
