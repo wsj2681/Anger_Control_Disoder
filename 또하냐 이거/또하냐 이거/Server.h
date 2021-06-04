@@ -160,6 +160,7 @@ public:
 	HeadHitted headHitted;
 
 	PlayerHP myHP;
+	PlayerHP otherHP;
 
 	bool checkSR = false;
 	int co = 0;

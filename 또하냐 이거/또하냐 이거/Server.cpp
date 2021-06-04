@@ -86,12 +86,13 @@ void Server::Server_recv()
 		retval = recv(sock, (char*)&col, sizeof(col), 0);
 		retval = recv(sock, (char*)&recv_attackAnddefend, sizeof(recv_attackAnddefend), 0);
 		retval = recv(sock, (char*)&headHitted, sizeof(headHitted), 0);
-		retval = recv(sock, (char*)&myHP, sizeof(myHP), 0);
+		retval = recv(sock, (char*)&otherHP, sizeof(otherHP), 0);
 
 
 
 		//HP¼³Á¤
-		cplayer->hp = myHP.playerHp;
+		//cplayer->hp = myHP.playerHp;
+		cscene->m_ppHierarchicalGameObjects[0]->hp = otherHP.playerHp;
 
 		//retval = recv(sock, (char*)&bScenario, sizeof(bScenario), 0);
 		//cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
