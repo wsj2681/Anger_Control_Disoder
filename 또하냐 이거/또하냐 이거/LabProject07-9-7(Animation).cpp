@@ -19,6 +19,15 @@ TCHAR							szWindowClass[MAX_LOADSTRING];
 
 CGameFramework					gGameFramework;
 
+#ifdef _WITH_SERVER_CONNECT
+
+Server* server;
+HANDLE					gThread;
+int						Servercount = 0;
+
+DWORD WINAPI serverThread(LPVOID arg);
+#endif // _WITH_SERVER_CONNECT
+
 ATOM MyRegisterClass(HINSTANCE hInstance);
 BOOL InitInstance(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -36,6 +45,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	::LoadString(hInstance, IDC_LABPROJECT0797ANIMATION, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
 
+#ifdef _WITH_SERVER_CONNECT
+	server = new Server(0);
+
+
+#endif // _WITH_SERVER_CONNECT
+
 	if (!InitInstance(hInstance, nCmdShow)) return(FALSE);
 
 	hAccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT0797ANIMATION));
@@ -49,6 +64,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			{
 				::TranslateMessage(&msg);
 				::DispatchMessage(&msg);
+			}
+			if (Servercount == 0) {
+				gThread = CreateThread(nullptr, 0, serverThread, (LPVOID)0, 0, NULL);
+				Servercount++;
 			}
 		}
 		else
@@ -163,4 +182,22 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 		break;
 	}
 	return((INT_PTR)FALSE);
+}
+
+DWORD WINAPI serverThread(LPVOID arg) {
+
+	while (true) {
+
+		if (server->checkSR == true) {
+			server->Server_send();
+			server->Server_recv();
+
+			//공격과 방어 초기화
+			server->attackAndGuard_idle();
+			server->checkSR = false;
+		}
+
+
+	}
+
 }

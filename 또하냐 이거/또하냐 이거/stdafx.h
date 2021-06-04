@@ -24,6 +24,7 @@
 #include <vector>
 #include <map>
 #include <random>
+#include <thread>
 
 /////////////SEVER///////////
 #define _WINSOCK_DEPRECATED_NO_WARNINGS

@@ -7,6 +7,9 @@
 #include "Player.h"
 #include "Scene.h"
 
+////SEVER////
+#include "Server.h"
+
 class CGameFramework
 {
 public:

@@ -5,6 +5,11 @@
 #include "stdafx.h"
 #include "GameFramework.h"
 
+
+//////////Server///////////
+extern Server* server;
+////////////////////////////
+
 CScene* gScene = nullptr;
 
 CGameFramework::CGameFramework()
@@ -416,6 +421,22 @@ void CGameFramework::BuildObjects()
 
 	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
 	m_pCamera = m_pPlayer->GetCamera();
+	gScene = m_pScene;
+
+#ifdef _WITH_SERVER_CONNECT
+	////server//////////////
+	server->cplayer = m_pPlayer;
+	server->cscene = m_pScene;
+	server->cobject = m_pScene->m_ppHierarchicalGameObjects[0];
+
+	//쓰레드생성
+	//server->Server_make_thread();
+
+
+
+	/// /////////////////////////////
+#endif // _WITH_SERVER_CONNECT
+
 
 	m_pd3dCommandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { m_pd3dCommandList };
@@ -534,6 +555,24 @@ void CGameFramework::MoveToNextFrame()
 
 void CGameFramework::FrameAdvance()
 {    
+
+#ifdef _WITH_SERVER_CONNECT
+
+	//server->Server_send();
+	//
+
+	////공격과 방어 초기화
+	//server->attackAndGuard_idle();
+
+	//server->Server_recv();
+
+	//문제가 생길것 같다.
+	//if (server->checkSR == false)
+	server->checkSR = true;
+
+	///////////////////////////////////////
+#endif // _WITH_SERVER_CONNECT
+
 	m_GameTimer.Tick(60.0f);
 	
 	ProcessInput();

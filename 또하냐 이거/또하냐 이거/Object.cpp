@@ -872,6 +872,50 @@ void CGameObject::SetPosition(XMFLOAT3 xmf3Position)
 	SetPosition(xmf3Position.x, xmf3Position.y, xmf3Position.z);
 }
 
+
+void CGameObject::SetLook(float x, float y, float z)
+{
+	m_xmf4x4ToParent._31 = x;
+	m_xmf4x4ToParent._32 = y;
+	m_xmf4x4ToParent._33 = z;
+
+	UpdateTransform(NULL);
+}
+
+void CGameObject::SetRight(float x, float y, float z)
+{
+	m_xmf4x4ToParent._11 = x;
+	m_xmf4x4ToParent._12 = y;
+	m_xmf4x4ToParent._13 = z;
+
+	UpdateTransform(NULL);
+}
+
+void CGameObject::SetUp(float x, float y, float z)
+{
+	m_xmf4x4ToParent._21 = x;
+	m_xmf4x4ToParent._22 = y;
+	m_xmf4x4ToParent._23 = z;
+
+	UpdateTransform(NULL);
+}
+
+void CGameObject::SetLook(XMFLOAT3 look)
+{
+	SetLook(look.x, look.y, look.z);
+}
+
+void CGameObject::SetRight(XMFLOAT3 right)
+{
+	SetRight(right.x, right.y, right.z);
+}
+
+void CGameObject::SetUp(XMFLOAT3 up)
+{
+	SetUp(up.x, up.y, up.z);
+}
+
+
 void CGameObject::SetScale(float x, float y, float z)
 {
 	XMMATRIX mtxScale = XMMatrixScaling(x, y, z);
