@@ -293,18 +293,10 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 			{
 				if (!Vector3::Compare(gScene->m_pPlayer->bones["Spine"]->GetPosition(), gScene->m_pPlayer->oldSpinePosition))
 				{
-					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) >= ANIMATION_HIT_HEAD_LEFT_B)
+					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) >= ANIMATION_JAB_KICK)
 					{
 						gScene->m_pPlayer->SetPosition({ gScene->m_pPlayer->bones["Spine"]->GetPosition().x, 100.f, gScene->m_pPlayer->bones["Spine"]->GetPosition().z });
-						//gScene->m_pPlayer->GetCamera()->SetPosition();
-						//gScene->m_pPlayer->GetCamera()->SetPosition(XMFLOAT3(gScene->m_pPlayer->bones["Head"]->GetPosition().x, 0.0f, gScene->m_pPlayer->bones["Head"]->GetPosition().z));
 					}
-					//gScene->m_pPlayer->SetPosition(gScene->m_pPlayer.);
-					// TODO : 축이 이동하는 애니메이션에 대한 처리
-					// SOLUTION : 계층 모델에 대해서 애니메이션을 지정했을 때의 좌표와 애니메이션 실행이 끝났을 때의 좌표가 다르다면
-					//            애니메이션 실행이 끝났을 때의 좌표로 이동하게 함
-					// 해결해야하는 부분 : 메쉬와 본, 바운딩박스의 좌표 전부를 바꿔야 하는가?
-					//                     그냥 월드 변환 좌표를 변경하면 알아서 다 따라가나?
 				}
 				if ((gScene->m_pPlayer->isAlive) && (gScene->m_pPlayer->state != IDLE))
 				{
@@ -338,6 +330,7 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 		}
 		else// 애니메이션중
 		{
+			
 			if (isPlayer)
 			{
 				if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_COMBAT_MODE_A)
@@ -523,11 +516,19 @@ void CAnimationController::SetAnimationCallbackHandler(int nAnimationSet, CAnima
 	if (m_pAnimationSets) m_pAnimationSets->SetAnimationCallbackHandler(nAnimationSet, pCallbackHandler);
 }
 
-void CAnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet)
+void CAnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT nType)
 {
 	if (m_pAnimationTracks)
 	{
+		/*if (m_pAnimationSets)
+		{
+			if (m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks->m_nAnimationSet]->m_nType == ANIMATION_TYPE_ONCE)
+				m_pAnimationTracks->m_fPosition = 0.f;
+		}*/
 		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
+
+		/*if (m_pAnimationSets)
+			m_pAnimationSets->m_pAnimationSets[nAnimationSet]->m_nType = nType;*/
 		if (gScene)
 		{
 			if (gScene->m_pPlayer)
