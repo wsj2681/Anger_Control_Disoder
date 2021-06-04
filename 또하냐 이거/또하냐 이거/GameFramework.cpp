@@ -449,22 +449,22 @@ void CGameFramework::ProcessInput()
 		if (pKeysBuffer[VK_UP] & 0xF0)
 		{
 			dwDirection |= DIR_FORWARD;
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD);
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD, ANIMATION_TYPE_LOOP);
 		}
 		if (pKeysBuffer[VK_DOWN] & 0xF0)
 		{
 			dwDirection |= DIR_BACKWARD;
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD);
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD, ANIMATION_TYPE_LOOP);
 		}
 		if (pKeysBuffer[VK_LEFT] & 0xF0)
 		{
 			dwDirection |= DIR_LEFT;
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT);
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT, ANIMATION_TYPE_LOOP);
 		}
 		if (pKeysBuffer[VK_RIGHT] & 0xF0) 
 		{
 			dwDirection |= DIR_RIGHT;
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT);
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT, ANIMATION_TYPE_LOOP);
 		}
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;

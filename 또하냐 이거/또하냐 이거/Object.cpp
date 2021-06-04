@@ -516,19 +516,31 @@ void CAnimationController::SetAnimationCallbackHandler(int nAnimationSet, CAnima
 	if (m_pAnimationSets) m_pAnimationSets->SetAnimationCallbackHandler(nAnimationSet, pCallbackHandler);
 }
 
-void CAnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT nType)
+void CAnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT nType, bool bAnimFixed)
 {
 	if (m_pAnimationTracks)
 	{
-		/*if (m_pAnimationSets)
+		if (m_pAnimationSets)
 		{
-			if (m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks->m_nAnimationSet]->m_nType == ANIMATION_TYPE_ONCE)
+			if (!m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks->m_nAnimationSet]->IsAnimate())
+	
+			switch (m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks->m_nAnimationSet]->m_nType)
+			{
+			case ANIMATION_TYPE_LOOP:
+			case ANIMATION_TYPE_PINGPONG:
+				if (nType != ANIMATION_TYPE_ONCE)
+					break;
+			case ANIMATION_TYPE_ONCE:
 				m_pAnimationTracks->m_fPosition = 0.f;
-		}*/
+				break;
+			default:
+				break;
+			}
+		}
 		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
 
-		/*if (m_pAnimationSets)
-			m_pAnimationSets->m_pAnimationSets[nAnimationSet]->m_nType = nType;*/
+		if (m_pAnimationSets)
+			m_pAnimationSets->m_pAnimationSets[nAnimationSet]->m_nType = nType;
 		if (gScene)
 		{
 			if (gScene->m_pPlayer)
