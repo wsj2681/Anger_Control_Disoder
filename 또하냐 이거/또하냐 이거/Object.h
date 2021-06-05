@@ -613,6 +613,13 @@ public:
 	virtual ~CEagleObject();
 };
 
+class MapObject : public CGameObject
+{
+public:
+	MapObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pModel, int nAnimationTracks);
+	virtual ~MapObject();
+};
+
 class Particle
 {
 public:

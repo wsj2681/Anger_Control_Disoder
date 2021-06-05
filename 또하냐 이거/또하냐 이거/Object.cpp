@@ -1679,6 +1679,19 @@ CEagleObject::~CEagleObject()
 {
 }
 
+MapObject::MapObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, CLoadedModelInfo* pModel, int nAnimationTracks)
+{
+	CLoadedModelInfo* pMapObject = pModel;
+	if (!pMapObject) pMapObject = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/Arena.bin", NULL);
+
+	SetChild(pMapObject->m_pModelRootObject, true);
+	m_pSkinnedAnimationController = new CAnimationController(pd3dDevice, pd3dCommandList, nAnimationTracks, pMapObject);
+}
+
+MapObject::~MapObject()
+{
+}
+
 CubeObject::CubeObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
 	CubeMesh* pSkyBoxMesh = new CubeMesh(pd3dDevice, pd3dCommandList, 20.0f, 20.0f, 20.0f);
