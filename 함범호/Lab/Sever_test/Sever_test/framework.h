@@ -88,7 +88,7 @@ struct Player_world {
 
 	UINT nowState = STATE_IDLE;
 	
-
+	float playerHp = 100.0f;
 };
 #pragma pack(pop)
 

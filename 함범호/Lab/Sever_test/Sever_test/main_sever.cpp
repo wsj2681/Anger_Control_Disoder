@@ -240,6 +240,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		else if (retval == 0)
 			break;
 
+		//cout << thread_id.thread_num << " thread 's Player HP : " << player_hp[thread_id.thread_num].playerHp << endl;;
+
 		attAdef.checkAni = checkAnimation(attAdef);
 
 		//충돌박스 만들기
@@ -273,14 +275,16 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 
 		// 충돌된 주먹 값 저장.
 		//saveColPostion[thread_id.thread_num] = player_rHand;
+		cout << thread_id.thread_num << " thread 's Player HP(sss) : " << player_hp[thread_id.thread_num].playerHp << endl;;
 
 		EnterCriticalSection(&cs);
-
+		
 		if (thread_id.thread_num == 1 || thread_id.thread_num == 3) {
 
 			thread_num_1_player = player;
 			recv_attackAnddefend[thread_id.thread_num] = attAdef;
 
+			//cout << thread_id.thread_num << " thread 's Player HP : " << player_hp[thread_id.thread_num+1].playerHp << endl;;
 
 			//첫번쨰접속 쓰레드한테 충돌처리
 			col1.check_collide = checkcollition(player_obb[0], player_obb[1], 0);
@@ -345,6 +349,9 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			}
 
 
+			//cout << thread_id.thread_num << " thread 's  other Player HP : " << player_hp[thread_id.thread_num + 1].playerHp << endl;;
+
+
 
 			retval = send(thread_client_sock, (char*)&thread_num_2_player, sizeof(thread_num_2_player), 0);
 			retval = send(thread_client_sock, (char*)&col2, sizeof(col2), 0);
@@ -354,6 +361,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			//cout << "collide _ position - " << col1.collidePosition.x << " " << col1.collidePosition.y << " " << col1.collidePosition.z << endl;
 			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num + 1], sizeof(recv_attackAnddefend[thread_id.thread_num + 1]), 0);
 			retval = send(thread_client_sock, (char*)&thread_2_headHitted, sizeof(thread_2_headHitted),0);
+			
 			if (idIndex <= 2) {
 				player_hp[thread_id.thread_num + 1].playerHp = 100.0f;
 				retval = send(thread_client_sock, (char*)&player_hp[thread_id.thread_num + 1], sizeof(player_hp[thread_id.thread_num]), 0);
@@ -361,6 +369,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			else
 				retval = send(thread_client_sock, (char*)&player_hp[thread_id.thread_num+1], sizeof(player_hp[thread_id.thread_num]), 0);
 
+			
+			
 			//충돌좌표 초기화
 			col1.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 			
@@ -436,6 +446,10 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 
 			//recv_attackAnddefend[thread_id.thread_num - 1].rightGuard = true;
 
+
+			//cout << thread_id.thread_num << " thread 's  other Player HP : " << player_hp[thread_id.thread_num - 1].playerHp << endl;;
+
+
 			retval = send(thread_client_sock, (char*)&thread_num_1_player, sizeof(thread_num_1_player), 0);
 			retval = send(thread_client_sock, (char*)&col1, sizeof(col1), 0);
 			//cout << "collide _ position - " << col2.collidePosition.x << " " << col2.collidePosition.y << " " << col2.collidePosition.z << endl;
@@ -444,6 +458,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num - 1], sizeof(recv_attackAnddefend[thread_id.thread_num - 1]), 0);
 			retval = send(thread_client_sock, (char*)&thread_1_headHitted, sizeof(thread_1_headHitted), 0);
 			retval = send(thread_client_sock, (char*)&player_hp[thread_id.thread_num-1], sizeof(player_hp[thread_id.thread_num]), 0);
+
+			
 
 			//충돌좌표 초기화
 			col2.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);

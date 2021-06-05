@@ -57,6 +57,7 @@ void Server::Server_send()
 		player.player_lFoot = cobject->lFoot->m_xmf4x4World;
 		player.player_Spine = cobject->spine->m_xmf4x4World;*/
 
+		//player.playerHp = cplayer->hp;
 		myHP.playerHp = cplayer->hp;
 
 		retval = send(sock, (char*)&player, sizeof(player), 0);

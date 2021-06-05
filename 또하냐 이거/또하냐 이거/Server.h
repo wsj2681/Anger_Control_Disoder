@@ -34,6 +34,7 @@ struct Player_world {
 	XMFLOAT4X4 player_Spine;
 
 	UINT nowState = IDLE;
+	float playerHp = 100.0f;
 
 };
 #pragma pack(pop)
