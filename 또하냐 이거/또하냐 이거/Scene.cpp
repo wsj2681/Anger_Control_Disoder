@@ -684,7 +684,7 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		{
 			m_pPlayer->hp -= 5.f;
 			cout << "Player HP = "<<m_pPlayer->hp << endl;
-			m_ppHierarchicalGameObjects[0]->hp -= 5.f;
+			//m_ppHierarchicalGameObjects[0]->hp -= 5.f;
 			cout << "OtherPlayer HP = " << m_ppHierarchicalGameObjects[0]->hp << endl;
 			break;
 		}

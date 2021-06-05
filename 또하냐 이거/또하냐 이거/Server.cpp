@@ -89,7 +89,7 @@ void Server::Server_recv()
 		retval = recv(sock, (char*)&otherHP, sizeof(otherHP), 0);
 
 
-
+		cout << "other Player HP : "<<otherHP.playerHp << " " << endl;
 		//HP¼³Á¤
 		//cplayer->hp = myHP.playerHp;
 		cscene->m_ppHierarchicalGameObjects[0]->hp = otherHP.playerHp;
