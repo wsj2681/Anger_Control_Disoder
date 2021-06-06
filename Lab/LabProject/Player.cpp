@@ -242,11 +242,11 @@ void Player::Update(float fTimeElapsed)
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	m_xmf3Velocity = XMFLOAT3();
 
-	if (spine)
+	if (bones["Spine"])
 	{
 		if (playerCollision)
 		{
-			playerCollision->Center = spine->GetPosition();
+			playerCollision->Center = bones["Spine"]->GetPosition();
 		}
 	}
 }

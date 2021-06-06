@@ -806,42 +806,7 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		}
 		case 'P':
 		{
-			if (ui["0_OtherPlayerTotalScore"]->isActive())
-			{
-				ui["0_OtherPlayerTotalScore"]->SetActive(false);
-				ui["1_OtherPlayerTotalScore"]->SetActive(true);
-			}
-			else if (ui["1_OtherPlayerTotalScore"]->isActive())
-			{
-				ui["1_OtherPlayerTotalScore"]->SetActive(false);
-				ui["2_OtherPlayerTotalScore"]->SetActive(true);
-			}
-			else if (ui["2_OtherPlayerTotalScore"]->isActive())
-			{
-				ui["2_OtherPlayerTotalScore"]->SetActive(false);
-				ui["3_OtherPlayerTotalScore"]->SetActive(true);
-			}
-			m_pPlayer->hp = 100.f;
-			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
-			break;
-		}
-		case 'O':
-		{
-			if (ui["0_PlayerTotalScore"]->isActive())
-			{
-				ui["0_PlayerTotalScore"]->SetActive(false);
-				ui["1_PlayerTotalScore"]->SetActive(true);
-			}
-			else if (ui["1_PlayerTotalScore"]->isActive())
-			{
-				ui["1_PlayerTotalScore"]->SetActive(false);
-				ui["2_PlayerTotalScore"]->SetActive(true);
-			}
-			else if (ui["2_PlayerTotalScore"]->isActive())
-			{
-				ui["2_PlayerTotalScore"]->SetActive(false);
-				ui["3_PlayerTotalScore"]->SetActive(true);
-			}
+
 			m_pPlayer->hp = 100.f;
 			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
 			break;
@@ -983,42 +948,14 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp <= 0.f)
 	{
-		if (ui["0_OtherPlayerTotalScore"]->isActive())
-		{
-			ui["0_OtherPlayerTotalScore"]->SetActive(false);
-			ui["1_OtherPlayerTotalScore"]->SetActive(true);
-		}
-		else if (ui["1_OtherPlayerTotalScore"]->isActive())
-		{
-			ui["1_OtherPlayerTotalScore"]->SetActive(false);
-			ui["2_OtherPlayerTotalScore"]->SetActive(true);
-		}
-		else if (ui["2_OtherPlayerTotalScore"]->isActive())
-		{
-			ui["2_OtherPlayerTotalScore"]->SetActive(false);
-			ui["3_OtherPlayerTotalScore"]->SetActive(true);
-		}
+		m_pPlayer->score -= 1;
 		m_pPlayer->hp = 100.f;
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
 	}
 
 	if (m_pPlayer->hp <= 0.f)
 	{
-		if (ui["0_PlayerTotalScore"]->isActive())
-		{
-			ui["0_PlayerTotalScore"]->SetActive(false);
-			ui["1_PlayerTotalScore"]->SetActive(true);
-		}
-		else if (ui["1_PlayerTotalScore"]->isActive())
-		{
-			ui["1_PlayerTotalScore"]->SetActive(false);
-			ui["2_PlayerTotalScore"]->SetActive(true);
-		}
-		else if (ui["2_PlayerTotalScore"]->isActive())
-		{
-			ui["2_PlayerTotalScore"]->SetActive(false);
-			ui["3_PlayerTotalScore"]->SetActive(true);
-		}
+		hierarchicalGameObjects.data()[OTHERPLAYER]->score -= 1;
 		m_pPlayer->hp = 100.f;
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
 	}
