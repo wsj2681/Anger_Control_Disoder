@@ -75,7 +75,7 @@ void AnimationSet::SetPosition(float fTrackPosition)
 				{
 					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) >= ANIMATION_JAB_KICK)
 					{
-						gScene->m_pPlayer->SetPosition({ gScene->m_pPlayer->bones["Spine"]->GetPosition().x, 100.f, gScene->m_pPlayer->bones["Spine"]->GetPosition().z });
+						//gScene->m_pPlayer->SetPosition({ gScene->m_pPlayer->bones["Spine"]->GetPosition().x, 100.f, gScene->m_pPlayer->bones["Spine"]->GetPosition().z });
 					}
 				}
 				if ((gScene->m_pPlayer->isAlive) && (gScene->m_pPlayer->nowState != IDLE))
