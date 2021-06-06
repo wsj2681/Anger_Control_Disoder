@@ -50,57 +50,85 @@ bool AnimationSet::IsAnimate()
 void AnimationSet::SetPosition(float fTrackPosition)
 {
 	m_fPosition = fTrackPosition;
+
 	switch (m_nType)
 	{
 	case ANIMATION_TYPE_LOOP:
 	{
-
-		//m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]); 
-		m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames-1]) * m_pfKeyFrameTimes[m_nKeyFrames-1];
-		
-		if (IsAnimate())
-		{
-			if (isPlayer)
-			{
-				//cout << m_fPosition << " / " << m_pfKeyFrameTimes[(m_nKeyFrames - 1)] << endl;
-				if (gScene->m_pPlayer->isAlive == true)
-					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-				else
-					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWNED);
-				gScene->m_pPlayer->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.0f;
-				m_fPosition = 0.0f;
-			}
-			if (isOtherPlayer)
-			{
-				//cout << m_fPosition << " / " << m_pfKeyFrameTimes[(m_nKeyFrames - 1)] << endl;
-				if (gScene->hierarchicalGameObjects.data()[1]->isAlive == true)
-					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-				else
-					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWNED);
-				gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.0f;
-				m_fPosition = 0.0f;
-			}
-		}
-		
-
-		//for (int i = 0; i < m_nKeyFrames; ++i)
-		//{
-		//	cout << m_pfKeyFrameTimes[i] << " / ";
-		//}
-		//cout << endl;
-		
-//		m_fPosition = fmod(fTrackPosition, m_fLength); //if (m_fPosition < 0) m_fPosition += m_fLength;
-//		m_fPosition = fTrackPosition - int(fTrackPosition / m_fLength) * m_fLength;
+		m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]);
 		break;
 	}
 	case ANIMATION_TYPE_ONCE:
-		m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]);
-		//cout << m_nKeyFrames << endl;
-		if (m_fLength >= m_fPosition)
+	{
+		//cout << "APosition(" << gScene->m_pPlayer->GetPosition().x << ", " << gScene->m_pPlayer->GetPosition().y << ", " << gScene->m_pPlayer->GetPosition().z << ")" << endl;
+		//cout << "Position(" << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().x << ", " << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().y << ", " << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().z << ")" << endl;
+		//cout << "BPosition(" << gScene->m_pPlayer->bones["Head"]->GetPosition().x<< ", " << gScene->m_pPlayer->bones["Head"]->GetPosition().y << ", " << gScene->m_pPlayer->bones["Head"]->GetPosition().z << ")" << endl;
+		m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames - 1]) * m_pfKeyFrameTimes[m_nKeyFrames - 1];
+		//if (isPlayer)
+		//	gScene->m_pPlayer->GetCamera()->SetPosition(gScene->m_pPlayer->GetPosition());
+
+		if (IsAnimate())
 		{
-			
+			if (isPlayer) // 애니메이션이 끝났을 때
+			{
+				if (!Vector3::Compare(gScene->m_pPlayer->bones["Spine"]->GetPosition(), gScene->m_pPlayer->oldSpinePosition))
+				{
+					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) >= ANIMATION_JAB_KICK)
+					{
+						gScene->m_pPlayer->SetPosition({ gScene->m_pPlayer->bones["Spine"]->GetPosition().x, 100.f, gScene->m_pPlayer->bones["Spine"]->GetPosition().z });
+					}
+				}
+				if ((gScene->m_pPlayer->isAlive) && (gScene->m_pPlayer->nowState != IDLE))
+				{
+					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+					gScene->m_pPlayer->nowState = IDLE;
+				}
+				else
+				{
+					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+					gScene->m_pPlayer->nowState = DEAD;
+				}
+				gScene->m_pPlayer->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.0f;
+				m_fPosition = 0.0f;
+			}
+			else if (isOtherPlayer)
+			{
+				if ((gScene->hierarchicalGameObjects.data()[1]->isAlive) && (gScene->hierarchicalGameObjects.data()[1]->nowState != IDLE))
+				{
+					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+					gScene->hierarchicalGameObjects.data()[1]->nowState = IDLE;
+				}
+				else
+				{
+					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+					gScene->hierarchicalGameObjects.data()[1]->nowState = DEAD;
+				}
+				gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.0f;
+				m_fPosition = 0.0f;
+			}
+			break;
 		}
-		break;
+		else// 애니메이션중
+		{
+
+			if (isPlayer)
+			{
+				if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_COMBAT_MODE_A)
+				{
+					//gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0));
+					gScene->m_pPlayer->nowState = ATTACK;
+				}
+			}
+			else if (isOtherPlayer)
+			{
+				if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_COMBAT_MODE_A)
+				{
+					//gScene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, gScene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0));
+					gScene->hierarchicalGameObjects.data()[1]->nowState = ATTACK;
+				}
+			}
+			break;
+		}
 	case ANIMATION_TYPE_PINGPONG:
 		break;
 	}
@@ -109,6 +137,7 @@ void AnimationSet::SetPosition(float fTrackPosition)
 	{
 		void* pCallbackData = GetCallbackData();
 		if (pCallbackData) m_pAnimationCallbackHandler->HandleCallback(pCallbackData);
+	}
 	}
 }
 

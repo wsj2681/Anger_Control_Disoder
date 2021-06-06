@@ -40,11 +40,12 @@ private:
 	bool IsAnimate();
 	bool IsAnimate(int nAnimationSet);
 public:
-	void SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet);
+	void SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT nType = 0x00, bool bAnimFixed = true);
 	void SetTrackPosition(int nAnimationTrack, float fPosition);
 	void SetTrackSpeed(int nAnimationTrack, float fSpeed);
 	void SetAnimationCallbackHandler(int nAnimationSet, AnimationCallbackHandler* pCallbackHandler);
 
 	void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
 	void AdvanceTime(float fElapsedTime, Object* pRootGameObject);
+	int GetNowTrackAnimationSet(int nAnimationTrack);
 };

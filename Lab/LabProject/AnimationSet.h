@@ -38,6 +38,7 @@ private:
 	XMFLOAT3** m_ppxmf3KeyFrameTranslations = nullptr;
 #endif
 
+public :
 	int 							m_nType = ANIMATION_TYPE_LOOP; //Once, Loop, PingPong
 
 	AnimationCallbackHandler* m_pAnimationCallbackHandler = nullptr;

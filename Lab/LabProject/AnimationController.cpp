@@ -5,6 +5,9 @@
 #include "ModelInfo.h"
 #include "SkinnedMesh.h"
 #include "Object.h"
+#include "Scene.h"
+
+extern Scene* gScene;
 
 AnimationController::AnimationController(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, int nAnimationTracks, ModelInfo* pModel)
 {
@@ -61,10 +64,37 @@ void AnimationController::SetAnimationCallbackHandler(int nAnimationSet, Animati
 	if (m_pAnimationSets) m_pAnimationSets->SetAnimationCallbackHandler(nAnimationSet, pCallbackHandler);
 }
 
-void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet)
+void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT nType, bool bAnimFixed)
 {
-	if (m_pAnimationTracks) m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
-	if (m_pAnimationSets->m_pAnimationSets[nAnimationSet]) m_pAnimationSets->m_pAnimationSets[nAnimationSet]->m_fPosition = 0.0f;
+	if (m_pAnimationTracks)
+	{
+		if (m_pAnimationSets)
+		{
+			if (!m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks->m_nAnimationSet]->IsAnimate())
+
+				switch (m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks->m_nAnimationSet]->m_nType)
+				{
+				case ANIMATION_TYPE_LOOP:
+				case ANIMATION_TYPE_PINGPONG:
+					if (nType != ANIMATION_TYPE_ONCE)
+						break;
+				case ANIMATION_TYPE_ONCE:
+					m_pAnimationTracks->m_fPosition = 0.f;
+					break;
+				default:
+					break;
+				}
+		}
+		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
+
+		if (m_pAnimationSets)
+			m_pAnimationSets->m_pAnimationSets[nAnimationSet]->m_nType = nType;
+		if (gScene)
+		{
+			if (gScene->m_pPlayer)
+				gScene->m_pPlayer->oldSpinePosition = gScene->m_pPlayer->bones["Spine"]->GetPosition();
+		}
+	}
 }
 
 void AnimationController::SetTrackEnable(int nAnimationTrack, bool bEnable)
@@ -131,4 +161,14 @@ bool AnimationController::IsAnimate()
 bool AnimationController::IsAnimate(int nAnimationSet)
 {
 	return m_pAnimationSets->m_pAnimationSets[nAnimationSet]->IsAnimate();
+}
+
+int AnimationController::GetNowTrackAnimationSet(int nAnimationTrack)
+{
+	if (m_pAnimationTracks)
+	{
+		return m_pAnimationTracks[nAnimationTrack].m_nAnimationSet;
+	}
+
+	return -1;
 }
