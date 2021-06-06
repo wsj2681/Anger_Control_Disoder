@@ -34,7 +34,7 @@ struct Player_world {
 	XMFLOAT4X4 player_Spine;
 
 	UINT nowState = IDLE;
-	float playerHp = 100.0f;
+	
 
 };
 #pragma pack(pop)
@@ -91,6 +91,9 @@ struct AttackAndDefend {
 	bool middleGuard = false;
 
 	bool nuckDown = false;
+
+
+	UINT ani_num;
 
 	bool checkAni = false;
 

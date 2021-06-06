@@ -246,7 +246,7 @@ void Server::Server_thread() {
 			Server_recv();
 
 			//공격과 방어 초기화
-			attackAndGuard_idle();
+			//attackAndGuard_idle();
 			checkSR = false;
 		}
 
@@ -270,6 +270,7 @@ void Server::attackAndGuard_idle() {
 	send_attackAnddefend.middleGuard = false;
 	send_attackAnddefend.nuckDown = false;
 
+	send_attackAnddefend.ani_num = ANIMATION_IDLE_A;
 	send_attackAnddefend.checkAni = false;
 
 }

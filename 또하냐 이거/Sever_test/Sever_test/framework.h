@@ -146,6 +146,8 @@ struct AttackAndDefend {
 
 	bool nuckDown = false;
 
+	UINT ani_num;
+
 	bool checkAni = false;
 
 };

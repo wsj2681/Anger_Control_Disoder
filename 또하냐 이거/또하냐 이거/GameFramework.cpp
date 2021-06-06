@@ -471,21 +471,38 @@ void CGameFramework::ProcessInput()
 		{
 			dwDirection |= DIR_FORWARD;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD, ANIMATION_TYPE_LOOP);
+
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_MOVE_FORWARD;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 		}
 		if (pKeysBuffer[VK_DOWN] & 0xF0)
 		{
 			dwDirection |= DIR_BACKWARD;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD, ANIMATION_TYPE_LOOP);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_MOVE_BACKWARD;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 		}
 		if (pKeysBuffer[VK_LEFT] & 0xF0)
 		{
 			dwDirection |= DIR_LEFT;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT, ANIMATION_TYPE_LOOP);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_MOVE_LEFT;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 		}
 		if (pKeysBuffer[VK_RIGHT] & 0xF0) 
 		{
 			dwDirection |= DIR_RIGHT;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT, ANIMATION_TYPE_LOOP);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 		}
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
@@ -568,6 +585,10 @@ void CGameFramework::FrameAdvance()
 
 	//문제가 생길것 같다.
 	//if (server->checkSR == false)
+
+	///공격과 방어 초기화
+	server->attackAndGuard_idle();
+
 	server->checkSR = true;
 
 	///////////////////////////////////////
