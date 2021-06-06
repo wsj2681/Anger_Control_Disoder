@@ -101,7 +101,7 @@ public:
 	virtual ~BoxingPlayer();
 public:
 	virtual Camera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);
-
+	void CameraRotate();
 	virtual void Update(float fTimeElapsed);
 	virtual void MoveTo(XMFLOAT3 destination);
 	virtual void UpdateWayPoints();

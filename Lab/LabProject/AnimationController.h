@@ -40,7 +40,7 @@ private:
 	bool IsAnimate();
 	bool IsAnimate(int nAnimationSet);
 public:
-	void SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT nType = 0x00, bool bAnimFixed = true);
+	void SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT nType = 0x00, bool bAnimFixed = false);
 	void SetTrackPosition(int nAnimationTrack, float fPosition);
 	void SetTrackSpeed(int nAnimationTrack, float fSpeed);
 	void SetAnimationCallbackHandler(int nAnimationSet, AnimationCallbackHandler* pCallbackHandler);

@@ -404,6 +404,7 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 			m_pCamera->SetPosition(Vector3::Add(bones["Head"]->GetPosition(), m_pCamera->GetOffset()));
+			CameraRotate();
 			break;
 		case THIRD_PERSON_CAMERA:
 			SetFriction(250.0f);
@@ -440,6 +441,18 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 	Update(fTimeElapsed);
 
 	return(m_pCamera);
+}
+
+void BoxingPlayer::CameraRotate()
+{
+	float x = 0.f, y = 0.f;
+	float xx = 15.f, yy = 15.f;
+	while (x <= 360.f && y <= 360.f)
+	{
+		m_pCamera->Rotate(x, y, 0.f);
+		x += 10.f;
+		y += 10.f;
+	}
 }
 
 

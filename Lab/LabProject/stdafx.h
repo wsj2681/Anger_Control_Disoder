@@ -205,6 +205,7 @@ constexpr UINT DAMAGE_STRAIGHT = 15;
 constexpr UINT IDLE = 1;
 constexpr UINT ATTACK = 2;
 constexpr UINT HIT = 3;
+constexpr UINT GUARD = 4;
 constexpr UINT DEAD = 3;
 
 //HR

@@ -722,70 +722,16 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			break;
 		case VK_RETURN:
 			break;
-		case VK_F4:
-			break;
 		case VK_F5:
 			break;
 		case VK_F6:
+			m_pPlayer->score -= 1.f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->score -= 1.f;
+			cout << m_pPlayer->score << hierarchicalGameObjects.data()[OTHERPLAYER]->score << endl;
+			m_pPlayer->hp = 100.f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
 			break;
-		case VK_INSERT:
-			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf3Position.y = m_pPlayer->head->GetPosition().y + 50.f;
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.1f, 0.0f, 0.0f, .3f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.8f, 0.0f, 0.0f, .3f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
-			break;
-		case VK_DELETE:
-			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf3Position.y = m_pPlayer->head->GetPosition().y + 50.f;
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.f, 0.11f, 0.f, .3f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.f, .3f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
-			break;
-		case VK_OEM_3:
-		{
-			cout << m_pPlayer->GetPosition().x << " / " << m_pPlayer->GetPosition().y << " / " << m_pPlayer->GetPosition().z << endl;
-			break;
-		}
-		case VK_NUMPAD0:
-		{
-			particle->PositionInit(m_pPlayer->rHand->GetPosition());
-			break;
-		}
-		case '1':
-		{
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO);
-			break;
-		}
-		case '2':
-		{
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK);
-			break;
-		}
-		case '3':
-		{
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK);
-			break;
-		}
-		case 'Q':
-		{
-			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO);
-			break;
-		}
-		case 'W':
-		{
-			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK);
-			break;
-		}
-		case 'E':
-		{
-			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK);
-			break;
-		}
-		case '5':
-		{
+		case VK_F7:
 			for (auto& o : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
 			{
 				o.second->boundBoxRender = !o.second->boundBoxRender;
@@ -795,35 +741,42 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 				o.second->boundBoxRender = !o.second->boundBoxRender;
 			}
 			break;
-		}
-		case '6':
-		{
+		case VK_F8:
 			m_pPlayer->hp -= 5.f;
 			cout << "Player HP = " << m_pPlayer->hp << endl;
 			//m_ppHierarchicalGameObjects[0]->hp -= 5.f;
 			cout << "OtherPlayer HP = " << hierarchicalGameObjects.data()[OTHERPLAYER]->hp << endl;
 			break;
-		}
-		case 'P':
-		{
-
-			m_pPlayer->hp = 100.f;
-			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
-			break;
-		}
-		case 'M':
-		{
-			m_pPlayer->score -= 1.f;
-			hierarchicalGameObjects.data()[OTHERPLAYER]->score -= 1.f;
-			cout << m_pPlayer->score << hierarchicalGameObjects.data()[OTHERPLAYER]->score << endl;
-			break;
-		}
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, (DWORD)(wParam - ANIMATION_KNOCKDOWNED), ANIMATION_TYPE_ONCE, true); break;
+		case 'Q': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L, ANIMATION_TYPE_ONCE, true); break;
+		case 'W': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R, ANIMATION_TYPE_ONCE, true); break;
+		case 'E': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_JAB, ANIMATION_TYPE_ONCE, true); break;
+		case 'R': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CROSS, ANIMATION_TYPE_ONCE, true); break;
+		case 'T': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CROSS_BODY, ANIMATION_TYPE_ONCE, true); break;
+		case 'A': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO, ANIMATION_TYPE_ONCE, true); break;
+		case 'S': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK, ANIMATION_TYPE_ONCE, true); break;
+		case 'D': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK, ANIMATION_TYPE_ONCE, true); break;
+		case 'F': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_L, ANIMATION_TYPE_ONCE, true); break;
+		case 'G': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_R, ANIMATION_TYPE_ONCE, true); break;
+		case 'Z': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true); break;
+		case 'X': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true); break;
+		case 'C': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); break;
+		case 'V': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true); break;
+		case 'B': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true); break;
+		case 'N': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); break;
 		default:
 			break;
 		}
-		break;
-	default:
-		break;
 	}
 	return(false);
 }
@@ -1235,7 +1188,7 @@ void Scene::CollidePVE()
 					if (otherPlayerBoundBox.first == "Head")
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
-						cout << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(PlayerBoundBox.second->GetPosition());
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 10.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
@@ -1243,10 +1196,25 @@ void Scene::CollidePVE()
 					else if (otherPlayerBoundBox.first == "Spine")
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
-						cout << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(PlayerBoundBox.second->GetPosition());
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
+					}
+				}
+				else if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == GUARD && m_pPlayer->nowState == ATTACK)
+				{
+					if (otherPlayerBoundBox.first == "Head")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
+						cout << "Guard - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
+					}
+					else if (otherPlayerBoundBox.first == "Spine")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_2HANDS);
+						cout << "Guard - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
 					}
 				}
 				if (m_pPlayer->nowState == IDLE && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
@@ -1255,16 +1223,31 @@ void Scene::CollidePVE()
 					if (PlayerBoundBox.first == "Head")
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
-						cout << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
 						m_pPlayer->nowState = HIT;
 					}
 					else if (PlayerBoundBox.first == "Spine")
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
-						cout << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
 						m_pPlayer->nowState = HIT;
+					}
+				}
+				else if (m_pPlayer->nowState == GUARD && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
+				{
+					if (PlayerBoundBox.first == "Head")
+					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
+						cout << "Guard - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						m_pPlayer->nowState = IDLE;
+					}
+					else if (PlayerBoundBox.first == "Spine")
+					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_2HANDS);
+						cout << "Guard - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						m_pPlayer->nowState = IDLE;
 					}
 				}
 			}

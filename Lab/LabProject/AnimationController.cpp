@@ -85,6 +85,25 @@ void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimati
 					break;
 				}
 		}*/
+		if (bAnimFixed)
+		{
+			if (m_pAnimationSets)
+			{
+				switch (m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks->m_nAnimationSet]->m_nType)
+				{
+				case ANIMATION_TYPE_LOOP:
+				case ANIMATION_TYPE_PINGPONG:
+					if (nType != ANIMATION_TYPE_ONCE)
+						break;
+				case ANIMATION_TYPE_ONCE:
+					m_pAnimationTracks->m_fPosition = 0.f;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
 		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
 
 		if (m_pAnimationSets)

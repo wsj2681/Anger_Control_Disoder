@@ -115,6 +115,9 @@ void AnimationSet::SetPosition(float fTrackPosition)
 			{
 				if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_COMBAT_MODE_A)
 				{
+					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_BODY || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LEFT_HEAD || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_RIGHT_HEAD)
+						gScene->m_pPlayer->nowState = GUARD;
+					else
 					//gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0));
 					gScene->m_pPlayer->nowState = ATTACK;
 				}
@@ -123,6 +126,8 @@ void AnimationSet::SetPosition(float fTrackPosition)
 			{
 				if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_COMBAT_MODE_A)
 				{
+					if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_BODY || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LEFT_HEAD || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_RIGHT_HEAD)
+						gScene->hierarchicalGameObjects.data()[1]->nowState = GUARD;
 					//gScene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, gScene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0));
 					gScene->hierarchicalGameObjects.data()[1]->nowState = ATTACK;
 				}
