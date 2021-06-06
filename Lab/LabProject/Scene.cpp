@@ -1233,6 +1233,11 @@ void Scene::CollidePVE()
 					if (PlayerBoundBox.first == "Head")
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_HIT_TORSO_STRIGHT_B;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+						
 						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
 						m_pPlayer->nowState = HIT;
@@ -1240,6 +1245,11 @@ void Scene::CollidePVE()
 					else if (PlayerBoundBox.first == "Spine")
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_KNOCKDOWN;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+						
 						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
 						m_pPlayer->nowState = HIT;
@@ -1250,12 +1260,22 @@ void Scene::CollidePVE()
 					if (PlayerBoundBox.first == "Head")
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_COME_HERE_BRUCE_LI;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+						
 						cout << "Guard - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						m_pPlayer->nowState = IDLE;
 					}
 					else if (PlayerBoundBox.first == "Spine")
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_2HANDS);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_COME_HERE_2HANDS;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+						
 						cout << "Guard - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						m_pPlayer->nowState = IDLE;
 					}
