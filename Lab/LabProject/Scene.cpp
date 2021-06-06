@@ -749,6 +749,98 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			particle->PositionInit(m_pPlayer->rHand->GetPosition());
 			break;
 		}
+		case '1':
+		{
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO);
+			break;
+		}
+		case '2':
+		{
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK);
+			break;
+		}
+		case '3':
+		{
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK);
+			break;
+		}
+		case 'Q':
+		{
+			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO);
+			break;
+		}
+		case 'W':
+		{
+			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK);
+			break;
+		}
+		case 'E':
+		{
+			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK);
+			break;
+		}
+		case '5':
+		{
+			for (auto& o : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
+			{
+				o.second->boundBoxRender = !o.second->boundBoxRender;
+			}
+			for (auto& o : m_pPlayer->boundBoxs)
+			{
+				o.second->boundBoxRender = !o.second->boundBoxRender;
+			}
+			break;
+		}
+		case '6':
+		{
+			m_pPlayer->hp -= 5.f;
+			cout << "Player HP = " << m_pPlayer->hp << endl;
+			//m_ppHierarchicalGameObjects[0]->hp -= 5.f;
+			cout << "OtherPlayer HP = " << hierarchicalGameObjects.data()[OTHERPLAYER]->hp << endl;
+			break;
+		}
+		case 'P':
+		{
+			if (ui["0_OtherPlayerTotalScore"]->isActive())
+			{
+				ui["0_OtherPlayerTotalScore"]->SetActive(false);
+				ui["1_OtherPlayerTotalScore"]->SetActive(true);
+			}
+			else if (ui["1_OtherPlayerTotalScore"]->isActive())
+			{
+				ui["1_OtherPlayerTotalScore"]->SetActive(false);
+				ui["2_OtherPlayerTotalScore"]->SetActive(true);
+			}
+			else if (ui["2_OtherPlayerTotalScore"]->isActive())
+			{
+				ui["2_OtherPlayerTotalScore"]->SetActive(false);
+				ui["3_OtherPlayerTotalScore"]->SetActive(true);
+			}
+			m_pPlayer->hp = 100.f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
+			break;
+		}
+		case 'O':
+		{
+			if (ui["0_PlayerTotalScore"]->isActive())
+			{
+				ui["0_PlayerTotalScore"]->SetActive(false);
+				ui["1_PlayerTotalScore"]->SetActive(true);
+			}
+			else if (ui["1_PlayerTotalScore"]->isActive())
+			{
+				ui["1_PlayerTotalScore"]->SetActive(false);
+				ui["2_PlayerTotalScore"]->SetActive(true);
+			}
+			else if (ui["2_PlayerTotalScore"]->isActive())
+			{
+				ui["2_PlayerTotalScore"]->SetActive(false);
+				ui["3_PlayerTotalScore"]->SetActive(true);
+			}
+			m_pPlayer->hp = 100.f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
+			break;
+		}
 		default:
 			break;
 		}

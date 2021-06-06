@@ -109,10 +109,3 @@ public:
 	void OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 	LRESULT CALLBACK OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam);
 };
-
-#define PLAYER_SET_ANIMATION(input, animType, state, atkType) \
-	if (pKeysBuffer[input] & 0xF0) \
-	{ \
-		m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, animType); \
-		m_pPlayer->nowState = state; \
-		m_pPlayer->attackType = atkType;
