@@ -475,6 +475,7 @@ void CGameFramework::ProcessInput()
 #ifdef _WITH_SERVER_CONNECT
 			server->send_attackAnddefend.ani_num = ANIMATION_MOVE_FORWARD;
 			server->send_attackAnddefend.checkAni = true;
+			
 #endif // _WITH_SERVER_CONNECT
 		}
 		if (pKeysBuffer[VK_DOWN] & 0xF0)
@@ -573,6 +574,14 @@ void CGameFramework::MoveToNextFrame()
 void CGameFramework::FrameAdvance()
 {    
 
+
+
+	m_GameTimer.Tick(60.0f);
+	
+	ProcessInput();
+
+	AnimateObjects();
+
 #ifdef _WITH_SERVER_CONNECT
 
 	//server->Server_send();
@@ -586,19 +595,14 @@ void CGameFramework::FrameAdvance()
 	//문제가 생길것 같다.
 	//if (server->checkSR == false)
 
-	///공격과 방어 초기화
-	server->attackAndGuard_idle();
+
 
 	server->checkSR = true;
 
 	///////////////////////////////////////
 #endif // _WITH_SERVER_CONNECT
 
-	m_GameTimer.Tick(60.0f);
-	
-	ProcessInput();
-
-    AnimateObjects();
+    
 
 	HRESULT hResult = m_pd3dCommandAllocator->Reset();
 	hResult = m_pd3dCommandList->Reset(m_pd3dCommandAllocator, NULL);

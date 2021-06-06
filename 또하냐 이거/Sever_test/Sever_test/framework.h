@@ -150,6 +150,7 @@ struct AttackAndDefend {
 
 	bool checkAni = false;
 
+	bool ani_playing;
 };
 #pragma pack(pop)
 #pragma pack(push,1)

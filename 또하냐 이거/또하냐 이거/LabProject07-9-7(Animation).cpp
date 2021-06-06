@@ -193,8 +193,10 @@ DWORD WINAPI serverThread(LPVOID arg) {
 			server->Server_recv();
 
 			//공격과 방어 초기화
-			server->attackAndGuard_idle();
+			
 			server->checkSR = false;
+			server->attackAndGuard_idle();
+
 		}
 
 

@@ -96,6 +96,8 @@ struct AttackAndDefend {
 	UINT ani_num;
 
 	bool checkAni = false;
+	
+	bool ani_playing;
 
 
 };
@@ -173,6 +175,8 @@ public:
 
 	int send_count = 0;
 	int recv_count = 0;
+	UINT ani_first_check = 0x62;
+
 
 	Server();
 	Server(int i);
@@ -194,6 +198,6 @@ public:
 
 	void otherPlayerPositionSet();
 
-
+	void otherPlayerAnimation();
 
 };

@@ -242,7 +242,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		else if (retval == 0)
 			break;
 
-		attAdef.checkAni = checkAnimation(attAdef);
+		//attAdef.checkAni = checkAnimation(attAdef);
 
 		//충돌박스 만들기
 		setPosition(player_position, player.player_world);

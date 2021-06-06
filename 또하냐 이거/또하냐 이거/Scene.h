@@ -6,6 +6,7 @@
 
 #include "Shader.h"
 #include "Player.h"
+#include "Server.h"
 
 #define MAX_LIGHTS						16 
 
@@ -119,6 +120,7 @@ public:
 	LIGHTS								*m_pcbMappedLights = NULL;
 
 	Particle* particle = nullptr;
+	
 
 	map<string, UserInterfaceShader*> ui;
 };

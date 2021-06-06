@@ -60,6 +60,12 @@ void Server::Server_send()
 		//player.playerHp = cplayer->hp;
 		myHP.playerHp = cplayer->hp;
 
+		bool retVal{};
+		retVal = cplayer->m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[cplayer->m_pSkinnedAnimationController->m_pAnimationTracks->m_nAnimationSet]->IsAnimate();
+
+		send_attackAnddefend.ani_playing = retVal;
+
+
 		retval = send(sock, (char*)&player, sizeof(player), 0);
 
 		retval = send(sock, (char*)&send_attackAnddefend, sizeof(send_attackAnddefend), 0);
@@ -90,7 +96,7 @@ void Server::Server_recv()
 		retval = recv(sock, (char*)&otherHP, sizeof(otherHP), 0);
 
 
-		cout << "other Player HP : "<<otherHP.playerHp << " " << endl;
+		//cout << "other Player HP : "<<otherHP.playerHp << " " << endl;
 		//HP설정
 		//cplayer->hp = myHP.playerHp;
 		cscene->m_ppHierarchicalGameObjects[0]->hp = otherHP.playerHp;
@@ -113,46 +119,25 @@ void Server::Server_recv()
 
 		//cscene->m_ppHierarchicalGameObjects[0]->nowState = other_player.nowState;
 
+		//상대 클라 애니메이션 실행
+		//otherPlayerAnimation();
+		
+		/*retVal = cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[cscene->
+			m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->m_pAnimationTracks->m_nAnimationSet]->IsAnimate();
+		*/
+		UINT ani_double_check;
+		cout << "ani_Playing_num - " << recv_attackAnddefend.ani_num << endl;
+		cout << "ani_playing_state - " << recv_attackAnddefend.ani_playing << endl;
 
-
-		// 상대클라 애니메이션
-		if (recv_attackAnddefend.checkAni) {
-			if (recv_attackAnddefend.leftHand) {
-				cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
-			}
-			if (recv_attackAnddefend.rightHand) {
-				cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightHand ? ANIMATION_HOOK_R : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.jap) {
-				cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.jap ? ANIMATION_JAB : ANIMATION_COMBAT_MODE_A);
-			}
-			/*if (recv_attackAnddefend.hitTorsoLeft) {
-				cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoLeft ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.hitTorsoRight) {
-				cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoRight ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.hitTorsoStright) {
-				cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoStright ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_COMBAT_MODE_A);
-			}*/
-			if (recv_attackAnddefend.rightGuard) {
-				cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightGuard ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.leftGuard) {
-				cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftGuard ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.middleGuard) {
-				cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.middleGuard ? ANIMATION_GUARD_BODY : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.nuckDown) {
-				cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.nuckDown ? ANIMATION_KNOCKDOWN : ANIMATION_COMBAT_MODE_A);
-				cscene->m_ppHierarchicalGameObjects[0]->isAlive = false;
-			}
-		}
-		else {
-			//cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-
-		}
+		ani_double_check = recv_attackAnddefend.ani_num;
+		/*if (recv_attackAnddefend.ani_playing == true) {
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num);
+		
+		}*/
+		if(recv_attackAnddefend.checkAni == true)
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num);
+		
+		
 		//충돌처리확인
 		/*if (col.check_collide) {
 			cout << "COLLIDE! " << endl;
@@ -270,7 +255,7 @@ void Server::attackAndGuard_idle() {
 	send_attackAnddefend.middleGuard = false;
 	send_attackAnddefend.nuckDown = false;
 
-	send_attackAnddefend.ani_num = ANIMATION_IDLE_A;
+	//send_attackAnddefend.ani_num = ANIMATION_IDLE_COMBAT;
 	send_attackAnddefend.checkAni = false;
 
 }
@@ -292,4 +277,131 @@ void Server::otherPlayerPositionSet()
 	player_look.x = other_player.player_world._31;
 	player_look.y = other_player.player_world._32;
 	player_look.z = other_player.player_world._33;
+}
+
+void Server::otherPlayerAnimation() {
+
+	// 상대클라 애니메이션
+	cout << "recv_ani_check - " << recv_attackAnddefend.checkAni << endl;
+	cout << "ani_num - " << recv_attackAnddefend.ani_num << endl;
+	//if (recv_attackAnddefend.checkAni) {
+		switch (recv_attackAnddefend.ani_num)
+		{
+		case ANIMATION_IDLE_A:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE_A);
+			break;
+		case ANIMATION_IDLE_B:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE_B);
+			break;
+		case ANIMATION_IDLE_COMBAT:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE_COMBAT);
+			break;
+		case ANIMATION_COMBAT_IDLE:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_IDLE);
+			break;
+		case ANIMATION_COMBAT_MODE_A:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+			break;
+		case ANIMATION_CLAP_LEG:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CLAP_LEG);
+			break;
+		case ANIMATION_CLAP_ON_ARM:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CLAP_ON_ARM);
+			break;
+		case ANIMATION_CLAP_ON_HEAD:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CLAP_ON_HEAD);
+			break;
+		case ANIMATION_COME_HERE_1HAND:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
+			break;
+		case ANIMATION_COME_HERE_2HANDS:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_2HANDS);
+			break;
+		case ANIMATION_COME_HERE_BRUCE_LI:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
+			break;
+		case ANIMATION_KILL_YOU:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KILL_YOU);
+			break;
+		case ANIMATION_RIZE_AUDITORY:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIZE_AUDITORY);
+			break;
+		case ANIMATION_KARATE_FINISH:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KARATE_FINISH);
+			break;
+		case ANIMATION_OSSUUU:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_OSSUUU);
+			break;
+		case ANIMATION_CEREMONY:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CEREMONY);
+			break;
+		case ANIMATION_WINN_BATTLE:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_WINN_BATTLE);
+			break;
+		case ANIMATION_LOSTING_BATTLE:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LOSTING_BATTLE);
+			break;
+		case ANIMATION_MOVE_FORWARD:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD);
+			break;
+		case ANIMATION_MOVE_BACKWARD:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD);
+			break;
+		case ANIMATION_MOVE_LEFT:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT);
+			break;
+		case ANIMATION_MOVE_RIGHT:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT);
+			break;
+		case ANIMATION_KNOCKDOWN:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+			break;
+		case ANIMATION_KNOCKDOWNED:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWNED);
+			break;
+		case ANIMATION_GUARD_LEFT_HEAD:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD);
+			break;
+		case ANIMATION_GUARD_RIGHT_HEAD:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD);
+			break;
+		case ANIMATION_GUARD_BODY:
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY);
+			break;
+
+
+		default:
+			break;
+		}
+		recv_attackAnddefend.checkAni = false;
+		
+		/*if (recv_attackAnddefend.hitTorsoLeft) {
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoLeft ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_COMBAT_MODE_A);
+		}
+		if (recv_attackAnddefend.hitTorsoRight) {
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoRight ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_COMBAT_MODE_A);
+		}
+		if (recv_attackAnddefend.hitTorsoStright) {
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoStright ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_COMBAT_MODE_A);
+		}*/
+		/*if (recv_attackAnddefend.rightGuard) {
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightGuard ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_COMBAT_MODE_A);
+		}
+		if (recv_attackAnddefend.leftGuard) {
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftGuard ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_COMBAT_MODE_A);
+		}
+		if (recv_attackAnddefend.middleGuard) {
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.middleGuard ? ANIMATION_GUARD_BODY : ANIMATION_COMBAT_MODE_A);
+		}
+		if (recv_attackAnddefend.nuckDown) {
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.nuckDown ? ANIMATION_KNOCKDOWN : ANIMATION_COMBAT_MODE_A);
+			cscene->m_ppHierarchicalGameObjects[0]->isAlive = false;
+		}*/
+	//}
+	//else {
+	//	cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_IDLE_COMBAT);
+
+	//}
+
+
 }

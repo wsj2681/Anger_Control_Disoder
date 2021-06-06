@@ -5,6 +5,10 @@
 #include "stdafx.h"
 #include "Scene.h"
 
+//////////Server///////////
+extern Server* server;
+////////////////////////////
+
 ID3D12DescriptorHeap *CScene::m_pd3dCbvSrvDescriptorHeap = NULL;
 
 D3D12_CPU_DESCRIPTOR_HANDLE	CScene::m_d3dCbvCPUDescriptorStartHandle;
@@ -558,16 +562,29 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		case '1':
 		{
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_ONE_TWO;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+			
 			break;
 		}
 		case '2':
 		{
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_LEFT_BODY_HOOK;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			break;
 		}
 		case '3':
 		{
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_RIGHT_BODY_HOOK;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			break;
 		}
 		case 'Q':
@@ -610,9 +627,9 @@ bool CScene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 		case '6':
 		{
 			m_pPlayer->hp -= 5.f;
-			cout << "Player HP = "<<m_pPlayer->hp << endl;
+			//cout << "Player HP = "<<m_pPlayer->hp << endl;
 			//m_ppHierarchicalGameObjects[0]->hp -= 5.f;
-			cout << "OtherPlayer HP = " << m_ppHierarchicalGameObjects[0]->hp << endl;
+			//cout << "OtherPlayer HP = " << m_ppHierarchicalGameObjects[0]->hp << endl;
 			break;
 		}
 		case 'B':
