@@ -1,7 +1,7 @@
 #pragma once
 #include "Object.h"
 
-class CollideCubeObject;
+class CubeObject;
 
 class BoxerObject : public Object
 {
@@ -11,5 +11,5 @@ public:
 
 	virtual void UpdateWayPoints();
 
-	map<string, CollideCubeObject*> boundBoxs;
+	map<string, CubeObject*> boundBoxs;
 };

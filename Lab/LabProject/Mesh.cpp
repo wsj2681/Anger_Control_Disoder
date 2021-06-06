@@ -69,3 +69,17 @@ void Mesh::Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet)
 void Mesh::OnPostRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext)
 {
 }
+
+bool Mesh::isIntersect(BoundingOrientedBox& otherBox)
+{
+	if (obb.Intersects(otherBox))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
+	return false;
+}

@@ -221,7 +221,13 @@
     <ClInclude Include="Particle.h">
       <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClInclude>
-    <ClInclude Include="UIShader.h" />
+    <ClInclude Include="UIShader.h">
+      <Filter>소스 파일\03 Model\Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeObject.h">
+      <Filter>소스 파일\03 Model\GameObject\Object</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WICTextureLoader12.cpp">
@@ -342,6 +348,12 @@
       <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClCompile>
     <ClCompile Include="UIShader.cpp">
+      <Filter>소스 파일\03 Model\Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeObject.cpp">
+      <Filter>소스 파일\03 Model\GameObject\Object</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMesh.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

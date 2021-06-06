@@ -3,6 +3,7 @@
 #include "ModelInfo.h"
 #include "AnimationController.h"
 #include "CollideCubeObject.h"
+#include "CubeObject.h"
 
 BoxerObject::BoxerObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, ModelInfo* pModel, int nAnimationTracks)
 {
@@ -13,23 +14,32 @@ BoxerObject::BoxerObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	SetChild(boxerModel->m_pModelRootObject, true);
 	m_pSkinnedAnimationController = new AnimationController(pd3dDevice, pd3dCommandList, nAnimationTracks, boxerModel);
 
-	this->head = FindFrame("Bip01_Head");
-	if (this->head)
+	if (this->bones["Head"] = FindFrame("Bip01_Head"))
 	{
-		this->head->objectCollision = new BoundingOrientedBox(this->head->GetPosition(), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
-		boundBoxs["Bip01_Head"] = new CollideCubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+		this->boundBoxs["Head"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.3f, 0.3f, 0.3f);
 	}
-	this->rHand = FindFrame("Bip01_R_Hand");
-	if (this->rHand)
-		this->rHand->objectCollision = new BoundingOrientedBox(this->rHand->GetPosition(), XMFLOAT3(0.7f, 0.5f, 0.7f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
-	this->lHand = FindFrame("Bip01_L_Hand");
-	if (this->lHand)
-		this->lHand->objectCollision = new BoundingOrientedBox(this->lHand->GetPosition(), XMFLOAT3(0.7f, 0.5f, 0.7f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
-	this->rFoot = FindFrame("Bip01_L_Foot"); //
-	this->lFoot = FindFrame("Bip01_R_Foot"); //
-	this->spine = FindFrame("Bip01_Spine1");
-	if (this->spine)
-		this->spine->objectCollision = new BoundingOrientedBox(this->spine->GetPosition(), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+	if (this->bones["rHand"] = FindFrame("Bip01_R_Hand"))
+	{
+		this->boundBoxs["rHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["lHand"] = FindFrame("Bip01_L_Hand"))
+	{
+		this->boundBoxs["lHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["lFoot"] = FindFrame("Bip01_L_Foot"))
+	{
+		this->boundBoxs["lFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["rFoot"] = FindFrame("Bip01_R_Foot"))
+	{
+		this->boundBoxs["rFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+	}
+	if (this->bones["Spine"] = FindFrame("Bip01_Spine1"))
+	{
+		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.6f, 0.3f, 0.3f);
+		//this->boundBoxs["SpineLeft"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.6f, 0.3f, 0.3f, "SpineLeft");
+		//this->boundBoxs["SpineRight"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.6f, 0.3f, 0.3f, "SpineRight");
+	}
 }
 
 BoxerObject::~BoxerObject()

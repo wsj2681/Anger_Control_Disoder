@@ -584,42 +584,42 @@ void Engine::ProcessInput()
 #endif // _WITH_SERVER_CONNECT
 					}
 				}
-				if (pKeysBuffer['1'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_BLOCKS_AND_EVASION);
-				}
-				if (pKeysBuffer['2'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBOS);
-				}
-				if (pKeysBuffer['3'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ELBOWS);
-				}
-				if (pKeysBuffer['4'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GENERAL);
-				}
-				if (pKeysBuffer['5'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HANDS);
-				}
-				if (pKeysBuffer['6'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITS);
-				}
-				if (pKeysBuffer['7'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEGS);
-				}
-				if (pKeysBuffer['8'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVES);
-				}
-				if (pKeysBuffer['9'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_TURNS);
-				}
+				//if (pKeysBuffer['1'] & 0xF0)
+				//{
+				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_BLOCKS_AND_EVASION);
+				//}
+				//if (pKeysBuffer['2'] & 0xF0)
+				//{
+				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBOS);
+				//}
+				//if (pKeysBuffer['3'] & 0xF0)
+				//{
+				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ELBOWS);
+				//}
+				//if (pKeysBuffer['4'] & 0xF0)
+				//{
+				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GENERAL);
+				//}
+				//if (pKeysBuffer['5'] & 0xF0)
+				//{
+				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HANDS);
+				//}
+				//if (pKeysBuffer['6'] & 0xF0)
+				//{
+				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITS);
+				//}
+				//if (pKeysBuffer['7'] & 0xF0)
+				//{
+				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEGS);
+				//}
+				//if (pKeysBuffer['8'] & 0xF0)
+				//{
+				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVES);
+				//}
+				//if (pKeysBuffer['9'] & 0xF0)
+				//{
+				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_TURNS);
+				//}
 				float cxDelta = 0.0f, cyDelta = 0.0f;
 				POINT ptCursorPos;
 				if (GetCapture() == this->hWnd)

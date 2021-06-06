@@ -12,6 +12,7 @@
 #include "AnimationSet.h"
 #include "AnimationTrack.h"
 #include "Scene.h"
+#include "CubeObject.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Player
@@ -231,9 +232,9 @@ void Player::Update(float fTimeElapsed)
 	if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
 
 	DWORD nCurrentCameraMode = m_pCamera->GetMode();
-	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->Update(head->GetPosition(), fTimeElapsed);
+	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->Update(bones["head"]->GetPosition(), fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
-	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->SetLookAt(head->GetPosition());
+	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->SetLookAt(bones["head"]->GetPosition());
 	m_pCamera->RegenerateViewMatrix();
 
 	fLength = Vector3::Length(m_xmf3Velocity);
@@ -319,20 +320,30 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxerD.bin", nullptr);
 	SetChild(BoxerModel->m_pModelRootObject, true);
 
-	this->head = FindFrame("Bip01_Head");
-	if (this->head)
-		this->head->objectCollision = new BoundingOrientedBox(this->head->GetPosition(), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
-	this->rHand = FindFrame("Bip01_R_Hand");
-	if (this->rHand)
-		this->rHand->objectCollision = new BoundingOrientedBox(this->rHand->GetPosition(), XMFLOAT3(0.7f, 0.5f, 0.7f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
-	this->lHand = FindFrame("Bip01_L_Hand");
-	if (this->lHand)
-		this->lHand->objectCollision = new BoundingOrientedBox(this->lHand->GetPosition(), XMFLOAT3(0.7f, 0.5f, 0.7f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
-	this->rFoot = FindFrame("Bip01_L_Foot"); //
-	this->lFoot = FindFrame("Bip01_R_Foot"); //
-	this->spine = FindFrame("Bip01_Spine1");
-	if (this->spine)
-		this->spine->objectCollision = new BoundingOrientedBox(this->spine->GetPosition(), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f));
+	if (this->bones["head"] = FindFrame("Bip01_Head"))
+	{
+		this->boundBoxs["head"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 1.f, 1.f, 1.f);
+	}
+	if (this->bones["rHand"] = FindFrame("Bip01_R_Hand"))
+	{
+		this->boundBoxs["rHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
+	}
+	if (this->bones["lHand"] = FindFrame("Bip01_L_Hand"))
+	{
+		this->boundBoxs["lHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
+	}
+	if (this->bones["lFoot"] = FindFrame("Bip01_L_Foot"))
+	{
+		this->boundBoxs["lFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
+	}
+	if (this->bones["rFoot"] = FindFrame("Bip01_R_Foot"))
+	{
+		this->boundBoxs["rFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.7f, 0.7f);
+	}
+	if (this->bones["Spine"] = FindFrame("Bip01_Spine1"))
+	{
+		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 2.0f, 1.f, 2.f);
+	}
 
 	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
@@ -352,7 +363,7 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	SetCameraUpdatedContext(pContext);
 
 	playerCollision = new BoundingOrientedBox();
-	playerCollision->Center = spine->GetPosition();
+	playerCollision->Center = bones["Spine"]->GetPosition();
 	playerCollision->Extents = XMFLOAT3(2.f, 7.f, 2.f);
 	playerCollision->Orientation = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 
@@ -376,11 +387,11 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityY(400.0f);
 			m_pCamera = OnChangeCamera(FIRST_PERSON_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.0f);
-			m_pCamera->SetOffset(head->GetPosition());
+			m_pCamera->SetOffset(bones["head"]->GetPosition());
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 90.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(head->GetPosition());
+			m_pCamera->SetPosition(bones["head"]->GetPosition());
 			break;
 		case SPACESHIP_CAMERA:
 			SetFriction(125.0f);
@@ -389,11 +400,11 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityY(400.0f);
 			m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.0f);
-			m_pCamera->SetOffset(head->GetPosition());
+			m_pCamera->SetOffset(bones["head"]->GetPosition());
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(Vector3::Add(head->GetPosition(), m_pCamera->GetOffset()));
+			m_pCamera->SetPosition(Vector3::Add(bones["head"]->GetPosition(), m_pCamera->GetOffset()));
 			break;
 		case THIRD_PERSON_CAMERA:
 			SetFriction(250.0f);
@@ -407,7 +418,7 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(Vector3::Add(head->GetPosition(), m_pCamera->GetOffset()));
+			m_pCamera->SetPosition(Vector3::Add(bones["head"]->GetPosition(), m_pCamera->GetOffset()));
 			break;
 		case THIRD_PERSON_CAMERA2:
 			SetFriction(250.0f);
@@ -421,12 +432,12 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(Vector3::Add(head->GetPosition(), m_pCamera->GetOffset()));
+			m_pCamera->SetPosition(Vector3::Add(bones["head"]->GetPosition(), m_pCamera->GetOffset()));
 			break;
 		default:
 			break;
 	}
-	m_pCamera->SetPosition(Vector3::Add(head->GetPosition(), m_pCamera->GetOffset()));
+	m_pCamera->SetPosition(Vector3::Add(bones["head"]->GetPosition(), m_pCamera->GetOffset()));
 	Update(fTimeElapsed);
 
 	return(m_pCamera);

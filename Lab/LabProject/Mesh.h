@@ -110,4 +110,6 @@ public:
 	virtual void OnPreRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet);
 	virtual void OnPostRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void Update(Object* bone) {}
+	virtual bool isIntersect(BoundingOrientedBox& otherBox);
 };

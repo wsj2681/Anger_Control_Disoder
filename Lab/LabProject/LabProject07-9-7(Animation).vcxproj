@@ -163,6 +163,8 @@
     <ClInclude Include="CollideCubeMesh.h" />
     <ClInclude Include="CollideCubeObject.h" />
     <ClInclude Include="CrowdObject.h" />
+    <ClInclude Include="CubeMesh.h" />
+    <ClInclude Include="CubeObject.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="DiffusedShader.h" />
     <ClInclude Include="EthanObjectsShader.h" />
@@ -208,6 +210,8 @@
     <ClCompile Include="CollideCubeMesh.cpp" />
     <ClCompile Include="CollideCubeObject.cpp" />
     <ClCompile Include="CrowdObject.cpp" />
+    <ClCompile Include="CubeMesh.cpp" />
+    <ClCompile Include="CubeObject.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="DiffusedShader.cpp" />
     <ClCompile Include="EthanObjectsShader.cpp" />

@@ -22,7 +22,7 @@ class SkinnedMesh;
 class Material;
 class Mesh;
 class ModelInfo;
-
+class CubeObject;
 class Object
 {
 private:
@@ -64,6 +64,10 @@ public:
 
 	float hp{ 100.f };
 
+	bool boundBoxRender = true;
+	map<string, CubeObject*> boundBoxs;
+	map<string, Object*> bones;
+	XMFLOAT3 oldSpinePosition;
 	UINT nowState = STATE_IDLE;
 	UINT attackType = 0;
 

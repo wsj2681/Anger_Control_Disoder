@@ -13,6 +13,8 @@
 #include "Texture.h"
 #include "AnimationSet.h"
 #include "SkinnedMesh.h"
+#include "CubeObject.h"
+
 
 Object::Object()
 {

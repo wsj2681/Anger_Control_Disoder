@@ -119,7 +119,7 @@ void Server::Server_recv()
 			if (recv_attackAnddefend.jap) {
 				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.jap ? ANIMATION_JAB : ANIMATION_COMBAT_MODE_A);
 			}
-			if (recv_attackAnddefend.hitTorsoLeft) {
+			/*if (recv_attackAnddefend.hitTorsoLeft) {
 				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoLeft ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_COMBAT_MODE_A);
 			}
 			if (recv_attackAnddefend.hitTorsoRight) {
@@ -127,7 +127,7 @@ void Server::Server_recv()
 			}
 			if (recv_attackAnddefend.hitTorsoStright) {
 				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoStright ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_COMBAT_MODE_A);
-			}
+			}*/
 			if (recv_attackAnddefend.rightGuard) {
 				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightGuard ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_COMBAT_MODE_A);
 			}
@@ -160,7 +160,7 @@ void Server::Server_recv()
 		if (col.rHand2Head) {
 			cplayer->rHand->isCollide = true;
 			cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
+			//cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
 		
 		}
 		else
@@ -169,7 +169,7 @@ void Server::Server_recv()
 		if (col.lHand2Head) {
 			cplayer->lHand->isCollide = true;
 			cout << "LEFT HAND - HEAD COLLIDE! " << endl;
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
+			//cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
 
 		}
 		else
@@ -192,7 +192,7 @@ void Server::Server_recv()
 
 		if (headHitted.leftHeadHitted) {
 			cplayer->isHit = true;
-			cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
+			//cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
 			send_attackAnddefend.hitTorsoLeft = true;
 			
 
@@ -200,7 +200,7 @@ void Server::Server_recv()
 		}
 		else if (headHitted.rightHeadHitted) {
 			cplayer->isHit = true;
-			cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
+			//cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
 			send_attackAnddefend.hitTorsoRight = true;
 			
 
