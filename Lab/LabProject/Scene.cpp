@@ -812,6 +812,16 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
+
+	for (auto& boundBox : m_pPlayer->boundBoxs)
+	{
+		boundBox.second->Update(fTimeElapsed, m_pPlayer->bones[boundBox.first]);
+	}
+	for (auto& boundBox : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
+	{
+		boundBox.second->Update(fTimeElapsed, hierarchicalGameObjects.data()[OTHERPLAYER]->bones[boundBox.first]);
+	}
+
 	if (bScenario)
 	{
 		hierarchicalGameObjects[1]->UpdateWayPoints();
@@ -867,7 +877,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	particle->Update(m_pPlayer->bones["head"]->GetPosition(), fTimeElapsed);
 
-	if (hierarchicalGameObjects.data()[0]->hp <= 0.f)
+	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp <= 0.f)
 	{
 		if (ui["0_OtherPlayerTotalScore"]->isActive())
 		{
@@ -885,7 +895,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 			ui["3_OtherPlayerTotalScore"]->SetActive(true);
 		}
 		m_pPlayer->hp = 100.f;
-		hierarchicalGameObjects.data()[0]->hp = 100.f;
+		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
 	}
 
 	if (m_pPlayer->hp <= 0.f)
@@ -906,13 +916,13 @@ void Scene::AnimateObjects(float fTimeElapsed)
 			ui["3_PlayerTotalScore"]->SetActive(true);
 		}
 		m_pPlayer->hp = 100.f;
-		hierarchicalGameObjects.data()[0]->hp = 100.f;
+		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
 	}
 
 	//TODO : 여기 다시보기
-	//CollideCageSide();
+	CollideCageSide();
 
-	//CollidePVE();
+	CollidePVE();
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
@@ -944,22 +954,32 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 			}
 
 			object->Render(pd3dCommandList, pCamera);
-
-			if (!object->boundBoxs.empty())
-			{
-				for (auto& o : object->boundBoxs)
-				{
-					if (o.second->boundBoxRender)
-					{
-						o.second->Render(pd3dCommandList, pCamera);
-					}
-				}
-			}
-
 		}
 	}
 
 	particle->Render(pd3dCommandList, pCamera);
+
+	if (!hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs.empty())
+	{
+		for (auto& o : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
+		{
+			if (o.second->boundBoxRender)
+			{
+				o.second->Render(pd3dCommandList, pCamera);
+			}
+		}
+	}
+
+	if (!m_pPlayer->boundBoxs.empty())
+	{
+		for (auto& o : m_pPlayer->boundBoxs)
+		{
+			if (o.second->boundBoxRender)
+			{
+				o.second->Render(pd3dCommandList, pCamera);
+			}
+		}
+	}
 
 
 	if (!ui.empty())
@@ -1161,32 +1181,32 @@ void Scene::CollidePVE()
 	//}
 
 	static int collideCount;
-	for (auto& otherPlayerBoundBox : hierarchicalGameObjects.data()[0]->boundBoxs)
+	for (auto& otherPlayerBoundBox : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
 	{
 		for (auto& PlayerBoundBox : m_pPlayer->boundBoxs)
 		{
 			if (otherPlayerBoundBox.second->m_pMesh->isIntersect(PlayerBoundBox.second->m_pMesh->obb))
 			{
-				if (hierarchicalGameObjects.data()[0]->nowState == IDLE && m_pPlayer->nowState == ATTACK)
+				if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == IDLE && m_pPlayer->nowState == ATTACK)
 				{
 					if (otherPlayerBoundBox.first == "Head")
 					{
-						hierarchicalGameObjects.data()[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
 						cout << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(PlayerBoundBox.second->GetPosition());
-						hierarchicalGameObjects.data()[0]->hp -= 10.f;
-						hierarchicalGameObjects.data()[0]->nowState = HIT;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 10.f;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
 					else if (otherPlayerBoundBox.first == "Spine")
 					{
-						hierarchicalGameObjects.data()[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
 						cout << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(PlayerBoundBox.second->GetPosition());
-						hierarchicalGameObjects.data()[0]->hp -= 20.f;
-						hierarchicalGameObjects.data()[0]->nowState = HIT;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
 				}
-				if (m_pPlayer->nowState == IDLE && hierarchicalGameObjects.data()[0]->nowState == ATTACK)
+				if (m_pPlayer->nowState == IDLE && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
 				{
 
 					if (PlayerBoundBox.first == "Head")
