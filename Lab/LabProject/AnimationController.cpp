@@ -68,7 +68,7 @@ void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimati
 {
 	if (m_pAnimationTracks)
 	{
-		if (m_pAnimationSets)
+		/*if (m_pAnimationSets)
 		{
 			if (!m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks->m_nAnimationSet]->IsAnimate())
 
@@ -84,7 +84,7 @@ void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimati
 				default:
 					break;
 				}
-		}
+		}*/
 		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
 
 		if (m_pAnimationSets)
