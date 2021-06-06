@@ -270,6 +270,7 @@ float4 PSDiffused(VS_DIFFUSED_OUTPUT input) : SV_TARGET{
 
 // ÅØ½ºÃÄ UI
 Texture2D gtxtUITexture : register(t14);
+Texture2D gtxtUIScoreTexture : register(t15);
 SamplerState gtxtUISampler : register(s2);
 
 cbuffer cbHP_INFO : register(b3)
@@ -437,7 +438,7 @@ VS_TEXTURE_UI_OUTOUT VSTextureUI_PlayerTotalScore(uint nVertexID : SV_VertexID)
 
 float4 PSTextureUI_PlayerTotalScore(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
 {
-	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+	return gtxtUIScoreTexture.Sample(gtxtUISampler, input.uv);
 }
 
 VS_TEXTURE_UI_OUTOUT VSTextureUI_OtherPlayerTotalScore(uint nVertexID : SV_VertexID)
@@ -459,5 +460,5 @@ VS_TEXTURE_UI_OUTOUT VSTextureUI_OtherPlayerTotalScore(uint nVertexID : SV_Verte
 
 float4 PSTextureUI_OtherPlayerTotalScore(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
 {
-	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+	return gtxtUIScoreTexture.Sample(gtxtUISampler, input.uv);
 }

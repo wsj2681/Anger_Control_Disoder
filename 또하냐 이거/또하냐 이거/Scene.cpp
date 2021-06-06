@@ -106,8 +106,8 @@ void CScene::BuildObjects(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *p
 	m_ppHierarchicalGameObjects[0]->SetPosition(XMFLOAT3(310.0f, m_pTerrain->GetHeight(310.0f, 590.0f), 590.0f));
 	if (pAngrybotModel) delete pAngrybotModel;
 
-	CLoadedModelInfo* MapModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena.bin", nullptr);
-	m_ppHierarchicalGameObjects[0] = new MapObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
+	//CLoadedModelInfo* MapModel = CGameObject::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena.bin", nullptr);
+	//m_ppHierarchicalGameObjects[0] = new MapObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
 
 	//ui["TEST"] = new UserInterfaceShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/PNG/HPBar.png");
 	//ui["TEST"]->SetActive(false);

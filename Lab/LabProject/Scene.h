@@ -14,6 +14,7 @@ constexpr UINT SPOT_LIGHT = 2;
 constexpr UINT DIRECTIONAL_LIGHT = 3;
 
 class SkyBox;
+class UserInterfaceShader;
 
 struct LIGHT
 {
@@ -137,4 +138,6 @@ public:
 	BoundingSphere cageCollision;
 
 	Particle* particle;
+
+	map<string, UserInterfaceShader*> ui;
 };

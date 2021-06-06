@@ -62,7 +62,7 @@ public:
 	XMFLOAT3 particleDir{ 0.f, 0.f, 0.f };
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
 
-	float hp{ 10000.f };
+	float hp{ 100.f };
 
 	UINT nowState = STATE_IDLE;
 	UINT attackType = 0;

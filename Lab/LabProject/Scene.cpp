@@ -15,6 +15,7 @@
 #include "BoxerObject.h"
 #include "CrowdObject.h"
 #include "Timer.h"
+#include "UIShader.h"
 
 ID3D12DescriptorHeap *Scene::m_pd3dCbvSrvDescriptorHeap = nullptr;
 
@@ -253,6 +254,32 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	SAFE_DELETE(crowdModel);
 
 	gGameObject = hierarchicalGameObjects;
+	
+	ui["PlayerHP"] = new UI_HP_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar_Other.dds");
+	ui["OtherPlayerHP"] = new UI_HP_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar.dds");
+	ui["OtherPlayerHP"]->SetActive(true);
+	//ui["Right_Shift_Black"] = new UI_KeyInput_Right_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Key_Left_Shift.dds");
+	//ui["Right_Shift_Red"] = new UI_KeyInput_Left_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Key_Right_Shift.dds");
+	//ui["Space"] = new UI_KeyInput_Space(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Key_Space.dds");
+
+	ui["0_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Empty.dds");
+	ui["1_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_L1.dds");
+	ui["2_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_L2.dds");
+	ui["3_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
+	ui["0_PlayerTotalScore"]->SetActive(true);
+	ui["1_PlayerTotalScore"]->SetActive(false);
+	ui["2_PlayerTotalScore"]->SetActive(false);
+	ui["3_PlayerTotalScore"]->SetActive(false);
+
+	// ui 하나로 바꿔서 넣어야할 듯
+	//ui["0_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Empty.dds");
+	//ui["1_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_R1.dds");
+	//ui["2_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_R2.dds");
+	//ui["3_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
+	//ui["0_OtherPlayerTotalScore"]->SetActive(true);
+	//ui["1_OtherPlayerTotalScore"]->SetActive(false);
+	//ui["2_OtherPlayerTotalScore"]->SetActive(false);
+	//ui["3_OtherPlayerTotalScore"]->SetActive(false);
 
 	particle = new Particle;
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -302,7 +329,7 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 {
 	ID3D12RootSignature *pd3dGraphicsRootSignature = nullptr;
 
-	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[11];
+	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[13];
 
 	pd3dDescriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	pd3dDescriptorRanges[0].NumDescriptors = 1;
@@ -370,7 +397,19 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dDescriptorRanges[10].RegisterSpace = 0;
 	pd3dDescriptorRanges[10].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER pd3dRootParameters[17];
+	pd3dDescriptorRanges[11].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	pd3dDescriptorRanges[11].NumDescriptors = 1;
+	pd3dDescriptorRanges[11].BaseShaderRegister = 14; //t14: gtxtUITexture
+	pd3dDescriptorRanges[11].RegisterSpace = 0;
+	pd3dDescriptorRanges[11].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	pd3dDescriptorRanges[12].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	pd3dDescriptorRanges[12].NumDescriptors = 1;
+	pd3dDescriptorRanges[12].BaseShaderRegister = 15; //t14: gtxtUIScoreTexture
+	pd3dDescriptorRanges[12].RegisterSpace = 0;
+	pd3dDescriptorRanges[12].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	D3D12_ROOT_PARAMETER pd3dRootParameters[20];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 1; //Camera
@@ -458,7 +497,22 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dRootParameters[16].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[16].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[2];
+	pd3dRootParameters[17].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[17].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[17].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[11]);
+	pd3dRootParameters[17].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	pd3dRootParameters[18].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[18].Descriptor.ShaderRegister = 3; //HP Info
+	pd3dRootParameters[18].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[18].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	pd3dRootParameters[19].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[19].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[19].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[12]);
+	pd3dRootParameters[19].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[3];
 
 	pd3dSamplerDescs[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 	pd3dSamplerDescs[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -485,6 +539,19 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dSamplerDescs[1].ShaderRegister = 1;
 	pd3dSamplerDescs[1].RegisterSpace = 0;
 	pd3dSamplerDescs[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	pd3dSamplerDescs[2].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	pd3dSamplerDescs[2].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	pd3dSamplerDescs[2].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	pd3dSamplerDescs[2].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	pd3dSamplerDescs[2].MipLODBias = 0;
+	pd3dSamplerDescs[2].MaxAnisotropy = 1;
+	pd3dSamplerDescs[2].ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	pd3dSamplerDescs[2].MinLOD = 0;
+	pd3dSamplerDescs[2].MaxLOD = D3D12_FLOAT32_MAX;
+	pd3dSamplerDescs[2].ShaderRegister = 2;
+	pd3dSamplerDescs[2].RegisterSpace = 0;
+	pd3dSamplerDescs[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 	D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 	D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc;
@@ -799,6 +866,48 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	particle->Update(m_pPlayer->head->GetPosition(), fTimeElapsed);
 
+	if (hierarchicalGameObjects.data()[0]->hp <= 0.f)
+	{
+		if (ui["0_OtherPlayerTotalScore"]->isActive())
+		{
+			ui["0_OtherPlayerTotalScore"]->SetActive(false);
+			ui["1_OtherPlayerTotalScore"]->SetActive(true);
+		}
+		else if (ui["1_OtherPlayerTotalScore"]->isActive())
+		{
+			ui["1_OtherPlayerTotalScore"]->SetActive(false);
+			ui["2_OtherPlayerTotalScore"]->SetActive(true);
+		}
+		else if (ui["2_OtherPlayerTotalScore"]->isActive())
+		{
+			ui["2_OtherPlayerTotalScore"]->SetActive(false);
+			ui["3_OtherPlayerTotalScore"]->SetActive(true);
+		}
+		m_pPlayer->hp = 100.f;
+		hierarchicalGameObjects.data()[0]->hp = 100.f;
+	}
+
+	if (m_pPlayer->hp <= 0.f)
+	{
+		if (ui["0_PlayerTotalScore"]->isActive())
+		{
+			ui["0_PlayerTotalScore"]->SetActive(false);
+			ui["1_PlayerTotalScore"]->SetActive(true);
+		}
+		else if (ui["1_PlayerTotalScore"]->isActive())
+		{
+			ui["1_PlayerTotalScore"]->SetActive(false);
+			ui["2_PlayerTotalScore"]->SetActive(true);
+		}
+		else if (ui["2_PlayerTotalScore"]->isActive())
+		{
+			ui["2_PlayerTotalScore"]->SetActive(false);
+			ui["3_PlayerTotalScore"]->SetActive(true);
+		}
+		m_pPlayer->hp = 100.f;
+		hierarchicalGameObjects.data()[0]->hp = 100.f;
+	}
+
 	CollideCageSide();
 
 	CollidePVE();
@@ -893,6 +1002,16 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 	//		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
 	//	}
 	//}
+
+
+	if (!ui.empty())
+	{
+		for (auto& i : ui)
+		{
+			i.second->UpdateShaderVariables(pd3dCommandList);
+			i.second->Render(pd3dCommandList, pCamera);
+		}
+	}
 
 	soundManager->Update();
 }
@@ -1082,4 +1201,6 @@ void Scene::CollidePVE()
 			m_pPlayer->isAlive = false;
 		}
 	}
+
+
 }
