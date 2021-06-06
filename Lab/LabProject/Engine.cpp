@@ -8,6 +8,7 @@
 #include "Server.h"
 #include "AnimationController.h"
 #include "Engine.h"
+#include "AnimationSet.h"
 
 Scene* gScene = nullptr;
 bool onTempKey{ true };
@@ -428,235 +429,255 @@ void Engine::ProcessInput()
 	if (!bProcessedByScene)
 	{
 		DWORD dwDirection = 0;
-
-		if (m_pPlayer)
+		if (pKeysBuffer[VK_UP] & 0xF0)
 		{
-			if (!m_pPlayer->bScenario && m_pPlayer->isAlive && !m_pPlayer->isHit)
-			{
-				if (onTempKey)
-				{
-					// temp 이동키
-					if (pKeysBuffer['S'] & 0xF0 && m_pPlayer->canMove[0])
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD);
-						dwDirection |= DIR_BACKWARD;
-					}
-					if (pKeysBuffer['A'] & 0xF0 && m_pPlayer->canMove[1])
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT);
-						dwDirection |= DIR_LEFT;
-					}
-					if (pKeysBuffer['D'] & 0xF0 && m_pPlayer->canMove[2])
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT);
-						dwDirection |= DIR_RIGHT;
-					}
-					if (pKeysBuffer['W'] & 0xF0 && m_pPlayer->canMove[3])
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD);
-						dwDirection |= DIR_FORWARD;
-					}
-					if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
-					if (pKeysBuffer[VK_RSHIFT] & 0xF0) dwDirection |= DIR_DOWN;
-
-					PLAYER_SET_ANIMATION('Z', ANIMATION_HOOK_L, STATE_ATTACK_LEFT_HOOK, DAMAGE_HOOK)
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.leftHand = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-					if (pKeysBuffer['X'] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R);
-						m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
-						m_pPlayer->attackType = DAMAGE_HOOK;
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.rightHand = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-					if (pKeysBuffer['C'] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_JAB);
-						m_pPlayer->nowState = STATE_ATTACK_JAB;
-						m_pPlayer->attackType = DAMAGE_JAB;
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.jap = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-					if (pKeysBuffer['V'] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD);
-						m_pPlayer->nowState = STATE_GUARD_LEFT_HEAD;
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.leftGuard = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-					if (pKeysBuffer['B'] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD);
-						m_pPlayer->nowState = STATE_GUARD_RIGHT_HEAD;
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.rightGuard = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-					if (pKeysBuffer['N'] & pKeysBuffer[VK_OEM_COMMA] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY);
-						m_pPlayer->nowState = STATE_GUARD_BODY;
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.middleGuard = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-				}
-				else
-				{
-					//여기가 게임 키
-					if (pKeysBuffer[VK_SPACE] & 0xF0 && m_pPlayer->canMove[0])
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD);
-						dwDirection |= DIR_BACKWARD;
-					}
-					if (pKeysBuffer[VK_LSHIFT] & 0xF0 && m_pPlayer->canMove[1])
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT);
-						dwDirection |= DIR_LEFT;
-
-					}
-					if (pKeysBuffer[VK_RSHIFT] & 0xF0 && m_pPlayer->canMove[2])
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT);
-						dwDirection |= DIR_RIGHT;
-					}
-					if (pKeysBuffer[VK_LSHIFT] & pKeysBuffer[VK_RSHIFT] & 0xF0 && m_pPlayer->canMove[3])
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD);
-						dwDirection |= DIR_FORWARD;
-					}
-
-					if (pKeysBuffer['A'] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
-						m_pPlayer->nowState = STATE_ATTACK_LEFT_HOOK;
-						m_pPlayer->attackType = DAMAGE_HOOK;
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.leftHand = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-					if (pKeysBuffer[VK_OEM_7] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R);
-						m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
-						m_pPlayer->attackType = DAMAGE_HOOK;
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.rightHand = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-					if (pKeysBuffer['S'] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_JAB);
-						m_pPlayer->nowState = STATE_ATTACK_JAB;
-						m_pPlayer->attackType = DAMAGE_JAB;
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.jap = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-					if (pKeysBuffer['C'] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD);
-						m_pPlayer->nowState = STATE_GUARD_LEFT_HEAD;
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.leftGuard = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-					if (pKeysBuffer[VK_OEM_COMMA] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD);
-						m_pPlayer->nowState = STATE_GUARD_RIGHT_HEAD;
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.rightGuard = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-					if (pKeysBuffer['C'] & pKeysBuffer[VK_OEM_COMMA] & 0xF0)
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY);
-						m_pPlayer->nowState = STATE_GUARD_BODY;
-#ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.middleGuard = true;
-#endif // _WITH_SERVER_CONNECT
-					}
-				}
-				//if (pKeysBuffer['1'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_BLOCKS_AND_EVASION);
-				//}
-				//if (pKeysBuffer['2'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBOS);
-				//}
-				//if (pKeysBuffer['3'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ELBOWS);
-				//}
-				//if (pKeysBuffer['4'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GENERAL);
-				//}
-				//if (pKeysBuffer['5'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HANDS);
-				//}
-				//if (pKeysBuffer['6'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITS);
-				//}
-				//if (pKeysBuffer['7'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEGS);
-				//}
-				//if (pKeysBuffer['8'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVES);
-				//}
-				//if (pKeysBuffer['9'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_TURNS);
-				//}
-				float cxDelta = 0.0f, cyDelta = 0.0f;
-				POINT ptCursorPos;
-				if (GetCapture() == this->hWnd)
-				{
-					SetCursor(nullptr);
-					GetCursorPos(&ptCursorPos);
-					cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
-					cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
-					SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
-				}
-
-				if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
-				{
-					if (cxDelta || cyDelta)
-					{
-						if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-							m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
-						else
-							m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
-					}
-					if (dwDirection) m_pPlayer->Move(dwDirection, 50.25f, true);
-				}
-			}
-
-			m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+			dwDirection |= DIR_FORWARD;
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD, ANIMATION_TYPE_LOOP);
+		}
+		if (pKeysBuffer[VK_DOWN] & 0xF0)
+		{
+			dwDirection |= DIR_BACKWARD;
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD, ANIMATION_TYPE_LOOP);
+		}
+		if (pKeysBuffer[VK_LEFT] & 0xF0)
+		{
+			dwDirection |= DIR_LEFT;
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT, ANIMATION_TYPE_LOOP);
+		}
+		if (pKeysBuffer[VK_RIGHT] & 0xF0)
+		{
+			dwDirection |= DIR_RIGHT;
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT, ANIMATION_TYPE_LOOP);
+		}
+		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
+		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
+		//		if (m_pPlayer)
+		//		{
+		//			if (!m_pPlayer->bScenario && m_pPlayer->isAlive && !m_pPlayer->isHit)
+		//			{
+		//				if (onTempKey)
+		//				{
+		//					// temp 이동키
+		//					if (pKeysBuffer['S'] & 0xF0 && m_pPlayer->canMove[0])
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD);
+		//						dwDirection |= DIR_BACKWARD;
+		//					}
+		//					if (pKeysBuffer['A'] & 0xF0 && m_pPlayer->canMove[1])
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT);
+		//						dwDirection |= DIR_LEFT;
+		//					}
+		//					if (pKeysBuffer['D'] & 0xF0 && m_pPlayer->canMove[2])
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT);
+		//						dwDirection |= DIR_RIGHT;
+		//					}
+		//					if (pKeysBuffer['W'] & 0xF0 && m_pPlayer->canMove[3])
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD);
+		//						dwDirection |= DIR_FORWARD;
+		//					}
+		//					if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
+		//					if (pKeysBuffer[VK_RSHIFT] & 0xF0) dwDirection |= DIR_DOWN;
+		//
+		//					PLAYER_SET_ANIMATION('Z', ANIMATION_HOOK_L, STATE_ATTACK_LEFT_HOOK, DAMAGE_HOOK)
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.leftHand = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//					if (pKeysBuffer['X'] & 0xF0)
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R);
+		//						m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
+		//						m_pPlayer->attackType = DAMAGE_HOOK;
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.rightHand = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//					if (pKeysBuffer['C'] & 0xF0)
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_JAB);
+		//						m_pPlayer->nowState = STATE_ATTACK_JAB;
+		//						m_pPlayer->attackType = DAMAGE_JAB;
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.jap = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//					if (pKeysBuffer['V'] & 0xF0)
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD);
+		//						m_pPlayer->nowState = STATE_GUARD_LEFT_HEAD;
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.leftGuard = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//					if (pKeysBuffer['B'] & 0xF0)
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD);
+		//						m_pPlayer->nowState = STATE_GUARD_RIGHT_HEAD;
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.rightGuard = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//					if (pKeysBuffer['N'] & pKeysBuffer[VK_OEM_COMMA] & 0xF0)
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY);
+		//						m_pPlayer->nowState = STATE_GUARD_BODY;
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.middleGuard = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//				}
+		//				else
+		//				{
+		//					//여기가 게임 키
+		//					if (pKeysBuffer[VK_SPACE] & 0xF0 && m_pPlayer->canMove[0])
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD);
+		//						dwDirection |= DIR_BACKWARD;
+		//					}
+		//					if (pKeysBuffer[VK_LSHIFT] & 0xF0 && m_pPlayer->canMove[1])
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT);
+		//						dwDirection |= DIR_LEFT;
+		//
+		//					}
+		//					if (pKeysBuffer[VK_RSHIFT] & 0xF0 && m_pPlayer->canMove[2])
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT);
+		//						dwDirection |= DIR_RIGHT;
+		//					}
+		//					if (pKeysBuffer[VK_LSHIFT] & pKeysBuffer[VK_RSHIFT] & 0xF0 && m_pPlayer->canMove[3])
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD);
+		//						dwDirection |= DIR_FORWARD;
+		//					}
+		//
+		//					if (pKeysBuffer['A'] & 0xF0)
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
+		//						m_pPlayer->nowState = STATE_ATTACK_LEFT_HOOK;
+		//						m_pPlayer->attackType = DAMAGE_HOOK;
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.leftHand = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//					if (pKeysBuffer[VK_OEM_7] & 0xF0)
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R);
+		//						m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
+		//						m_pPlayer->attackType = DAMAGE_HOOK;
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.rightHand = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//					if (pKeysBuffer['S'] & 0xF0)
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_JAB);
+		//						m_pPlayer->nowState = STATE_ATTACK_JAB;
+		//						m_pPlayer->attackType = DAMAGE_JAB;
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.jap = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//					if (pKeysBuffer['C'] & 0xF0)
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD);
+		//						m_pPlayer->nowState = STATE_GUARD_LEFT_HEAD;
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.leftGuard = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//					if (pKeysBuffer[VK_OEM_COMMA] & 0xF0)
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD);
+		//						m_pPlayer->nowState = STATE_GUARD_RIGHT_HEAD;
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.rightGuard = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//					if (pKeysBuffer['C'] & pKeysBuffer[VK_OEM_COMMA] & 0xF0)
+		//					{
+		//						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY);
+		//						m_pPlayer->nowState = STATE_GUARD_BODY;
+		//#ifdef _WITH_SERVER_CONNECT
+		//						server->send_attackAnddefend.middleGuard = true;
+		//#endif // _WITH_SERVER_CONNECT
+		//					}
+		//				}
+						//if (pKeysBuffer['1'] & 0xF0)
+						//{
+						//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_BLOCKS_AND_EVASION);
+						//}
+						//if (pKeysBuffer['2'] & 0xF0)
+						//{
+						//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBOS);
+						//}
+						//if (pKeysBuffer['3'] & 0xF0)
+						//{
+						//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ELBOWS);
+						//}
+						//if (pKeysBuffer['4'] & 0xF0)
+						//{
+						//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GENERAL);
+						//}
+						//if (pKeysBuffer['5'] & 0xF0)
+						//{
+						//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HANDS);
+						//}
+						//if (pKeysBuffer['6'] & 0xF0)
+						//{
+						//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HITS);
+						//}
+						//if (pKeysBuffer['7'] & 0xF0)
+						//{
+						//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEGS);
+						//}
+						//if (pKeysBuffer['8'] & 0xF0)
+						//{
+						//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVES);
+						//}
+						//if (pKeysBuffer['9'] & 0xF0)
+						//{
+						//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_TURNS);
+						//}
+		float cxDelta = 0.0f, cyDelta = 0.0f;
+		POINT ptCursorPos;
+		if (GetCapture() == this->hWnd)
+		{
+			SetCursor(nullptr);
+			GetCursorPos(&ptCursorPos);
+			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
+			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
+			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 		}
 
+		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
+		{
+			if (cxDelta || cyDelta)
+			{
+				if (pKeysBuffer[VK_RBUTTON] & 0xF0)
+					m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
+				else
+					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+			}
+			if (dwDirection) m_pPlayer->Move(dwDirection, 50.25f, true);
+		}
 	}
+
+	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
+
+
 
 void Engine::AnimateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 
+	m_pPlayer->Animate(fTimeElapsed);
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed);
 
-	m_pPlayer->Animate(fTimeElapsed);
 }
 
 void Engine::WaitForGpuComplete()

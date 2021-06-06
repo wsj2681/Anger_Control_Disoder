@@ -199,7 +199,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
-	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerD.bin", nullptr);
+	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", nullptr);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 	for (int i = 0; i < boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_nAnimationSets; ++i)
@@ -943,22 +943,6 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 
-	if (!hierarchicalGameObjects.empty())
-	{
-		for (auto& object : hierarchicalGameObjects)
-		{
-			object->Animate(m_fElapsedTime);
-			if (object->m_pSkinnedAnimationController)
-			{
-				object->UpdateTransform(nullptr);
-			}
-
-			object->Render(pd3dCommandList, pCamera);
-		}
-	}
-
-	particle->Render(pd3dCommandList, pCamera);
-
 	if (!hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs.empty())
 	{
 		for (auto& o : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
@@ -980,6 +964,24 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 			}
 		}
 	}
+
+	if (!hierarchicalGameObjects.empty())
+	{
+		for (auto& object : hierarchicalGameObjects)
+		{
+			object->Animate(m_fElapsedTime);
+			if (object->m_pSkinnedAnimationController)
+			{
+				object->UpdateTransform(nullptr);
+			}
+
+			object->Render(pd3dCommandList, pCamera);
+		}
+	}
+
+	particle->Render(pd3dCommandList, pCamera);
+
+
 
 
 	if (!ui.empty())
