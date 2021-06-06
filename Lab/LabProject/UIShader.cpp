@@ -367,6 +367,32 @@ UI_PlayerTotalScore::~UI_PlayerTotalScore()
 {
 }
 
+void UI_PlayerTotalScore::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(VS_CB_HP_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbScoreInfo = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbScoreInfo->Map(0, NULL, (void**)&m_pcbMappedScoreInfo);
+}
+
+void UI_PlayerTotalScore::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	// other player score info
+	::memcpy(&m_pcbMappedScoreInfo->score, &gScene->hierarchicalGameObjects.data()[1]->score, sizeof(float));
+
+	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbScoreInfo->GetGPUVirtualAddress();
+	pd3dCommandList->SetGraphicsRootConstantBufferView(20, d3dGpuVirtualAddress);
+}
+
+void UI_PlayerTotalScore::ReleaseShaderVariables()
+{
+	if (m_pd3dcbScoreInfo)
+	{
+		m_pd3dcbScoreInfo->Unmap(0, NULL);
+		m_pd3dcbScoreInfo->Release();
+	}
+}
+
 D3D12_INPUT_LAYOUT_DESC UI_PlayerTotalScore::CreateInputLayout()
 {
 	UINT nInputElementDescs = 2;
@@ -413,6 +439,32 @@ UI_OtherPlayerTotalScore::UI_OtherPlayerTotalScore(ID3D12Device* pd3dDevice, ID3
 
 UI_OtherPlayerTotalScore::~UI_OtherPlayerTotalScore()
 {
+}
+
+void UI_OtherPlayerTotalScore::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	UINT ncbElementBytes = ((sizeof(VS_CB_HP_INFO) + 255) & ~255); //256의 배수
+	m_pd3dcbScoreInfo = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+
+	m_pd3dcbScoreInfo->Map(0, NULL, (void**)&m_pcbMappedScoreInfo);
+}
+
+void UI_OtherPlayerTotalScore::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+	// other player score info
+	::memcpy(&m_pcbMappedScoreInfo->score, &gScene->hierarchicalGameObjects.data()[1]->score, sizeof(float));
+
+	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbScoreInfo->GetGPUVirtualAddress();
+	pd3dCommandList->SetGraphicsRootConstantBufferView(20, d3dGpuVirtualAddress);
+}
+
+void UI_OtherPlayerTotalScore::ReleaseShaderVariables()
+{
+	if (m_pd3dcbScoreInfo)
+	{
+		m_pd3dcbScoreInfo->Unmap(0, NULL);
+		m_pd3dcbScoreInfo->Release();
+	}
 }
 
 D3D12_INPUT_LAYOUT_DESC UI_OtherPlayerTotalScore::CreateInputLayout()

@@ -78,7 +78,7 @@ public:
 	bool isCollide{ false };
 	bool canMove[4]{ true };
 	WayPoint wayPoint{};
-	
+	float score = 3.f;
 
 	BoundingOrientedBox* objectCollision = nullptr;
 

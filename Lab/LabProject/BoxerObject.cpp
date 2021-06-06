@@ -15,32 +15,31 @@ BoxerObject::BoxerObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 	SetChild(boxerModel->m_pModelRootObject, true);
 
-	if (this->bones["Head"] = FindFrame("Bip01_Head"))
+	if (this->bones["head"] = FindFrame("Bip01_Head"))
 	{
-		this->boundBoxs["Head"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.3f, 0.3f, 0.3f);
+		this->boundBoxs["head"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 1.f, 1.f, 1.f);
 	}
 	if (this->bones["rHand"] = FindFrame("Bip01_R_Hand"))
 	{
-		this->boundBoxs["rHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+		this->boundBoxs["rHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
 	}
 	if (this->bones["lHand"] = FindFrame("Bip01_L_Hand"))
 	{
-		this->boundBoxs["lHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+		this->boundBoxs["lHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
 	}
 	if (this->bones["lFoot"] = FindFrame("Bip01_L_Foot"))
 	{
-		this->boundBoxs["lFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+		this->boundBoxs["lFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
 	}
 	if (this->bones["rFoot"] = FindFrame("Bip01_R_Foot"))
 	{
-		this->boundBoxs["rFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.21f, 0.15f, 0.21f);
+		this->boundBoxs["rFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.7f, 0.7f);
 	}
 	if (this->bones["Spine"] = FindFrame("Bip01_Spine1"))
 	{
-		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.6f, 0.3f, 0.3f);
-		//this->boundBoxs["SpineLeft"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.6f, 0.3f, 0.3f, "SpineLeft");
-		//this->boundBoxs["SpineRight"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.6f, 0.3f, 0.3f, "SpineRight");
+		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 2.0f, 1.f, 2.f);
 	}
+
 	//m_pSkinnedAnimationController = new AnimationController(pd3dDevice, pd3dCommandList, nAnimationTracks, boxerModel);
 	m_pSkinnedAnimationController = new AnimationController(pd3dDevice, pd3dCommandList, 1, boxerModel);
 	m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);

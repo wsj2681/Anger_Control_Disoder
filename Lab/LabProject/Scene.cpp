@@ -263,24 +263,24 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	//ui["Right_Shift_Red"] = new UI_KeyInput_Left_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Key_Right_Shift.dds");
 	//ui["Space"] = new UI_KeyInput_Space(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Key_Space.dds");
 
-	ui["0_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Empty.dds");
-	ui["1_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_L1.dds");
-	ui["2_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_L2.dds");
+	//ui["0_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Empty.dds");
+	//ui["1_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_L1.dds");
+	//ui["2_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_L2.dds");
 	ui["3_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
-	ui["0_PlayerTotalScore"]->SetActive(true);
-	ui["1_PlayerTotalScore"]->SetActive(false);
-	ui["2_PlayerTotalScore"]->SetActive(false);
-	ui["3_PlayerTotalScore"]->SetActive(false);
+	//ui["0_PlayerTotalScore"]->SetActive(true);
+	//ui["1_PlayerTotalScore"]->SetActive(false);
+	//ui["2_PlayerTotalScore"]->SetActive(false);
+	ui["3_PlayerTotalScore"]->SetActive(true);
 
 	// ui 하나로 바꿔서 넣어야할 듯
 	//ui["0_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Empty.dds");
 	//ui["1_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_R1.dds");
 	//ui["2_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_R2.dds");
-	//ui["3_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
+	ui["3_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
 	//ui["0_OtherPlayerTotalScore"]->SetActive(true);
 	//ui["1_OtherPlayerTotalScore"]->SetActive(false);
 	//ui["2_OtherPlayerTotalScore"]->SetActive(false);
-	//ui["3_OtherPlayerTotalScore"]->SetActive(false);
+	ui["3_OtherPlayerTotalScore"]->SetActive(true);
 
 	particle = new Particle;
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -410,7 +410,7 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dDescriptorRanges[12].RegisterSpace = 0;
 	pd3dDescriptorRanges[12].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER pd3dRootParameters[20];
+	D3D12_ROOT_PARAMETER pd3dRootParameters[21];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 1; //Camera
@@ -512,6 +512,11 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dRootParameters[19].DescriptorTable.NumDescriptorRanges = 1;
 	pd3dRootParameters[19].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[12]);
 	pd3dRootParameters[19].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	pd3dRootParameters[20].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[20].Descriptor.ShaderRegister = 6; //HP Info
+	pd3dRootParameters[20].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[20].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[3];
 
@@ -839,6 +844,13 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			}
 			m_pPlayer->hp = 100.f;
 			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
+			break;
+		}
+		case 'M':
+		{
+			m_pPlayer->score -= 1.f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->score -= 1.f;
+			cout << m_pPlayer->score << hierarchicalGameObjects.data()[OTHERPLAYER]->score << endl;
 			break;
 		}
 		default:

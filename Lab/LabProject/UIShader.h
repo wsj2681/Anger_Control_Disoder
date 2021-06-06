@@ -128,6 +128,11 @@ public:
 	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
 };
 
+struct VS_CB_SCORE_INFO
+{
+	int score = 0;
+};
+
 class UI_PlayerTotalScore : public UserInterfaceShader
 {
 public:
@@ -135,6 +140,13 @@ public:
 	UI_PlayerTotalScore();
 	UI_PlayerTotalScore(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
 	virtual ~UI_PlayerTotalScore();
+
+	ID3D12Resource* m_pd3dcbScoreInfo = NULL;
+	VS_CB_SCORE_INFO* m_pcbMappedScoreInfo = NULL;
+
+	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void ReleaseShaderVariables();
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
 
@@ -150,6 +162,13 @@ public:
 	UI_OtherPlayerTotalScore();
 	UI_OtherPlayerTotalScore(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
 	virtual ~UI_OtherPlayerTotalScore();
+
+	ID3D12Resource* m_pd3dcbScoreInfo = NULL;
+	VS_CB_SCORE_INFO* m_pcbMappedScoreInfo = NULL;
+
+	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void ReleaseShaderVariables();
 
 	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
 
