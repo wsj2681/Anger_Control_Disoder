@@ -9,8 +9,12 @@
 using namespace std;
 
 
+//범호 집
+//#define SERVERIP   "192.168.0.13"
 
-#define SERVERIP   "127.0.0.1"
+//로컬
+#define SERVERIP "127.0.0.1"
+
 //#define SERVERIP   "192.168.123.98"
 #define SERVERPORT 9000
 #define BUFSIZE    512
@@ -29,8 +33,9 @@ struct Player_world {
 	XMFLOAT4X4 player_lFoot;
 	XMFLOAT4X4 player_Spine;
 
-	UINT nowState = STATE_IDLE;
 	
+
+
 };
 #pragma pack(pop)
 
@@ -73,22 +78,14 @@ struct collide {
 #pragma pack(push,1)
 struct AttackAndDefend {
 
-	bool leftHand = false;
-	bool rightHand = false;
-	bool jap = false;
 
-	bool hitTorsoLeft = false;
-	bool hitTorsoRight = false;
-	bool hitTorsoStright = false;
 
-	bool leftGuard = false;
-	bool rightGuard = false;
-	bool middleGuard = false;
-
-	bool nuckDown = false;
+	UINT ani_num;
 
 	bool checkAni = false;
-	
+
+	bool ani_playing;
+
 
 };
 #pragma pack(pop)
@@ -156,24 +153,38 @@ public:
 	HeadHitted headHitted;
 
 	PlayerHP myHP;
+	PlayerHP otherHP;
 
+	bool checkSR = false;
+	int co = 0;
 
 	bool bScenario{ false };
 
 	int send_count = 0;
 	int recv_count = 0;
+	UINT ani_first_check = 0x62;
+
 
 	Server();
+	Server(int i);
+	Server(const Server&) = delete;
+	Server& operator=(const Server&) = delete;
 	~Server();
+
+
 
 	void Server_send();
 
 	void Server_recv();
 
+	void Server_make_thread();
+	void Server_thread();
+
+
 	void attackAndGuard_idle();
 
 	void otherPlayerPositionSet();
 
-
+	void otherPlayerAnimation();
 
 };

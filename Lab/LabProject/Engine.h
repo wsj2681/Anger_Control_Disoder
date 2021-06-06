@@ -74,7 +74,7 @@ private:
 	ID3D12Resource* m_pd3dcbFrameworkInfo = nullptr;
 	CB_ENGINE_INFO* m_pcbMappedFrameworkInfo = nullptr;
 
-	Server* server = nullptr;
+	
 public:
 
 	bool OnCreate(HINSTANCE hInstance, HWND hMainWnd);
