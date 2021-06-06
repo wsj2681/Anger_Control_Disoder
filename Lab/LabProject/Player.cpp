@@ -232,9 +232,9 @@ void Player::Update(float fTimeElapsed)
 	if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
 
 	DWORD nCurrentCameraMode = m_pCamera->GetMode();
-	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->Update(bones["head"]->GetPosition(), fTimeElapsed);
+	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->Update(bones["Head"]->GetPosition(), fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
-	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->SetLookAt(bones["head"]->GetPosition());
+	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->SetLookAt(bones["Head"]->GetPosition());
 	m_pCamera->RegenerateViewMatrix();
 
 	fLength = Vector3::Length(m_xmf3Velocity);
@@ -320,9 +320,9 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", nullptr);
 	SetChild(BoxerModel->m_pModelRootObject, true);
 
-	if (this->bones["head"] = FindFrame("Bip01_Head"))
+	if (this->bones["Head"] = FindFrame("Bip01_Head"))
 	{
-		this->boundBoxs["head"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 1.f, 1.f, 1.f);
+		this->boundBoxs["Head"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 1.f, 1.f, 1.f);
 	}
 	if (this->bones["rHand"] = FindFrame("Bip01_R_Hand"))
 	{
@@ -387,11 +387,10 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityY(400.0f);
 			m_pCamera = OnChangeCamera(FIRST_PERSON_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.0f);
-			m_pCamera->SetOffset(bones["head"]->GetPosition());
+			m_pCamera->SetOffset(bones["Head"]->GetPosition());
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 90.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(bones["head"]->GetPosition());
 			break;
 		case SPACESHIP_CAMERA:
 			SetFriction(125.0f);
@@ -400,11 +399,11 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityY(400.0f);
 			m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.0f);
-			m_pCamera->SetOffset(bones["head"]->GetPosition());
+			m_pCamera->SetOffset(XMFLOAT3(bones["Head"]->GetPosition().x - 500.f, bones["Head"]->GetPosition().y - 150.f, bones["Head"]->GetPosition().z - 500.f));
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(Vector3::Add(bones["head"]->GetPosition(), m_pCamera->GetOffset()));
+			m_pCamera->SetPosition(Vector3::Add(bones["Head"]->GetPosition(), m_pCamera->GetOffset()));
 			break;
 		case THIRD_PERSON_CAMERA:
 			SetFriction(250.0f);
@@ -418,7 +417,7 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(Vector3::Add(bones["head"]->GetPosition(), m_pCamera->GetOffset()));
+			//m_pCamera->SetPosition(Vector3::Add(bones["Head"]->GetPosition(), m_pCamera->GetOffset()));
 			break;
 		case THIRD_PERSON_CAMERA2:
 			SetFriction(250.0f);
@@ -432,12 +431,12 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(Vector3::Add(bones["head"]->GetPosition(), m_pCamera->GetOffset()));
+			m_pCamera->SetPosition(Vector3::Add(bones["Head"]->GetPosition(), m_pCamera->GetOffset()));
 			break;
 		default:
 			break;
 	}
-	m_pCamera->SetPosition(Vector3::Add(bones["head"]->GetPosition(), m_pCamera->GetOffset()));
+	m_pCamera->SetPosition(Vector3::Add(bones["Head"]->GetPosition(), m_pCamera->GetOffset()));
 	Update(fTimeElapsed);
 
 	return(m_pCamera);

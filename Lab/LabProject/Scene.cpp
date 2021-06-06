@@ -967,7 +967,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	//hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->rHand->GetPosition();
 	//hierarchicalGameObjects[OTHERPLAYER]->spine->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->spine->GetPosition();
 
-	particle->Update(m_pPlayer->bones["head"]->GetPosition(), fTimeElapsed);
+	particle->Update(m_pPlayer->bones["Head"]->GetPosition(), fTimeElapsed);
 
 	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp <= 0.f)
 	{
