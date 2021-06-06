@@ -10,6 +10,4 @@ public:
 	virtual ~BoxerObject();
 
 	virtual void UpdateWayPoints();
-
-	map<string, CubeObject*> boundBoxs;
 };
