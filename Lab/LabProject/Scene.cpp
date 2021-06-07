@@ -204,7 +204,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
-	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", nullptr);
+	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerA.bin", nullptr);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 	for (int i = 0; i < boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_nAnimationSets; ++i)
@@ -749,7 +749,7 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case VK_F8:
 			m_pPlayer->hp -= 5.f;
 			cout << "Player HP = " << m_pPlayer->hp << endl;
-			//m_ppHierarchicalGameObjects[0]->hp -= 5.f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 5.f;
 			cout << "OtherPlayer HP = " << hierarchicalGameObjects.data()[OTHERPLAYER]->hp << endl;
 			break;
 		case '0':
@@ -1205,10 +1205,18 @@ void Scene::CollidePVE()
 					}
 					else if (otherPlayerBoundBox.first == "Spine")
 					{
-						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
 						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(PlayerBoundBox.second->GetPosition());
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
+					}
+					else if (otherPlayerBoundBox.first == "Clavicle")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 15.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
 				}
@@ -1221,6 +1229,12 @@ void Scene::CollidePVE()
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
 					}
 					else if (otherPlayerBoundBox.first == "Spine")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
+						cout << "Guard - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
+					}
+					else if (otherPlayerBoundBox.first == "Clavicle")
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_2HANDS);
 						cout << "Guard - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
@@ -1240,18 +1254,33 @@ void Scene::CollidePVE()
 						
 						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						m_pPlayer->hp -= 20.f;
 						m_pPlayer->nowState = HIT;
 					}
 					else if (PlayerBoundBox.first == "Spine")
+					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_HIT_TORSO_STRIGHT_B;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+						
+						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						m_pPlayer->hp -= 10.f;
+						m_pPlayer->nowState = HIT;
+					}
+					else if (PlayerBoundBox.first == "Clavicle")
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
 #ifdef _WITH_SERVER_CONNECT
 						server->send_attackAnddefend.ani_num = ANIMATION_KNOCKDOWN;
 						server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
-						
+
 						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						m_pPlayer->hp -= 15.f;
 						m_pPlayer->nowState = HIT;
 					}
 				}
@@ -1270,12 +1299,23 @@ void Scene::CollidePVE()
 					}
 					else if (PlayerBoundBox.first == "Spine")
 					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_COME_HERE_1HAND;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+						
+						cout << "Guard - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						m_pPlayer->nowState = IDLE;
+					}
+					else if (PlayerBoundBox.first == "Clavicle")
+					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_2HANDS);
 #ifdef _WITH_SERVER_CONNECT
 						server->send_attackAnddefend.ani_num = ANIMATION_COME_HERE_2HANDS;
 						server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
-						
+
 						cout << "Guard - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						m_pPlayer->nowState = IDLE;
 					}

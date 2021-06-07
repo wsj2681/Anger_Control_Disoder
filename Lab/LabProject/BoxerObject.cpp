@@ -10,7 +10,7 @@
 BoxerObject::BoxerObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, ModelInfo* pModel, int nAnimationTracks)
 {
 	ModelInfo* boxerModel = pModel;
-	if (!boxerModel) boxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", nullptr);
+	if (!boxerModel) boxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxerA.bin", nullptr);
 
 
 	SetChild(boxerModel->m_pModelRootObject, true);
@@ -39,7 +39,10 @@ BoxerObject::BoxerObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	{
 		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 2.0f, 3.f, 2.f);
 	}
-
+	if (this->bones["Clavicle"] = FindFrame("Bip01_L_Clavicle"))
+	{
+		this->boundBoxs["Clavicle"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 2.0f, 3.f, 2.f);
+	}
 	//m_pSkinnedAnimationController = new AnimationController(pd3dDevice, pd3dCommandList, nAnimationTracks, boxerModel);
 	m_pSkinnedAnimationController = new AnimationController(pd3dDevice, pd3dCommandList, 1, boxerModel);
 	m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
