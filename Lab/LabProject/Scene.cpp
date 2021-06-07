@@ -762,7 +762,7 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case '7':
 		case '8':
 		case '9':
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, (DWORD)(wParam - ANIMATION_KNOCKDOWNED), ANIMATION_TYPE_ONCE, true); 
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, (DWORD)(wParam - ANIMATION_KNOCKDOWNED) + 2, ANIMATION_TYPE_ONCE, true); 
 #ifdef _WITH_SERVER_CONNECT
 			server->send_attackAnddefend.ani_num = (DWORD)(wParam - ANIMATION_KNOCKDOWNED);
 			server->send_attackAnddefend.checkAni = true;
@@ -1197,7 +1197,7 @@ void Scene::CollidePVE()
 				{
 					if (otherPlayerBoundBox.first == "Head")
 					{
-						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
 						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						particle->PositionInit(PlayerBoundBox.second->GetPosition());
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 10.f;
@@ -1232,9 +1232,9 @@ void Scene::CollidePVE()
 
 					if (PlayerBoundBox.first == "Head")
 					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
 #ifdef _WITH_SERVER_CONNECT
-						server->send_attackAnddefend.ani_num = ANIMATION_HIT_TORSO_STRIGHT_B;
+						server->send_attackAnddefend.ani_num = ANIMATION_HIT_HEAD_STRIGHT_B;
 						server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
 						
