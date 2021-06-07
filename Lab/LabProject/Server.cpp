@@ -8,6 +8,7 @@
 #include "Scene.h"
 #include "AnimationController.h"
 #include "AnimationSet.h"
+#include "AnimationTrack.h"
 
 
 Server::Server()
@@ -124,17 +125,29 @@ void Server::Server_recv()
 		//상대 클라 애니메이션 실행
 		//otherPlayerAnimation();
 
-		/*retVal = cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[cscene->
-			m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->m_pAnimationTracks->m_nAnimationSet]->IsAnimate();
-		*/
+		bool retVal;
+		retVal = cscene->hierarchicalGameObjects[0]->m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[cscene->
+			hierarchicalGameObjects[0]->m_pSkinnedAnimationController->m_pAnimationTracks->m_nAnimationSet]->IsAnimate();
+		
 	
 		/*if (recv_attackAnddefend.ani_playing == true) {
 			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num);
 
 		}*/
-		if (recv_attackAnddefend.checkAni == true)
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
+		if (recv_attackAnddefend.checkAni == true) {
+			if (recv_attackAnddefend.ani_num == ANIMATION_MOVE_FORWARD || recv_attackAnddefend.ani_num == ANIMATION_MOVE_BACKWARD ||
+				recv_attackAnddefend.ani_num == ANIMATION_MOVE_LEFT || recv_attackAnddefend.ani_num == ANIMATION_MOVE_RIGHT) {
+				if(retVal == true)
+					cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
+
+			
+			}
+			else {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
+			}
 		
+		
+		}
 
 		//충돌처리확인
 		/*if (col.check_collide) {
