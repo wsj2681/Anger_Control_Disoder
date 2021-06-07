@@ -75,6 +75,8 @@ void Server::Server_send()
 
 		retval = send(sock, (char*)&myHP, sizeof(myHP), 0);
 
+		if(send_attackAnddefend.checkAni == true)
+			attackAndGuard_idle();
 	}
 }
 
@@ -134,17 +136,25 @@ void Server::Server_recv()
 			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num);
 
 		}*/
-		if (recv_attackAnddefend.checkAni == true) {
-			//if (recv_attackAnddefend.ani_num == ANIMATION_MOVE_FORWARD || recv_attackAnddefend.ani_num == ANIMATION_MOVE_BACKWARD ||
-			//	recv_attackAnddefend.ani_num == ANIMATION_MOVE_LEFT || recv_attackAnddefend.ani_num == ANIMATION_MOVE_RIGHT) {
-			//	if(retVal == true)
-			//		cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
 
 			
-			//}
-			//else {
+
+
+
+		if (recv_attackAnddefend.checkAni == true) {
+			if (recv_attackAnddefend.ani_num == ANIMATION_MOVE_FORWARD || recv_attackAnddefend.ani_num == ANIMATION_MOVE_BACKWARD ||
+				recv_attackAnddefend.ani_num == ANIMATION_MOVE_LEFT || recv_attackAnddefend.ani_num == ANIMATION_MOVE_RIGHT) {
+				if (retVal == true) {
+					cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
+					other_ani_check = true;
+				
+				}
+			
+			}
+			else {
 				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
-			//}
+				other_ani_check = true;
+			}
 		
 		
 		}

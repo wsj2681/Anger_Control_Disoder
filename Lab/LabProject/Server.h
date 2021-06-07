@@ -82,9 +82,11 @@ struct AttackAndDefend {
 
 	UINT ani_num;
 
-	bool checkAni = false;
+	bool checkAni ;
 
 	bool ani_playing;
+
+	
 
 
 };
@@ -163,6 +165,8 @@ public:
 	int send_count = 0;
 	int recv_count = 0;
 	UINT ani_first_check = 0x62;
+
+	bool other_ani_check = false;
 
 
 	Server();

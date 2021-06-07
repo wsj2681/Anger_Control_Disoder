@@ -28,7 +28,8 @@ int thread_empty[MAXTHREAD] = { 0, };
 void setPosition(XMFLOAT3& fl3x3, XMFLOAT4X4& fl4x4);
 
 //애니메이션
-AttackAndDefend recv_attackAnddefend[3];
+AttackAndDefend recv_attackAnddefend_1;
+AttackAndDefend recv_attackAnddefend_2;
 bool checkAnimation(AttackAndDefend attAdef);
 
 //충돌처리
@@ -280,7 +281,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		if (thread_id.thread_num == 1 || thread_id.thread_num == 3) {
 
 			thread_num_1_player = player;
-			recv_attackAnddefend[thread_id.thread_num] = attAdef;
+			recv_attackAnddefend_1 = attAdef;
 			thread_num_1_HP = player_hp;
 
 			if (idIndex <= 2)
@@ -358,7 +359,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		*/
 		//cout << "collide _ position - " << col1.collidePosition.x << " " << col1.collidePosition.y << " " << col1.collidePosition.z << endl;
 			
-			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num + 1], sizeof(recv_attackAnddefend[thread_id.thread_num + 1]), 0);
+			retval = send(thread_client_sock, (char*)&recv_attackAnddefend_2, sizeof(recv_attackAnddefend_2), 0);
 			
 			//retval = send(thread_client_sock, (char*)&thread_2_headHitted, sizeof(thread_2_headHitted), 0);
 			
@@ -376,7 +377,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 
 
 			thread_num_2_player = player;
-			recv_attackAnddefend[thread_id.thread_num] = attAdef;
+			recv_attackAnddefend_2 = attAdef;
 			thread_num_2_HP = player_hp;
 
 			////두번쨰접속 쓰레드한테 충돌처리
@@ -447,7 +448,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			/*cout << "thread_2 of thread_1 value = " << thread_id.thread_num << " / " << thread_num_1_player.player_world._41 <<
 				" ," << thread_num_1_player.player_world._42 << ", " << thread_num_1_player.player_world._43 << endl;*/
 			
-			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num - 1], sizeof(recv_attackAnddefend[thread_id.thread_num - 1]), 0);
+			retval = send(thread_client_sock, (char*)&recv_attackAnddefend_1, sizeof(recv_attackAnddefend_1), 0);
 			
 			//retval = send(thread_client_sock, (char*)&thread_1_headHitted, sizeof(thread_1_headHitted), 0);
 			
