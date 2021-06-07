@@ -135,16 +135,16 @@ void Server::Server_recv()
 
 		}*/
 		if (recv_attackAnddefend.checkAni == true) {
-			if (recv_attackAnddefend.ani_num == ANIMATION_MOVE_FORWARD || recv_attackAnddefend.ani_num == ANIMATION_MOVE_BACKWARD ||
-				recv_attackAnddefend.ani_num == ANIMATION_MOVE_LEFT || recv_attackAnddefend.ani_num == ANIMATION_MOVE_RIGHT) {
-				if(retVal == true)
-					cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
+			//if (recv_attackAnddefend.ani_num == ANIMATION_MOVE_FORWARD || recv_attackAnddefend.ani_num == ANIMATION_MOVE_BACKWARD ||
+			//	recv_attackAnddefend.ani_num == ANIMATION_MOVE_LEFT || recv_attackAnddefend.ani_num == ANIMATION_MOVE_RIGHT) {
+			//	if(retVal == true)
+			//		cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
 
 			
-			}
-			else {
+			//}
+			//else {
 				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
-			}
+			//}
 		
 		
 		}
