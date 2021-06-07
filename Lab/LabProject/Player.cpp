@@ -342,7 +342,7 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	}
 	if (this->bones["Spine"] = FindFrame("Bip01_Spine1"))
 	{
-		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 2.0f, 1.f, 2.f);
+		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 2.0f, 3.f, 2.f);
 	}
 
 	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
