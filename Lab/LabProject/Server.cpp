@@ -139,7 +139,7 @@ void Server::Server_recv()
 
 			
 
-
+		//cout << "ani_check - " << recv_attackAnddefend.checkAni << " " << endl;
 
 		if (recv_attackAnddefend.checkAni == true) {
 			if (recv_attackAnddefend.ani_num == ANIMATION_MOVE_FORWARD || recv_attackAnddefend.ani_num == ANIMATION_MOVE_BACKWARD ||

@@ -764,7 +764,7 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case '9':
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, (DWORD)(wParam - ANIMATION_KNOCKDOWNED) + 2, ANIMATION_TYPE_ONCE, true); 
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.ani_num = (DWORD)(wParam - ANIMATION_KNOCKDOWNED);
+			server->send_attackAnddefend.ani_num = (DWORD)(wParam - ANIMATION_KNOCKDOWNED) + 2;
 			server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
 			break;

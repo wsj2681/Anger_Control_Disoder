@@ -15,7 +15,7 @@ using namespace std;
 //╥ндц
 //#define SERVERIP "127.0.0.1"
 
-#define SERVERIP   "192.168.122.127"
+#define SERVERIP   "192.168.140.167"
 #define SERVERPORT 9000
 #define BUFSIZE    512
 

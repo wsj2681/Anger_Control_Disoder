@@ -199,8 +199,8 @@ DWORD WINAPI serverThread(LPVOID arg) {
 			//공격과 방어 초기화
 
 			server->checkSR = false;
-			if(server->send_attackAnddefend.checkAni == true)
-				server->attackAndGuard_idle();
+			/*if(server->send_attackAnddefend.checkAni == true)
+				server->attackAndGuard_idle();*/
 
 		}
 
