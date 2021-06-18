@@ -307,6 +307,21 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				case VK_F5:
 					onTempKey = !onTempKey;
 					break;
+				case 'Q':
+				{
+					m_pCamera->CaptureWorld();
+					break;
+				}
+				case 'W':
+				{
+					m_pCamera->SetCaptureWorld();
+					break;
+				}
+				case 'E':
+				{
+					m_pCamera->SetFixed(!m_pCamera->IsFixed());
+					break;
+				}
 				case VK_F9:
 					ChangeSwapChainState();
 					break;
@@ -486,11 +501,27 @@ void Engine::ProcessInput()
 			if (cxDelta || cyDelta)
 			{
 				if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-					m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
+				{
+					if (m_pCamera->GetMode() == SPACESHIP_CAMERA && !m_pCamera->IsFixed())
+						m_pCamera->Rotate(cyDelta, 0.0f, -cxDelta);
+					else
+						m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
+				}
 				else
-					m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+				{
+					if (m_pCamera->GetMode() == SPACESHIP_CAMERA && !m_pCamera->IsFixed())
+						m_pCamera->Rotate(cyDelta, cxDelta, 0.0f);
+					else
+						m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+				}
 			}
-			if (dwDirection) m_pPlayer->Move(dwDirection, 5.25f, true);
+			if (dwDirection)
+			{
+				if (m_pCamera->GetMode() == SPACESHIP_CAMERA && !m_pCamera->IsFixed())
+					m_pCamera->MoveFromShift(dwDirection, 50.0f * m_GameTimer.GetTimeElapsed(), false);
+				else
+					m_pPlayer->Move(dwDirection, 50.0f * m_GameTimer.GetTimeElapsed(), false);
+			}
 		}
 	}
 

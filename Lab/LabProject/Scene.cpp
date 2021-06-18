@@ -768,6 +768,7 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
 			break;
+		/*
 		case 'Q': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L, ANIMATION_TYPE_ONCE, true); break;
 		case 'W': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R, ANIMATION_TYPE_ONCE, true); break;
 		case 'E': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_JAB, ANIMATION_TYPE_ONCE, true); break;
@@ -778,6 +779,12 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case 'D': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK, ANIMATION_TYPE_ONCE, true); break;
 		case 'F': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_L, ANIMATION_TYPE_ONCE, true); break;
 		case 'G': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_R, ANIMATION_TYPE_ONCE, true); break;
+		*/
+		case 'P':
+		{
+			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, rand() % 9 + 27, ANIMATION_TYPE_ONCE, true);
+			break;
+		}
 		case 'Z': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true); break;
 		case 'X': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true); break;
 		case 'C': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); break;

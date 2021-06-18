@@ -24,6 +24,11 @@ protected:
 	XMFLOAT3						m_xmf3Up;
 	XMFLOAT3						m_xmf3Look;
 
+	XMFLOAT3						m_xmf3CapturedPosition;
+	XMFLOAT3						m_xmf3CapturedRight;
+	XMFLOAT3						m_xmf3CapturedUp;
+	XMFLOAT3						m_xmf3CapturedLook;
+
 	float           				m_fPitch;
 	float           				m_fRoll;
 	float           				m_fYaw;
@@ -45,7 +50,8 @@ protected:
 	ID3D12Resource					*m_pd3dcbCamera = nullptr;
 	VS_CB_CAMERA_INFO				*m_pcbMappedCamera = nullptr;
 
-	
+	bool isFixed = false;
+	bool withPlayer = false;
 
 public:
 	Camera();
@@ -100,10 +106,15 @@ public:
 	D3D12_RECT GetScissorRect() { return(m_d3dScissorRect); }
 
 	virtual void Move(const XMFLOAT3& xmf3Shift) { m_xmf3Position.x += xmf3Shift.x; m_xmf3Position.y += xmf3Shift.y; m_xmf3Position.z += xmf3Shift.z; }
+	void MoveFromShift(DWORD nDirection, float fDistance, bool bVelocity);
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) { }
 	virtual void Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed) { }
 	virtual void SetLookAt(XMFLOAT3& xmf3LookAt) { }
 
+	void SetFixed(bool fixed) { this->isFixed = fixed; }
+	bool IsFixed() { return this->isFixed; }
+	void CaptureWorld();
+	void SetCaptureWorld();
 
 public:
 
