@@ -86,7 +86,7 @@ void Player::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
 	else
 	{
 		m_xmf3Position = Vector3::Add(m_xmf3Position, xmf3Shift);
-		m_pCamera->Move(xmf3Shift);
+		//m_pCamera->Move(xmf3Shift);
 	}
 }
 
@@ -402,12 +402,15 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityY(400.0f);
 			m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.0f);
-			m_pCamera->SetOffset(XMFLOAT3(bones["Head"]->GetPosition().x - 500.f, bones["Head"]->GetPosition().y - 150.f, bones["Head"]->GetPosition().z - 500.f));
+			m_pCamera->SetOffset({});
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
 			m_pCamera->SetPosition(Vector3::Add(bones["Head"]->GetPosition(), m_pCamera->GetOffset()));
-			CameraRotate();
+			m_xmf3Right = XMFLOAT3(1.0f, 0.0f, 0.0f);
+			m_xmf3Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
+			m_xmf3Look = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			//CameraRotate();
 			break;
 		case THIRD_PERSON_CAMERA:
 			SetFriction(250.0f);

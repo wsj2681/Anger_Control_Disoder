@@ -505,14 +505,14 @@ void Engine::ProcessInput()
 					if (m_pCamera->GetMode() == SPACESHIP_CAMERA && !m_pCamera->IsFixed())
 						m_pCamera->Rotate(cyDelta, 0.0f, -cxDelta);
 					else
-						m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
+						m_pPlayer->Rotate(0, 0.0f, -cxDelta);
 				}
 				else
 				{
 					if (m_pCamera->GetMode() == SPACESHIP_CAMERA && !m_pCamera->IsFixed())
 						m_pCamera->Rotate(cyDelta, cxDelta, 0.0f);
 					else
-						m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
+						m_pPlayer->Rotate(0, cxDelta, 0.0f);
 				}
 			}
 			if (dwDirection)
