@@ -18,7 +18,7 @@ public:
 	AnimationSet(AnimationSet&&) = delete;
 	AnimationSet& operator=(AnimationSet&&) = delete;
 	~AnimationSet();
-private:
+public:
 	char							m_pstrAnimationSetName[64];
 
 	float							m_fLength = 0.0f;

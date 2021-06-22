@@ -14,19 +14,42 @@ AnimationSet::AnimationSet(float fLength, int nFramesPerSecond, int nKeyFrames, 
 	m_fLength = fLength;
 	m_nFramesPerSecond = nFramesPerSecond;
 	m_nKeyFrames = nKeyFrames;
+	m_nKeyFrameRotations = nKeyFrames;
+	m_nKeyFrameScales = nKeyFrames;
+	m_nKeyFrameTranslations = nKeyFrames;
 
 	strcpy_s(m_pstrAnimationSetName, 64, pstrName);
 
 	m_pfKeyFrameTimes = new float[nKeyFrames];
 	m_ppxmf4x4KeyFrameTransforms = new XMFLOAT4X4 * [nKeyFrames];
+
+	m_pfKeyFrameScaleTimes = new float[nKeyFrames];
+	m_ppxmf3KeyFrameScales = new XMFLOAT3 * [nKeyFrames];
+
+	m_pfKeyFrameTranslationTimes = new float[nKeyFrames];
+	m_ppxmf3KeyFrameTranslations = new XMFLOAT3 * [nKeyFrames];
+
+	m_pfKeyFrameRotationTimes = new float[nKeyFrames];
+	m_ppxmf4KeyFrameRotations = new XMFLOAT4 * [nKeyFrames];
+
 	for (int i = 0; i < nKeyFrames; i++) m_ppxmf4x4KeyFrameTransforms[i] = new XMFLOAT4X4[nAnimatedBones];
+	for (int i = 0; i < nKeyFrames; i++) m_ppxmf3KeyFrameScales[i] = new XMFLOAT3[nAnimatedBones];
+	for (int i = 0; i < nKeyFrames; i++) m_ppxmf3KeyFrameTranslations[i] = new XMFLOAT3[nAnimatedBones];
+	for (int i = 0; i < nKeyFrames; i++) m_ppxmf4KeyFrameRotations[i] = new XMFLOAT4[nAnimatedBones];
 }
 
 AnimationSet::~AnimationSet()
 {
-	SAFE_DELETEARR(m_pfKeyFrameTimes);
-	for (int j = 0; j < m_nKeyFrames; j++) SAFE_DELETEARR(m_ppxmf4x4KeyFrameTransforms[j]);
-	SAFE_DELETEARR(m_ppxmf4x4KeyFrameTransforms);
+	if (m_pfKeyFrameTimes) delete[] m_pfKeyFrameTimes;
+	for (int j = 0; j < m_nKeyFrames; j++) if (m_ppxmf4x4KeyFrameTransforms[j]) delete[] m_ppxmf4x4KeyFrameTransforms[j];
+	for (int j = 0; j < m_nKeyFrames; j++) if (m_ppxmf3KeyFrameScales[j]) delete[] m_ppxmf3KeyFrameScales[j];
+	for (int j = 0; j < m_nKeyFrames; j++) if (m_ppxmf3KeyFrameTranslations[j]) delete[] m_ppxmf3KeyFrameTranslations[j];
+	for (int j = 0; j < m_nKeyFrames; j++) if (m_ppxmf4KeyFrameRotations[j]) delete[] m_ppxmf4KeyFrameRotations[j];
+
+	if (m_ppxmf4x4KeyFrameTransforms) delete[] m_ppxmf4x4KeyFrameTransforms;
+	if (m_ppxmf3KeyFrameScales) delete[] m_ppxmf3KeyFrameScales;
+	if (m_ppxmf3KeyFrameTranslations) delete[] m_ppxmf3KeyFrameTranslations;
+	if (m_ppxmf4KeyFrameRotations) delete[] m_ppxmf4KeyFrameRotations;
 
 	SAFE_DELETEARR(m_pCallbackKeys);
 	SAFE_DELETE(m_pAnimationCallbackHandler);
@@ -179,7 +202,7 @@ XMFLOAT4X4 AnimationSet::GetSRT(int nBone)
 		}
 	}
 
-	XMStoreFloat4x4(&xmf4x4Transform, XMMatrixAffineTransformation(S, nullptr, R, T));
+	XMStoreFloat4x4(&xmf4x4Transform, XMMatrixAffineTransformation(S, XMVECTOR(), R, T));
 #else   
 	for (int i = 0; i < (m_nKeyFrames - 1); i++)
 	{

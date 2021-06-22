@@ -684,7 +684,18 @@ void Object::LoadAnimationFromFile(FILE *pInFile, ModelInfo *pLoadedModel)
 
 					AnimationSet *pAnimationSet = pLoadedModel->m_pAnimationSets->m_pAnimationSets[nAnimationSet];
 					pAnimationSet->m_pfKeyFrameTimes[i] = fKeyTime;
+
+#ifdef _WITH_ANIMATION_SRT
+					pAnimationSet->m_pfKeyFrameRotationTimes[i] = fKeyTime;
+					pAnimationSet->m_pfKeyFrameScaleTimes[i] = fKeyTime;
+					pAnimationSet->m_pfKeyFrameTranslationTimes[i] = fKeyTime;
+#endif
 					nReads = (UINT)::fread(pAnimationSet->m_ppxmf4x4KeyFrameTransforms[i], sizeof(XMFLOAT4X4), pLoadedModel->m_pAnimationSets->m_nAnimatedBoneFrames, pInFile);
+#ifdef _WITH_ANIMATION_SRT
+					nReads = (UINT)::fread(pAnimationSet->m_ppxmf3KeyFrameTranslations[i], sizeof(XMFLOAT3), pLoadedModel->m_pAnimationSets->m_nAnimatedBoneFrames, pInFile);
+					nReads = (UINT)::fread(pAnimationSet->m_ppxmf4KeyFrameRotations[i], sizeof(XMFLOAT4), pLoadedModel->m_pAnimationSets->m_nAnimatedBoneFrames, pInFile);
+					nReads = (UINT)::fread(pAnimationSet->m_ppxmf3KeyFrameScales[i], sizeof(XMFLOAT3), pLoadedModel->m_pAnimationSets->m_nAnimatedBoneFrames, pInFile);
+#endif
 				}
 			}
 		}

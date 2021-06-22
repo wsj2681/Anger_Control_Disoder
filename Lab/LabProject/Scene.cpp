@@ -204,7 +204,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
-	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxerA.bin", nullptr);
+	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/TEST.bin", nullptr);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 	for (int i = 0; i < boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_nAnimationSets; ++i)
@@ -215,23 +215,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	hierarchicalGameObjects.push_back(boxer);
 	SAFE_DELETE(BoxerModel);
 
-	ModelInfo* cubeModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", nullptr);
-	Object* cube = new CrowdObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, cubeModel, 1);
-	cube->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	cube->isActive = false;
-	cube->SetScale(1.5f, 1.5f, 1.5f);
-	hierarchicalGameObjects.push_back(cube);
-
-	ModelInfo* sphereModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/sphere.bin", nullptr);
-	Object* sphere = new CrowdObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, sphereModel, 1);
-	sphere->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	sphere->isActive = false;
-	sphere->SetScale(1.5f, 1.5f, 1.5f);
-	hierarchicalGameObjects.push_back(sphere);
-
-	SAFE_DELETE(cubeModel);
-
-	ModelInfo* crowdModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Crowd.bin", nullptr);
+	ModelInfo* crowdModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/BoxingComplete.bin", nullptr);
 
 	int nFloors = 4;
 	size_t nBaseModels = hierarchicalGameObjects.size();
@@ -247,7 +231,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 		for (int j = (int)nBaseModels + i * nCrowds; j < (int)nBaseModels + (i + 1) * nCrowds; ++j)
 		{
 			Object* crowd = new CrowdObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, crowdModel, 1);
-			crowd->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
+			crowd->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 			crowd->SetPosition(cos(XMConvertToRadians(angle)) * radius, -9.0f + 4.0f * i, sin(XMConvertToRadians(angle)) * radius);
 			//crowd->Rotate(0.0f, angle + 90.f + ((j - nBaseModels) % (nCrowds - 1)) * 30.0f, 0.0f);
 			crowd->Rotate(0.0f, 180.0f, 0.0f);
