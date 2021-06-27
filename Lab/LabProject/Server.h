@@ -2,7 +2,7 @@
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
-//#define _WITH_SERVER_CONNECT
+#define _WITH_SERVER_CONNECT
 
 
 
@@ -13,9 +13,9 @@ using namespace std;
 //#define SERVERIP   "192.168.0.13"
 
 //╥ндц
-//#define SERVERIP "127.0.0.1"
+#define SERVERIP "127.0.0.1"
 
-#define SERVERIP   "192.168.140.167"
+//#define SERVERIP   "192.168.140.167"
 #define SERVERPORT 9000
 #define BUFSIZE    512
 

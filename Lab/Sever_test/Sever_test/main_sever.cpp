@@ -89,7 +89,7 @@ int main()
 	int client_addr_len;
 	char buf[BUFFERSIZE + 1];
 
-	//vector<thread> t1;
+	
 
 	cout << "**** 서버 시작 ****" << endl;
 
@@ -106,20 +106,18 @@ int main()
 			"\n[TCP 서버] 클라이언트 접속: IP 주소= " << inet_ntoa(client_addr.sin_addr) <<
 			", 포트 번호=" << ntohs(client_addr.sin_port) << endl;
 
-		//hThread[threadCount] = CreateThread(nullptr, 0, PlayerThread, (LPVOID)client_sock, 0, &dwThreadID[threadCount]);
-		//threadCount++;
+		
 
 		hThread = CreateThread(nullptr, 0, PlayerThread, (LPVOID)client_sock, 0, NULL);
 
-		//thread t1{ PlayerThread };
+		
 
 		if (hThread == NULL)
 			closesocket(client_sock);
 		else { CloseHandle(hThread); }
 	}
 
-	/*for (auto& i : hThread)
-		CloseHandle(i);*/
+	
 
 
 	DeleteCriticalSection(&cs);
@@ -137,17 +135,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	thread_id.thread_num = idIndex;
 	idIndex++;
 
-	//for (int i = 0; i < MAXTHREAD; ++i) {
-	//	if (thread_empty[i] == 0) {
-	//		thread_empty[i] = 1;
-	//		thread_id.thread_num = i;
-	//			
-	//	}
-	//	else {
 
-	//		//쓰레드 해당개수(5개)를 다 할당했을떄
-	//	}
-	//}
 
 	SOCKET thread_client_sock = (SOCKET)arg;
 	SOCKADDR_IN client_addr;
@@ -183,7 +171,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	retval = send(thread_client_sock, (char*)GameOk, sizeof(GameOk), 0);
 	cout << GameOk << "전송 완료" << endl;
 
-	//id.thread_id =thread_count;
+	
 
 
 	cout << "lll thread_id = " << thread_id.thread_num << endl;
@@ -288,67 +276,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				thread_num_2_HP.playerHp = 100.0f;
 
 
-			////첫번쨰접속 쓰레드한테 충돌처리
-			//col1.check_collide = checkcollition(player_obb[0], player_obb[1], 0);
-
-			//// 가드됫을경우
-			//if (thread_num_2_player.nowState == STATE_GUARD_RIGHT_HEAD) {
-			//	col1.rHand2rHand = checkcollition(rHand_obb[0], rHand_obb[1], 1);
-			//	if (col1.rHand2rHand)
-			//		col1.collidePosition = player_rHand;
-
-			//	col1.lHand2rHand = checkcollition(lHand_obb[0], rHand_obb[1], 3);
-			//	if (col1.lHand2rHand)
-			//		col1.collidePosition = player_lHand;
-
-			//	/*if (col1.rHand2rHand || col1.lHand2rHand)
-
-			//		thread_2_headHitted = true;
-			//	else
-			//		col2.headHitted = true;*/
-			//}
-			//else if (thread_num_2_player.nowState == STATE_GUARD_LEFT_HEAD) {
-			//	col1.rHand2lHand = checkcollition(rHand_obb[0], lHand_obb[1], 2);
-			//	if (col1.rHand2lHand)
-			//		col1.collidePosition = player_rHand;
-
-			//	col1.lHand2lHand = checkcollition(lHand_obb[0], lHand_obb[1], 4);
-			//	if (col1.lHand2lHand)
-			//		col1.collidePosition = player_lHand;
-
-			//	/*if (col1.rHand2lHand || col1.lHand2lHand)
-			//		thread_2_headHitted = true;
-			//	else
-			//		col2.headHitted = true;*/
-			//}
-			//else {
-			//	//공격 성공
-			//		//오른손 공격
-			//	col1.rHand2Head = checkcollition(rHand_obb[0], Head_obb[1], 5);
-			//	if (col1.rHand2Head) {
-			//		col1.collidePosition = player_rHand;
-			//		thread_2_headHitted.leftHeadHitted = true;
-			//		//player_hp[thread_id.thread_num].playerHp = player_hp[thread_id.thread_num].playerHp - 10.0f;
-			//	}
-			//	col1.rHand2Spine = checkcollition(rHand_obb[0], Spine_obb[1], 6);
-			//	if (col1.rHand2Spine)
-			//		col1.collidePosition = player_rHand;
-
-
-			//	// if문을 바로 나가야하지않을까?
-			//// 왼속공격
-			//	col1.lHand2Head = checkcollition(lHand_obb[0], Head_obb[1], 7);
-			//	if (col1.lHand2Head) {
-			//		col1.collidePosition = player_lHand;
-			//		thread_2_headHitted.rightHeadHitted = true;
-			//		//player_hp[thread_id.thread_num].playerHp = player_hp[thread_id.thread_num].playerHp - 10.0f;
-			//	}
-			//	col1.lHand2Spine = checkcollition(lHand_obb[0], Spine_obb[1], 8);
-			//	if (col1.lHand2Spine)
-			//		col1.collidePosition = player_lHand;
-
-
-			//}
+		
 
 
 
@@ -380,66 +308,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			recv_attackAnddefend_2 = attAdef;
 			thread_num_2_HP = player_hp;
 
-			////두번쨰접속 쓰레드한테 충돌처리
-			//col2.check_collide = checkcollition(player_obb[1], player_obb[0], 17);
-
-			//// 가드됫을경우
-			//if (thread_num_2_player.nowState == STATE_GUARD_RIGHT_HEAD) {
-			//	col2.rHand2rHand = checkcollition(rHand_obb[1], rHand_obb[0], 9);
-			//	if (col2.rHand2rHand)
-			//		col2.collidePosition = player_rHand;
-
-			//	col2.lHand2rHand = checkcollition(lHand_obb[1], rHand_obb[0], 11);
-			//	if (col2.lHand2rHand)
-			//		col2.collidePosition = player_lHand;
-
-			//	/*if (col2.rHand2rHand || col2.lHand2rHand)
-			//		thread_1_headHitted = false;
-			//	else
-			//		thread_1_headHitted  = true;*/
-			//}
-			//else if (thread_num_1_player.nowState == STATE_GUARD_LEFT_HEAD) {
-			//	col2.rHand2lHand = checkcollition(rHand_obb[1], lHand_obb[0], 10);
-			//	if (col2.rHand2lHand)
-			//		col2.collidePosition = player_lHand;
-
-			//	col2.lHand2lHand = checkcollition(lHand_obb[1], lHand_obb[0], 12);
-			//	if (col2.lHand2lHand)
-			//		col2.collidePosition = player_lHand;
-
-			//	/*if (col2.rHand2lHand || col2.lHand2lHand)
-			//		thread_1_headHitted = false;
-			//	else
-			//		thread_1_headHitted = true;*/
-			//}
-			//else {
-			//	//공격 성공
-			//		//오른손 공격
-			//	col2.rHand2Head = checkcollition(rHand_obb[1], Head_obb[0], 13);
-			//	if (col2.rHand2Head) {
-			//		col2.collidePosition = player_rHand;
-			//		thread_1_headHitted.leftHeadHitted = true;
-			//		//player_hp[thread_id.thread_num].playerHp = player_hp[thread_id.thread_num].playerHp - 10.0f;
-			//	}
-			//	col2.rHand2Spine = checkcollition(rHand_obb[1], Spine_obb[0], 14);
-			//	if (col2.rHand2Spine)
-			//		col2.collidePosition = player_rHand;
-
-
-			//	// 왼속공격
-			//	col2.lHand2Head = checkcollition(lHand_obb[1], Head_obb[0], 15);
-			//	if (col2.lHand2Head) {
-			//		col2.collidePosition = player_lHand;
-			//		thread_1_headHitted.rightHeadHitted = true;
-			//		//player_hp[thread_id.thread_num].playerHp = player_hp[thread_id.thread_num].playerHp - 10.0f;
-			//	}
-			//	col2.lHand2Spine = checkcollition(lHand_obb[1], Spine_obb[0], 16);
-			//	if (col2.lHand2Spine)
-			//		col2.collidePosition = player_lHand;
-
-			//}
-
-			//recv_attackAnddefend[thread_id.thread_num - 1].rightGuard = true;
+			
 
 			retval = send(thread_client_sock, (char*)&thread_num_1_player, sizeof(thread_num_1_player), 0);
 			
