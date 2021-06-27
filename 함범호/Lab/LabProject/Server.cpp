@@ -17,12 +17,12 @@ Server::Server()
 Server::~Server() {
 
 }
-Server::Server(int i) {
+void Server::MakeServer(const HWND& hWnd) {
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		cout << "WSAStartup Error" << endl;
 
-	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	//sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	SOCKADDR_IN sever_sock_addr;
 
@@ -34,6 +34,7 @@ Server::Server(int i) {
 
 	retval = connect(sock, (sockaddr*)&sever_sock_addr, sizeof(sever_sock_addr));
 
+	WSAAsyncSelect(sock, hWnd, WM_SOCKET, FD_CLOSE | FD_READ);
 
 }
 
@@ -64,30 +65,30 @@ void Server::Server_send()
 
 		retval = send(sock, (char*)&send_attackAnddefend, sizeof(send_attackAnddefend), 0);
 
-		retval = send(sock, (char*)&myHP, sizeof(myHP), 0);
+		//retval = send(sock, (char*)&myHP, sizeof(myHP), 0);
 
 	}
 }
 
-void Server::Server_recv()
+void Server::Server_recv(SOCKET s)
 {
 	
 	//준비완료 받기
 	if (recv_count == 0) {
-		retval = recv(sock, (char*)Save_Data, sizeof(Save_Data), 0);
+		retval = recv(s, (char*)Save_Data, sizeof(Save_Data), 0);
 		cout << Save_Data << "받기완료" << endl;
 
 		cout << "thread_id = " << thread_id.thread_num << endl;
-		retval = recv(sock, (char*)&thread_id, sizeof(thread_id), 0);
+		retval = recv(s, (char*)&thread_id, sizeof(thread_id), 0);
 		cout << "thread_id = " << thread_id.thread_num << endl;
 		++recv_count;
 	}
 	else {
-		retval = recv(sock, (char*)&other_player, sizeof(other_player), 0);
-		retval = recv(sock, (char*)&col, sizeof(col), 0);
-		retval = recv(sock, (char*)&recv_attackAnddefend, sizeof(recv_attackAnddefend), 0);
-		retval = recv(sock, (char*)&headHitted, sizeof(headHitted), 0);
-		retval = recv(sock, (char*)&myHP, sizeof(myHP), 0);
+		retval = recv(s, (char*)&other_player, sizeof(other_player), 0);
+		retval = recv(s, (char*)&col, sizeof(col), 0);
+		retval = recv(s, (char*)&recv_attackAnddefend, sizeof(recv_attackAnddefend), 0);
+		retval = recv(s, (char*)&headHitted, sizeof(headHitted), 0);
+		//retval = recv(s, (char*)&myHP, sizeof(myHP), 0);
 		
 
 
@@ -231,27 +232,27 @@ void Server::Server_recv()
 
 }
 
-void Server::Server_make_thread() {
+//void Server::Server_make_thread() {
+//
+//	thread t1{ &Server::Server_thread, this };
+//	t1.join();
+//}
 
-	thread t1{ &Server::Server_thread, this };
-	t1.join();
-}
-
-void Server::Server_thread() {
-	while (true) {
-
-		if (checkSR == true) {
-			Server_send();
-			Server_recv();
-			
-			//공격과 방어 초기화
-			attackAndGuard_idle();
-			checkSR = false;
-		}
-
-
-	}
-}
+//void Server::Server_thread() {
+//	while (true) {
+//
+//		if (checkSR == true) {
+//			Server_send();
+//			Server_recv();
+//			
+//			//공격과 방어 초기화
+//			attackAndGuard_idle();
+//			checkSR = false;
+//		}
+//
+//
+//	}
+//}
 
 
 void Server::attackAndGuard_idle() {

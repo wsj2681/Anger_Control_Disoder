@@ -684,7 +684,7 @@ void Engine::FrameAdvance()
 {    
 #ifdef _WITH_SERVER_CONNECT
 
-	//server->Server_send();
+	server->Server_send();
 	//
 
 	////공격과 방어 초기화

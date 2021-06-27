@@ -48,7 +48,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	MyRegisterClass(hInstance);
 
 #ifdef _WITH_SERVER_CONNECT
-	server = new Server(0);
+
+	server = new Server();
 
 
 #endif // _WITH_SERVER_CONNECT
@@ -69,11 +70,12 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 			{
 				::TranslateMessage(&msg);
 				::DispatchMessage(&msg);
+				//WSAAsyncSelect(sock, msg.hwnd, WM_SOCKET, FD_CLOSE | FD_READ);
 			}
-			if (Servercount == 0) {
+			/*if (Servercount == 0) {
 				gThread = CreateThread(nullptr, 0, serverThread, (LPVOID)0, 0, NULL);
 				Servercount++;
-			}
+			}*/
 		}
 		else
 		{
@@ -123,6 +125,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	::ShowWindow(hMainWnd, nCmdShow);
 	::UpdateWindow(hMainWnd);
 
+#ifdef _WITH_SERVER_CONNECT
+	
+	server->MakeServer(hMainWnd);
+
+
+#endif // _WITH_SERVER_CONNECT
+
 	return(TRUE);
 }
 
@@ -134,6 +143,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
+	
 	case WM_SIZE:
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONUP:
@@ -166,9 +176,31 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		::PostQuitMessage(0);
 		break;
+	case WM_SOCKET:
+	{
+		cout << "111" << endl;
+		if (WSAGETSELECTERROR(lParam)) {
+			closesocket((SOCKET)wParam);
+			exit(1);
+			break;
+		}
+		switch (WSAGETSELECTEVENT(lParam)) {
+		case FD_READ:
+			cout << "222" << endl;
+			server->Server_recv((SOCKET)wParam);
+			break;
+		case FD_CLOSE:
+			closesocket((SOCKET)wParam);
+			exit(1);
+			break;
+		}
+	}
+
 	default:
 		return(::DefWindowProc(hWnd, message, wParam, lParam));
+
 	}
+
 	return 0;
 }
 
@@ -190,20 +222,20 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	return((INT_PTR)FALSE);
 }
 
-DWORD WINAPI serverThread(LPVOID arg) {
-
-	while (true) {
-
-		if (server->checkSR == true) {
-			server->Server_send();
-			server->Server_recv();
-
-			//공격과 방어 초기화
-			server->attackAndGuard_idle();
-			server->checkSR = false;
-		}
-
-
-	}
-
-}
+//DWORD WINAPI serverThread(LPVOID arg) {
+//
+//	while (true) {
+//
+//		if (server->checkSR == true) {
+//			server->Server_send();
+//			server->Server_recv();
+//
+//			//공격과 방어 초기화
+//			server->attackAndGuard_idle();
+//			server->checkSR = false;
+//		}
+//
+//
+//	}
+//
+//}

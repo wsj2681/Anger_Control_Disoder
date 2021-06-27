@@ -170,19 +170,19 @@ public:
 	int recv_count = 0;
 
 	Server();
-	Server(int i);
+	
 	Server(const Server&) = delete;
 	Server& operator=(const Server&) = delete;
 	~Server();
 
 	
-
+	void MakeServer( const HWND& hWnd);
 	void Server_send();
 
-	void Server_recv();
+	void Server_recv(SOCKET s);
 	
 	void Server_make_thread();
-	void Server_thread();
+	//void Server_thread();
 
 
 	void attackAndGuard_idle();

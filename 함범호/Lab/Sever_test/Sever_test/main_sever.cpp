@@ -232,13 +232,13 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		}
 		else if (retval == 0)
 			break;
-		retval = recv(thread_client_sock, (char*)&player_hp[thread_id.thread_num], sizeof(player_hp[thread_id.thread_num]), 0);
+		/*retval = recv(thread_client_sock, (char*)&player_hp[thread_id.thread_num], sizeof(player_hp[thread_id.thread_num]), 0);
 		if (retval == SOCKET_ERROR) {
 			display_error("recv : ", WSAGetLastError());
 			break;
 		}
 		else if (retval == 0)
-			break;
+			break;*/
 
 		//cout << thread_id.thread_num << " thread 's Player HP : " << player_hp[thread_id.thread_num].playerHp << endl;;
 
@@ -275,7 +275,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 
 		// 面倒等 林冈 蔼 历厘.
 		//saveColPostion[thread_id.thread_num] = player_rHand;
-		cout << thread_id.thread_num << " thread 's Player HP(sss) : " << player_hp[thread_id.thread_num].playerHp << endl;;
+		//cout << thread_id.thread_num << " thread 's Player HP(sss) : " << player_hp[thread_id.thread_num].playerHp << endl;;
 
 		EnterCriticalSection(&cs);
 		
@@ -362,12 +362,12 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num + 1], sizeof(recv_attackAnddefend[thread_id.thread_num + 1]), 0);
 			retval = send(thread_client_sock, (char*)&thread_2_headHitted, sizeof(thread_2_headHitted),0);
 			
-			if (idIndex <= 2) {
+		/*	if (idIndex <= 2) {
 				player_hp[thread_id.thread_num + 1].playerHp = 100.0f;
 				retval = send(thread_client_sock, (char*)&player_hp[thread_id.thread_num + 1], sizeof(player_hp[thread_id.thread_num]), 0);
 			}
 			else
-				retval = send(thread_client_sock, (char*)&player_hp[thread_id.thread_num+1], sizeof(player_hp[thread_id.thread_num]), 0);
+				retval = send(thread_client_sock, (char*)&player_hp[thread_id.thread_num+1], sizeof(player_hp[thread_id.thread_num]), 0);*/
 
 			
 			
@@ -457,7 +457,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				" ," << thread_num_1_player.player_world._42 << ", " << thread_num_1_player.player_world._43 << endl;*/
 			retval = send(thread_client_sock, (char*)&recv_attackAnddefend[thread_id.thread_num - 1], sizeof(recv_attackAnddefend[thread_id.thread_num - 1]), 0);
 			retval = send(thread_client_sock, (char*)&thread_1_headHitted, sizeof(thread_1_headHitted), 0);
-			retval = send(thread_client_sock, (char*)&player_hp[thread_id.thread_num-1], sizeof(player_hp[thread_id.thread_num]), 0);
+			//retval = send(thread_client_sock, (char*)&player_hp[thread_id.thread_num-1], sizeof(player_hp[thread_id.thread_num]), 0);
 
 			
 

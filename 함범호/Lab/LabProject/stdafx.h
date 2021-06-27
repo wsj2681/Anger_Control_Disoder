@@ -32,6 +32,7 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include <winsock2.h>
 #pragma comment(lib, "ws2_32")
+#define WM_SOCKET WM_USER + 1
 
 /////////////////////////////
 using namespace std;
@@ -144,6 +145,7 @@ constexpr UINT DAMAGE_JAB = 7;
 constexpr UINT DAMAGE_STRAIGHT = 15;
 //----------------------------------------------------------
 
+SOCKET sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 //HR
 #if defined(DEBUG) | defined(_DEBUG)
 #ifndef HR
