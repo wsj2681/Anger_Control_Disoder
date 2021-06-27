@@ -302,6 +302,7 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				case VK_F2:
 				case VK_F3:
 				case VK_F4:
+					m_pCamera->CaptureWorld();
 					m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 					break;
 				case VK_F5:
@@ -309,7 +310,6 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 					break;
 				case 'Q':
 				{
-					m_pCamera->CaptureWorld();
 					break;
 				}
 				case 'W':
@@ -442,7 +442,7 @@ void Engine::ProcessInput()
 	static UCHAR pKeysBuffer[256];
 	bool bProcessedByScene = false;
 	if (GetKeyboardState(pKeysBuffer) && m_pScene) bProcessedByScene = m_pScene->ProcessInput(pKeysBuffer);
-	if (!bProcessedByScene)
+	if (!bProcessedByScene && m_pPlayer->canMove)
 	{
 		DWORD dwDirection = 0;
 		if (pKeysBuffer[VK_UP] & 0xF0)
@@ -485,6 +485,9 @@ void Engine::ProcessInput()
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
 		
+		// 이쪽에 다중입력 만들기
+
+
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;
 		if (GetCapture() == this->hWnd)
@@ -520,7 +523,7 @@ void Engine::ProcessInput()
 				if (m_pCamera->GetMode() == SPACESHIP_CAMERA && !m_pCamera->IsFixed())
 					m_pCamera->MoveFromShift(dwDirection, 50.0f * m_GameTimer.GetTimeElapsed(), false);
 				else
-					m_pPlayer->Move(dwDirection, 50.0f * m_GameTimer.GetTimeElapsed(), false);
+					m_pPlayer->Move(dwDirection, 10.0f * m_GameTimer.GetTimeElapsed(), false);
 			}
 		}
 	}
