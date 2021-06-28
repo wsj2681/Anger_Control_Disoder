@@ -487,23 +487,18 @@ struct VS_TEXTURE_BILLBOARD_OUTPUT
 
 cbuffer cbBillBoardKeyFrameInfo : register(b9)
 {
-	int keyFrame : packoffset(c0);
+	unsigned int keyFrame : packoffset(c0);
 };
 
-VS_TEXTURE_BILLBOARD_OUTPUT VSBillBoardAnimation(uint nVertexID : SV_VertexID)
+VS_TEXTURE_BILLBOARD_OUTPUT VSBillBoardAnimation(VS_TEXTURE_BILLBOARD_INPUT input)
 {
 	VS_TEXTURE_BILLBOARD_OUTPUT output;
-	float x1 = -1.f;
-	float x2 = -1.f;
-	float y1 = +1.f;
-	float y2 = +1.f;
+	output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxGameObject), gmtxView), gmtxProjection);
+	
+	// uv¿¬»ê
+	//
 
-	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
-	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
-	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
-	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
-	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
-	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+	output.uv = input.uv;
 
 	return output;
 }

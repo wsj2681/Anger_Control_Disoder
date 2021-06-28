@@ -258,6 +258,9 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 	//billboard["TEST"] = new BillboardAnimationShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/FrameAnimation.dds");
 
+	bill = new EffectBillboard(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	bill->SetPosition(XMFLOAT3(0.f, 19.f, 0.f));
+
 	particle = new Particle;
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -918,6 +921,12 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
 	}
 
+	if (bill)
+	{
+		bill->SetPosition(m_pPlayer->GetPosition());
+		bill->Update(fTimeElapsed);
+	}
+
 	//TODO : 여기 다시보기
 	CollideCageSide();
 
@@ -951,6 +960,11 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 				o.second->Render(pd3dCommandList, pCamera);
 			}
 		}
+	}
+
+	if (bill)
+	{
+		bill->Render(pd3dCommandList, pCamera);
 	}
 
 	if (!m_pPlayer->boundBoxs.empty())

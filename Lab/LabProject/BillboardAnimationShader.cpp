@@ -6,6 +6,8 @@
 // Texture : rootParameterIndex = 21
 // KeyFrame : rootParameterINdex = 22
 
+extern Scene* gScene;
+
 BillboardAnimationShader::BillboardAnimationShader(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
 {
 	BuildObjects(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, filePath);
@@ -26,7 +28,7 @@ void BillboardAnimationShader::CreateShaderVariables(ID3D12Device* pd3dDevice, I
 
 void BillboardAnimationShader::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 {
-
+	::memcpy(&m_pcbMappedkeyFrameInfo->keyFrame, &gScene->bill->keyFrame, sizeof(unsigned int));
 	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbkeyFrameInfo->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(22, d3dGpuVirtualAddress);
 }
@@ -70,18 +72,18 @@ void BillboardAnimationShader::BuildObjects(ID3D12Device* pd3dDevice, ID3D12Grap
 	CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
-	m_pTexture = new Texture(1, RESOURCE_TEXTURE2D, 0);
-	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
-	Scene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 21, false);
+	//m_pTexture = new Texture(1, RESOURCE_TEXTURE2D, 0);
+	//m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
+	//Scene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 21, false);
 }
-
-void BillboardAnimationShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera)
-{
-	if (active)
-	{
-		m_pTexture->UpdateShaderVariables(pd3dCommandList);
-		Shader::Render(pd3dCommandList, pCamera);
-
-		pd3dCommandList->DrawInstanced(6, 1, 0, 0);
-	}
-}
+//
+//void BillboardAnimationShader::Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera)
+//{
+//	if (active)
+//	{
+//		m_pTexture->UpdateShaderVariables(pd3dCommandList);
+//		Shader::Render(pd3dCommandList, pCamera);
+//
+//		pd3dCommandList->DrawInstanced(6, 1, 0, 0);
+//	}
+//}

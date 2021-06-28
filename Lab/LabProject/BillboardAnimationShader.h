@@ -6,7 +6,7 @@ class Scene;
 
 struct VS_CB_ANIMATION_INFO
 {
-	int keyFrame = 0;
+	unsigned int keyFrame = 0;
 };
 
 class BillboardAnimationShader : public Shader
@@ -36,7 +36,7 @@ public:
 	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
 	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
 
-	void Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera);
+	//void Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera);
 	bool isActive() const { return this->active; }
 	void SetActive(bool active) { this->active = active; }
 
