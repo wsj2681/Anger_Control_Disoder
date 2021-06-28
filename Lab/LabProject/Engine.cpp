@@ -117,6 +117,8 @@ void Engine::CreateDirect3DDevice()
 	nMsaa4xQualityLevels = d3dMsaaQualityLevels.NumQualityLevels;
 	bMsaa4xEnable = (nMsaa4xQualityLevels > 1) ? true : false;
 
+	gnCbvSrvDescriptorIncrementSize = device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+
 	HR(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), (void **)&fence));
 	for (UINT i = 0; i < swapChainBuffers; i++) fenceValues[i] = 0;
 

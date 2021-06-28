@@ -227,7 +227,12 @@
     <ClInclude Include="CubeObject.h">
       <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClInclude>
-    <ClInclude Include="CubeMesh.h" />
+    <ClInclude Include="CubeMesh.h">
+      <Filter>소스 파일\03 Model\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectBillboard.h" />
+    <ClInclude Include="BillboardMesh.h" />
+    <ClInclude Include="BillboardAnimationShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WICTextureLoader12.cpp">
@@ -354,6 +359,15 @@
       <Filter>소스 파일\03 Model\GameObject\Object</Filter>
     </ClCompile>
     <ClCompile Include="CubeMesh.cpp">
+      <Filter>소스 파일\03 Model\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectBillboard.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BillboardMesh.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="BillboardAnimationShader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

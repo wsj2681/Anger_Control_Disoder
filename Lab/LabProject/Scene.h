@@ -15,7 +15,7 @@ constexpr UINT DIRECTIONAL_LIGHT = 3;
 
 class SkyBox;
 class UserInterfaceShader;
-
+class BillboardAnimationShader;
 struct LIGHT
 {
 	XMFLOAT4 m_xmf4Ambient{};
@@ -140,4 +140,5 @@ public:
 	Particle* particle;
 
 	map<string, UserInterfaceShader*> ui;
+	map<string, BillboardAnimationShader*> billboard;
 };

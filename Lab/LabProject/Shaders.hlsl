@@ -470,3 +470,45 @@ float4 PSTextureUI_OtherPlayerTotalScore(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
 {
 	return gtxtUIScoreTexture.Sample(gtxtUISampler, input.uv);
 }
+
+Texture2D gtxtBillBoardTexture : register(t16);
+
+struct VS_TEXTURE_BILLBOARD_INPUT
+{
+	float3 position : POSITION;
+	float2 uv : TEXCOORD;
+};
+
+struct VS_TEXTURE_BILLBOARD_OUTPUT
+{
+	float4 position : SV_POSITION;
+	float2 uv : TEXCOORD;
+};
+
+cbuffer cbBillBoardKeyFrameInfo : register(b9)
+{
+	int keyFrame : packoffset(c0);
+};
+
+VS_TEXTURE_BILLBOARD_OUTPUT VSBillBoardAnimation(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_BILLBOARD_OUTPUT output;
+	float x1 = -1.f;
+	float x2 = -1.f;
+	float y1 = +1.f;
+	float y2 = +1.f;
+
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSBillBoardAnimation(VS_TEXTURE_BILLBOARD_OUTPUT input) : SV_TARGET
+{
+	return gtxtBillBoardTexture.Sample(gtxtUISampler, input.uv);
+}

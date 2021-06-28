@@ -6,7 +6,8 @@ CollideCubeMesh::CollideCubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 {
 	obb.Center = m_xmf3AABBCenter;
 	obb.Extents = m_xmf3AABBExtents;
-
+	obb.Extents.z += 1.f;
+	obb.Extents.y += 1.f;
 	//직육면체는 6개의 면 가로(x-축) 길이
 	m_nVertices = 36;
 	m_nOffset = 0;
@@ -14,7 +15,7 @@ CollideCubeMesh::CollideCubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	m_d3dPrimitiveTopology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	//fWidth: 직육면체 가로(x-축) 길이, fHeight: 직육면체 세로(y-축) 길이, fDepth: 직육면체 깊이(z-축) 길이
-	float fx = fWidth * 0.5f, fy = fHeight * 0.5f, fz = fDepth * 0.5f;
+	float fx = obb.Extents.x * 0.5f, fy = obb.Extents.y * 0.5f, fz = obb.Extents.z * 0.5f;
 
 	CDiffusedVertex pVertices[36];
 
