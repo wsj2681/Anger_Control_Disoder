@@ -488,7 +488,10 @@ void Engine::ProcessInput()
 		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
 		
 		// 이쪽에 다중입력 만들기
-
+		if (pKeysBuffer['A'] & 0xF0 && pKeysBuffer[VK_OEM_7] & 0xF0)
+		{
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_1_2_KICK, ANIMATION_TYPE_ONCE);
+		}
 
 		float cxDelta = 0.0f, cyDelta = 0.0f;
 		POINT ptCursorPos;
