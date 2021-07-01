@@ -17,7 +17,7 @@
 #include "Timer.h"
 #include "UIShader.h"
 #include "CubeObject.h"
-#include "BillboardAnimationShader.h"
+#include "PlaneObject.h"
 
 //////////Server///////////
 #include "Server.h"
@@ -256,13 +256,10 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ui["3_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
 	ui["3_OtherPlayerTotalScore"]->SetActive(true);
 
-	//billboard["TEST"] = new BillboardAnimationShader(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/FrameAnimation.dds");
-
-	bill = new EffectBillboard(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
-	bill->SetPosition(XMFLOAT3(0.f, 19.f, 0.f));
-
 	particle = new Particle;
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+
+	//effectManager = new EffectManager(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -309,7 +306,7 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 {
 	ID3D12RootSignature *pd3dGraphicsRootSignature = nullptr;
 
-	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[14];
+	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[13];
 
 	pd3dDescriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	pd3dDescriptorRanges[0].NumDescriptors = 1;
@@ -373,7 +370,7 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 
 	pd3dDescriptorRanges[10].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	pd3dDescriptorRanges[10].NumDescriptors = 1;
-	pd3dDescriptorRanges[10].BaseShaderRegister = 0; //t0: gtxtTexture
+	pd3dDescriptorRanges[10].BaseShaderRegister = 0; //t0: gtxtTexture,space0
 	pd3dDescriptorRanges[10].RegisterSpace = 0;
 	pd3dDescriptorRanges[10].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
@@ -389,14 +386,7 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dDescriptorRanges[12].RegisterSpace = 0;
 	pd3dDescriptorRanges[12].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	pd3dDescriptorRanges[13].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-	pd3dDescriptorRanges[13].NumDescriptors = 1;
-	pd3dDescriptorRanges[13].BaseShaderRegister = 16; //t16: gtxtBillBoardTexture
-	pd3dDescriptorRanges[13].RegisterSpace = 0;
-	pd3dDescriptorRanges[13].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
-
-
-	D3D12_ROOT_PARAMETER pd3dRootParameters[23];
+	D3D12_ROOT_PARAMETER pd3dRootParameters[21];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 1; //Camera
@@ -503,16 +493,6 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dRootParameters[20].Descriptor.ShaderRegister = 6; //HP Info
 	pd3dRootParameters[20].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[20].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-	pd3dRootParameters[21].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	pd3dRootParameters[21].DescriptorTable.NumDescriptorRanges = 1;
-	pd3dRootParameters[21].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[13]);
-	pd3dRootParameters[21].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-	pd3dRootParameters[22].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	pd3dRootParameters[22].Descriptor.ShaderRegister = 9; //keyFrame Info
-	pd3dRootParameters[22].Descriptor.RegisterSpace = 0;
-	pd3dRootParameters[22].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[3];
 
@@ -905,7 +885,14 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	//hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->rHand->GetPosition();
 	//hierarchicalGameObjects[OTHERPLAYER]->spine->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->spine->GetPosition();
 
-	particle->Update(m_pPlayer->bones["Head"]->GetPosition(), fTimeElapsed);
+	if (particle)
+	{
+		particle->Update(m_pPlayer->bones["Head"]->GetPosition(), fTimeElapsed);
+	}
+	if (effectManager)
+	{
+		effectManager->Update(fTimeElapsed, XMFLOAT3());
+	}
 
 	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp <= 0.f)
 	{
@@ -919,12 +906,6 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		hierarchicalGameObjects.data()[OTHERPLAYER]->score -= 1;
 		m_pPlayer->hp = 100.f;
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
-	}
-
-	if (bill)
-	{
-		bill->SetPosition(m_pPlayer->GetPosition());
-		bill->Update(fTimeElapsed);
 	}
 
 	//TODO : 여기 다시보기
@@ -962,11 +943,6 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 		}
 	}
 
-	if (bill)
-	{
-		bill->Render(pd3dCommandList, pCamera);
-	}
-
 	if (!m_pPlayer->boundBoxs.empty())
 	{
 		for (auto& o : m_pPlayer->boundBoxs)
@@ -992,10 +968,14 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 		}
 	}
 
-	particle->Render(pd3dCommandList, pCamera);
-
-
-
+	if (particle)
+	{
+		particle->Render(pd3dCommandList, pCamera);
+	}
+	if (effectManager)
+	{
+		effectManager->Render(pd3dCommandList, pCamera);
+	}
 
 	if (!ui.empty())
 	{

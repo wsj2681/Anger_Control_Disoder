@@ -6,9 +6,8 @@
 #include "Shader.h"
 #include "Player.h"
 #include "SoundManager.h"
+#include "EffectManager.h"
 #include "Particle.h"
-#include "EffectBillboard.h"
-
 constexpr UINT MAX_LIGHTS = 50;
 constexpr UINT POINT_LIGHT = 1;
 constexpr UINT SPOT_LIGHT = 2;
@@ -141,5 +140,7 @@ public:
 	Particle* particle;
 
 	map<string, UserInterfaceShader*> ui;
-	EffectBillboard* bill = nullptr;
+
+	//¿Ã∆Â∆Æ
+	EffectManager* effectManager = nullptr;
 };

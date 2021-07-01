@@ -153,8 +153,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="BillboardAnimationShader.h" />
-    <ClInclude Include="BillboardMesh.h" />
     <ClInclude Include="BoxerObject.h" />
     <ClInclude Include="BoxerObjectsShader.h" />
     <ClInclude Include="AnimationController.h" />
@@ -169,7 +167,7 @@
     <ClInclude Include="CubeObject.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
     <ClInclude Include="DiffusedShader.h" />
-    <ClInclude Include="EffectBillboard.h" />
+    <ClInclude Include="EffectManager.h" />
     <ClInclude Include="EthanObjectsShader.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="LabProject07-9-7(Animation).h" />
@@ -179,6 +177,7 @@
     <ClInclude Include="ModelInfo.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="PlaneObject.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Scene.h" />
@@ -197,14 +196,14 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
+    <ClInclude Include="TexturedRectMesh.h" />
+    <ClInclude Include="TexturedShader.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="UIShader.h" />
     <ClInclude Include="WayPoint.h" />
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="BillboardAnimationShader.cpp" />
-    <ClCompile Include="BillboardMesh.cpp" />
     <ClCompile Include="BoxerObject.cpp" />
     <ClCompile Include="BoxerObjectsShader.cpp" />
     <ClCompile Include="AnimationController.cpp" />
@@ -219,7 +218,7 @@
     <ClCompile Include="CubeObject.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
     <ClCompile Include="DiffusedShader.cpp" />
-    <ClCompile Include="EffectBillboard.cpp" />
+    <ClCompile Include="EffectManager.cpp" />
     <ClCompile Include="EthanObjectsShader.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="LabProject07-9-7(Animation).cpp" />
@@ -228,6 +227,7 @@
     <ClCompile Include="ModelInfo.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="PlaneObject.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Server.cpp" />
@@ -249,6 +249,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="TexturedRectMesh.cpp" />
+    <ClCompile Include="TexturedShader.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="UIShader.cpp" />
     <ClCompile Include="WayPoint.cpp" />

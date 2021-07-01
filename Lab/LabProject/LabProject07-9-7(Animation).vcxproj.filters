@@ -93,6 +93,9 @@
     <Filter Include="소스 파일\09 SoundManager">
       <UniqueIdentifier>{a2745e9f-0465-49e2-8914-9bef0a61023f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\10 Effect">
+      <UniqueIdentifier>{1e4827e7-7016-4b63-8b5b-eb55ee3292f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DDSTextureLoader12.h">
@@ -230,9 +233,16 @@
     <ClInclude Include="CubeMesh.h">
       <Filter>소스 파일\03 Model\Mesh</Filter>
     </ClInclude>
-    <ClInclude Include="EffectBillboard.h" />
-    <ClInclude Include="BillboardMesh.h" />
-    <ClInclude Include="BillboardAnimationShader.h" />
+    <ClInclude Include="PlaneObject.h">
+      <Filter>소스 파일\10 Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedRectMesh.h">
+      <Filter>소스 파일\10 Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedShader.h">
+      <Filter>소스 파일\10 Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WICTextureLoader12.cpp">
@@ -361,13 +371,16 @@
     <ClCompile Include="CubeMesh.cpp">
       <Filter>소스 파일\03 Model\Mesh</Filter>
     </ClCompile>
-    <ClCompile Include="EffectBillboard.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="PlaneObject.cpp">
+      <Filter>소스 파일\10 Effect</Filter>
     </ClCompile>
-    <ClCompile Include="BillboardMesh.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="TexturedRectMesh.cpp">
+      <Filter>소스 파일\10 Effect</Filter>
     </ClCompile>
-    <ClCompile Include="BillboardAnimationShader.cpp">
+    <ClCompile Include="TexturedShader.cpp">
+      <Filter>소스 파일\10 Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
