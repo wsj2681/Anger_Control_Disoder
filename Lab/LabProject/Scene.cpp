@@ -175,7 +175,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
 
-	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 0, 76); //SuperCobra(17), Gunship(2), Player:Mi24(1), Angrybot()
+	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 32, 128); //SuperCobra(17), Gunship(2), Player:Mi24(1), Angrybot()
 
 	Material::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	
@@ -256,10 +256,10 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ui["3_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
 	ui["3_OtherPlayerTotalScore"]->SetActive(true);
 
-	particle = new Particle;
-	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	//particle = new Particle;
+	//particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	//effectManager = new EffectManager(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	effectManager = new EffectManager(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
@@ -891,7 +891,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	}
 	if (effectManager)
 	{
-		effectManager->Update(fTimeElapsed, XMFLOAT3());
+		effectManager->Update(fTimeElapsed, XMFLOAT3(0.f, 20.f, 20.f));
 	}
 
 	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp <= 0.f)
@@ -972,10 +972,6 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 	{
 		particle->Render(pd3dCommandList, pCamera);
 	}
-	if (effectManager)
-	{
-		effectManager->Render(pd3dCommandList, pCamera);
-	}
 
 	if (!ui.empty())
 	{
@@ -984,6 +980,11 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 			i.second->UpdateShaderVariables(pd3dCommandList);
 			i.second->Render(pd3dCommandList, pCamera);
 		}
+	}
+
+	if (effectManager)
+	{
+		effectManager->Render(pd3dCommandList, pCamera);
 	}
 
 	soundManager->Update();
@@ -1188,7 +1189,10 @@ void Scene::CollidePVE()
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
 						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
-						particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						if (particle)
+						{
+							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						}
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 10.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
@@ -1196,7 +1200,10 @@ void Scene::CollidePVE()
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
 						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
-						particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						if (particle)
+						{
+							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						}
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
@@ -1204,7 +1211,10 @@ void Scene::CollidePVE()
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
 						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
-						particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						if (particle)
+						{
+							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						}
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 15.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
@@ -1242,7 +1252,10 @@ void Scene::CollidePVE()
 #endif // _WITH_SERVER_CONNECT
 						
 						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
-						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						if (particle)
+						{
+							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						}
 						m_pPlayer->hp -= 20.f;
 						m_pPlayer->nowState = HIT;
 					}
@@ -1255,7 +1268,10 @@ void Scene::CollidePVE()
 #endif // _WITH_SERVER_CONNECT
 						
 						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
-						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						if (particle)
+						{
+							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						}
 						m_pPlayer->hp -= 10.f;
 						m_pPlayer->nowState = HIT;
 					}
@@ -1268,7 +1284,10 @@ void Scene::CollidePVE()
 #endif // _WITH_SERVER_CONNECT
 
 						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
-						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						if (particle)
+						{
+							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						}
 						m_pPlayer->hp -= 15.f;
 						m_pPlayer->nowState = HIT;
 					}

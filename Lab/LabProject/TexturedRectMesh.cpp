@@ -91,4 +91,5 @@ TexturedRectMesh::~TexturedRectMesh()
 
 void TexturedRectMesh::OnPreRender(ID3D12GraphicsCommandList* pd3dCommandList, void* pContext)
 {
+	pd3dCommandList->IASetVertexBuffers(m_nSlot, 1, &m_d3dPositionBufferView);
 }

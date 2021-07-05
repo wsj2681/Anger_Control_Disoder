@@ -7,16 +7,16 @@
 EffectManager::EffectManager(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature)
 {
 	char name[50];
-	bool isDDS = true;
+	bool isDDS = false;
 	for (int i = 0; i < 10; ++i)
 	{
 		if (i < 10)
 		{
-			sprintf(name, "Effect/BlueEffect/tile00%d.dds", i);
+			sprintf(name, "Effect/greeneffect/tile00%d.png", i);
 		}
 		else
 		{
-			sprintf(name, "Effect/BlueEffect/tile0%d.dds", i);
+			sprintf(name, "Effect/greeneffect/tile0%d.png", i);
 		}
 
 		wchar_t* pStr;
@@ -35,6 +35,7 @@ void EffectManager::Update(float deltaTime, XMFLOAT3 position)
 	{
 		for (auto& i : effectAnimation)
 		{
+			i->SetPosition(position);
 			i->isActive = false;
 		}
 		effectAnimation.data()[this->keyframe % effectAnimation.size()]->isActive = true;

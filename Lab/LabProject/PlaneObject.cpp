@@ -9,8 +9,7 @@
 PlaneObject::PlaneObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath, bool isDDS)
 	:Object(1)
 {
-	static int count = 0;
-	Mesh* pMesh = new TexturedRectMesh(pd3dDevice, pd3dCommandList, 50, 50, 0);
+	Mesh* pMesh = new TexturedRectMesh(pd3dDevice, pd3dCommandList, 25, 25, 0);
 	//CMesh* pMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 50, 50, 50);
 	SetMesh(pMesh);
 
@@ -25,11 +24,8 @@ PlaneObject::PlaneObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	Material* pMaterial = new Material(1);
 	pMaterial->SetTexture(pTexture);
 
-	SetMaterial(0, pMaterial);
 	pMaterial->SetShader(pShader);
-
-	SetPosition(XMFLOAT3(0, 20, 0));
-	count++;
+	SetMaterial(0, pMaterial);
 }
 
 PlaneObject::~PlaneObject()
