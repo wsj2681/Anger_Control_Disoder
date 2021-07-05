@@ -6,7 +6,7 @@ CubeMesh::CubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComm
 	:Mesh(pd3dDevice, pd3dCommandList)
 {
 	Vector3::ScalarProduct(obb.Extents, 1.5f);
-
+	obb.Extents.x += 0.5f;
 	//직육면체는 6개의 면 가로(x-축) 길이
 	m_nVertices = 36;
 	m_nOffset = 0;

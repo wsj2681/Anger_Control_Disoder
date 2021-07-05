@@ -749,8 +749,12 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case 'S': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK, ANIMATION_TYPE_ONCE, true); break;
 		case 'D': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK, ANIMATION_TYPE_ONCE, true); break;
 		case 'F': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_L, ANIMATION_TYPE_ONCE, true); break;
-		case 'G': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_R, ANIMATION_TYPE_ONCE, true); break;
 		*/
+		case 'G': 
+		{
+			effectManager->EffectOn(XMFLOAT3(0.f, 20.f, 0.f));
+			break;
+		}
 		case 'P':
 		{
 			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, rand() % 9 + 27, ANIMATION_TYPE_ONCE, true);
@@ -1193,6 +1197,10 @@ void Scene::CollidePVE()
 						{
 							particle->PositionInit(PlayerBoundBox.second->GetPosition());
 						}
+						if (effectManager)
+						{
+							effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 0);
+						}
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 10.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
@@ -1204,6 +1212,10 @@ void Scene::CollidePVE()
 						{
 							particle->PositionInit(PlayerBoundBox.second->GetPosition());
 						}
+						if (effectManager)
+						{
+							effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 1);
+						}
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
@@ -1214,6 +1226,10 @@ void Scene::CollidePVE()
 						if (particle)
 						{
 							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						}
+						if (effectManager)
+						{
+							effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
 						}
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 15.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;

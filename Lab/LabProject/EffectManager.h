@@ -2,6 +2,14 @@
 
 class PlaneObject;
 class Camera;
+
+enum EFFECT_TYPE
+{
+	GREEN,
+	BLUE,
+	CIRCLE
+};
+
 class EffectManager
 {
 public:
@@ -10,12 +18,21 @@ public:
 
 
 private:
-	vector<PlaneObject*> effectAnimation;
+	vector<PlaneObject*> greenEffectAnimation;
+	vector<PlaneObject*> blueEffectAnimation;
+	vector<PlaneObject*> circleEffectAnimation;
+
 
 	int keyframe = 0;
 	float elapsedTime = 0.f;
+
+	bool isOn = false;
+
+	int effectType = GREEN;
 public:
 
+	void EffectOn(XMFLOAT3 position, int effectType = 0);
+	void EffectOff();
 	void Update(float deltaTime, XMFLOAT3 position);
 	void Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* pCamera);
 

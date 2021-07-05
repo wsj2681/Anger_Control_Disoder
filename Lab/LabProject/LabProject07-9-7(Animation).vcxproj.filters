@@ -242,7 +242,9 @@
     <ClInclude Include="TexturedShader.h">
       <Filter>소스 파일\10 Effect</Filter>
     </ClInclude>
-    <ClInclude Include="EffectManager.h" />
+    <ClInclude Include="EffectManager.h">
+      <Filter>소스 파일\10 Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="WICTextureLoader12.cpp">
@@ -381,7 +383,7 @@
       <Filter>소스 파일\10 Effect</Filter>
     </ClCompile>
     <ClCompile Include="EffectManager.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\10 Effect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
