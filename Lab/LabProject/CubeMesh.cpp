@@ -6,7 +6,6 @@ CubeMesh::CubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComm
 	:Mesh(pd3dDevice, pd3dCommandList)
 {
 	Vector3::ScalarProduct(obb.Extents, 1.5f);
-	obb.Extents.x += 0.5f;
 	//직육면체는 6개의 면 가로(x-축) 길이
 	m_nVertices = 36;
 	m_nOffset = 0;
@@ -15,6 +14,7 @@ CubeMesh::CubeMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dComm
 
 	//fWidth: 직육면체 가로(x-축) 길이, fHeight: 직육면체 세로(y-축) 길이, fDepth: 직육면체 깊이(z-축) 길이
 	float fx = obb.Extents.x * 0.5f * 0.2f, fy = obb.Extents.y * 0.5f * 0.2f, fz = obb.Extents.z * 0.5f * 0.2f;
+	obb.Extents = XMFLOAT3(fWidth, fHeight, fDepth);
 
 	CDiffusedVertex pVertices[36];
 
