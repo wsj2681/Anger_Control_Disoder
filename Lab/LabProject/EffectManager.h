@@ -7,7 +7,8 @@ enum EFFECT_TYPE
 {
 	GREEN,
 	BLUE,
-	CIRCLE
+	CIRCLE,
+	REDX
 };
 
 class EffectManager
@@ -21,7 +22,7 @@ private:
 	vector<PlaneObject*> greenEffectAnimation;
 	vector<PlaneObject*> blueEffectAnimation;
 	vector<PlaneObject*> circleEffectAnimation;
-
+	vector<PlaneObject*> redXEffectAnimation;
 
 	int keyframe = 0;
 	float elapsedTime = 0.f;

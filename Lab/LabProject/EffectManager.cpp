@@ -68,6 +68,26 @@ EffectManager::EffectManager(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList
 
 	}
 
+	for (int i = 0; i < 15; ++i)
+	{
+		if (i < 10)
+		{
+			sprintf(name, "Effect/redXEffect/tile00%d.png", i);
+		}
+		else
+		{
+			sprintf(name, "Effect/redXEffect/tile0%d.png", i);
+		}
+
+		wchar_t* pStr;
+		int strSize = MultiByteToWideChar(CP_ACP, 0, name, -1, NULL, NULL);
+		pStr = new WCHAR[strSize];
+		MultiByteToWideChar(CP_ACP, 0, name, strlen(name) + 1, pStr, strSize);
+
+		this->redXEffectAnimation.push_back(new PlaneObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, pStr, isDDS));
+
+	}
+
 }
 
 void EffectManager::EffectOn(XMFLOAT3 position, int effectType)
@@ -99,6 +119,14 @@ void EffectManager::EffectOn(XMFLOAT3 position, int effectType)
 		}
 		break;
 	}
+	case REDX:
+	{
+		for (auto& i : redXEffectAnimation)
+		{
+			i->SetPosition(position);
+		}
+		break;
+	}
 	default:
 		break;
 	}
@@ -114,7 +142,7 @@ void EffectManager::EffectOff()
 
 void EffectManager::Update(float deltaTime, XMFLOAT3 position)
 {
-	if ((elapsedTime += deltaTime) >= 0.05f)
+	if ((elapsedTime += deltaTime) >= 0.01f)
 	{
 		switch (this->effectType)
 		{
@@ -166,6 +194,22 @@ void EffectManager::Update(float deltaTime, XMFLOAT3 position)
 			}
 			break;
 		}
+		case REDX:
+		{
+			for (auto& i : redXEffectAnimation)
+			{
+				i->isActive = false;
+			}
+			redXEffectAnimation.data()[this->keyframe % redXEffectAnimation.size()]->isActive = true;
+			keyframe++;
+			elapsedTime = 0.f;
+
+			if (this->keyframe % redXEffectAnimation.size() == redXEffectAnimation.size() - 1)
+			{
+				EffectOff();
+			}
+			break;
+		}
 		default:
 			break;
 		}
@@ -198,6 +242,14 @@ void EffectManager::Render(ID3D12GraphicsCommandList* pd3dCommandList, Camera* p
 		case CIRCLE:
 		{
 			for (auto& i : circleEffectAnimation)
+			{
+				i->Render(pd3dCommandList, pCamera);
+			}
+			break;
+		}
+		case REDX:
+		{
+			for (auto& i : redXEffectAnimation)
 			{
 				i->Render(pd3dCommandList, pCamera);
 			}

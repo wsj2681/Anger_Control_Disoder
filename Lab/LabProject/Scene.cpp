@@ -880,15 +880,6 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		}
 	}
 
-	//m_pPlayer->head->objectCollision->Center = m_pPlayer->head->GetPosition();
-	//m_pPlayer->lHand->objectCollision->Center = m_pPlayer->lHand->GetPosition();
-	//m_pPlayer->rHand->objectCollision->Center = m_pPlayer->rHand->GetPosition();
-	//m_pPlayer->spine->objectCollision->Center = m_pPlayer->spine->GetPosition();
-	//hierarchicalGameObjects[OTHERPLAYER]->head->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->head->GetPosition();
-	//hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->lHand->GetPosition();
-	//hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->rHand->GetPosition();
-	//hierarchicalGameObjects[OTHERPLAYER]->spine->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->spine->GetPosition();
-
 	if (particle)
 	{
 		particle->Update(m_pPlayer->bones["Head"]->GetPosition(), fTimeElapsed);
@@ -1067,7 +1058,7 @@ void Scene::CollidePVE()
 						}
 						if (effectManager)
 						{
-							effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 1);
+							effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 3);
 						}
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
@@ -1105,6 +1096,10 @@ void Scene::CollidePVE()
 						{
 							particle->PositionInit(PlayerBoundBox.second->GetPosition());
 						}
+						if (effectManager)
+						{
+							effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
+						}
 						m_pPlayer->hp -= 20.f;
 						m_pPlayer->nowState = HIT;
 					}
@@ -1120,6 +1115,10 @@ void Scene::CollidePVE()
 						if (particle)
 						{
 							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						}
+						if (effectManager)
+						{
+							effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 3);
 						}
 						m_pPlayer->hp -= 10.f;
 						m_pPlayer->nowState = HIT;

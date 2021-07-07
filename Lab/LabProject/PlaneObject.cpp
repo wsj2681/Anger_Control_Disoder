@@ -9,7 +9,7 @@
 PlaneObject::PlaneObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath, bool isDDS)
 	:Object(1)
 {
-	Mesh* pMesh = new TexturedRectMesh(pd3dDevice, pd3dCommandList, 5, 5, 0);
+	Mesh* pMesh = new TexturedRectMesh(pd3dDevice, pd3dCommandList, 10, 10, 0);
 	//CMesh* pMesh = new CCubeMeshTextured(pd3dDevice, pd3dCommandList, 50, 50, 50);
 	SetMesh(pMesh);
 
