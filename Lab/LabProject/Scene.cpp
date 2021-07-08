@@ -723,6 +723,7 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 5.f;
 			cout << "OtherPlayer HP = " << hierarchicalGameObjects.data()[OTHERPLAYER]->hp << endl;
 			break;
+			// 2F ~35 kick Animation
 		case '0':
 		case '1':
 		case '2':
@@ -730,10 +731,17 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case '4':
 		case '5':
 		case '6':
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 47, ANIMATION_TYPE_ONCE, true);
+			break;
 		case '7':
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 49, ANIMATION_TYPE_ONCE, true);
+			break;
 		case '8':
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 50, ANIMATION_TYPE_ONCE, true);
+			break;
 		case '9':
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, (DWORD)(wParam - ANIMATION_KNOCKDOWNED) + 2, ANIMATION_TYPE_ONCE, true); 
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 52, ANIMATION_TYPE_ONCE, true);
+			break;
 #ifdef _WITH_SERVER_CONNECT
 			server->send_attackAnddefend.ani_num = (DWORD)(wParam - ANIMATION_KNOCKDOWNED) + 2;
 			server->send_attackAnddefend.checkAni = true;
@@ -1030,9 +1038,10 @@ void Scene::CollidePVE()
 		{
 			if (otherPlayerBoundBox.second->m_pMesh->isIntersect(PlayerBoundBox.second->m_pMesh->obb))
 			{
-				// other Player Collide
+				// 상대 피격
 				if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == IDLE && m_pPlayer->nowState == ATTACK)
 				{
+					// 상대 머리
 					if (otherPlayerBoundBox.first == "Head")
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
@@ -1048,6 +1057,7 @@ void Scene::CollidePVE()
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 10.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
+					// 상대 몸통
 					else if (otherPlayerBoundBox.first == "Spine")
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
@@ -1063,15 +1073,34 @@ void Scene::CollidePVE()
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
+					// 상대 하체
+					else if (otherPlayerBoundBox.first == "lCalf" || otherPlayerBoundBox.first == "rCalf")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						if (particle)
+						{
+							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						}
+						if (effectManager)
+						{
+							effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 1);
+						}
+						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
+					}
 				}
+				// 상대 가드
 				else if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == GUARD && m_pPlayer->nowState == ATTACK)
 				{
+					// 머리 가드
 					if (otherPlayerBoundBox.first == "Head")
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
 						cout << "Guard - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
 					}
+					// 몸통 가드
 					else if (otherPlayerBoundBox.first == "Spine")
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
@@ -1079,10 +1108,10 @@ void Scene::CollidePVE()
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
 					}
 				}
-				//Player Collide
+				// 플레이어 피격
 				if (m_pPlayer->nowState == IDLE && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
 				{
-
+					// 플레이어 머리
 					if (PlayerBoundBox.first == "Head")
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
@@ -1094,7 +1123,7 @@ void Scene::CollidePVE()
 						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						if (particle)
 						{
-							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+							particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
 						}
 						if (effectManager)
 						{
@@ -1103,6 +1132,7 @@ void Scene::CollidePVE()
 						m_pPlayer->hp -= 20.f;
 						m_pPlayer->nowState = HIT;
 					}
+					// 플레이어 몸통
 					else if (PlayerBoundBox.first == "Spine")
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
@@ -1114,7 +1144,7 @@ void Scene::CollidePVE()
 						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						if (particle)
 						{
-							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+							particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
 						}
 						if (effectManager)
 						{
@@ -1123,9 +1153,27 @@ void Scene::CollidePVE()
 						m_pPlayer->hp -= 10.f;
 						m_pPlayer->nowState = HIT;
 					}
+					// 플레이어 하체
+					else if (PlayerBoundBox.first == "lCalf" || PlayerBoundBox.first == "rCalf")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						if (particle)
+						{
+							particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						}
+						if (effectManager)
+						{
+							effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 1);
+						}
+						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
+					}
 				}
+				// 플레이어 가드
 				else if (m_pPlayer->nowState == GUARD && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
 				{
+					// 플레이어 머리 가드
 					if (PlayerBoundBox.first == "Head")
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
@@ -1137,6 +1185,7 @@ void Scene::CollidePVE()
 						cout << "Guard - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						m_pPlayer->nowState = IDLE;
 					}
+					// 플레이어 몸통 가드
 					else if (PlayerBoundBox.first == "Spine")
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
@@ -1148,6 +1197,7 @@ void Scene::CollidePVE()
 						cout << "Guard - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						m_pPlayer->nowState = IDLE;
 					}
+
 				}
 			}
 		}
