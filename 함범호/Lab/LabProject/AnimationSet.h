@@ -1,19 +1,23 @@
 #pragma once
 
-#define ANIMATION_TYPE_ONCE			0
-#define ANIMATION_TYPE_LOOP			1
-#define ANIMATION_TYPE_PINGPONG		2
+constexpr UINT ANIMATION_TYPE_ONCE = 0;
+constexpr UINT ANIMATION_TYPE_LOOP = 1;
+constexpr UINT ANIMATION_TYPE_PINGPONG = 2;
 
 struct CALLBACKKEY;
 class AnimationCallbackHandler;
 class Object;
 
-class CAnimationSet
+class AnimationSet final
 {
 public:
-	CAnimationSet(float fLength, int nFramesPerSecond, int nKeyFrameTransforms, int nSkinningBones, char* pstrName);
-	~CAnimationSet();
-
+	AnimationSet() = default;
+	AnimationSet(float fLength, int nFramesPerSecond, int nKeyFrameTransforms, int nSkinningBones, char* pstrName);
+	AnimationSet(const AnimationSet&) = delete;
+	AnimationSet& operator=(const AnimationSet&) = delete;
+	AnimationSet(AnimationSet&&) = delete;
+	AnimationSet& operator=(AnimationSet&&) = delete;
+	~AnimationSet();
 public:
 	char							m_pstrAnimationSetName[64];
 
@@ -21,9 +25,7 @@ public:
 	int								m_nFramesPerSecond = 0; //m_fTicksPerSecond
 
 	int								m_nKeyFrames = 0;
-	float* m_pfKeyFrameTimes = nullptr;
-	XMFLOAT4X4** m_ppxmf4x4KeyFrameTransforms = nullptr;
-
+	
 #ifdef _WITH_ANIMATION_SRT
 	int								m_nKeyFrameScales = 0;
 	float* m_pfKeyFrameScaleTimes = nullptr;
@@ -36,50 +38,56 @@ public:
 	XMFLOAT3** m_ppxmf3KeyFrameTranslations = nullptr;
 #endif
 
-	float 							m_fPosition = 0.0f;
+public :
 	int 							m_nType = ANIMATION_TYPE_LOOP; //Once, Loop, PingPong
 
-	int 							m_nCallbackKeys = 0;
-	CALLBACKKEY* m_pCallbackKeys = NULL;
-
 	AnimationCallbackHandler* m_pAnimationCallbackHandler = nullptr;
+public:
+	float 							m_fPosition = 0.0f;
+	int 							m_nCallbackKeys = 0;
+	CALLBACKKEY* m_pCallbackKeys = nullptr;
+
+	float* m_pfKeyFrameTimes = nullptr;
+	XMFLOAT4X4** m_ppxmf4x4KeyFrameTransforms = nullptr;
 
 	bool isPlayer = false;
 	bool isOtherPlayer = false;
+private:
+	void SetCallbackKeys(int nCallbackKeys);
+	void SetCallbackKey(int nKeyIndex, float fTime, void* pData);
 
+	void* GetCallbackData();
 public:
 	void SetPosition(float fTrackPosition);
 
 	XMFLOAT4X4 GetSRT(int nBone);
 
-	void SetCallbackKeys(int nCallbackKeys);
-	void SetCallbackKey(int nKeyIndex, float fTime, void* pData);
 	void SetAnimationCallbackHandler(AnimationCallbackHandler* pCallbackHandler);
-
-	void* GetCallbackData();
+	bool IsAnimate();
 };
 
-class AnimationSets
+class AnimationSets final
 {
+public:
+	AnimationSets() = default;
+	AnimationSets(int nAnimationSets);
+	AnimationSets(const AnimationSets&) = delete;
+	AnimationSets& operator=(const AnimationSets&) = delete;
+	AnimationSets(AnimationSets&&) = delete;
+	AnimationSets& operator=(AnimationSets&&) = delete;
+	~AnimationSets();
 private:
 	int								m_nReferences = 0;
-
 public:
-	void AddRef() { m_nReferences++; }
-	void Release() { if (--m_nReferences <= 0) delete this; }
+	int	m_nAnimationSets = 0;
+	AnimationSet** m_pAnimationSets = nullptr;
 
-public:
-	AnimationSets(int nAnimationSets);
-	~AnimationSets();
-
-public:
-	int								m_nAnimationSets = 0;
-	CAnimationSet** m_pAnimationSets = nullptr;
-
-	int								m_nAnimatedBoneFrames = 0;
+	int	m_nAnimatedBoneFrames = 0;
 	Object** m_ppAnimatedBoneFrameCaches = nullptr; //[m_nAnimatedBoneFrames]
-
 public:
+	void AddRef();
+	void Release();
+
 	void SetCallbackKeys(int nAnimationSet, int nCallbackKeys);
 	void SetCallbackKey(int nAnimationSet, int nKeyIndex, float fTime, void* pData);
 	void SetAnimationCallbackHandler(int nAnimationSet, AnimationCallbackHandler* pCallbackHandler);

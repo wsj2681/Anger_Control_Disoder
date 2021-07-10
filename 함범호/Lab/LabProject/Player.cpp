@@ -12,13 +12,14 @@
 #include "AnimationSet.h"
 #include "AnimationTrack.h"
 #include "Scene.h"
+#include "CubeObject.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Player
 
 Player::Player()
 {
-	m_pCamera = NULL;
+	m_pCamera = nullptr;
 
 	m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	m_xmf3Right = XMFLOAT3(1.0f, 0.0f, 0.0f);
@@ -35,15 +36,15 @@ Player::Player()
 	m_fRoll = 0.0f;
 	m_fYaw = 0.0f;
 
-	m_pPlayerUpdatedContext = NULL;
-	m_pCameraUpdatedContext = NULL;
+	m_pPlayerUpdatedContext = nullptr;
+	m_pCameraUpdatedContext = nullptr;
 }
 
 Player::~Player()
 {
 	ReleaseShaderVariables();
 
-	if (m_pCamera) delete m_pCamera;
+	SAFE_DELETE(m_pCamera);
 }
 
 void Player::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
@@ -85,7 +86,7 @@ void Player::Move(const XMFLOAT3& xmf3Shift, bool bUpdateVelocity)
 	else
 	{
 		m_xmf3Position = Vector3::Add(m_xmf3Position, xmf3Shift);
-		m_pCamera->Move(xmf3Shift);
+		//m_pCamera->Move(xmf3Shift);
 	}
 }
 
@@ -186,24 +187,24 @@ void Player::Rotate(XMFLOAT3 axis)
 	else if (nCurrentCameraMode == SPACESHIP_CAMERA)
 	{
 		m_pCamera->Rotate(x, y, z);
-		if (x != 0.0f)
-		{
-			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Right), XMConvertToRadians(x));
-			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
-			m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
-		}
-		if (y != 0.0f)
-		{
-			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
-			m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
-			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
-		}
-		if (z != 0.0f)
-		{
-			XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Look), XMConvertToRadians(z));
-			m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
-			m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
-		}
+		//if (x != 0.0f)
+		//{
+		//	XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Right), XMConvertToRadians(x));
+		//	m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
+		//	m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
+		//}
+		//if (y != 0.0f)
+		//{
+		//	XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians(y));
+		//	m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
+		//	m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
+		//}
+		//if (z != 0.0f)
+		//{
+		//	XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Look), XMConvertToRadians(z));
+		//	m_xmf3Up = Vector3::TransformNormal(m_xmf3Up, xmmtxRotate);
+		//	m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
+		//}
 	}
 
 	m_xmf3Look = Vector3::Normalize(m_xmf3Look);
@@ -231,9 +232,9 @@ void Player::Update(float fTimeElapsed)
 	if (m_pPlayerUpdatedContext) OnPlayerUpdateCallback(fTimeElapsed);
 
 	DWORD nCurrentCameraMode = m_pCamera->GetMode();
-	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->Update(head->GetPosition(), fTimeElapsed);
+	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->Update(bones["Head"]->GetPosition(), fTimeElapsed);
 	if (m_pCameraUpdatedContext) OnCameraUpdateCallback(fTimeElapsed);
-	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->SetLookAt(head->GetPosition());
+	if ((nCurrentCameraMode == THIRD_PERSON_CAMERA) || (nCurrentCameraMode == THIRD_PERSON_CAMERA2)) m_pCamera->SetLookAt(bones["Head"]->GetPosition());
 	m_pCamera->RegenerateViewMatrix();
 
 	fLength = Vector3::Length(m_xmf3Velocity);
@@ -241,15 +242,18 @@ void Player::Update(float fTimeElapsed)
 	if (fDeceleration > fLength) fDeceleration = fLength;
 	m_xmf3Velocity = XMFLOAT3();
 
-	if (spine && playerCollision)
+	if (bones["Spine"])
 	{
-		playerCollision->Center = spine->GetPosition();
+		if (playerCollision)
+		{
+			playerCollision->Center = bones["Spine"]->GetPosition();
+		}
 	}
 }
 
 Camera *Player::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
 {
-	Camera *pNewCamera = NULL;
+	Camera *pNewCamera = nullptr;
 	switch (nNewCameraMode)
 	{
 		case FIRST_PERSON_CAMERA:
@@ -289,7 +293,7 @@ Camera *Player::OnChangeCamera(DWORD nNewCameraMode, DWORD nCurrentCameraMode)
 		pNewCamera->SetPlayer(this);
 	}
 
-	if (m_pCamera) delete m_pCamera;
+	SAFE_DELETE(m_pCamera);
 
 	return(pNewCamera);
 }
@@ -313,16 +317,37 @@ void Player::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext)
 {
 
-	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", nullptr);
+	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/TEST.bin", nullptr);
 	SetChild(BoxerModel->m_pModelRootObject, true);
 
-	this->head = FindFrame("Bip01_Head");
-	this->rHand = FindFrame("Bip01_R_Hand");
-	this->lHand = FindFrame("Bip01_L_Hand");
-	this->rFoot = FindFrame("Bip01_L_Foot");
-	this->lFoot = FindFrame("Bip01_R_Foot");
-	this->spine = FindFrame("Bip01_Spine1");
-
+	if (this->bones["Head"] = FindFrame("Bip01_Head"))
+	{
+		this->boundBoxs["Head"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 1.f, 1.f, 1.f);
+	}
+	if (this->bones["rHand"] = FindFrame("Bip01_R_Hand"))
+	{
+		this->boundBoxs["rHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
+	}
+	if (this->bones["lHand"] = FindFrame("Bip01_L_Hand"))
+	{
+		this->boundBoxs["lHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
+	}
+	if (this->bones["lFoot"] = FindFrame("Bip01_L_Foot"))
+	{
+		this->boundBoxs["lFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
+	}
+	if (this->bones["rFoot"] = FindFrame("Bip01_R_Foot"))
+	{
+		this->boundBoxs["rFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.7f, 0.7f);
+	}
+	if (this->bones["Spine"] = FindFrame("Bip01_Spine1"))
+	{
+		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 2.0f, 3.f, 2.f);
+	}
+	if (this->bones["Clavicle"] = FindFrame("Bip01_L_Clavicle"))
+	{
+		this->boundBoxs["Clavicle"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 2.0f, 3.f, 2.f);
+	}
 	m_pCamera = ChangeCamera(THIRD_PERSON_CAMERA, 0.0f);
 
 	m_pSkinnedAnimationController = new AnimationController(pd3dDevice, pd3dCommandList, 1, BoxerModel);
@@ -340,14 +365,12 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	SetPlayerUpdatedContext(pContext);
 	SetCameraUpdatedContext(pContext);
 
-	SetPosition(XMFLOAT3(0.f, 10.f, -769.689f));
-
 	playerCollision = new BoundingOrientedBox();
-	playerCollision->Center = spine->GetPosition();
+	playerCollision->Center = bones["Spine"]->GetPosition();
 	playerCollision->Extents = XMFLOAT3(2.f, 7.f, 2.f);
 	playerCollision->Orientation = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 
-	if (BoxerModel) delete BoxerModel;
+	SAFE_DELETE(BoxerModel);
 }
 
 BoxingPlayer::~BoxingPlayer()
@@ -367,11 +390,10 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityY(400.0f);
 			m_pCamera = OnChangeCamera(FIRST_PERSON_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.0f);
-			m_pCamera->SetOffset(head->GetPosition());
+			m_pCamera->SetOffset(bones["Head"]->GetPosition());
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 90.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(head->GetPosition());
 			break;
 		case SPACESHIP_CAMERA:
 			SetFriction(125.0f);
@@ -380,11 +402,15 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			SetMaxVelocityY(400.0f);
 			m_pCamera = OnChangeCamera(SPACESHIP_CAMERA, nCurrentCameraMode);
 			m_pCamera->SetTimeLag(0.0f);
-			m_pCamera->SetOffset(head->GetPosition());
+			m_pCamera->SetOffset({});
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(Vector3::Add(head->GetPosition(), m_pCamera->GetOffset()));
+			m_pCamera->SetPosition(Vector3::Add(bones["Head"]->GetPosition(), m_pCamera->GetOffset()));
+			m_xmf3Right = XMFLOAT3(1.0f, 0.0f, 0.0f);
+			m_xmf3Up = XMFLOAT3(0.0f, 1.0f, 0.0f);
+			m_xmf3Look = XMFLOAT3(0.0f, 0.0f, 1.0f);
+			//CameraRotate();
 			break;
 		case THIRD_PERSON_CAMERA:
 			SetFriction(250.0f);
@@ -398,7 +424,7 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(Vector3::Add(head->GetPosition(), m_pCamera->GetOffset()));
+			//m_pCamera->SetPosition(Vector3::Add(bones["Head"]->GetPosition(), m_pCamera->GetOffset()));
 			break;
 		case THIRD_PERSON_CAMERA2:
 			SetFriction(250.0f);
@@ -412,15 +438,27 @@ Camera *BoxingPlayer::ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed)
 			m_pCamera->GenerateProjectionMatrix(1.01f, 5000.0f, ASPECT_RATIO, 60.0f);
 			m_pCamera->SetViewport(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT, 0.0f, 1.0f);
 			m_pCamera->SetScissorRect(0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT);
-			m_pCamera->SetPosition(Vector3::Add(head->GetPosition(), m_pCamera->GetOffset()));
+			m_pCamera->SetPosition(Vector3::Add(bones["Head"]->GetPosition(), m_pCamera->GetOffset()));
 			break;
 		default:
 			break;
 	}
-	m_pCamera->SetPosition(Vector3::Add(head->GetPosition(), m_pCamera->GetOffset()));
+	m_pCamera->SetPosition(Vector3::Add(bones["Head"]->GetPosition(), m_pCamera->GetOffset()));
 	Update(fTimeElapsed);
 
 	return(m_pCamera);
+}
+
+void BoxingPlayer::CameraRotate()
+{
+	float x = 0.f, y = 0.f;
+	float xx = 15.f, yy = 15.f;
+	while (x <= 360.f && y <= 360.f)
+	{
+		m_pCamera->Rotate(x, y, 0.f);
+		x += 10.f;
+		y += 10.f;
+	}
 }
 
 
@@ -472,7 +510,7 @@ void BoxingPlayer::UpdateWayPoints()
 		MoveTo(wayPoint.GetWayPoints()[curWayPoint]);
 	else
 	{
-		SetPosition(XMFLOAT3(0.0f, 10.0f, -32.0f));
+		SetPosition(XMFLOAT3(0.0f, 8.5f, -32.0f));
 		// 우리가 돌리자
 		m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 		bScenario = false;

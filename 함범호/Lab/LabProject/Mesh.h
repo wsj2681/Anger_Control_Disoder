@@ -24,6 +24,37 @@ class Object;
 #define VERTEXT_NORMAL_DETAIL			(VERTEXT_POSITION | VERTEXT_NORMAL | VERTEXT_TEXTURE_COORD0 | VERTEXT_TEXTURE_COORD1)
 #define VERTEXT_NORMAL_TANGENT__DETAIL	(VERTEXT_POSITION | VERTEXT_NORMAL | VERTEXT_TANGENT | VERTEXT_TEXTURE_COORD0 | VERTEXT_TEXTURE_COORD1)
 
+class CVertex {
+protected:
+	//정점의 위치 벡터이다(모든 정점은 최소한 위치 벡터를 가져야 한다).
+	XMFLOAT3 m_xmf3Position{ (XMFLOAT3(0.f, 0.f, 0.f)) };
+
+public:
+	CVertex() {}
+	CVertex(XMFLOAT3 xmf3Position) { m_xmf3Position = xmf3Position; }
+	~CVertex() { }
+};
+
+class CDiffusedVertex : public CVertex {
+protected:
+	//정점의 색상이다.
+	XMFLOAT4 m_xmf4Diffuse{};
+public:
+	CDiffusedVertex() {
+		m_xmf3Position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+		m_xmf4Diffuse = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.0f);
+	}
+	CDiffusedVertex(float x, float y, float z, XMFLOAT4 xmf4Diffuse) {
+		m_xmf3Position = XMFLOAT3(x, y, z);
+		m_xmf4Diffuse = xmf4Diffuse;
+	}
+	CDiffusedVertex(XMFLOAT3 xmf3Position, XMFLOAT4 xmf4Diffuse) {
+		m_xmf3Position = xmf3Position;
+		m_xmf4Diffuse = xmf4Diffuse;
+	}
+	~CDiffusedVertex() { }
+};
+
 class Mesh
 {
 public:
@@ -39,7 +70,7 @@ public:
 
 public:
 	char							m_pstrMeshName[64] = { 0 };
-
+	BoundingOrientedBox obb;
 protected:
 	UINT							m_nType = 0x00;
 
@@ -53,19 +84,19 @@ protected:
 protected:
 	int								m_nVertices = 0;
 
-	XMFLOAT3						*m_pxmf3Positions = NULL;
+	XMFLOAT3						*m_pxmf3Positions = nullptr;
 
-	ID3D12Resource					*m_pd3dPositionBuffer = NULL;
-	ID3D12Resource					*m_pd3dPositionUploadBuffer = NULL;
+	ID3D12Resource					*m_pd3dPositionBuffer = nullptr;
+	ID3D12Resource					*m_pd3dPositionUploadBuffer = nullptr;
 	D3D12_VERTEX_BUFFER_VIEW		m_d3dPositionBufferView;
 
 	int								m_nSubMeshes = 0;
-	int								*m_pnSubSetIndices = NULL;
-	UINT							**m_ppnSubSetIndices = NULL;
+	int								*m_pnSubSetIndices = nullptr;
+	UINT							**m_ppnSubSetIndices = nullptr;
 
-	ID3D12Resource					**m_ppd3dSubSetIndexBuffers = NULL;
-	ID3D12Resource					**m_ppd3dSubSetIndexUploadBuffers = NULL;
-	D3D12_INDEX_BUFFER_VIEW			*m_pd3dSubSetIndexBufferViews = NULL;
+	ID3D12Resource					**m_ppd3dSubSetIndexBuffers = nullptr;
+	ID3D12Resource					**m_ppd3dSubSetIndexUploadBuffers = nullptr;
+	D3D12_INDEX_BUFFER_VIEW			*m_pd3dSubSetIndexBufferViews = nullptr;
 
 public:
 	UINT GetType() { return(m_nType); }
@@ -79,4 +110,6 @@ public:
 	virtual void OnPreRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
 	virtual void Render(ID3D12GraphicsCommandList *pd3dCommandList, int nSubSet);
 	virtual void OnPostRender(ID3D12GraphicsCommandList *pd3dCommandList, void *pContext);
+	virtual void Update(Object* bone) {}
+	virtual bool isIntersect(BoundingOrientedBox& otherBox);
 };

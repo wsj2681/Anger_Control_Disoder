@@ -53,6 +53,11 @@ const UINT& WayPoint::GetAnimations() const
 	return animations[curWayPoints];
 }
 
+void WayPoint::SetAnimations(const UINT& animations)
+{
+	this->animations[nAnimations++] = animations;
+}
+
 bool WayPoint::IsMove()
 {
 	return nowState == STATE_MOVE;

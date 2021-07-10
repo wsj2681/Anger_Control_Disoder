@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Particle.h"
 #include "ModelInfo.h"
-#include "BoxerObject.h"
+#include "CrowdObject.h"
 #include "AnimationController.h"
 #include <random>
 
@@ -14,7 +14,7 @@ void Particle::Init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCom
 		ModelInfo* cube = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, rootSignatrue, "Model/Sphere.bin", nullptr);
 		for (int i = 0; i < 150; ++i)
 		{
-			Object* temp = new BoxerObject(pd3dDevice, pd3dCommandList, rootSignatrue, cube, 1);
+			Object* temp = new CrowdObject(pd3dDevice, pd3dCommandList, rootSignatrue, cube, 1);
 			temp->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 			temp->SetScale(0.3f, .3f, .3f);
 			temp->particleDir = XMFLOAT3(uid(dre),uid(dre), uid(dre));

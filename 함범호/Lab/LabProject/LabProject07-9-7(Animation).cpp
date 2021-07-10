@@ -6,6 +6,7 @@
 #include "stdafx.h"
 #include "LabProject07-9-7(Animation).h"
 #include "Engine.h"
+#include "Server.h"
 
 #if defined(DEBUG) | defined(_DEBUG)
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console")
@@ -18,11 +19,14 @@ TCHAR							szTitle[MAX_LOADSTRING];
 TCHAR							szWindowClass[MAX_LOADSTRING];
 
 Engine					gEngine;
+
 #ifdef _WITH_SERVER_CONNECT
 
-Server*					server;
+Server* server = nullptr;
 HANDLE					gThread;
 int						Servercount = 0;
+
+DWORD WINAPI serverThread(LPVOID arg);
 #endif // _WITH_SERVER_CONNECT
 
 
@@ -30,10 +34,6 @@ ATOM MyRegisterClass(HINSTANCE hInstance);
 BOOL InitInstance(HINSTANCE, int);
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 INT_PTR CALLBACK About(HWND, UINT, WPARAM, LPARAM);
-
-DWORD WINAPI serverThread(LPVOID);
-
-
 
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCmdLine, int nCmdShow)
 {
@@ -48,38 +48,34 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 	MyRegisterClass(hInstance);
 
 #ifdef _WITH_SERVER_CONNECT
-
-	server = new Server();
+	server = new Server(0);
 
 
 #endif // _WITH_SERVER_CONNECT
 
 	if (!InitInstance(hInstance, nCmdShow)) return(FALSE);
 
-
-
-
 	hAccelTable = ::LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_LABPROJECT0797ANIMATION));
 
 	while (1)
 	{
-		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+		if (::PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
 		{
 			if (msg.message == WM_QUIT) break;
 			if (!::TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
 			{
 				::TranslateMessage(&msg);
 				::DispatchMessage(&msg);
-				//WSAAsyncSelect(sock, msg.hwnd, WM_SOCKET, FD_CLOSE | FD_READ);
 			}
-			/*if (Servercount == 0) {
+#ifdef _WITH_SERVER_CONNECT
+			if (Servercount == 0) {
 				gThread = CreateThread(nullptr, 0, serverThread, (LPVOID)0, 0, NULL);
 				Servercount++;
-			}*/
+			}
+#endif // _WITH_SERVER_CONNECT
 		}
 		else
 		{
-
 			gEngine.FrameAdvance();
 		}
 	}
@@ -100,9 +96,9 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.cbWndExtra = 0;
 	wcex.hInstance = hInstance;
 	wcex.hIcon = ::LoadIcon(hInstance, MAKEINTRESOURCE(IDI_LABPROJECT0797ANIMATION));
-	wcex.hCursor = ::LoadCursor(NULL, IDC_ARROW);
+	wcex.hCursor = ::LoadCursor(nullptr, IDC_ARROW);
 	wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-	wcex.lpszMenuName = NULL;//MAKEINTRESOURCE(IDC_LABPROJECT0797ANIMATION);
+	wcex.lpszMenuName = nullptr;//MAKEINTRESOURCE(IDC_LABPROJECT0797ANIMATION);
 	wcex.lpszClassName = szWindowClass;
 	wcex.hIconSm = ::LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -116,7 +112,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 	RECT rc = { 0, 0, FRAME_BUFFER_WIDTH, FRAME_BUFFER_HEIGHT };
 	DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
 	AdjustWindowRect(&rc, dwStyle, FALSE);
-	HWND hMainWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance, NULL);
+	HWND hMainWnd = CreateWindow(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
 
 	if (!hMainWnd) return(FALSE);
 
@@ -124,13 +120,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 	::ShowWindow(hMainWnd, nCmdShow);
 	::UpdateWindow(hMainWnd);
-
-#ifdef _WITH_SERVER_CONNECT
-	
-	server->MakeServer(hMainWnd);
-
-
-#endif // _WITH_SERVER_CONNECT
 
 	return(TRUE);
 }
@@ -143,7 +132,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	switch (message)
 	{
-	
 	case WM_SIZE:
 	case WM_LBUTTONDOWN:
 	case WM_LBUTTONUP:
@@ -176,31 +164,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		::PostQuitMessage(0);
 		break;
-	case WM_SOCKET:
-	{
-		cout << "111" << endl;
-		if (WSAGETSELECTERROR(lParam)) {
-			closesocket((SOCKET)wParam);
-			exit(1);
-			break;
-		}
-		switch (WSAGETSELECTEVENT(lParam)) {
-		case FD_READ:
-			cout << "222" << endl;
-			server->Server_recv((SOCKET)wParam);
-			break;
-		case FD_CLOSE:
-			closesocket((SOCKET)wParam);
-			exit(1);
-			break;
-		}
-	}
-
 	default:
 		return(::DefWindowProc(hWnd, message, wParam, lParam));
-
 	}
-
 	return 0;
 }
 
@@ -221,21 +187,25 @@ INT_PTR CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return((INT_PTR)FALSE);
 }
+#ifdef _WITH_SERVER_CONNECT
+DWORD WINAPI serverThread(LPVOID arg) {
 
-//DWORD WINAPI serverThread(LPVOID arg) {
-//
-//	while (true) {
-//
-//		if (server->checkSR == true) {
-//			server->Server_send();
-//			server->Server_recv();
-//
-//			//공격과 방어 초기화
-//			server->attackAndGuard_idle();
-//			server->checkSR = false;
-//		}
-//
-//
-//	}
-//
-//}
+	while (true) {
+
+		if (server->checkSR == true) {
+			server->Server_send();
+			server->Server_recv();
+
+			//공격과 방어 초기화
+
+			server->checkSR = false;
+			/*if(server->send_attackAnddefend.checkAni == true)
+				server->attackAndGuard_idle();*/
+
+		}
+
+
+	}
+
+}
+#endif // _WITH_SERVER_CONNECT

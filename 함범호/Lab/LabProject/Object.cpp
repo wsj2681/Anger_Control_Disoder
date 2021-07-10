@@ -13,6 +13,8 @@
 #include "Texture.h"
 #include "AnimationSet.h"
 #include "SkinnedMesh.h"
+#include "CubeObject.h"
+
 
 Object::Object()
 {
@@ -26,24 +28,19 @@ Object::Object(int nMaterials) : Object()
 	if (m_nMaterials > 0)
 	{
 		m_ppMaterials = new Material*[m_nMaterials];
-		for(int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = NULL;
+		for(int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = nullptr;
 	}
 }
 
 Object::~Object()
 {
-	if (m_pMesh) m_pMesh->Release();
+	SAFE_RELEASE(m_pMesh);
 
 	if (m_nMaterials > 0)
-	{
-		for (int i = 0; i < m_nMaterials; i++)
-		{
-			if (m_ppMaterials[i]) m_ppMaterials[i]->Release();
-		}
-	}
-	if (m_ppMaterials) delete[] m_ppMaterials;
+		for (int i = 0; i < m_nMaterials; i++) SAFE_RELEASE(m_ppMaterials[i]);
 
-	if (m_pSkinnedAnimationController) delete m_pSkinnedAnimationController;
+	SAFE_DELETEARR(m_ppMaterials);
+	SAFE_DELETE(m_pSkinnedAnimationController);
 }
 
 void Object::AddRef() 
@@ -56,8 +53,8 @@ void Object::AddRef()
 
 void Object::Release() 
 { 
-	if (m_pChild) m_pChild->Release();
-	if (m_pSibling) m_pSibling->Release();
+	SAFE_RELEASE(m_pChild);
+	SAFE_RELEASE(m_pSibling);
 
 	if (--m_nReferences <= 0) delete this; 
 }
@@ -102,14 +99,14 @@ void Object::SetShader(int nMaterial, Shader *pShader)
 
 void Object::SetMaterial(int nMaterial, Material *pMaterial)
 {
-	if (m_ppMaterials[nMaterial]) m_ppMaterials[nMaterial]->Release();
+	SAFE_RELEASE(m_ppMaterials[nMaterial]);
 	m_ppMaterials[nMaterial] = pMaterial;
 	if (m_ppMaterials[nMaterial]) m_ppMaterials[nMaterial]->AddRef();
 }
 
 SkinnedMesh *Object::FindSkinnedMesh(char *pstrSkinnedMeshName)
 {
-	SkinnedMesh *pSkinnedMesh = NULL;
+	SkinnedMesh *pSkinnedMesh = nullptr;
 	if (m_pMesh && (m_pMesh->GetType() & VERTEXT_BONE_INDEX_WEIGHT)) 
 	{
 		pSkinnedMesh = (SkinnedMesh *)m_pMesh;
@@ -119,7 +116,7 @@ SkinnedMesh *Object::FindSkinnedMesh(char *pstrSkinnedMeshName)
 	if (m_pSibling) if (pSkinnedMesh = m_pSibling->FindSkinnedMesh(pstrSkinnedMeshName)) return(pSkinnedMesh);
 	if (m_pChild) if (pSkinnedMesh = m_pChild->FindSkinnedMesh(pstrSkinnedMeshName)) return(pSkinnedMesh);
 
-	return(NULL);
+	return(nullptr);
 }
 
 void Object::FindAndSetSkinnedMesh(SkinnedMesh **ppSkinnedMeshes, int *pnSkinnedMesh)
@@ -132,13 +129,13 @@ void Object::FindAndSetSkinnedMesh(SkinnedMesh **ppSkinnedMeshes, int *pnSkinned
 
 Object *Object::FindFrame(char *pstrFrameName)
 {
-	Object *pFrameObject = NULL;
+	Object *pFrameObject = nullptr;
 	if (!strncmp(m_pstrFrameName, pstrFrameName, strlen(pstrFrameName))) return(this);
 
 	if (m_pSibling) if (pFrameObject = m_pSibling->FindFrame(pstrFrameName)) return(pFrameObject);
 	if (m_pChild) if (pFrameObject = m_pChild->FindFrame(pstrFrameName)) return(pFrameObject);
 
-	return(NULL);
+	return(nullptr);
 }
 
 void Object::UpdateTransform(XMFLOAT4X4 *pxmf4x4Parent)
@@ -241,7 +238,7 @@ void Object::SetPosition(float x, float y, float z)
 	m_xmf4x4ToParent._42 = y;
 	m_xmf4x4ToParent._43 = z;
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 void Object::SetLook(float x, float y, float z)
@@ -250,7 +247,7 @@ void Object::SetLook(float x, float y, float z)
 	m_xmf4x4ToParent._32 = y;
 	m_xmf4x4ToParent._33 = z;
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 void Object::SetRight(float x, float y, float z)
@@ -259,7 +256,7 @@ void Object::SetRight(float x, float y, float z)
 	m_xmf4x4ToParent._12 = y;
 	m_xmf4x4ToParent._13 = z;
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 void Object::SetUp(float x, float y, float z)
@@ -268,7 +265,7 @@ void Object::SetUp(float x, float y, float z)
 	m_xmf4x4ToParent._22 = y;
 	m_xmf4x4ToParent._23 = z;
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 void Object::SetPosition(XMFLOAT3 xmf3Position)
@@ -301,7 +298,7 @@ void Object::SetScale(float x, float y, float z)
 	m_xmf4x4ToParent._22; // y
 	m_xmf4x4ToParent._33; // z
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 XMFLOAT3 Object::GetPosition()
@@ -362,7 +359,7 @@ void Object::Rotate(float fPitch, float fYaw, float fRoll)
 	XMMATRIX mtxRotate = XMMatrixRotationRollPitchYaw(XMConvertToRadians(fPitch), XMConvertToRadians(fYaw), XMConvertToRadians(fRoll));
 	m_xmf4x4ToParent = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParent);
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 void Object::Rotate(XMFLOAT3 *pxmf3Axis, float fAngle)
@@ -370,7 +367,7 @@ void Object::Rotate(XMFLOAT3 *pxmf3Axis, float fAngle)
 	XMMATRIX mtxRotate = XMMatrixRotationAxis(XMLoadFloat3(pxmf3Axis), XMConvertToRadians(fAngle));
 	m_xmf4x4ToParent = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParent);
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 void Object::Rotate(XMFLOAT4 *pxmf4Quaternion)
@@ -378,7 +375,7 @@ void Object::Rotate(XMFLOAT4 *pxmf4Quaternion)
 	XMMATRIX mtxRotate = XMMatrixRotationQuaternion(XMLoadFloat4(pxmf4Quaternion));
 	m_xmf4x4ToParent = Matrix4x4::Multiply(mtxRotate, m_xmf4x4ToParent);
 
-	UpdateTransform(NULL);
+	UpdateTransform(nullptr);
 }
 
 //#define _WITH_DEBUG_FRAME_HIERARCHY
@@ -398,11 +395,11 @@ Texture *Object::FindReplicatedTexture(_TCHAR *pstrTextureName)
 			}
 		}
 	}
-	Texture *pTexture = NULL;
+	Texture *pTexture = nullptr;
 	if (m_pSibling) if (pTexture = m_pSibling->FindReplicatedTexture(pstrTextureName)) return(pTexture);
 	if (m_pChild) if (pTexture = m_pChild->FindReplicatedTexture(pstrTextureName)) return(pTexture);
 
-	return(NULL);
+	return(nullptr);
 }
 
 int ReadIntegerFromFile(FILE *pInFile)
@@ -439,9 +436,9 @@ void Object::LoadMaterialsFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsComma
 	m_nMaterials = ReadIntegerFromFile(pInFile);
 
 	m_ppMaterials = new Material*[m_nMaterials];
-	for (int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = NULL;
+	for (int i = 0; i < m_nMaterials; i++) m_ppMaterials[i] = nullptr;
 
-	Material *pMaterial = NULL;
+	Material *pMaterial = nullptr;
 
 	for ( ; ; )
 	{
@@ -675,7 +672,7 @@ void Object::LoadAnimationFromFile(FILE *pInFile, ModelInfo *pLoadedModel)
 			int nFramesPerSecond = ::ReadIntegerFromFile(pInFile);
 			int nKeyFrames = ::ReadIntegerFromFile(pInFile);
 
-			pLoadedModel->m_pAnimationSets->m_pAnimationSets[nAnimationSet] = new CAnimationSet(fLength, nFramesPerSecond, nKeyFrames, pLoadedModel->m_pAnimationSets->m_nAnimatedBoneFrames, pstrToken);
+			pLoadedModel->m_pAnimationSets->m_pAnimationSets[nAnimationSet] = new AnimationSet(fLength, nFramesPerSecond, nKeyFrames, pLoadedModel->m_pAnimationSets->m_nAnimatedBoneFrames, pstrToken);
 
 			for (int i = 0; i < nKeyFrames; i++)
 			{
@@ -685,9 +682,20 @@ void Object::LoadAnimationFromFile(FILE *pInFile, ModelInfo *pLoadedModel)
 					int nKey = ::ReadIntegerFromFile(pInFile); //i
 					float fKeyTime = ::ReadFloatFromFile(pInFile);
 
-					CAnimationSet *pAnimationSet = pLoadedModel->m_pAnimationSets->m_pAnimationSets[nAnimationSet];
+					AnimationSet *pAnimationSet = pLoadedModel->m_pAnimationSets->m_pAnimationSets[nAnimationSet];
 					pAnimationSet->m_pfKeyFrameTimes[i] = fKeyTime;
+
+#ifdef _WITH_ANIMATION_SRT
+					pAnimationSet->m_pfKeyFrameRotationTimes[i] = fKeyTime;
+					pAnimationSet->m_pfKeyFrameScaleTimes[i] = fKeyTime;
+					pAnimationSet->m_pfKeyFrameTranslationTimes[i] = fKeyTime;
+#endif
 					nReads = (UINT)::fread(pAnimationSet->m_ppxmf4x4KeyFrameTransforms[i], sizeof(XMFLOAT4X4), pLoadedModel->m_pAnimationSets->m_nAnimatedBoneFrames, pInFile);
+#ifdef _WITH_ANIMATION_SRT
+					nReads = (UINT)::fread(pAnimationSet->m_ppxmf3KeyFrameTranslations[i], sizeof(XMFLOAT3), pLoadedModel->m_pAnimationSets->m_nAnimatedBoneFrames, pInFile);
+					nReads = (UINT)::fread(pAnimationSet->m_ppxmf4KeyFrameRotations[i], sizeof(XMFLOAT4), pLoadedModel->m_pAnimationSets->m_nAnimatedBoneFrames, pInFile);
+					nReads = (UINT)::fread(pAnimationSet->m_ppxmf3KeyFrameScales[i], sizeof(XMFLOAT3), pLoadedModel->m_pAnimationSets->m_nAnimatedBoneFrames, pInFile);
+#endif
 				}
 			}
 		}
@@ -700,7 +708,7 @@ void Object::LoadAnimationFromFile(FILE *pInFile, ModelInfo *pLoadedModel)
 
 ModelInfo *Object::LoadGeometryAndAnimationFromFile(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, char *pstrFileName, Shader *pShader)
 {
-	FILE *pInFile = NULL;
+	FILE *pInFile = nullptr;
 	::fopen_s(&pInFile, pstrFileName, "rb");
 	::rewind(pInFile);
 
@@ -714,7 +722,7 @@ ModelInfo *Object::LoadGeometryAndAnimationFromFile(ID3D12Device *pd3dDevice, ID
 		{
 			if (!strcmp(pstrToken, "<Hierarchy>:"))
 			{
-				pLoadedModel->m_pModelRootObject = Object::LoadFrameHierarchyFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, NULL, pInFile, pShader, &pLoadedModel->m_nSkinnedMeshes);
+				pLoadedModel->m_pModelRootObject = Object::LoadFrameHierarchyFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, nullptr, pInFile, pShader, &pLoadedModel->m_nSkinnedMeshes);
 				::ReadStringFromFile(pInFile, pstrToken); //"</Hierarchy>"
 			}
 			else if (!strcmp(pstrToken, "<Animation>:"))
@@ -738,7 +746,7 @@ ModelInfo *Object::LoadGeometryAndAnimationFromFile(ID3D12Device *pd3dDevice, ID
 	_stprintf_s(pstrDebug, 256, "Frame Hierarchy\n"));
 	OutputDebugString(pstrDebug);
 
-	CGameObject::PrintFrameInfo(pGameObject, NULL);
+	CGameObject::PrintFrameInfo(pGameObject, nullptr);
 #endif
 
 	return(pLoadedModel);

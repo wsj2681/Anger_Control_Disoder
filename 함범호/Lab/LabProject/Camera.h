@@ -2,10 +2,10 @@
 
 #define ASPECT_RATIO				(float(FRAME_BUFFER_WIDTH) / float(FRAME_BUFFER_HEIGHT))
 
-#define FIRST_PERSON_CAMERA			0x01
-#define SPACESHIP_CAMERA			0x02
-#define THIRD_PERSON_CAMERA			0x03
-#define THIRD_PERSON_CAMERA2		0x04
+constexpr UINT FIRST_PERSON_CAMERA = 1;
+constexpr UINT SPACESHIP_CAMERA = 2;
+constexpr UINT THIRD_PERSON_CAMERA = 3;
+constexpr UINT THIRD_PERSON_CAMERA2 = 4;
 
 struct VS_CB_CAMERA_INFO
 {
@@ -24,6 +24,11 @@ protected:
 	XMFLOAT3						m_xmf3Up;
 	XMFLOAT3						m_xmf3Look;
 
+	XMFLOAT3						m_xmf3CapturedPosition;
+	XMFLOAT3						m_xmf3CapturedRight;
+	XMFLOAT3						m_xmf3CapturedUp;
+	XMFLOAT3						m_xmf3CapturedLook;
+
 	float           				m_fPitch;
 	float           				m_fRoll;
 	float           				m_fYaw;
@@ -40,12 +45,13 @@ protected:
 	D3D12_VIEWPORT					m_d3dViewport;
 	D3D12_RECT						m_d3dScissorRect;
 
-	Player							*m_pPlayer = NULL;
+	Player							*m_pPlayer = nullptr;
 
-	ID3D12Resource					*m_pd3dcbCamera = NULL;
-	VS_CB_CAMERA_INFO				*m_pcbMappedCamera = NULL;
+	ID3D12Resource					*m_pd3dcbCamera = nullptr;
+	VS_CB_CAMERA_INFO				*m_pcbMappedCamera = nullptr;
 
-	
+	bool isFixed = false;
+	bool withPlayer = false;
 
 public:
 	Camera();
@@ -100,10 +106,15 @@ public:
 	D3D12_RECT GetScissorRect() { return(m_d3dScissorRect); }
 
 	virtual void Move(const XMFLOAT3& xmf3Shift) { m_xmf3Position.x += xmf3Shift.x; m_xmf3Position.y += xmf3Shift.y; m_xmf3Position.z += xmf3Shift.z; }
+	void MoveFromShift(DWORD nDirection, float fDistance, bool bVelocity);
 	virtual void Rotate(float fPitch = 0.0f, float fYaw = 0.0f, float fRoll = 0.0f) { }
 	virtual void Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed) { }
 	virtual void SetLookAt(XMFLOAT3& xmf3LookAt) { }
 
+	void SetFixed(bool fixed) { this->isFixed = fixed; }
+	bool IsFixed() { return this->isFixed; }
+	void CaptureWorld();
+	void SetCaptureWorld();
 
 public:
 

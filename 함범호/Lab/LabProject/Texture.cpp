@@ -21,16 +21,12 @@ Texture::~Texture()
 {
 	if (m_ppd3dTextures)
 	{
-		for (int i = 0; i < m_nTextures; i++) if (m_ppd3dTextures[i]) m_ppd3dTextures[i]->Release();
+		for (int i = 0; i < m_nTextures; i++) SAFE_RELEASE(m_ppd3dTextures[i]);
 		delete[] m_ppd3dTextures;
 	}
 
-	if (m_pRootArgumentInfos)
-	{
-		delete[] m_pRootArgumentInfos;
-	}
-
-	if (m_pd3dSamplerGpuDescriptorHandles) delete[] m_pd3dSamplerGpuDescriptorHandles;
+	SAFE_DELETEARR(m_pRootArgumentInfos);
+	SAFE_DELETEARR(m_pd3dSamplerGpuDescriptorHandles);
 }
 
 void Texture::SetRootArgument(int nIndex, UINT nRootParameterIndex, D3D12_GPU_DESCRIPTOR_HANDLE d3dSrvGpuDescriptorHandle)
@@ -70,7 +66,7 @@ void Texture::ReleaseUploadBuffers()
 	{
 		for (int i = 0; i < m_nTextures; i++) if (m_ppd3dTextureUploadBuffers[i]) m_ppd3dTextureUploadBuffers[i]->Release();
 		delete[] m_ppd3dTextureUploadBuffers;
-		m_ppd3dTextureUploadBuffers = NULL;
+		m_ppd3dTextureUploadBuffers = nullptr;
 	}
 }
 

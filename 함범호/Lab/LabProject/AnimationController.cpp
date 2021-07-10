@@ -5,6 +5,9 @@
 #include "ModelInfo.h"
 #include "SkinnedMesh.h"
 #include "Object.h"
+#include "Scene.h"
+
+extern Scene* gScene;
 
 AnimationController::AnimationController(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, int nAnimationTracks, ModelInfo* pModel)
 {
@@ -24,26 +27,26 @@ AnimationController::AnimationController(ID3D12Device* pd3dDevice, ID3D12Graphic
 	UINT ncbElementBytes = (((sizeof(XMFLOAT4X4) * SKINNED_ANIMATION_BONES) + 255) & ~255); //256ÀÇ ¹è¼ö
 	for (int i = 0; i < m_nSkinnedMeshes; i++)
 	{
-		m_ppd3dcbSkinningBoneTransforms[i] = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+		m_ppd3dcbSkinningBoneTransforms[i] = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
 		m_ppd3dcbSkinningBoneTransforms[i]->Map(0, nullptr, (void**)&m_ppcbxmf4x4MappedSkinningBoneTransforms[i]);
 	}
 }
 
 AnimationController::~AnimationController()
 {
-	if (m_pAnimationTracks) delete[] m_pAnimationTracks;
+	SAFE_DELETEARR(m_pAnimationTracks);
 
 	for (int i = 0; i < m_nSkinnedMeshes; i++)
 	{
 		m_ppd3dcbSkinningBoneTransforms[i]->Unmap(0, nullptr);
-		m_ppd3dcbSkinningBoneTransforms[i]->Release();
+		SAFE_RELEASE(m_ppd3dcbSkinningBoneTransforms[i]);
 	}
-	if (m_ppd3dcbSkinningBoneTransforms) delete[] m_ppd3dcbSkinningBoneTransforms;
-	if (m_ppcbxmf4x4MappedSkinningBoneTransforms) delete[] m_ppcbxmf4x4MappedSkinningBoneTransforms;
+	SAFE_DELETEARR(m_ppd3dcbSkinningBoneTransforms);
+	SAFE_DELETEARR(m_ppcbxmf4x4MappedSkinningBoneTransforms);
 
-	if (m_pAnimationSets) m_pAnimationSets->Release();
+	SAFE_RELEASE(m_pAnimationSets);
 
-	if (m_ppSkinnedMeshes) delete[] m_ppSkinnedMeshes;
+	SAFE_DELETEARR(m_ppSkinnedMeshes);
 }
 
 void AnimationController::SetCallbackKeys(int nAnimationSet, int nCallbackKeys)
@@ -61,11 +64,55 @@ void AnimationController::SetAnimationCallbackHandler(int nAnimationSet, Animati
 	if (m_pAnimationSets) m_pAnimationSets->SetAnimationCallbackHandler(nAnimationSet, pCallbackHandler);
 }
 
-void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet)
+void AnimationController::SetTrackAnimationSet(int nAnimationTrack, int nAnimationSet, UINT nType, bool bAnimFixed)
 {
 	if (m_pAnimationTracks)
 	{
+		/*if (m_pAnimationSets)
+		{
+			if (!m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks->m_nAnimationSet]->IsAnimate())
+
+				switch (m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks->m_nAnimationSet]->m_nType)
+				{
+				case ANIMATION_TYPE_LOOP:
+				case ANIMATION_TYPE_PINGPONG:
+					if (nType != ANIMATION_TYPE_ONCE)
+						break;
+				case ANIMATION_TYPE_ONCE:
+					m_pAnimationTracks->m_fPosition = 0.f;
+					break;
+				default:
+					break;
+				}
+		}*/
+		if (bAnimFixed)
+		{
+			if (m_pAnimationSets)
+			{
+				switch (m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks->m_nAnimationSet]->m_nType)
+				{
+				case ANIMATION_TYPE_LOOP:
+				case ANIMATION_TYPE_PINGPONG:
+					if (nType != ANIMATION_TYPE_ONCE)
+						break;
+				case ANIMATION_TYPE_ONCE:
+					m_pAnimationTracks->m_fPosition = 0.f;
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
 		m_pAnimationTracks[nAnimationTrack].m_nAnimationSet = nAnimationSet;
+
+		if (m_pAnimationSets)
+			m_pAnimationSets->m_pAnimationSets[nAnimationSet]->m_nType = nType;
+		if (gScene)
+		{
+			if (gScene->m_pPlayer)
+				gScene->m_pPlayer->oldSpinePosition = gScene->m_pPlayer->bones["Spine"]->GetPosition();
+		}
 	}
 }
 
@@ -112,7 +159,7 @@ void AnimationController::AdvanceTime(float fTimeElapsed, Object* pRootGameObjec
 			{
 				if (m_pAnimationTracks[k].m_bEnable)
 				{
-					CAnimationSet* pAnimationSet = m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks[k].m_nAnimationSet];
+					AnimationSet* pAnimationSet = m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks[k].m_nAnimationSet];
 					pAnimationSet->SetPosition(m_pAnimationTracks[k].m_fPosition);
 					XMFLOAT4X4 xmf4x4TrackTransform = pAnimationSet->GetSRT(j);
 					xmf4x4Transform = Matrix4x4::Add(xmf4x4Transform, Matrix4x4::Scale(xmf4x4TrackTransform, m_pAnimationTracks[k].m_fWeight));
@@ -123,4 +170,24 @@ void AnimationController::AdvanceTime(float fTimeElapsed, Object* pRootGameObjec
 
 		pRootGameObject->UpdateTransform(nullptr);
 	}
+}
+
+bool AnimationController::IsAnimate()
+{
+	return m_pAnimationSets->m_pAnimationSets[m_pAnimationTracks[0].m_nAnimationSet]->IsAnimate();;
+}
+
+bool AnimationController::IsAnimate(int nAnimationSet)
+{
+	return m_pAnimationSets->m_pAnimationSets[nAnimationSet]->IsAnimate();
+}
+
+int AnimationController::GetNowTrackAnimationSet(int nAnimationTrack)
+{
+	if (m_pAnimationTracks)
+	{
+		return m_pAnimationTracks[nAnimationTrack].m_nAnimationSet;
+	}
+
+	return -1;
 }

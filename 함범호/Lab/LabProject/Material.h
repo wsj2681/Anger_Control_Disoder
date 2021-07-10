@@ -26,7 +26,7 @@ public:
 	void Release() { if (--m_nReferences <= 0) delete this; }
 
 public:
-	Shader* m_pShader = NULL;
+	Shader* m_pShader = nullptr;
 
 	XMFLOAT4						m_xmf4AlbedoColor = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	XMFLOAT4						m_xmf4EmissiveColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 1.0f);
@@ -52,8 +52,8 @@ public:
 
 public:
 	int 							m_nTextures = 0;
-	_TCHAR(*m_ppstrTextureNames)[64] = NULL;
-	Texture** m_ppTextures = NULL; //0:Albedo, 1:Specular, 2:Metallic, 3:Normal, 4:Emission, 5:DetailAlbedo, 6:DetailNormal
+	_TCHAR(*m_ppstrTextureNames)[64] = nullptr;
+	Texture** m_ppTextures = nullptr; //0:Albedo, 1:Specular, 2:Metallic, 3:Normal, 4:Emission, 5:DetailAlbedo, 6:DetailNormal
 
 	void LoadTextureFromFile(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nType, UINT nRootParameter, _TCHAR* pwstrTextureName, Texture** ppTexture, Object* pParent, FILE* pInFile, Shader* pShader);
 

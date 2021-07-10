@@ -6,8 +6,10 @@
 #include "Object.h"
 #include "Player.h"
 #include "Scene.h"
-#include "AnimationSet.h"
 #include "AnimationController.h"
+#include "AnimationSet.h"
+#include "AnimationTrack.h"
+
 
 Server::Server()
 {
@@ -17,12 +19,12 @@ Server::Server()
 Server::~Server() {
 
 }
-void Server::MakeServer(const HWND& hWnd) {
+Server::Server(int i) {
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		cout << "WSAStartup Error" << endl;
 
-	//sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
 	SOCKADDR_IN sever_sock_addr;
 
@@ -34,7 +36,6 @@ void Server::MakeServer(const HWND& hWnd) {
 
 	retval = connect(sock, (sockaddr*)&sever_sock_addr, sizeof(sever_sock_addr));
 
-	WSAAsyncSelect(sock, hWnd, WM_SOCKET, FD_CLOSE | FD_READ);
 
 }
 
@@ -52,48 +53,60 @@ void Server::Server_send()
 
 		player.player_world = cplayer->m_xmf4x4World;
 
-		player.player_Head = cobject->head->m_xmf4x4World;
+		/*player.player_Head = cobject->head->m_xmf4x4World;
 		player.player_rHand = cobject->rHand->m_xmf4x4World;
 		player.player_lHand = cobject->lHand->m_xmf4x4World;
 		player.player_rFoot = cobject->rFoot->m_xmf4x4World;
 		player.player_lFoot = cobject->lFoot->m_xmf4x4World;
-		player.player_Spine = cobject->spine->m_xmf4x4World;
-		
+		player.player_Spine = cobject->spine->m_xmf4x4World;*/
+
+		//player.playerHp = cplayer->hp;
 		myHP.playerHp = cplayer->hp;
+
+		/*bool retVal{};
+		retVal = cplayer->m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[cplayer->m_pSkinnedAnimationController->m_pAnimationTracks->m_nAnimationSet]->IsAnimate();
+
+		send_attackAnddefend.ani_playing = retVal;*/
+
 
 		retval = send(sock, (char*)&player, sizeof(player), 0);
 
 		retval = send(sock, (char*)&send_attackAnddefend, sizeof(send_attackAnddefend), 0);
 
-		//retval = send(sock, (char*)&myHP, sizeof(myHP), 0);
+		retval = send(sock, (char*)&myHP, sizeof(myHP), 0);
 
+		retval = send(sock, (char*)&double_check, sizeof(double_check), 0);
+
+		if(send_attackAnddefend.checkAni == true)
+			attackAndGuard_idle();
 	}
 }
 
-void Server::Server_recv(SOCKET s)
+void Server::Server_recv()
 {
-	
+
 	//준비완료 받기
 	if (recv_count == 0) {
-		retval = recv(s, (char*)Save_Data, sizeof(Save_Data), 0);
+		retval = recv(sock, (char*)Save_Data, sizeof(Save_Data), 0);
 		cout << Save_Data << "받기완료" << endl;
 
 		cout << "thread_id = " << thread_id.thread_num << endl;
-		retval = recv(s, (char*)&thread_id, sizeof(thread_id), 0);
+		retval = recv(sock, (char*)&thread_id, sizeof(thread_id), 0);
 		cout << "thread_id = " << thread_id.thread_num << endl;
 		++recv_count;
 	}
 	else {
-		retval = recv(s, (char*)&other_player, sizeof(other_player), 0);
-		retval = recv(s, (char*)&col, sizeof(col), 0);
-		retval = recv(s, (char*)&recv_attackAnddefend, sizeof(recv_attackAnddefend), 0);
-		retval = recv(s, (char*)&headHitted, sizeof(headHitted), 0);
-		//retval = recv(s, (char*)&myHP, sizeof(myHP), 0);
-		
+		retval = recv(sock, (char*)&other_player, sizeof(other_player), 0);
+		//retval = recv(sock, (char*)&col, sizeof(col), 0);
+		retval = recv(sock, (char*)&recv_attackAnddefend, sizeof(recv_attackAnddefend), 0);
+		//retval = recv(sock, (char*)&headHitted, sizeof(headHitted), 0);
+		retval = recv(sock, (char*)&otherHP, sizeof(otherHP), 0);
 
 
+		//cout << "other Player HP : "<<otherHP.playerHp << " " << endl;
 		//HP설정
-		cplayer->hp = myHP.playerHp;
+		//cplayer->hp = myHP.playerHp;
+		cscene->hierarchicalGameObjects[1]->hp = otherHP.playerHp;
 
 		//retval = recv(sock, (char*)&bScenario, sizeof(bScenario), 0);
 		//cout << player.player_world._41 << " " << player.player_world._42 << " " << player.player_world._43 << endl;
@@ -111,48 +124,45 @@ void Server::Server_recv(SOCKET s)
 		cscene->hierarchicalGameObjects[1]->SetUp(player_up.x, player_up.y, player_up.z);
 		cscene->hierarchicalGameObjects[1]->SetLook(player_look.x, player_look.y, player_look.z);
 
-		cscene->hierarchicalGameObjects[1]->nowState = other_player.nowState;
+		//cscene->m_ppHierarchicalGameObjects[0]->nowState = other_player.nowState;
 
+		//상대 클라 애니메이션 실행
+		//otherPlayerAnimation();
+
+		bool retVal;
+		retVal = cscene->hierarchicalGameObjects[0]->m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[cscene->
+			hierarchicalGameObjects[0]->m_pSkinnedAnimationController->m_pAnimationTracks->m_nAnimationSet]->IsAnimate();
 		
+	
+		/*if (recv_attackAnddefend.ani_playing == true) {
+			cscene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num);
 
-		// 상대클라 애니메이션
-		if (recv_attackAnddefend.checkAni) {
-			if (recv_attackAnddefend.leftHand) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
-			}
-			if (recv_attackAnddefend.rightHand) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightHand ? ANIMATION_HOOK_R : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.jap) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.jap ? ANIMATION_JAB : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.hitTorsoLeft) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoLeft ? ANIMATION_HIT_TORSO_LEFT_A : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.hitTorsoRight) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoRight ? ANIMATION_HIT_TORSO_RIGHT_A : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.hitTorsoStright) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.hitTorsoStright ? ANIMATION_HIT_TORSO_STRIGHT_A : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.rightGuard) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.rightGuard ? ANIMATION_GUARD_RIGHT_HEAD : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.leftGuard) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.leftGuard ? ANIMATION_GUARD_LEFT_HEAD : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.middleGuard) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.middleGuard ? ANIMATION_GUARD_BODY : ANIMATION_COMBAT_MODE_A);
-			}
-			if (recv_attackAnddefend.nuckDown) {
-				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.nuckDown ? ANIMATION_KNOCKDOWN : ANIMATION_COMBAT_MODE_A);
-				cscene->hierarchicalGameObjects[1]->isAlive = false;
-			}
-		}
-		else {
-			//cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+		}*/
 
+			
+
+		//cout << "ani_check - " << recv_attackAnddefend.checkAni << " " << endl;
+
+		if (recv_attackAnddefend.checkAni == true) {
+			if (recv_attackAnddefend.ani_num == ANIMATION_MOVE_FORWARD || recv_attackAnddefend.ani_num == ANIMATION_MOVE_BACKWARD ||
+				recv_attackAnddefend.ani_num == ANIMATION_MOVE_LEFT || recv_attackAnddefend.ani_num == ANIMATION_MOVE_RIGHT) {
+				if (retVal == true) {
+					cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
+					other_ani_check = true;
+					double_check.double_check = true;
+				}
+			
+			}
+			else {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
+				other_ani_check = true;
+
+				double_check.double_check = true;
+			}
+		
+		
 		}
+
 		//충돌처리확인
 		/*if (col.check_collide) {
 			cout << "COLLIDE! " << endl;
@@ -164,11 +174,11 @@ void Server::Server_recv(SOCKET s)
 			cobject->isCollide = false;
 
 		}*/
-		if (col.rHand2Head) {
+		/*if (col.rHand2Head) {
 			cplayer->rHand->isCollide = true;
 			cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
 			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-		
+
 		}
 		else
 			cplayer->rHand->isCollide = false;
@@ -201,7 +211,7 @@ void Server::Server_recv(SOCKET s)
 			cplayer->isHit = true;
 			cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
 			send_attackAnddefend.hitTorsoLeft = true;
-			
+
 
 			cplayer->head->isCollide = true;
 		}
@@ -209,68 +219,58 @@ void Server::Server_recv(SOCKET s)
 			cplayer->isHit = true;
 			cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
 			send_attackAnddefend.hitTorsoRight = true;
-			
+
 
 			cplayer->head->isCollide = false;
 		}
 		else if (headHitted.straightHtitted)
 		{
 
-		}
+		}*/
 
 		/*if (col.rHand2Spine)
 			cout << "SPINE COLLIDE! " << endl;*/
-		//cout << "collide _ position - " << col.collidePosition.x << " " << col.collidePosition.y << " " << col.collidePosition.z << endl;
-		if (cplayer->hp <= 0.0f) {
-			//cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
-			cplayer->isAlive = false;
-			send_attackAnddefend.nuckDown = true;
-		}
+			//cout << "collide _ position - " << col.collidePosition.x << " " << col.collidePosition.y << " " << col.collidePosition.z << endl;
+		//if (cplayer->hp <= 0.0f) {
+		//	//cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+		//	cplayer->isAlive = false;
+		//	send_attackAnddefend.nuckDown = true;
+		//}
 
 	}
 
 
 }
 
-//void Server::Server_make_thread() {
-//
-//	thread t1{ &Server::Server_thread, this };
-//	t1.join();
-//}
+void Server::Server_make_thread() {
 
-//void Server::Server_thread() {
-//	while (true) {
-//
-//		if (checkSR == true) {
-//			Server_send();
-//			Server_recv();
-//			
-//			//공격과 방어 초기화
-//			attackAndGuard_idle();
-//			checkSR = false;
-//		}
-//
-//
-//	}
-//}
+	thread t1{ &Server::Server_thread, this };
+	t1.join();
+}
+
+void Server::Server_thread() {
+	while (true) {
+
+		if (checkSR == true) {
+			Server_send();
+			Server_recv();
+
+			//공격과 방어 초기화
+			//attackAndGuard_idle();
+			checkSR = false;
+		}
+
+
+	}
+}
 
 
 void Server::attackAndGuard_idle() {
-	send_attackAnddefend.rightHand = false;
-	send_attackAnddefend.leftHand = false;
-	send_attackAnddefend.jap = false;
+	
 
-
-	send_attackAnddefend.hitTorsoLeft = false;
-	send_attackAnddefend.hitTorsoRight = false;
-	send_attackAnddefend.hitTorsoStright = false;
-
-	send_attackAnddefend.leftGuard = false;
-	send_attackAnddefend.rightGuard = false;
-	send_attackAnddefend.middleGuard = false;
-	send_attackAnddefend.nuckDown = false;
-
+	//send_attackAnddefend.ani_num = ANIMATION_IDLE_COMBAT;
 	send_attackAnddefend.checkAni = false;
+	double_check.double_check = false;
 
 }
 
@@ -292,3 +292,5 @@ void Server::otherPlayerPositionSet()
 	player_look.y = other_player.player_world._32;
 	player_look.z = other_player.player_world._33;
 }
+
+

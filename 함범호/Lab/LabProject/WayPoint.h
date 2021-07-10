@@ -4,13 +4,16 @@ class WayPoint final
 {
 public:
 	WayPoint() = default;
-	virtual ~WayPoint() = default;
+	WayPoint(const WayPoint&) = delete;
+	WayPoint& operator=(const WayPoint&) = delete;
+	~WayPoint() = default;
 private:
 	UINT nowState{ STATE_IDLE };
 	UINT nWayPoints{ 0 };
 	UINT curWayPoints{ 0 };
 	XMFLOAT3 wayPoints[20]{ XMFLOAT3(0.0f, 0.0f, 0.0f) };
 	UINT animations[20]{ 0 };
+	UINT nAnimations{ 0 };
 public:
 	const UINT& GetNowState() const;
 	void SetNowState(const UINT& state);
@@ -26,7 +29,7 @@ public:
 	void SetCurWayPoints(const UINT& cur);
 
 	const UINT& GetAnimations() const;
-	void SetAnimations() {}
+	void SetAnimations(const UINT& animations);
 
 	bool IsMove();
 };

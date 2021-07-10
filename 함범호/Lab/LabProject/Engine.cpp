@@ -3,20 +3,19 @@
 //-----------------------------------------------------------------------------
 
 #include "stdafx.h"
-#include "Engine.h"
+#include "Scene.h"
+#include "Player.h"
+#include "Server.h"
 #include "AnimationController.h"
+#include "Engine.h"
+#include "AnimationSet.h"
+
+//////////Server///////////
+extern Server* server;
+////////////////////////////
 
 Scene* gScene = nullptr;
-extern Server* server;
-
-Engine::Engine()
-{
-	_tcscpy_s(frameRate, _T("AngerControlDisorder("));
-}
-
-Engine::~Engine()
-{
-}
+bool onTempKey{ true };
 
 bool Engine::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
@@ -29,11 +28,12 @@ bool Engine::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 	CreateSwapChain();
 	CreateDepthStencilView();
 
-	CoInitialize(NULL);
+	if (CoInitialize(nullptr) != 0)
+		cout << "Initialize Failed" << endl;
 
 	BuildObjects();
 
-	return(true);
+	return true;
 }
 
 void Engine::CreateSwapChain()
@@ -74,19 +74,19 @@ void Engine::CreateDirect3DDevice()
 {
 	UINT nDXGIFactoryFlags = 0;
 #if defined(_DEBUG)
-	ID3D12Debug *pd3dDebugController = NULL;
+	ID3D12Debug *pd3dDebugController = nullptr;
 	HR(D3D12GetDebugInterface(__uuidof(ID3D12Debug), (void **)&pd3dDebugController));
 	if (pd3dDebugController)
 	{
 		pd3dDebugController->EnableDebugLayer();
-		pd3dDebugController->Release();
+		SAFE_RELEASE(pd3dDebugController);
 	}
 	nDXGIFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
 #endif
 
 	HR(::CreateDXGIFactory2(nDXGIFactoryFlags, __uuidof(IDXGIFactory4), (void **)&factory));
 
-	IDXGIAdapter1 *pd3dAdapter = NULL;
+	IDXGIAdapter1 *pd3dAdapter = nullptr;
 
 	for (UINT i = 0; DXGI_ERROR_NOT_FOUND != factory->EnumAdapters1(i, &pd3dAdapter); i++)
 	{
@@ -120,9 +120,9 @@ void Engine::CreateDirect3DDevice()
 	HR(device->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), (void **)&fence));
 	for (UINT i = 0; i < swapChainBuffers; i++) fenceValues[i] = 0;
 
-	fenceEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
+	fenceEvent = ::CreateEvent(nullptr, FALSE, FALSE, nullptr);
 
-	if (pd3dAdapter) pd3dAdapter->Release();
+	SAFE_RELEASE(pd3dAdapter);
 }
 
 void Engine::CreateCommandQueueAndList()
@@ -135,7 +135,7 @@ void Engine::CreateCommandQueueAndList()
 	
 	HR(device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), (void **)&commandAllocator));
 	
-	HR(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, NULL, __uuidof(ID3D12GraphicsCommandList), (void **)&commandList));
+	HR(device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator, nullptr, __uuidof(ID3D12GraphicsCommandList), (void **)&commandList));
 	HR(commandList->Close());
 }
 
@@ -159,10 +159,10 @@ void Engine::CreateRtvAndDsvDescriptorHeaps()
 void Engine::CreateRenderTargetViews()
 {
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = rtvDescHeap->GetCPUDescriptorHandleForHeapStart();
-	for (UINT i = 0; i < swapChainBuffers; i++)
+	for (UINT i = 0; i < swapChainBuffers; ++i)
 	{
 		swapChain->GetBuffer(i, __uuidof(ID3D12Resource), (void **)&swapChainBackBuffers[i]);
-		device->CreateRenderTargetView(swapChainBackBuffers[i], NULL, d3dRtvCPUDescriptorHandle);
+		device->CreateRenderTargetView(swapChainBackBuffers[i], nullptr, d3dRtvCPUDescriptorHandle);
 		d3dRtvCPUDescriptorHandle.ptr += rtvDescIncrementSize;
 	}
 }
@@ -225,7 +225,7 @@ void Engine::ChangeSwapChainState()
 	dxgiTargetParameters.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	HR(swapChain->ResizeTarget(&dxgiTargetParameters));
 
-	for (int i = 0; i < swapChainBuffers; i++) if (swapChainBackBuffers[i]) swapChainBackBuffers[i]->Release();
+	for (int i = 0; i < swapChainBuffers; i++) SAFE_RELEASE(swapChainBackBuffers[i]);
 
 	DXGI_SWAP_CHAIN_DESC dxgiSwapChainDesc;
 	HR(swapChain->GetDesc(&dxgiSwapChainDesc));
@@ -239,9 +239,9 @@ void Engine::ChangeSwapChainState()
 void Engine::CreateShaderVariables()
 {
 	UINT ncbElementBytes = ((sizeof(CB_ENGINE_INFO) + 255) & ~255); //256의 배수
-	m_pd3dcbFrameworkInfo = ::CreateBufferResource(device, commandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+	m_pd3dcbFrameworkInfo = ::CreateBufferResource(device, commandList, nullptr, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
 
-	m_pd3dcbFrameworkInfo->Map(0, NULL, (void**)&m_pcbMappedFrameworkInfo);
+	m_pd3dcbFrameworkInfo->Map(0, nullptr, (void**)&m_pcbMappedFrameworkInfo);
 }
 
 void Engine::UpdateShaderVariables()
@@ -257,8 +257,8 @@ void Engine::ReleaseShaderVariables()
 {
 	if (m_pd3dcbFrameworkInfo)
 	{
-		m_pd3dcbFrameworkInfo->Unmap(0, NULL);
-		m_pd3dcbFrameworkInfo->Release();
+		m_pd3dcbFrameworkInfo->Unmap(0, nullptr);
+		SAFE_RELEASE(m_pd3dcbFrameworkInfo);
 	}
 }
 
@@ -289,7 +289,7 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	switch (nMessageID)
 	{
 		case WM_KEYUP:
-			//this->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+			// TODO: 코드 위치 생각해보기
 			this->m_pPlayer->nowState = STATE_IDLE;
 			switch (wParam)
 			{
@@ -302,8 +302,26 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				case VK_F2:
 				case VK_F3:
 				case VK_F4:
+					m_pCamera->CaptureWorld();
 					m_pCamera = m_pPlayer->ChangeCamera((DWORD)(wParam - VK_F1 + 1), m_GameTimer.GetTimeElapsed());
 					break;
+				case VK_F5:
+					onTempKey = !onTempKey;
+					break;
+				case 'Q':
+				{
+					break;
+				}
+				case 'W':
+				{
+					m_pCamera->SetCaptureWorld();
+					break;
+				}
+				case 'E':
+				{
+					m_pCamera->SetFixed(!m_pCamera->IsFixed());
+					break;
+				}
 				case VK_F9:
 					ChangeSwapChainState();
 					break;
@@ -342,37 +360,37 @@ LRESULT CALLBACK Engine::OnProcessingWindowMessage(HWND hWnd, UINT nMessageID, W
 			OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 			break;
 	}
-	return(0);
+	return 0;
 }
 
 void Engine::OnDestroy()
 {
-    ReleaseObjects();
+    Release();
 
 	::CloseHandle(fenceEvent);
 
-	if (depthStencilBuffer) depthStencilBuffer->Release();
-	if (dsvDescHeap) dsvDescHeap->Release();
+	SAFE_RELEASE(depthStencilBuffer);
+	SAFE_RELEASE(dsvDescHeap);
 
-	for (int i = 0; i < swapChainBuffers; i++) if (swapChainBackBuffers[i]) swapChainBackBuffers[i]->Release();
-	if (rtvDescHeap) rtvDescHeap->Release();
+	for (int i = 0; i < swapChainBuffers; i++) SAFE_RELEASE(swapChainBackBuffers[i]);
+	SAFE_RELEASE(rtvDescHeap);
 
-	if (commandAllocator) commandAllocator->Release();
-	if (commandQueue) commandQueue->Release();
-	if (commandList) commandList->Release();
+	SAFE_RELEASE(commandAllocator);
+	SAFE_RELEASE(commandQueue);
+	SAFE_RELEASE(commandList);
 
-	if (fence) fence->Release();
+	SAFE_RELEASE(fence);
 
-	swapChain->SetFullscreenState(FALSE, NULL);
-	if (swapChain) swapChain->Release();
-    if (device) device->Release();
-	if (factory) factory->Release();
+	swapChain->SetFullscreenState(false, nullptr);
+	SAFE_RELEASE(swapChain);
+	SAFE_RELEASE(device);
+	SAFE_RELEASE(factory);
 
 #if defined(_DEBUG)
-	IDXGIDebug1	*pdxgiDebug = NULL;
+	IDXGIDebug1	*pdxgiDebug = nullptr;
 	DXGIGetDebugInterface1(0, __uuidof(IDXGIDebug1), (void **)&pdxgiDebug);
 	HRESULT hResult = pdxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_DETAIL);
-	pdxgiDebug->Release();
+	SAFE_RELEASE(pdxgiDebug);
 #endif
 }
 
@@ -381,13 +399,6 @@ void Engine::OnDestroy()
 void Engine::BuildObjects()
 {
 
-#ifdef _WITH_SERVER_CONNECT
-	/////SERVER///
-	//server = new Server(0);
-
-	////////////////////////
-#endif // _WITH_SERVER_CONNECT
-
 
 	commandList->Reset(commandAllocator, nullptr);
 
@@ -395,47 +406,17 @@ void Engine::BuildObjects()
 	if (m_pScene) m_pScene->BuildObjects(device, commandList);
 
 	BoxingPlayer *pPlayer = new BoxingPlayer(device, commandList, m_pScene->GetGraphicsRootSignature());
-
-	pPlayer->SetPosition(XMFLOAT3(0.f, 10.0f, 0.f));
-
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, 1.66975f, -533.916f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, -5.69284f, -527.249f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-14.245930f, -5.69284f, -107.806f), ANIMATION_MOVE_FORWARD);
-
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f), ANIMATION_CEREMONY);
-	//pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-28.4525f, -5.69284f, 83.0311f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -109.177f), ANIMATION_CEREMONY);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -94.0986f), ANIMATION_MOVE_FORWARD);
-
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -78.1817f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -32.0f), ANIMATION_MOVE_FORWARD);
-	pPlayer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, -32.0f), ANIMATION_MOVE_FORWARD);
-
+	pPlayer->SetPosition(XMFLOAT3(-1.0f, 8.5f, -30.0f));
+	
 	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
 	m_pCamera = m_pPlayer->GetCamera();
 	gScene = m_pScene;
 
 #ifdef _WITH_SERVER_CONNECT
-	////server//////////////
 	server->cplayer = m_pPlayer;
 	server->cscene = m_pScene;
 	server->cobject = m_pScene->hierarchicalGameObjects[1];
-
-	//쓰레드생성
-	//server->Server_make_thread();
-	
-	
-	
-	/// /////////////////////////////
 #endif // _WITH_SERVER_CONNECT
-
-	
 
 	commandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { commandList };
@@ -449,12 +430,11 @@ void Engine::BuildObjects()
 	m_GameTimer.Reset();
 }
 
-void Engine::ReleaseObjects()
+void Engine::Release()
 {
-	if (m_pPlayer) m_pPlayer->Release();
-
-	if (m_pScene) m_pScene->ReleaseObjects();
-	if (m_pScene) delete m_pScene;
+	SAFE_RELEASE(m_pPlayer);
+	SAFE_RELEASE(m_pScene);
+	SAFE_DELETE(m_pScene);
 }
 
 void Engine::ProcessInput()
@@ -462,193 +442,104 @@ void Engine::ProcessInput()
 	static UCHAR pKeysBuffer[256];
 	bool bProcessedByScene = false;
 	if (GetKeyboardState(pKeysBuffer) && m_pScene) bProcessedByScene = m_pScene->ProcessInput(pKeysBuffer);
-	if (!bProcessedByScene)
+	if (!bProcessedByScene && m_pPlayer->canMove)
 	{
 		DWORD dwDirection = 0;
-
-		if (m_pPlayer)
+		if (pKeysBuffer[VK_UP] & 0xF0)
 		{
-			if (m_pPlayer->bScenario == false && m_pPlayer->isAlive == true && m_pPlayer->isHit == false)
-			{
-				//// temp 이동키
-				//if (pKeysBuffer['S'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0,ANIMATION_MOVE_BACKWARD);
-				//	dwDirection |= DIR_BACKWARD;
-				//}
-				//if (pKeysBuffer['A'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT);
-				//	dwDirection |= DIR_LEFT;
-				//}
-				//if (pKeysBuffer['D'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT);
-				//	dwDirection |= DIR_RIGHT;
-				//}
-				//if (pKeysBuffer['W'] & 0xF0)
-				//{
-				//	m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD);
-				//	dwDirection |= DIR_FORWARD;
-				//}
-				//if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
-				//if (pKeysBuffer[VK_RSHIFT] & 0xF0) dwDirection |= DIR_DOWN;
+			dwDirection |= DIR_FORWARD;
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD, ANIMATION_TYPE_ONCE);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_MOVE_FORWARD;
+			server->send_attackAnddefend.checkAni = true;
+
+#endif // _WITH_SERVER_CONNECT
+		}
+		if (pKeysBuffer[VK_DOWN] & 0xF0)
+		{
+			dwDirection |= DIR_BACKWARD;
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD, ANIMATION_TYPE_ONCE);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_MOVE_BACKWARD;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+		}
+		if (pKeysBuffer[VK_LEFT] & 0xF0)
+		{
+			dwDirection |= DIR_LEFT;
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT, ANIMATION_TYPE_ONCE);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_MOVE_LEFT;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+		}
+		if (pKeysBuffer[VK_RIGHT] & 0xF0)
+		{
+			dwDirection |= DIR_RIGHT;
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT, ANIMATION_TYPE_ONCE);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+		}
+		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
+		if (pKeysBuffer[VK_NEXT] & 0xF0) dwDirection |= DIR_DOWN;
+		
+		// 이쪽에 다중입력 만들기
 
 
-				 //여기가 게임 키
-				if (pKeysBuffer[VK_SPACE] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD);
-					dwDirection |= DIR_BACKWARD;
-				}
-				if (pKeysBuffer[VK_LSHIFT] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT);
-					dwDirection |= DIR_LEFT;
-
-				}
-				if (pKeysBuffer[VK_RSHIFT] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT);
-					dwDirection |= DIR_RIGHT;
-				}
-				if (pKeysBuffer[VK_LSHIFT] & pKeysBuffer[VK_RSHIFT] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0,ANIMATION_MOVE_FORWARD);
-					dwDirection |= DIR_FORWARD;
-				}
-				//if (pKeysBuffer[VK_SPACE] & 0xF0) dwDirection |= DIR_UP;
-				//if (pKeysBuffer[VK_RSHIFT] & 0xF0) dwDirection |= DIR_DOWN;
-
-				if (pKeysBuffer['A'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L);
-					m_pPlayer->nowState = STATE_ATTACK_LEFT_HOOK;
-					m_pPlayer->attackType = DAMAGE_HOOK;
-#ifdef _WITH_SERVER_CONNECT
-					server->send_attackAnddefend.leftHand = true;
-#endif // _WITH_SERVER_CONNECT
-				}
-				if (pKeysBuffer[VK_OEM_7] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R);
-					m_pPlayer->nowState = STATE_ATTACK_RIGHT_HOOK;
-					m_pPlayer->attackType = DAMAGE_HOOK;
-#ifdef _WITH_SERVER_CONNECT
-					server->send_attackAnddefend.rightHand = true;
-#endif // _WITH_SERVER_CONNECT
-				}
-				if (pKeysBuffer['S'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_JAB);
-					m_pPlayer->nowState = STATE_ATTACK_JAB;
-					m_pPlayer->attackType = DAMAGE_JAB;
-#ifdef _WITH_SERVER_CONNECT
-					server->send_attackAnddefend.jap = true;
-#endif // _WITH_SERVER_CONNECT
-				}
-				if (pKeysBuffer['C'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD);
-					m_pPlayer->nowState = STATE_GUARD_LEFT_HEAD;
-#ifdef _WITH_SERVER_CONNECT
-					server->send_attackAnddefend.leftGuard = true;
-#endif // _WITH_SERVER_CONNECT
-				}
-				if (pKeysBuffer[VK_OEM_COMMA] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD);
-					m_pPlayer->nowState = STATE_GUARD_RIGHT_HEAD;
-#ifdef _WITH_SERVER_CONNECT
-					server->send_attackAnddefend.rightGuard = true;
-#endif // _WITH_SERVER_CONNECT
-				}
-				if (pKeysBuffer['C'] & pKeysBuffer[VK_OEM_COMMA] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY);
-					m_pPlayer->nowState = STATE_GUARD_BODY;
-#ifdef _WITH_SERVER_CONNECT
-					server->send_attackAnddefend.middleGuard = true;
-#endif // _WITH_SERVER_CONNECT
-				}
-				if (pKeysBuffer['1'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-					m_pPlayer->nowState = STATE_HIT_TORSO_LEFT;
-#ifdef _WITH_SERVER_CONNECT
-					server->send_attackAnddefend.hitTorsoLeft = true;
-#endif // _WITH_SERVER_CONNECT
-				}
-				if (pKeysBuffer['2'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
-					m_pPlayer->nowState = STATE_HIT_TORSO_RIGHT;
-#ifdef _WITH_SERVER_CONNECT
-					server->send_attackAnddefend.hitTorsoRight = true;
-#endif // _WITH_SERVER_CONNECT
-				}
-				if (pKeysBuffer['3'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_A);
-					m_pPlayer->nowState = STATE_HIT_TORSO_STRIGHT;
-#ifdef _WITH_SERVER_CONNECT
-					server->send_attackAnddefend.hitTorsoStright = true;
-#endif // _WITH_SERVER_CONNECT
-				}
-				if (pKeysBuffer['4'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KILL_YOU);
-				}
-				if (pKeysBuffer['5'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_OSSUUU);
-				}
-				if (pKeysBuffer['6'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK);
-				}
-				if (pKeysBuffer['7'] & 0xF0)
-				{
-					m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CROSS_BODY);
-				}
-
-				float cxDelta = 0.0f, cyDelta = 0.0f;
-				POINT ptCursorPos;
-				if (GetCapture() == this->hWnd)
-				{
-					SetCursor(NULL);
-					GetCursorPos(&ptCursorPos);
-					cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
-					cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
-					SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
-				}
-
-				if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
-				{
-					if (cxDelta || cyDelta)
-					{
-						if (pKeysBuffer[VK_RBUTTON] & 0xF0)
-							m_pPlayer->Rotate(cyDelta, 0.0f, -cxDelta);
-						else
-							m_pPlayer->Rotate(cyDelta, cxDelta, 0.0f);
-					}
-					if (dwDirection) m_pPlayer->Move(dwDirection, 50.25f, true);
-				}
-			}
-
-			m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
+		float cxDelta = 0.0f, cyDelta = 0.0f;
+		POINT ptCursorPos;
+		if (GetCapture() == this->hWnd)
+		{
+			SetCursor(nullptr);
+			GetCursorPos(&ptCursorPos);
+			cxDelta = (float)(ptCursorPos.x - m_ptOldCursorPos.x) / 3.0f;
+			cyDelta = (float)(ptCursorPos.y - m_ptOldCursorPos.y) / 3.0f;
+			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 		}
 
+		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
+		{
+			if (cxDelta || cyDelta)
+			{
+				if (pKeysBuffer[VK_RBUTTON] & 0xF0)
+				{
+					if (m_pCamera->GetMode() == SPACESHIP_CAMERA && !m_pCamera->IsFixed())
+						m_pCamera->Rotate(cyDelta, 0.0f, -cxDelta);
+					else
+						m_pPlayer->Rotate(0, 0.0f, -cxDelta);
+				}
+				else
+				{
+					if (m_pCamera->GetMode() == SPACESHIP_CAMERA && !m_pCamera->IsFixed())
+						m_pCamera->Rotate(cyDelta, cxDelta, 0.0f);
+					else
+						m_pPlayer->Rotate(0, cxDelta, 0.0f);
+				}
+			}
+			if (dwDirection)
+			{
+				if (m_pCamera->GetMode() == SPACESHIP_CAMERA && !m_pCamera->IsFixed())
+					m_pCamera->MoveFromShift(dwDirection, 50.0f * m_GameTimer.GetTimeElapsed(), false);
+				else
+					m_pPlayer->Move(dwDirection, 10.0f * m_GameTimer.GetTimeElapsed(), false);
+			}
+		}
 	}
+
+	m_pPlayer->Update(m_GameTimer.GetTimeElapsed());
 }
+
+
 
 void Engine::AnimateObjects()
 {
 	float fTimeElapsed = m_GameTimer.GetTimeElapsed();
 
+	m_pPlayer->Animate(fTimeElapsed);
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed);
 
-	m_pPlayer->Animate(fTimeElapsed);
 }
 
 void Engine::WaitForGpuComplete()
@@ -666,7 +557,6 @@ void Engine::WaitForGpuComplete()
 void Engine::MoveToNextFrame()
 {
 	swapChainBufferIndex = swapChain->GetCurrentBackBufferIndex();
-	//swapChainBufferIndex = (swapChainBufferIndex + 1) % swapChainBuffers;
 
 	UINT64 nFenceValue = ++fenceValues[swapChainBufferIndex];
 	HR(commandQueue->Signal(fence, nFenceValue));
@@ -682,28 +572,26 @@ void Engine::MoveToNextFrame()
 
 void Engine::FrameAdvance()
 {    
-#ifdef _WITH_SERVER_CONNECT
 
-	server->Server_send();
-	//
-
-	////공격과 방어 초기화
-	//server->attackAndGuard_idle();
-
-	//server->Server_recv();
-
-	//문제가 생길것 같다.
-	if(server->checkSR == false)
-		server->checkSR = true;
-
-	///////////////////////////////////////
-#endif // _WITH_SERVER_CONNECT
 
 	m_GameTimer.Tick(60.0f);
 	
 	ProcessInput();
 
     AnimateObjects();
+
+#ifdef _WITH_SERVER_CONNECT
+	////if (i == 0) {
+	//server->Server_send();
+	//server->Server_recv();
+	////++i;
+	////}
+	////공격과 방어 초기화
+	//server->attackAndGuard_idle();
+	////server->Server_send();
+
+	server->checkSR = true;
+#endif // _WITH_SERVER_CONNECT
 
 	HR(commandAllocator->Reset());
 	HR(commandList->Reset(commandAllocator, nullptr));
@@ -722,17 +610,17 @@ void Engine::FrameAdvance()
 	d3dRtvCPUDescriptorHandle.ptr += (swapChainBufferIndex * rtvDescIncrementSize);
 
 	float pfClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f };
-	commandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, NULL);
+	commandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, pfClearColor/*Colors::Azure*/, 0, nullptr);
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = dsvDescHeap->GetCPUDescriptorHandleForHeapStart();
-	commandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
+	commandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 
 	commandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, TRUE, &d3dDsvCPUDescriptorHandle);
 
 	if (m_pScene) m_pScene->Render(commandList, m_pCamera);
 
 #ifdef _WITH_PLAYER_TOP
-	commandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, NULL);
+	commandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle, D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
 #endif
 	if (m_pPlayer) m_pPlayer->Render(commandList, m_pCamera);
 
@@ -751,14 +639,9 @@ void Engine::FrameAdvance()
 	swapChain->Present(0, 0);
 
 	MoveToNextFrame();
-
-	m_GameTimer.GetFrameRate(frameRate + 12, 37);
+	m_GameTimer.GetFrameRate(frameRate + 21, 37);
 	size_t nLength = _tcslen(frameRate);
 	XMFLOAT3 xmf3Position = m_pPlayer->GetPosition();
 	_stprintf_s(frameRate + nLength, 70 - nLength, _T("(%4f, %4f, %4f)"), xmf3Position.x, xmf3Position.y, xmf3Position.z);
 	::SetWindowText(this->hWnd, frameRate);
-
-
-
 }
-

@@ -18,7 +18,7 @@ void CSkinnedAnimationObjectsShader::ReleaseObjects()
 {
 	if (m_ppObjects)
 	{
-		for (int j = 0; j < m_nObjects; j++) if (m_ppObjects[j]) m_ppObjects[j]->Release();
+		for (int j = 0; j < m_nObjects; j++) SAFE_RELEASE(m_ppObjects[j]);
 		delete[] m_ppObjects;
 	}
 }

@@ -1,5 +1,8 @@
 #pragma once
 #include "Object.h"
+
+class CubeObject;
+
 class BoxerObject : public Object
 {
 public:

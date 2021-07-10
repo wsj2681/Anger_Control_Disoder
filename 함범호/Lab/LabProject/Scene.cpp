@@ -1,7 +1,6 @@
 //-----------------------------------------------------------------------------
 // File: CScene.cpp
 //-----------------------------------------------------------------------------
-
 #include "stdafx.h"
 #include "Scene.h"
 #include "Texture.h"
@@ -15,8 +14,16 @@
 #include "SkyBox.h"
 #include "BoxerObject.h"
 #include "CrowdObject.h"
+#include "Timer.h"
+#include "UIShader.h"
+#include "CubeObject.h"
 
-ID3D12DescriptorHeap *Scene::m_pd3dCbvSrvDescriptorHeap = NULL;
+//////////Server///////////
+#include "Server.h"
+extern Server* server;
+////////////////////////////
+
+ID3D12DescriptorHeap *Scene::m_pd3dCbvSrvDescriptorHeap = nullptr;
 
 D3D12_CPU_DESCRIPTOR_HANDLE	Scene::m_d3dCbvCPUDescriptorStartHandle;
 D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dCbvGPUDescriptorStartHandle;
@@ -33,6 +40,15 @@ D3D12_GPU_DESCRIPTOR_HANDLE	Scene::m_d3dSrvGPUDescriptorNextHandle;
 #define SPHEHROBJECT 3
 
 vector<Object*> gGameObject{};
+
+//std::random_device rd{};
+//std::default_random_engine dre{ rd() };
+//uniform_int_distribution<> uid{ ANIMATION_MOVE_FORWARD, ANIMATION_GUARD_RIGHT_HEAD }; TODO: 이동 처리
+//std::uniform_int_distribution<> uid{ ANIMATION_HOOK_L, ANIMATION_GUARD_RIGHT_HEAD };
+
+UINT aniNum{ ANIMATION_HOOK_L };
+
+GameTimer countTimer{};
 
 Scene::Scene()
 {
@@ -164,14 +180,14 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	
 	m_pSkyBox = new SkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
-	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena.bin", NULL);
-	Object* Map = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
+	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena.bin", nullptr);
+	Object* Map = new CrowdObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
 	cageSide = Map->FindFrame("octagon_floor");
 	Map->SetPosition(0.0f, 0.f, 0.0f);
 	cageCollision.Center = XMFLOAT3(0.f, 10.f, 0.f);
 	cageCollision.Radius = 60.f;
 	hierarchicalGameObjects.push_back(Map);
-	if (MapModel) delete MapModel;
+	SAFE_DELETE(MapModel);
 
 	//조명 벡터 만들었다.
 	lightsCount = 38;
@@ -188,54 +204,18 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
-	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/ThaiBoxer.bin", nullptr);
+	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/TEST.bin", nullptr);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 	for (int i = 0; i < boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_nAnimationSets; ++i)
-	{
 		boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[i]->isOtherPlayer = true;
-	}
-	boxer->SetPosition(15.3046f, 10.0f, -769.689f);
-
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(15.3046f, 10.0f, -551.034f), ANIMATION_MOVE_FORWARD);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(15.3046f, 1.66975f, -533.916f), ANIMATION_MOVE_FORWARD);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(15.3046f, -5.69284f, -527.249f), ANIMATION_MOVE_FORWARD);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(15.3046f, -5.69284f, -107.806f), ANIMATION_MOVE_FORWARD);
-
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(81.8642f, -5.69284f, -45.8827f), ANIMATION_CEREMONY);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(79.623f, -5.69284f, 31.1354f), ANIMATION_CEREMONY);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(35.3937f, -5.69284f, 77.8565f), ANIMATION_CEREMONY);
-	//boxer->wayPoint.SetWayPoint(XMFLOAT3(37.5937f, -5.69284f, 80.0565f), ANIMATION_CEREMONY);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-29.7525f, -5.69284f, 81.7311f), ANIMATION_CEREMONY);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-77.2785f, -5.69284f, 41.0221f), ANIMATION_CEREMONY);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-81.0648f, -5.69284f, -29.1807f), ANIMATION_CEREMONY);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -109.177f), ANIMATION_CEREMONY);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, -5.69284f, -94.0986f), ANIMATION_MOVE_FORWARD);
-
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -78.1817f), ANIMATION_MOVE_FORWARD);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(-17.0f, 10.0f, -36.0f), ANIMATION_MOVE_FORWARD);
-	boxer->wayPoint.SetWayPoint(XMFLOAT3(0.0f, 10.0f, -36.0f), ANIMATION_MOVE_FORWARD);
+	boxer->SetPosition(-1.0f, 8.5f, 30.0f);
+	boxer->Rotate(0.0f, 180.0f, 0.0f);
 
 	hierarchicalGameObjects.push_back(boxer);
-	if (BoxerModel) delete BoxerModel;
+	SAFE_DELETE(BoxerModel);
 
-	ModelInfo* cubeModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Cube.bin", nullptr);
-	Object* cube = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, cubeModel, 1);
-	cube->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	cube->isActive = false;
-	cube->SetScale(1.5f, 1.5f, 1.5f);
-	hierarchicalGameObjects.push_back(cube);
-
-	ModelInfo* sphereModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/sphere.bin", nullptr);
-	Object* sphere = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, sphereModel, 1);
-	sphere->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
-	sphere->isActive = false;
-	sphere->SetScale(1.5f, 1.5f, 1.5f);
-	hierarchicalGameObjects.push_back(sphere);
-
-	if (cubeModel) delete cubeModel;
-
-	ModelInfo* crowdModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Crowd.bin", NULL);
+	ModelInfo* crowdModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/BoxingComplete.bin", nullptr);
 
 	int nFloors = 4;
 	size_t nBaseModels = hierarchicalGameObjects.size();
@@ -251,8 +231,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 		for (int j = (int)nBaseModels + i * nCrowds; j < (int)nBaseModels + (i + 1) * nCrowds; ++j)
 		{
 			Object* crowd = new CrowdObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, crowdModel, 1);
-			crowd->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 1);
-			//m_ppHierarchicalGameObjects[i]->SetPosition(0, 1.0f + 4.0f * (int)((i - 4) / 2), 130.0f + 12.5f * (i - 4));
+			crowd->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 0);
 			crowd->SetPosition(cos(XMConvertToRadians(angle)) * radius, -9.0f + 4.0f * i, sin(XMConvertToRadians(angle)) * radius);
 			//crowd->Rotate(0.0f, angle + 90.f + ((j - nBaseModels) % (nCrowds - 1)) * 30.0f, 0.0f);
 			crowd->Rotate(0.0f, 180.0f, 0.0f);
@@ -262,9 +241,35 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 		radius += 25.0f;
 	}
 	
-	if (crowdModel) delete crowdModel;
+	SAFE_DELETE(crowdModel);
 
 	gGameObject = hierarchicalGameObjects;
+	
+	ui["PlayerHP"] = new UI_HP_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar_Other.dds");
+	ui["OtherPlayerHP"] = new UI_HP_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar.dds");
+	ui["OtherPlayerHP"]->SetActive(true);
+	//ui["Right_Shift_Black"] = new UI_KeyInput_Right_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Key_Left_Shift.dds");
+	//ui["Right_Shift_Red"] = new UI_KeyInput_Left_Shift(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Key_Right_Shift.dds");
+	//ui["Space"] = new UI_KeyInput_Space(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Key_Space.dds");
+
+	//ui["0_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Empty.dds");
+	//ui["1_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_L1.dds");
+	//ui["2_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_L2.dds");
+	ui["3_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
+	//ui["0_PlayerTotalScore"]->SetActive(true);
+	//ui["1_PlayerTotalScore"]->SetActive(false);
+	//ui["2_PlayerTotalScore"]->SetActive(false);
+	ui["3_PlayerTotalScore"]->SetActive(true);
+
+	// ui 하나로 바꿔서 넣어야할 듯
+	//ui["0_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Empty.dds");
+	//ui["1_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_R1.dds");
+	//ui["2_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_R2.dds");
+	ui["3_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
+	//ui["0_OtherPlayerTotalScore"]->SetActive(true);
+	//ui["1_OtherPlayerTotalScore"]->SetActive(false);
+	//ui["2_OtherPlayerTotalScore"]->SetActive(false);
+	ui["3_OtherPlayerTotalScore"]->SetActive(true);
 
 	particle = new Particle;
 	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
@@ -272,14 +277,14 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 }
 
-void Scene::ReleaseObjects()
+void Scene::Release()
 {
-	if (m_pd3dGraphicsRootSignature) m_pd3dGraphicsRootSignature->Release();
-	if (m_pd3dCbvSrvDescriptorHeap) m_pd3dCbvSrvDescriptorHeap->Release();
+	SAFE_RELEASE(m_pd3dGraphicsRootSignature);
+	SAFE_RELEASE(m_pd3dCbvSrvDescriptorHeap);
 
 	if (m_ppGameObjects)
 	{
-		for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Release();
+		for (int i = 0; i < m_nGameObjects; i++) SAFE_RELEASE(m_ppGameObjects[i]);
 		delete[] m_ppGameObjects;
 	}
 
@@ -294,30 +299,27 @@ void Scene::ReleaseObjects()
 		delete[] m_ppShaders;
 	}
 
-	if (m_pSkyBox) delete m_pSkyBox;
+	SAFE_DELETE(m_pSkyBox);
 
 	if (!hierarchicalGameObjects.empty())
 	{
 		for (auto& obj : hierarchicalGameObjects)
 		{
-			if (obj)
-			{
-				obj->Release();
-			}
+			SAFE_RELEASE(obj);
 		}
 		hierarchicalGameObjects.clear();
 	}
 
 	ReleaseShaderVariables();
 
-	if (m_pLights) delete[] m_pLights;
+	SAFE_DELETEARR(m_pLights);
 }
 
 ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice)
 {
-	ID3D12RootSignature *pd3dGraphicsRootSignature = NULL;
+	ID3D12RootSignature *pd3dGraphicsRootSignature = nullptr;
 
-	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[11];
+	D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[13];
 
 	pd3dDescriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 	pd3dDescriptorRanges[0].NumDescriptors = 1;
@@ -385,7 +387,19 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dDescriptorRanges[10].RegisterSpace = 0;
 	pd3dDescriptorRanges[10].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER pd3dRootParameters[17];
+	pd3dDescriptorRanges[11].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	pd3dDescriptorRanges[11].NumDescriptors = 1;
+	pd3dDescriptorRanges[11].BaseShaderRegister = 14; //t14: gtxtUITexture
+	pd3dDescriptorRanges[11].RegisterSpace = 0;
+	pd3dDescriptorRanges[11].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	pd3dDescriptorRanges[12].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	pd3dDescriptorRanges[12].NumDescriptors = 1;
+	pd3dDescriptorRanges[12].BaseShaderRegister = 15; //t14: gtxtUIScoreTexture
+	pd3dDescriptorRanges[12].RegisterSpace = 0;
+	pd3dDescriptorRanges[12].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+	D3D12_ROOT_PARAMETER pd3dRootParameters[21];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 1; //Camera
@@ -473,7 +487,27 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dRootParameters[16].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[16].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[2];
+	pd3dRootParameters[17].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[17].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[17].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[11]);
+	pd3dRootParameters[17].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	pd3dRootParameters[18].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[18].Descriptor.ShaderRegister = 3; //HP Info
+	pd3dRootParameters[18].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[18].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	pd3dRootParameters[19].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[19].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[19].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[12]);
+	pd3dRootParameters[19].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+	pd3dRootParameters[20].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[20].Descriptor.ShaderRegister = 6; //HP Info
+	pd3dRootParameters[20].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[20].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[3];
 
 	pd3dSamplerDescs[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 	pd3dSamplerDescs[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
@@ -501,6 +535,19 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dSamplerDescs[1].RegisterSpace = 0;
 	pd3dSamplerDescs[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
+	pd3dSamplerDescs[2].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+	pd3dSamplerDescs[2].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	pd3dSamplerDescs[2].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	pd3dSamplerDescs[2].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+	pd3dSamplerDescs[2].MipLODBias = 0;
+	pd3dSamplerDescs[2].MaxAnisotropy = 1;
+	pd3dSamplerDescs[2].ComparisonFunc = D3D12_COMPARISON_FUNC_ALWAYS;
+	pd3dSamplerDescs[2].MinLOD = 0;
+	pd3dSamplerDescs[2].MaxLOD = D3D12_FLOAT32_MAX;
+	pd3dSamplerDescs[2].ShaderRegister = 2;
+	pd3dSamplerDescs[2].RegisterSpace = 0;
+	pd3dSamplerDescs[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
 	D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT | D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS | D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 	D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc;
 	::ZeroMemory(&d3dRootSignatureDesc, sizeof(D3D12_ROOT_SIGNATURE_DESC));
@@ -510,22 +557,22 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	d3dRootSignatureDesc.pStaticSamplers = pd3dSamplerDescs;
 	d3dRootSignatureDesc.Flags = d3dRootSignatureFlags;
 
-	ID3DBlob *pd3dSignatureBlob = NULL;
-	ID3DBlob *pd3dErrorBlob = NULL;
+	ID3DBlob *pd3dSignatureBlob = nullptr;
+	ID3DBlob *pd3dErrorBlob = nullptr;
 	D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
 	pd3dDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(), pd3dSignatureBlob->GetBufferSize(), __uuidof(ID3D12RootSignature), (void **)&pd3dGraphicsRootSignature);
-	if (pd3dSignatureBlob) pd3dSignatureBlob->Release();
-	if (pd3dErrorBlob) pd3dErrorBlob->Release();
+	SAFE_RELEASE(pd3dSignatureBlob);
+	SAFE_RELEASE(pd3dErrorBlob);
 
-	return(pd3dGraphicsRootSignature);
+	return pd3dGraphicsRootSignature;
 }
 
 void Scene::CreateShaderVariables(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList)
 {
 	UINT ncbElementBytes = ((sizeof(LIGHTS) + 255) & ~255); //256의 배수
-	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, NULL, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, NULL);
+	m_pd3dcbLights = ::CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, ncbElementBytes, D3D12_HEAP_TYPE_UPLOAD, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, nullptr);
 
-	m_pd3dcbLights->Map(0, NULL, (void **)&m_pcbMappedLights);
+	m_pd3dcbLights->Map(0, nullptr, (void **)&m_pcbMappedLights);
 }
 
 void Scene::UpdateShaderVariables(ID3D12GraphicsCommandList *pd3dCommandList)
@@ -539,7 +586,7 @@ void Scene::ReleaseShaderVariables()
 {
 	if (m_pd3dcbLights)
 	{
-		m_pd3dcbLights->Unmap(0, NULL);
+		m_pd3dcbLights->Unmap(0, nullptr);
 		m_pd3dcbLights->Release();
 	}
 }
@@ -664,44 +711,73 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			break;
 		case VK_RETURN:
 			break;
-		case VK_F4:
-			break;
 		case VK_F5:
 			break;
 		case VK_F6:
+			m_pPlayer->score -= 1.f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->score -= 1.f;
+			cout << m_pPlayer->score << hierarchicalGameObjects.data()[OTHERPLAYER]->score << endl;
+			m_pPlayer->hp = 100.f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
 			break;
-		case VK_INSERT:
-			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf3Position.y = m_pPlayer->head->GetPosition().y + 50.f;
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.1f, 0.0f, 0.0f, .3f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.8f, 0.0f, 0.0f, .3f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
+		case VK_F7:
+			for (auto& o : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
+			{
+				o.second->boundBoxRender = !o.second->boundBoxRender;
+			}
+			for (auto& o : m_pPlayer->boundBoxs)
+			{
+				o.second->boundBoxRender = !o.second->boundBoxRender;
+			}
 			break;
-		case VK_DELETE:
-			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf3Position.y = m_pPlayer->head->GetPosition().y + 50.f;
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.f, 0.11f, 0.f, .3f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.f, .3f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
+		case VK_F8:
+			m_pPlayer->hp -= 5.f;
+			cout << "Player HP = " << m_pPlayer->hp << endl;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 5.f;
+			cout << "OtherPlayer HP = " << hierarchicalGameObjects.data()[OTHERPLAYER]->hp << endl;
 			break;
-		case VK_OEM_3:
+		case '0':
+		case '1':
+		case '2':
+		case '3':
+		case '4':
+		case '5':
+		case '6':
+		case '7':
+		case '8':
+		case '9':
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, (DWORD)(wParam - ANIMATION_KNOCKDOWNED) + 2, ANIMATION_TYPE_ONCE, true); 
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = (DWORD)(wParam - ANIMATION_KNOCKDOWNED) + 2;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+			break;
+		/*
+		case 'Q': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L, ANIMATION_TYPE_ONCE, true); break;
+		case 'W': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R, ANIMATION_TYPE_ONCE, true); break;
+		case 'E': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_JAB, ANIMATION_TYPE_ONCE, true); break;
+		case 'R': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CROSS, ANIMATION_TYPE_ONCE, true); break;
+		case 'T': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CROSS_BODY, ANIMATION_TYPE_ONCE, true); break;
+		case 'A': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO, ANIMATION_TYPE_ONCE, true); break;
+		case 'S': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK, ANIMATION_TYPE_ONCE, true); break;
+		case 'D': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK, ANIMATION_TYPE_ONCE, true); break;
+		case 'F': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_L, ANIMATION_TYPE_ONCE, true); break;
+		case 'G': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_R, ANIMATION_TYPE_ONCE, true); break;
+		*/
+		case 'P':
 		{
-			cout << m_pPlayer->GetPosition().x << " / " << m_pPlayer->GetPosition().y << " / " << m_pPlayer->GetPosition().z << endl;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, rand() % 9 + 27, ANIMATION_TYPE_ONCE, true);
 			break;
 		}
-		case VK_NUMPAD0:
-		{
-			particle->PositionInit(m_pPlayer->rHand->GetPosition());
-			break;
-		}
+		case 'Z': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true); break;
+		case 'X': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true); break;
+		case 'C': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); break;
+		case 'V': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true); break;
+		case 'B': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true); break;
+		case 'N': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); break;
 		default:
 			break;
 		}
-		break;
-	default:
-		break;
 	}
 	return(false);
 }
@@ -735,7 +811,7 @@ void Scene::Hit()
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= m_pPlayer->attackType;
 		//hitSound->Play();
 		//attackSound->Play();
-		particle->PositionInit(m_pPlayer->head->GetPosition());
+		hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, m_pPlayer->nowState);
 	}
 	else
 	{
@@ -759,6 +835,16 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
+
+	for (auto& boundBox : m_pPlayer->boundBoxs)
+	{
+		boundBox.second->Update(fTimeElapsed, m_pPlayer->bones[boundBox.first]);
+	}
+	for (auto& boundBox : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
+	{
+		boundBox.second->Update(fTimeElapsed, hierarchicalGameObjects.data()[OTHERPLAYER]->bones[boundBox.first]);
+	}
+
 	if (bScenario)
 	{
 		hierarchicalGameObjects[1]->UpdateWayPoints();
@@ -803,12 +889,35 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		}
 	}
 
-	//hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
-	//hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive = !hierarchicalGameObjects.data()[SPHEHROBJECT]->isActive;
+	//m_pPlayer->head->objectCollision->Center = m_pPlayer->head->GetPosition();
+	//m_pPlayer->lHand->objectCollision->Center = m_pPlayer->lHand->GetPosition();
+	//m_pPlayer->rHand->objectCollision->Center = m_pPlayer->rHand->GetPosition();
+	//m_pPlayer->spine->objectCollision->Center = m_pPlayer->spine->GetPosition();
+	//hierarchicalGameObjects[OTHERPLAYER]->head->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->head->GetPosition();
+	//hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->lHand->GetPosition();
+	//hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->rHand->GetPosition();
+	//hierarchicalGameObjects[OTHERPLAYER]->spine->objectCollision->Center = hierarchicalGameObjects[OTHERPLAYER]->spine->GetPosition();
 
-	particle->Update(m_pPlayer->head->GetPosition(), fTimeElapsed);
+	particle->Update(m_pPlayer->bones["Head"]->GetPosition(), fTimeElapsed);
 
+	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp <= 0.f)
+	{
+		m_pPlayer->score -= 1;
+		m_pPlayer->hp = 100.f;
+		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
+	}
+
+	if (m_pPlayer->hp <= 0.f)
+	{
+		hierarchicalGameObjects.data()[OTHERPLAYER]->score -= 1;
+		m_pPlayer->hp = 100.f;
+		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
+	}
+
+	//TODO : 여기 다시보기
 	CollideCageSide();
+
+	CollidePVE();
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
@@ -829,6 +938,28 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Render(pd3dCommandList, pCamera);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->Render(pd3dCommandList, pCamera);
 
+	if (!hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs.empty())
+	{
+		for (auto& o : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
+		{
+			if (o.second->boundBoxRender)
+			{
+				o.second->Render(pd3dCommandList, pCamera);
+			}
+		}
+	}
+
+	if (!m_pPlayer->boundBoxs.empty())
+	{
+		for (auto& o : m_pPlayer->boundBoxs)
+		{
+			if (o.second->boundBoxRender)
+			{
+				o.second->Render(pd3dCommandList, pCamera);
+			}
+		}
+	}
+
 	if (!hierarchicalGameObjects.empty())
 	{
 		for (auto& object : hierarchicalGameObjects)
@@ -845,102 +976,17 @@ void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 
 	particle->Render(pd3dCommandList, pCamera);
 
-	// 충돌 할때 막은 상태라면 구를 렌더링 하고
-	// 그게 아니고 맞은 상태라면 정육면체를 렌더링한다.
 
-	if (m_pPlayer->rHand->isCollide)
+
+
+	if (!ui.empty())
 	{
-		// 플레이어-오른손공격 : 아더플레이어-왼손방어
-		if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState != STATE_GUARD_LEFT_HEAD)
+		for (auto& i : ui)
 		{
-			// 피격 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->rHand->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.9f, 0.f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.9f, 0.0f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.9f, 0.0f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
-
-			Hit();
-		}
-		else
-		{
-			// 가드 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->rHand->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.f, 0.9f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.9f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.9f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
+			i.second->UpdateShaderVariables(pd3dCommandList);
+			i.second->Render(pd3dCommandList, pCamera);
 		}
 	}
-	if (m_pPlayer->lHand->isCollide)
-	{
-		// 플레이어-왼손공격 : 아더플레이어-오른손방어
-		if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState != STATE_GUARD_RIGHT_HEAD)
-		{
-			// 피격 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->lHand->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.9f, 0.f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.9f, 0.0f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.9f, 0.0f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
-
-			Hit();
-		}
-		else
-		{
-			// 가드 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->lHand->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.f, 0.9f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.9f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.9f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
-		}
-	}
-	if (m_pPlayer->head->isCollide)
-	{
-		// 플레이어-오른손방어 : 아더플레이어-왼손공격
-		if (m_pPlayer->nowState == STATE_GUARD_RIGHT_HEAD && ((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_LEFT_HOOK)||(hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_IDLE)))
-		{
-			// 가드 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.9f, 0.f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.9f, 0.0f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.9f, 0.0f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
-		}
-	
-		else if (m_pPlayer->nowState == STATE_GUARD_LEFT_HEAD && ((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_RIGHT_HOOK) || (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_IDLE)))
-		{
-			// 가드 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.9f, 0.f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.9f, 0.0f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.9f, 0.0f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
-		}
-		else// 공격을 제외한 상태일떄가 너무 많아서 맞으면 그냥 생김..
-		{
-			// 피격 시
-			m_pLights[43].m_xmf3Position = m_pPlayer->head->GetPosition();
-			m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.f, 0.9f, 0.f, 1.f);
-			m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.9f, 0.f, 1.0f);
-			m_pLights[43].m_xmf4Specular = XMFLOAT4(0.1f, 0.9f, 0.f, 0.0f);
-			m_pLights[43].m_bEnable = !m_pLights[43].m_bEnable;
-
-			Hit();
-		}
-	}
-
-	// 전면방어를 보여줄 공격
-	//if (m_pPlayer->spine->isCollide)
-	//{
-	//	// 플레이어-전면방어 : 아더플레이어-아무손공격
-	//	if (m_pPlayer->nowState == STATE_GUARD_BODY && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == STATE_ATTACK_RIGHT_HOOK)
-	//	{
-	//		hierarchicalGameObjects.data()[CUBEOBJECT]->SetPosition(m_pPlayer->spine->GetPosition());
-	//		hierarchicalGameObjects.data()[CUBEOBJECT]->isActive = !hierarchicalGameObjects.data()[CUBEOBJECT]->isActive;
-	//	}
-	//}
 
 	soundManager->Update();
 }
@@ -951,10 +997,322 @@ void Scene::CollideCageSide()
 	{
 		// 케이지 안에 있을 때 처리
 		//cout << "ok\n";
+		for (int i = 0; i < 4; ++i)
+			m_pPlayer->canMove[i] = true;
 	}
 	else
 	{
 		// 케이지 밖에 있을 때 처리
+		// TODO: 모서리 처리해야함
+		// 뒤 center - radius
+		if (cageCollision.Center.z - cageCollision.Radius > m_pPlayer->playerCollision->Center.z - m_pPlayer->playerCollision->Extents.z)
+		{
+			m_pPlayer->canMove[0] = false;
+		}
+		// 왼쪽 center - radius
+		if (cageCollision.Center.x - cageCollision.Radius > m_pPlayer->playerCollision->Center.x - m_pPlayer->playerCollision->Extents.x)
+		{
+			m_pPlayer->canMove[1] = false;
+		}
+		// 오른쪽 center + radius
+		if (cageCollision.Center.x + cageCollision.Radius < m_pPlayer->playerCollision->Center.x + m_pPlayer->playerCollision->Extents.x)
+		{
+			m_pPlayer->canMove[2] = false;
+		}
+		// 앞 center + radius
+		if (cageCollision.Center.z + cageCollision.Radius < m_pPlayer->playerCollision->Center.z + m_pPlayer->playerCollision->Extents.z)
+		{
+			m_pPlayer->canMove[3] = false;
+		}
 	}
 }
 
+void Scene::CollidePVE()
+{
+	//UINT nState{ STATE_IDLE };
+
+	//if (hierarchicalGameObjects[OTHERPLAYER]->nowState == STATE_IDLE/* || countTimer.GetTimeElapsed() > 3000.0f*/)
+	//{
+	//	aniNum = uid(dre);
+	//	switch (aniNum)
+	//	{
+	//		//case ANIMATION_MOVE_FORWARD:
+	//		//	break;
+	//		//case ANIMATION_MOVE_BACKWARD:
+	//		//	break;
+	//		//case ANIMATION_MOVE_LEFT:
+	//		//	break;
+	//		//case ANIMATION_MOVE_RIGHT:
+	//		//	break;
+	//	case ANIMATION_HOOK_L:
+	//		nState = STATE_ATTACK_LEFT_HOOK;
+	//		break;
+	//	case ANIMATION_HOOK_R:
+	//		nState = STATE_ATTACK_RIGHT_HOOK;
+	//		break;
+	//	case ANIMATION_JAB:
+	//		nState = STATE_ATTACK_JAB;
+	//		break;
+	//	case ANIMATION_GUARD_LEFT_HEAD:
+	//		nState = STATE_GUARD_LEFT_HEAD;
+	//		break;
+	//	case ANIMATION_GUARD_RIGHT_HEAD:
+	//		nState = STATE_GUARD_RIGHT_HEAD;
+	//		break;
+	//		//case ANIMATION_GUARD_BODY:
+	//		//	break;
+	//	default:
+	//		break;
+	//	}
+
+	//	hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, aniNum);
+	//	hierarchicalGameObjects[OTHERPLAYER]->nowState = nState;
+
+	//	//countTimer.Start();
+	//}
+	//else
+	//{
+	//	//cplayer->hp = myHP.playerHp;
+
+
+	//	switch (hierarchicalGameObjects[OTHERPLAYER]->nowState)
+	//	{
+	//	case STATE_HIT_TORSO_LEFT:
+	//		hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
+	//		hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
+	//		break;
+	//	case STATE_HIT_TORSO_RIGHT:
+	//		hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
+	//		hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
+	//		break;
+	//	case STATE_HIT_TORSO_STRIGHT:
+	//		hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_A);
+	//		hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_IDLE;
+	//		break;
+	//	case STATE_KNOCKDOWN:
+	//		hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+	//		hierarchicalGameObjects[OTHERPLAYER]->isAlive = false;
+	//		break;
+	//	}
+
+	//	if (m_pPlayer->rHand->objectCollision->Intersects(*hierarchicalGameObjects[OTHERPLAYER]->head->objectCollision) && !m_pPlayer->rHand->isCollide)	// 오른손과 머리
+	//	{
+	//		m_pPlayer->rHand->isCollide = true;
+	//		cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
+	//		//hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
+	//		hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_HIT_TORSO_LEFT;
+	//	}
+	//	else m_pPlayer->rHand->isCollide = false;
+
+	//	if (m_pPlayer->lHand->objectCollision->Intersects(*hierarchicalGameObjects[OTHERPLAYER]->head->objectCollision) && !m_pPlayer->lHand->isCollide)	// 왼손과 머리
+	//	{
+	//		m_pPlayer->lHand->isCollide = true;
+	//		cout << "LEFT HAND - HEAD COLLIDE! " << endl;
+	//		//hierarchicalGameObjects[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
+	//		hierarchicalGameObjects[OTHERPLAYER]->nowState = STATE_HIT_TORSO_RIGHT;
+	//	}
+	//	else
+	//		m_pPlayer->lHand->isCollide = false;
+
+	//	if ((m_pPlayer->rHand->objectCollision->Intersects(*hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision)) || (m_pPlayer->rHand->objectCollision->Intersects(*hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision)) && (m_pPlayer->nowState == STATE_GUARD_RIGHT_HEAD) && !m_pPlayer->rHand->isCollide) // 오른손과 오른/왼손 - 가드
+	//	{
+	//		m_pPlayer->rHand->isCollide = true;
+	//		cout << "RIGHT HAND - Guard " << endl;
+
+	//	}
+	//	else
+	//		m_pPlayer->rHand->isCollide = false;
+
+	//	if ((m_pPlayer->lHand->objectCollision->Intersects(*hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision)) || (m_pPlayer->lHand->objectCollision->Intersects(*hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision)) && (m_pPlayer->nowState == STATE_GUARD_RIGHT_HEAD) && !m_pPlayer->lHand->isCollide) // 왼손과 오른/왼손 - 가드
+	//	{
+	//		m_pPlayer->lHand->isCollide = true;
+	//		cout << "LEFT HAND - Guard! " << endl;
+	//	}
+	//	else
+	//		m_pPlayer->lHand->isCollide = false;
+
+
+	//	if (hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Intersects(*m_pPlayer->head->objectCollision) && !hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide)	// 오른손과 머리
+	//	{
+	//		hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = true;
+	//		//cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
+	//		m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
+	//		m_pPlayer->nowState = STATE_IDLE;
+
+	//	}
+	//	else hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = false;
+
+	//	if (hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Intersects(*m_pPlayer->head->objectCollision) && !hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide)	// 왼손과 머리
+	//	{
+	//		hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = true;
+	//		//cout << "LEFT HAND - HEAD COLLIDE! " << endl;
+	//		m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
+	//		m_pPlayer->nowState = STATE_IDLE;
+
+	//	}
+	//	else
+	//		hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = false;
+
+	//	if ((hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Intersects(*m_pPlayer->rHand->objectCollision)) || (hierarchicalGameObjects[OTHERPLAYER]->rHand->objectCollision->Intersects(*m_pPlayer->lHand->objectCollision)) && (hierarchicalGameObjects[OTHERPLAYER]->nowState == STATE_GUARD_RIGHT_HEAD) && !hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide) // 오른손과 오른/왼손 - 가드
+	//	{
+	//		hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = true;
+	//		//cout << "RIGHT HAND - Guard " << endl;
+	//	}
+	//	else
+	//		hierarchicalGameObjects[OTHERPLAYER]->rHand->isCollide = false;
+
+	//	if ((hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Intersects(*m_pPlayer->rHand->objectCollision)) || (hierarchicalGameObjects[OTHERPLAYER]->lHand->objectCollision->Intersects(*m_pPlayer->lHand->objectCollision)) && (hierarchicalGameObjects[OTHERPLAYER]->nowState == STATE_GUARD_RIGHT_HEAD) && !hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide) // 왼손과 오른/왼손 - 가드
+	//	{
+	//		hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = true;
+	//		//cout << "LEFT HAND - Guard! " << endl;
+	//	}
+	//	else
+	//		hierarchicalGameObjects[OTHERPLAYER]->lHand->isCollide = false;
+
+
+	//	if (m_pPlayer->hp <= 0.0f)
+	//	{
+	//		m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+	//		m_pPlayer->isAlive = false;
+	//	}
+	//}
+
+	static int collideCount;
+	for (auto& otherPlayerBoundBox : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
+	{
+		for (auto& PlayerBoundBox : m_pPlayer->boundBoxs)
+		{
+			if (otherPlayerBoundBox.second->m_pMesh->isIntersect(PlayerBoundBox.second->m_pMesh->obb))
+			{
+				if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == IDLE && m_pPlayer->nowState == ATTACK)
+				{
+					if (otherPlayerBoundBox.first == "Head")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
+						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 10.f;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
+					}
+					else if (otherPlayerBoundBox.first == "Spine")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
+					}
+					else if (otherPlayerBoundBox.first == "Clavicle")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(PlayerBoundBox.second->GetPosition());
+						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 15.f;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
+					}
+				}
+				else if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == GUARD && m_pPlayer->nowState == ATTACK)
+				{
+					if (otherPlayerBoundBox.first == "Head")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
+						cout << "Guard - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
+					}
+					else if (otherPlayerBoundBox.first == "Spine")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
+						cout << "Guard - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
+					}
+					else if (otherPlayerBoundBox.first == "Clavicle")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_2HANDS);
+						cout << "Guard - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
+					}
+				}
+				if (m_pPlayer->nowState == IDLE && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
+				{
+
+					if (PlayerBoundBox.first == "Head")
+					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_HIT_HEAD_STRIGHT_B;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+						
+						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						m_pPlayer->hp -= 20.f;
+						m_pPlayer->nowState = HIT;
+					}
+					else if (PlayerBoundBox.first == "Spine")
+					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_HIT_TORSO_STRIGHT_B;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+						
+						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						m_pPlayer->hp -= 10.f;
+						m_pPlayer->nowState = HIT;
+					}
+					else if (PlayerBoundBox.first == "Clavicle")
+					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_KNOCKDOWN;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+
+						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+						m_pPlayer->hp -= 15.f;
+						m_pPlayer->nowState = HIT;
+					}
+				}
+				else if (m_pPlayer->nowState == GUARD && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
+				{
+					if (PlayerBoundBox.first == "Head")
+					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_COME_HERE_BRUCE_LI;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+						
+						cout << "Guard - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						m_pPlayer->nowState = IDLE;
+					}
+					else if (PlayerBoundBox.first == "Spine")
+					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_COME_HERE_1HAND;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+						
+						cout << "Guard - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						m_pPlayer->nowState = IDLE;
+					}
+					else if (PlayerBoundBox.first == "Clavicle")
+					{
+						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_2HANDS);
+#ifdef _WITH_SERVER_CONNECT
+						server->send_attackAnddefend.ani_num = ANIMATION_COME_HERE_2HANDS;
+						server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+
+						cout << "Guard - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						m_pPlayer->nowState = IDLE;
+					}
+				}
+			}
+		}
+	}
+
+}

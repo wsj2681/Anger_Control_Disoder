@@ -20,12 +20,6 @@ cbuffer cbGameObjectInfo : register(b2)
 	uint					gnTexturesMask : packoffset(c8);
 };
 
-cbuffer cbFrameworkInfo : register(b5)
-{
-	float		gfCurrentTime : packoffset(c0.x);
-	float		gfElapsedTime : packoffset(c0.y);
-};
-
 #include "Light.hlsl"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +152,7 @@ VS_STANDARD_OUTPUT VSSkinnedAnimationStandard(VS_SKINNED_STANDARD_INPUT input)
 	float4x4 mtxVertexToBoneWorld = (float4x4)0.0f;
 	for (int i = 0; i < MAX_VERTEX_INFLUENCES; i++)
 	{
-//		mtxVertexToBoneWorld += input.weights[i] * gpmtxBoneTransforms[input.indices[i]];
+		//		mtxVertexToBoneWorld += input.weights[i] * gpmtxBoneTransforms[input.indices[i]];
 		mtxVertexToBoneWorld += input.weights[i] * mul(gpmtxBoneOffsets[input.indices[i]], gpmtxBoneTransforms[input.indices[i]]);
 	}
 	output.positionW = mul(float4(input.position, 1.0f), mtxVertexToBoneWorld).xyz;
@@ -166,7 +160,7 @@ VS_STANDARD_OUTPUT VSSkinnedAnimationStandard(VS_SKINNED_STANDARD_INPUT input)
 	output.tangentW = mul(input.tangent, (float3x3)mtxVertexToBoneWorld).xyz;
 	output.bitangentW = mul(input.bitangent, (float3x3)mtxVertexToBoneWorld).xyz;
 
-//	output.positionW = mul(float4(input.position, 1.0f), gmtxGameObject).xyz;
+	//	output.positionW = mul(float4(input.position, 1.0f), gmtxGameObject).xyz;
 
 	output.position = mul(mul(float4(output.positionW, 1.0f), gmtxView), gmtxProjection);
 	output.uv = input.uv;
@@ -211,10 +205,10 @@ float4 PSTerrain(VS_TERRAIN_OUTPUT input) : SV_TARGET
 {
 	float4 cBaseTexColor = gtxtTerrainBaseTexture.Sample(gssWrap, input.uv0);
 	float4 cDetailTexColor = gtxtTerrainDetailTexture.Sample(gssWrap, input.uv1);
-//	float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
-	float4 cColor = input.color * saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
+	//	float4 cColor = saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
+		float4 cColor = input.color * saturate((cBaseTexColor * 0.5f) + (cDetailTexColor * 0.5f));
 
-	return(cColor);
+		return(cColor);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -250,33 +244,229 @@ float4 PSSkyBox(VS_SKYBOX_CUBEMAP_OUTPUT input) : SV_TARGET
 	return(cColor);
 }
 
-Texture2D gtxtTexture : register(t0);
+struct VS_DIFFUSED_INPUT {
+	float3 position : POSITION;
+	float4 color : COLOR;
+};
 
-struct VS_TEXTURED_INPUT
+//정점 셰이더의 출력(픽셀 셰이더의 입력)을 위한 구조체를 선언한다. 
+struct VS_DIFFUSED_OUTPUT {
+	float4 position : SV_POSITION;
+	float4 color : COLOR;
+};
+
+VS_DIFFUSED_OUTPUT VSDiffused(VS_DIFFUSED_INPUT input) {
+	VS_DIFFUSED_OUTPUT output;
+	output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxGameObject), gmtxView), gmtxProjection);
+	output.color = input.color;
+	return(output);
+}
+
+//픽셀 셰이더를 정의한다.
+float4 PSDiffused(VS_DIFFUSED_OUTPUT input) : SV_TARGET{
+	return(input.color);
+}
+
+
+// 텍스쳐 UI
+Texture2D gtxtUITexture : register(t14);
+Texture2D gtxtUIScoreTexture : register(t15);
+SamplerState gtxtUISampler : register(s2);
+
+cbuffer cbHP_INFO : register(b3)
+{
+	float hp : packoffset(c0);
+};
+
+cbuffer cbScore_INFO : register(b6)
+{
+	float score : packoffset(c0);
+};
+
+struct VS_TEXTURE_UI_INPUT
 {
 	float3 position : POSITION;
 	float2 uv : TEXCOORD;
 };
 
-struct VS_TEXTURED_OUTPUT
+struct VS_TEXTURE_UI_OUTOUT
 {
 	float4 position : SV_POSITION;
 	float2 uv : TEXCOORD;
 };
 
-VS_TEXTURED_OUTPUT VSTextured(VS_TEXTURED_INPUT input)
+VS_TEXTURE_UI_OUTOUT VSTextureUI(uint nVertexID : SV_VertexID)
 {
-	VS_TEXTURED_OUTPUT output;
+	VS_TEXTURE_UI_OUTOUT output;
+	float pos = .5f;
+	if (nVertexID == 0) { output.position = float4(-pos, +pos, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(+pos, +pos, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(+pos, -pos, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(-pos, +pos, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(+pos, -pos, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(-pos, -pos, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
 
-	output.position = mul(mul(mul(float4(input.position, 1.0f), gmtxGameObject), gmtxView), gmtxProjection);
-	output.uv = input.uv;
-
-	return(output);
+	return output;
 }
 
-float4 PSTextured(VS_TEXTURED_OUTPUT input, uint primitiveID : SV_PrimitiveID) : SV_TARGET
+float4 PSTextureUI(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
 {
-	float4 cColor = gtxtTexture.Sample(gssWrap, input.uv);
+	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+}
 
-	return(cColor);
+VS_TEXTURE_UI_OUTOUT VSTextureUI_HP(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_UI_OUTOUT output;
+	float x1 = -1.0f;
+	float x2 = -0.2f / (hp / 100.f);
+	float y1 = +1.0f;
+	float y2 = +0.9f;
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSTextureUI_HP(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
+{
+	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+}
+
+VS_TEXTURE_UI_OUTOUT VSTextureUI_HP2(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_UI_OUTOUT output;
+	float x1 = +0.2f / (hp / 100.f);
+	float x2 = +1.0f;
+	float y1 = +1.0f;
+	float y2 = +0.9f;
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSTextureUI_HP2(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
+{
+	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+}
+
+VS_TEXTURE_UI_OUTOUT VSTextureUI_KeyRightShift(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_UI_OUTOUT output;
+	float x1 = -1.0f;
+	float x2 = -0.6f;
+	float y1 = -0.4f;
+	float y2 = -0.6f;
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSTextureUI_KeyRightShift(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
+{
+	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+}
+
+VS_TEXTURE_UI_OUTOUT VSTextureUI_KeyLeftShift(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_UI_OUTOUT output;
+	float x1 = +0.6f;
+	float x2 = +1.0f;
+	float y1 = -0.4f;
+	float y2 = -0.6f;
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSTextureUI_KeyLeftShift(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
+{
+	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+}
+
+VS_TEXTURE_UI_OUTOUT VSTextureUI_KeySpace(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_UI_OUTOUT output;
+	float x1 = -0.3f;
+	float x2 = +0.3f;
+	float y1 = -0.8f;
+	float y2 = -1.0f;
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSTextureUI_KeySpace(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
+{
+	return gtxtUITexture.Sample(gtxtUISampler, input.uv);
+}
+
+
+
+VS_TEXTURE_UI_OUTOUT VSTextureUI_PlayerTotalScore(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_UI_OUTOUT output;
+	float x1 = -0.4f;
+	float x2 = -0.2f;
+	float y1 = +0.9f;
+	float y2 = +0.8f;
+
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSTextureUI_PlayerTotalScore(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
+{
+	return gtxtUIScoreTexture.Sample(gtxtUISampler, input.uv);
+}
+
+VS_TEXTURE_UI_OUTOUT VSTextureUI_OtherPlayerTotalScore(uint nVertexID : SV_VertexID)
+{
+	VS_TEXTURE_UI_OUTOUT output;
+	float x1 = +0.2f;
+	float x2 = +0.4f;
+	float y1 = +0.9f;
+	float y2 = +0.8f;
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(/*x2*/x1 + x1 * (score/3.f), y1, 0.0f, 1.0f); output.uv = float2(1.f * (score / 3.f), 0.f); }//
+	if (nVertexID == 2) { output.position = float4(/*x2*/x1 + x1 * (score / 3.f), y2, 0.0f, 1.0f); output.uv = float2(1.f * (score / 3.f), 1.f); }//
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(/*x2*/x1 + x1 * (score / 3.f), y2, 0.0f, 1.0f); output.uv = float2(1.f * (score / 3.f), 1.f); }//
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+
+	return output;
+}
+
+float4 PSTextureUI_OtherPlayerTotalScore(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
+{
+	return gtxtUIScoreTexture.Sample(gtxtUISampler, input.uv);
 }

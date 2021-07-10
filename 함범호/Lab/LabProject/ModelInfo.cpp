@@ -5,7 +5,7 @@
 
 ModelInfo::~ModelInfo()
 {
-	if (m_ppSkinnedMeshes) delete[] m_ppSkinnedMeshes;
+	SAFE_DELETEARR(m_ppSkinnedMeshes);
 }
 
 void ModelInfo::PrepareSkinning()

@@ -9,30 +9,53 @@
 
 extern Scene* gScene;
 
-CAnimationSet::CAnimationSet(float fLength, int nFramesPerSecond, int nKeyFrames, int nAnimatedBones, char* pstrName)
+AnimationSet::AnimationSet(float fLength, int nFramesPerSecond, int nKeyFrames, int nAnimatedBones, char* pstrName)
 {
 	m_fLength = fLength;
 	m_nFramesPerSecond = nFramesPerSecond;
 	m_nKeyFrames = nKeyFrames;
+	m_nKeyFrameRotations = nKeyFrames;
+	m_nKeyFrameScales = nKeyFrames;
+	m_nKeyFrameTranslations = nKeyFrames;
 
 	strcpy_s(m_pstrAnimationSetName, 64, pstrName);
 
 	m_pfKeyFrameTimes = new float[nKeyFrames];
 	m_ppxmf4x4KeyFrameTransforms = new XMFLOAT4X4 * [nKeyFrames];
+
+	m_pfKeyFrameScaleTimes = new float[nKeyFrames];
+	m_ppxmf3KeyFrameScales = new XMFLOAT3 * [nKeyFrames];
+
+	m_pfKeyFrameTranslationTimes = new float[nKeyFrames];
+	m_ppxmf3KeyFrameTranslations = new XMFLOAT3 * [nKeyFrames];
+
+	m_pfKeyFrameRotationTimes = new float[nKeyFrames];
+	m_ppxmf4KeyFrameRotations = new XMFLOAT4 * [nKeyFrames];
+
 	for (int i = 0; i < nKeyFrames; i++) m_ppxmf4x4KeyFrameTransforms[i] = new XMFLOAT4X4[nAnimatedBones];
+	for (int i = 0; i < nKeyFrames; i++) m_ppxmf3KeyFrameScales[i] = new XMFLOAT3[nAnimatedBones];
+	for (int i = 0; i < nKeyFrames; i++) m_ppxmf3KeyFrameTranslations[i] = new XMFLOAT3[nAnimatedBones];
+	for (int i = 0; i < nKeyFrames; i++) m_ppxmf4KeyFrameRotations[i] = new XMFLOAT4[nAnimatedBones];
 }
 
-CAnimationSet::~CAnimationSet()
+AnimationSet::~AnimationSet()
 {
 	if (m_pfKeyFrameTimes) delete[] m_pfKeyFrameTimes;
 	for (int j = 0; j < m_nKeyFrames; j++) if (m_ppxmf4x4KeyFrameTransforms[j]) delete[] m_ppxmf4x4KeyFrameTransforms[j];
-	if (m_ppxmf4x4KeyFrameTransforms) delete[] m_ppxmf4x4KeyFrameTransforms;
+	for (int j = 0; j < m_nKeyFrames; j++) if (m_ppxmf3KeyFrameScales[j]) delete[] m_ppxmf3KeyFrameScales[j];
+	for (int j = 0; j < m_nKeyFrames; j++) if (m_ppxmf3KeyFrameTranslations[j]) delete[] m_ppxmf3KeyFrameTranslations[j];
+	for (int j = 0; j < m_nKeyFrames; j++) if (m_ppxmf4KeyFrameRotations[j]) delete[] m_ppxmf4KeyFrameRotations[j];
 
-	if (m_pCallbackKeys) delete[] m_pCallbackKeys;
-	if (m_pAnimationCallbackHandler) delete m_pAnimationCallbackHandler;
+	if (m_ppxmf4x4KeyFrameTransforms) delete[] m_ppxmf4x4KeyFrameTransforms;
+	if (m_ppxmf3KeyFrameScales) delete[] m_ppxmf3KeyFrameScales;
+	if (m_ppxmf3KeyFrameTranslations) delete[] m_ppxmf3KeyFrameTranslations;
+	if (m_ppxmf4KeyFrameRotations) delete[] m_ppxmf4KeyFrameRotations;
+
+	SAFE_DELETEARR(m_pCallbackKeys);
+	SAFE_DELETE(m_pAnimationCallbackHandler);
 }
 
-void* CAnimationSet::GetCallbackData()
+void* AnimationSet::GetCallbackData()
 {
 	for (int i = 0; i < m_nCallbackKeys; i++)
 	{
@@ -42,58 +65,98 @@ void* CAnimationSet::GetCallbackData()
 	return nullptr;
 }
 
-void CAnimationSet::SetPosition(float fTrackPosition)
+bool AnimationSet::IsAnimate()
+{
+	return (m_pfKeyFrameTimes[(m_nKeyFrames - 1)]) <= m_fPosition + 0.04f /* && (m_fPosition <= m_pfKeyFrameTimes[i + 1])*/;
+}
+
+void AnimationSet::SetPosition(float fTrackPosition)
 {
 	m_fPosition = fTrackPosition;
+
 	switch (m_nType)
 	{
 	case ANIMATION_TYPE_LOOP:
 	{
-
-		//m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]); 
-		m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames-1]) * m_pfKeyFrameTimes[m_nKeyFrames-1];
-		
-		if (((m_pfKeyFrameTimes[(m_nKeyFrames - 1)]) <= m_fPosition + 0.04f)/* && (m_fPosition <= m_pfKeyFrameTimes[i + 1])*/)
-		{
-			if (isPlayer)
-			{
-				//cout << m_fPosition << " / " << m_pfKeyFrameTimes[(m_nKeyFrames - 1)] << endl;
-				if (gScene->m_pPlayer->isAlive == true)
-					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-				else
-					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWNED);
-				gScene->m_pPlayer->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.f;
-			}
-			if (isOtherPlayer)
-			{
-				//cout << m_fPosition << " / " << m_pfKeyFrameTimes[(m_nKeyFrames - 1)] << endl;
-				if (gScene->hierarchicalGameObjects.data()[1]->isAlive == true)
-					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-				else
-					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWNED);
-				gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.f;
-			}
-		}
-		
-
-		//for (int i = 0; i < m_nKeyFrames; ++i)
-		//{
-		//	cout << m_pfKeyFrameTimes[i] << " / ";
-		//}
-		//cout << endl;
-		
-//		m_fPosition = fmod(fTrackPosition, m_fLength); //if (m_fPosition < 0) m_fPosition += m_fLength;
-//		m_fPosition = fTrackPosition - int(fTrackPosition / m_fLength) * m_fLength;
+		m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]);
 		break;
 	}
 	case ANIMATION_TYPE_ONCE:
-		m_fPosition = fmod(fTrackPosition, m_pfKeyFrameTimes[m_nKeyFrames - 1]);
-		//cout << m_nKeyFrames << endl;
-		if (m_fLength >= m_fPosition)
+	{
+		//cout << "APosition(" << gScene->m_pPlayer->GetPosition().x << ", " << gScene->m_pPlayer->GetPosition().y << ", " << gScene->m_pPlayer->GetPosition().z << ")" << endl;
+		//cout << "Position(" << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().x << ", " << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().y << ", " << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().z << ")" << endl;
+		//cout << "BPosition(" << gScene->m_pPlayer->bones["Head"]->GetPosition().x<< ", " << gScene->m_pPlayer->bones["Head"]->GetPosition().y << ", " << gScene->m_pPlayer->bones["Head"]->GetPosition().z << ")" << endl;
+		m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames - 1]) * m_pfKeyFrameTimes[m_nKeyFrames - 1];
+		//if (isPlayer)
+		//	gScene->m_pPlayer->GetCamera()->SetPosition(gScene->m_pPlayer->GetPosition());
+
+		if (IsAnimate())
 		{
-			
+			if (isPlayer) // 애니메이션이 끝났을 때
+			{
+				if (!Vector3::Compare(gScene->m_pPlayer->bones["Spine"]->GetPosition(), gScene->m_pPlayer->oldSpinePosition))
+				{
+					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) >= ANIMATION_JAB_KICK)
+					{
+						//gScene->m_pPlayer->SetPosition({ gScene->m_pPlayer->bones["Spine"]->GetPosition().x, 100.f, gScene->m_pPlayer->bones["Spine"]->GetPosition().z });
+					}
+				}
+				if ((gScene->m_pPlayer->isAlive) && (gScene->m_pPlayer->nowState != IDLE))
+				{
+					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+					gScene->m_pPlayer->nowState = IDLE;
+				}
+				else
+				{
+					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+					gScene->m_pPlayer->nowState = DEAD;
+				}
+				gScene->m_pPlayer->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.0f;
+				m_fPosition = 0.0f;
+			}
+			else if (isOtherPlayer)
+			{
+				if ((gScene->hierarchicalGameObjects.data()[1]->isAlive) && (gScene->hierarchicalGameObjects.data()[1]->nowState != IDLE))
+				{
+					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+					gScene->hierarchicalGameObjects.data()[1]->nowState = IDLE;
+				}
+				else
+				{
+					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
+					gScene->hierarchicalGameObjects.data()[1]->nowState = DEAD;
+				}
+				gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.0f;
+				m_fPosition = 0.0f;
+			}
+			break;
 		}
-		break;
+		else// 애니메이션중
+		{
+
+			if (isPlayer)
+			{
+				if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_COMBAT_MODE_A)
+				{
+					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_BODY || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LEFT_HEAD || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_RIGHT_HEAD)
+						gScene->m_pPlayer->nowState = GUARD;
+					else
+					//gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0));
+					gScene->m_pPlayer->nowState = ATTACK;
+				}
+			}
+			else if (isOtherPlayer)
+			{
+				if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_COMBAT_MODE_A)
+				{
+					if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_BODY || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LEFT_HEAD || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_RIGHT_HEAD)
+						gScene->hierarchicalGameObjects.data()[1]->nowState = GUARD;
+					//gScene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, gScene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0));
+					gScene->hierarchicalGameObjects.data()[1]->nowState = ATTACK;
+				}
+			}
+			break;
+		}
 	case ANIMATION_TYPE_PINGPONG:
 		break;
 	}
@@ -103,9 +166,10 @@ void CAnimationSet::SetPosition(float fTrackPosition)
 		void* pCallbackData = GetCallbackData();
 		if (pCallbackData) m_pAnimationCallbackHandler->HandleCallback(pCallbackData);
 	}
+	}
 }
 
-XMFLOAT4X4 CAnimationSet::GetSRT(int nBone)
+XMFLOAT4X4 AnimationSet::GetSRT(int nBone)
 {
 	XMFLOAT4X4 xmf4x4Transform = Matrix4x4::Identity();
 #ifdef _WITH_ANIMATION_SRT
@@ -138,7 +202,7 @@ XMFLOAT4X4 CAnimationSet::GetSRT(int nBone)
 		}
 	}
 
-	XMStoreFloat4x4(&xmf4x4Transform, XMMatrixAffineTransformation(S, nullptr, R, T));
+	XMStoreFloat4x4(&xmf4x4Transform, XMMatrixAffineTransformation(S, XMVECTOR(), R, T));
 #else   
 	for (int i = 0; i < (m_nKeyFrames - 1); i++)
 	{
@@ -153,19 +217,19 @@ XMFLOAT4X4 CAnimationSet::GetSRT(int nBone)
 	return(xmf4x4Transform);
 }
 
-void CAnimationSet::SetCallbackKeys(int nCallbackKeys)
+void AnimationSet::SetCallbackKeys(int nCallbackKeys)
 {
 	m_nCallbackKeys = nCallbackKeys;
 	m_pCallbackKeys = new CALLBACKKEY[nCallbackKeys];
 }
 
-void CAnimationSet::SetCallbackKey(int nKeyIndex, float fKeyTime, void* pData)
+void AnimationSet::SetCallbackKey(int nKeyIndex, float fKeyTime, void* pData)
 {
 	m_pCallbackKeys[nKeyIndex].m_fTime = fKeyTime;
 	m_pCallbackKeys[nKeyIndex].m_pCallbackData = pData;
 }
 
-void CAnimationSet::SetAnimationCallbackHandler(AnimationCallbackHandler* pCallbackHandler)
+void AnimationSet::SetAnimationCallbackHandler(AnimationCallbackHandler* pCallbackHandler)
 {
 	m_pAnimationCallbackHandler = pCallbackHandler;
 }
@@ -175,15 +239,25 @@ void CAnimationSet::SetAnimationCallbackHandler(AnimationCallbackHandler* pCallb
 AnimationSets::AnimationSets(int nAnimationSets)
 {
 	m_nAnimationSets = nAnimationSets;
-	m_pAnimationSets = new CAnimationSet * [nAnimationSets];
+	m_pAnimationSets = new AnimationSet * [nAnimationSets];
 }
 
 AnimationSets::~AnimationSets()
 {
-	for (int i = 0; i < m_nAnimationSets; i++) if (m_pAnimationSets[i]) delete m_pAnimationSets[i];
-	if (m_pAnimationSets) delete[] m_pAnimationSets;
+	for (int i = 0; i < m_nAnimationSets; i++) SAFE_DELETE(m_pAnimationSets[i]);
+	SAFE_DELETEARR(m_pAnimationSets);
 
-	if (m_ppAnimatedBoneFrameCaches) delete[] m_ppAnimatedBoneFrameCaches;
+	SAFE_DELETEARR(m_ppAnimatedBoneFrameCaches);
+}
+
+void AnimationSets::AddRef()
+{ 
+	m_nReferences++;
+}
+
+void AnimationSets::Release()
+{
+	if (--m_nReferences <= 0) delete this;
 }
 
 void AnimationSets::SetCallbackKeys(int nAnimationSet, int nCallbackKeys)

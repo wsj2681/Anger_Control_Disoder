@@ -119,6 +119,11 @@ namespace Vector3
 	{
 		return(TransformCoord(xmf3Vector, XMLoadFloat4x4(&xmmtx4x4Matrix)));
 	}
+
+	inline bool Compare(XMFLOAT3& xmf3Vector1, XMFLOAT3& xmf3Vector2)
+	{
+		return (xmf3Vector1.x == xmf3Vector2.x) && (xmf3Vector1.y == xmf3Vector2.y) && (xmf3Vector1.z == xmf3Vector2.z);
+	}
 }
 
 namespace Vector4
@@ -212,7 +217,7 @@ namespace Matrix4x4
 	inline XMFLOAT4X4 Inverse(const XMFLOAT4X4& xmmtx4x4Matrix)
 	{
 		XMFLOAT4X4 xmf4x4Result;
-		XMStoreFloat4x4(&xmf4x4Result, XMMatrixInverse(NULL, XMLoadFloat4x4(&xmmtx4x4Matrix)));
+		XMStoreFloat4x4(&xmf4x4Result, XMMatrixInverse(nullptr, XMLoadFloat4x4(&xmmtx4x4Matrix)));
 		return(xmf4x4Result);
 	}
 

@@ -160,8 +160,13 @@
     <ClInclude Include="AnimationTrack.h" />
     <ClInclude Include="CallBack.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollideCubeMesh.h" />
+    <ClInclude Include="CollideCubeObject.h" />
     <ClInclude Include="CrowdObject.h" />
+    <ClInclude Include="CubeMesh.h" />
+    <ClInclude Include="CubeObject.h" />
     <ClInclude Include="DDSTextureLoader12.h" />
+    <ClInclude Include="DiffusedShader.h" />
     <ClInclude Include="EthanObjectsShader.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="LabProject07-9-7(Animation).h" />
@@ -190,6 +195,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="UIShader.h" />
     <ClInclude Include="WayPoint.h" />
     <ClInclude Include="WICTextureLoader12.h" />
   </ItemGroup>
@@ -201,8 +207,13 @@
     <ClCompile Include="AnimationTrack.cpp" />
     <ClCompile Include="CallBack.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollideCubeMesh.cpp" />
+    <ClCompile Include="CollideCubeObject.cpp" />
     <ClCompile Include="CrowdObject.cpp" />
+    <ClCompile Include="CubeMesh.cpp" />
+    <ClCompile Include="CubeObject.cpp" />
     <ClCompile Include="DDSTextureLoader12.cpp" />
+    <ClCompile Include="DiffusedShader.cpp" />
     <ClCompile Include="EthanObjectsShader.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="LabProject07-9-7(Animation).cpp" />
@@ -233,6 +244,7 @@
     </ClCompile>
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="UIShader.cpp" />
     <ClCompile Include="WayPoint.cpp" />
     <ClCompile Include="WICTextureLoader12.cpp" />
   </ItemGroup>
