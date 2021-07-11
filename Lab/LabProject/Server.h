@@ -109,6 +109,11 @@ struct PlayerHP {
 	float playerHp;
 
 };
+struct ani_double_check {
+	bool double_check = false;
+
+
+};
 #pragma pack(pop)
 class Player;
 
@@ -167,7 +172,7 @@ public:
 	UINT ani_first_check = 0x62;
 
 	bool other_ani_check = false;
-
+	ni_double_check double_check;
 
 	Server();
 	Server(int i);

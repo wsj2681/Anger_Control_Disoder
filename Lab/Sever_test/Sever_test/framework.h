@@ -158,6 +158,11 @@ struct PlayerHP {
 	float playerHp;
 
 };
+struct ani_double_check {
+	bool double_check = false;
+
+
+};
 #pragma pack(pop)
 
 void display_error(const char* msg, int err_no);

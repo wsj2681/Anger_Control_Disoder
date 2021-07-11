@@ -732,20 +732,33 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case '5':
 		case '6':
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 47, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = 47;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			break;
 		case '7':
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 49, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = 49;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			break;
 		case '8':
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 50, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = 50;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			break;
 		case '9':
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 52, ANIMATION_TYPE_ONCE, true);
-			break;
 #ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.ani_num = (DWORD)(wParam - ANIMATION_KNOCKDOWNED) + 2;
+			server->send_attackAnddefend.ani_num = 52;
 			server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
+			break;
+
 			break;
 		/*
 		case 'Q': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L, ANIMATION_TYPE_ONCE, true); break;
@@ -768,9 +781,24 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, rand() % 9 + 27, ANIMATION_TYPE_ONCE, true);
 			break;
 		}
-		case 'Z': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true); break;
-		case 'X': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true); break;
-		case 'C': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); break;
+		case 'Z': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_GUARD_BODY;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+			break;
+		case 'X': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_GUARD_LEFT_HEAD;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+			break;
+		case 'C': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); 
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_GUARD_RIGHT_HEAD;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
+			break;
 		case 'V': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true); break;
 		case 'B': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true); break;
 		case 'N': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); break;

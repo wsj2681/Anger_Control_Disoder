@@ -31,6 +31,14 @@ void setPosition(XMFLOAT3& fl3x3, XMFLOAT4X4& fl4x4);
 AttackAndDefend recv_attackAnddefend_1;
 AttackAndDefend recv_attackAnddefend_2;
 bool checkAnimation(AttackAndDefend attAdef);
+ani_double_check double_check;
+
+UINT first_save_ani_num[3] = { 0 };
+bool first_must_ani_play[3] = { false,false,false };
+
+UINT second_save_ani_num[3] = { 0 };
+bool second_must_ani_play[3] = { false,false,false };
+
 
 //충돌처리
 BoundingOrientedBox player_obb[3];
@@ -228,6 +236,11 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			display_error("recv : ", WSAGetLastError());
 			break;
 		}
+		retval = recv(thread_client_sock, (char*)&double_check, sizeof(double_check), 0);
+		if (retval == SOCKET_ERROR) {
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
 		else if (retval == 0)
 			break;
 
@@ -275,7 +288,28 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			if (idIndex <= 2)
 				thread_num_2_HP.playerHp = 100.0f;
 
+			if (double_check.double_check == false) {
+				if (first_save_ani_num[0] == 0) {
+					first_save_ani_num[0] = attAdef.ani_num;
+					first_must_ani_play[0] = true;
+				}
+				else if (first_save_ani_num[1] == 0) {
+					first_save_ani_num[1] = attAdef.ani_num;
+					first_must_ani_play[1] = true;
+				}
 
+				if (second_must_ani_play[0] == true) {
+					recv_attackAnddefend_2.ani_num = second_save_ani_num[0];
+				}
+				else if (second_must_ani_play[1] == true) {
+					recv_attackAnddefend_2.ani_num = second_save_ani_num[1];
+				}
+			}
+			else {
+				first_save_ani_num[0] = 0;
+				first_must_ani_play[0] = false;
+
+			}
 		
 
 
@@ -308,7 +342,28 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			recv_attackAnddefend_2 = attAdef;
 			thread_num_2_HP = player_hp;
 
-			
+			if (double_check.double_check == false) {
+				if (second_save_ani_num[0] == 0) {
+					second_save_ani_num[0] = attAdef.ani_num;
+					second_must_ani_play[0] = true;
+				}
+				else if (second_save_ani_num[1] == 0) {
+					second_save_ani_num[1] = attAdef.ani_num;
+					second_must_ani_play[1] = true;
+				}
+
+				if (first_must_ani_play[0] == true) {
+					recv_attackAnddefend_1.ani_num = first_save_ani_num[0];
+				}
+				else if (first_must_ani_play[1] == true) {
+					recv_attackAnddefend_1.ani_num = first_save_ani_num[1];
+				}
+			}
+			else {
+				second_save_ani_num[0] = 0;
+				second_must_ani_play[0] = false;
+
+			}
 
 			retval = send(thread_client_sock, (char*)&thread_num_1_player, sizeof(thread_num_1_player), 0);
 			

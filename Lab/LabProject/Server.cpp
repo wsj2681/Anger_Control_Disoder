@@ -75,6 +75,8 @@ void Server::Server_send()
 
 		retval = send(sock, (char*)&myHP, sizeof(myHP), 0);
 
+		retval = send(sock, (char*)&double_check, sizeof(double_check), 0);
+
 		if(send_attackAnddefend.checkAni == true)
 			attackAndGuard_idle();
 	}
@@ -147,13 +149,15 @@ void Server::Server_recv()
 				if (retVal == true) {
 					cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
 					other_ani_check = true;
-				
+					double_check.double_check = true;
 				}
 			
 			}
 			else {
 				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
 				other_ani_check = true;
+
+				double_check.double_check = true;
 			}
 		
 		
@@ -266,7 +270,7 @@ void Server::attackAndGuard_idle() {
 
 	//send_attackAnddefend.ani_num = ANIMATION_IDLE_COMBAT;
 	send_attackAnddefend.checkAni = false;
-
+	double_check.double_check = false;
 }
 
 void Server::otherPlayerPositionSet()
