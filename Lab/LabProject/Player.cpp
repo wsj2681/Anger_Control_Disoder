@@ -322,27 +322,27 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 
 	if (this->bones["Head"] = FindFrame("Bip01_Head"))
 	{
-		this->boundBoxs["Head"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 1.f, 1.f, 1.f);
+		this->boundBoxs["Head"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 1.4f, 1.4f, 6.f);
 	}
 	if (this->bones["rHand"] = FindFrame("Bip01_R_Hand"))
 	{
-		this->boundBoxs["rHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
+		this->boundBoxs["rHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 1.f, 1.f, 1.f);
 	}
 	if (this->bones["lHand"] = FindFrame("Bip01_L_Hand"))
 	{
-		this->boundBoxs["lHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
+		this->boundBoxs["lHand"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 1.f, 1.f, 1.f);
 	}
 	if (this->bones["lFoot"] = FindFrame("Bip01_L_Foot"))
 	{
-		this->boundBoxs["lFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.5f, 0.7f);
+		this->boundBoxs["lFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 1.f, 1.f, 1.f);
 	}
 	if (this->bones["rFoot"] = FindFrame("Bip01_R_Foot"))
 	{
-		this->boundBoxs["rFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 0.7f, 0.7f, 0.7f);
+		this->boundBoxs["rFoot"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 1.f, 1.f, 1.f);
 	}
 	if (this->bones["Spine"] = FindFrame("Bip01_Spine1"))
 	{
-		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 2.0f, 3.f, 2.f);
+		this->boundBoxs["Spine"] = new CubeObject(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, 2.f, 1.f, 6.f);
 	}
 	if (this->bones["lCalf"] = FindFrame("Bip01_L_Calf"))
 	{
