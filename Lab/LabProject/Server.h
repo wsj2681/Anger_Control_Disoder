@@ -2,7 +2,7 @@
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
-//#define _WITH_SERVER_CONNECT
+#define _WITH_SERVER_CONNECT
 
 
 
@@ -80,9 +80,9 @@ struct AttackAndDefend {
 
 
 
-	UINT ani_num;
+	UINT ani_num = 0;
 
-	bool checkAni ;
+	bool checkAni = false; ;
 
 	bool ani_playing;
 
@@ -172,7 +172,7 @@ public:
 	UINT ani_first_check = 0x62;
 
 	bool other_ani_check = false;
-	ni_double_check double_check;
+	ani_double_check double_check;
 
 	Server();
 	Server(int i);

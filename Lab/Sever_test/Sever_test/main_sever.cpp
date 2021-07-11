@@ -31,13 +31,14 @@ void setPosition(XMFLOAT3& fl3x3, XMFLOAT4X4& fl4x4);
 AttackAndDefend recv_attackAnddefend_1;
 AttackAndDefend recv_attackAnddefend_2;
 bool checkAnimation(AttackAndDefend attAdef);
-ani_double_check double_check;
+ani_double_check first_double_check;
+ani_double_check second_double_check;
 
-UINT first_save_ani_num[3] = { 0 };
-bool first_must_ani_play[3] = { false,false,false };
+UINT first_save_ani_num = { 0 };
+bool first_must_ani_play = false;
 
-UINT second_save_ani_num[3] = { 0 };
-bool second_must_ani_play[3] = { false,false,false };
+UINT second_save_ani_num = { 0 };
+bool second_must_ani_play = false;
 
 
 //충돌처리
@@ -166,6 +167,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	Player_world player;
 	AttackAndDefend attAdef;
 	PlayerHP player_hp;
+	ani_double_check double_check;
+
 
 
 	getpeername(thread_client_sock, (SOCKADDR*)&client_addr, &thread_client_addr_len);
@@ -245,8 +248,11 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			break;
 
 
+		
+
+
 		//충돌박스 만들기
-		setPosition(player_position, player.player_world);
+		/*setPosition(player_position, player.player_world);
 
 		SetOBB(player_obb, thread_id, player_position, XMFLOAT3(2.2f, 11.f, 2.2f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
@@ -266,7 +272,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		SetOBB(lFoot_obb, thread_id, player_lFoot, XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
 
 		setPosition(player_Spine, player.player_Spine);
-		SetOBB(Spine_obb, thread_id, player_Spine, XMFLOAT3(1.f, 9.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
+		SetOBB(Spine_obb, thread_id, player_Spine, XMFLOAT3(1.f, 9.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));*/
 
 
 		//cout << thread_id.thread_num << "     " << player_position.x << endl;
@@ -284,32 +290,33 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			thread_num_1_player = player;
 			recv_attackAnddefend_1 = attAdef;
 			thread_num_1_HP = player_hp;
+			first_double_check = double_check;
 
 			if (idIndex <= 2)
 				thread_num_2_HP.playerHp = 100.0f;
 
-			if (double_check.double_check == false) {
-				if (first_save_ani_num[0] == 0) {
-					first_save_ani_num[0] = attAdef.ani_num;
-					first_must_ani_play[0] = true;
-				}
-				else if (first_save_ani_num[1] == 0) {
-					first_save_ani_num[1] = attAdef.ani_num;
-					first_must_ani_play[1] = true;
-				}
 
-				if (second_must_ani_play[0] == true) {
-					recv_attackAnddefend_2.ani_num = second_save_ani_num[0];
-				}
-				else if (second_must_ani_play[1] == true) {
-					recv_attackAnddefend_2.ani_num = second_save_ani_num[1];
-				}
+			if (first_must_ani_play == false) {
+				first_save_ani_num = recv_attackAnddefend_1.ani_num;
+				first_must_ani_play = recv_attackAnddefend_1.checkAni;
+			}
+
+
+			if (second_must_ani_play == true && first_double_check.double_check == false) {
+				recv_attackAnddefend_2.ani_num = second_save_ani_num;
+				recv_attackAnddefend_2.checkAni = true;
+
+				cout << "Thread 1 ani Num -  " << second_save_ani_num << " -checkAni - " << second_must_ani_play << endl;
 			}
 			else {
-				first_save_ani_num[0] = 0;
-				first_must_ani_play[0] = false;
-
+				second_must_ani_play = false;
+				second_save_ani_num = 0;
 			}
+
+			//cout << "Thread 1 ani Num -  " << second_save_ani_num << " -checkAni - " << second_must_ani_play << endl;
+			
+
+			
 		
 
 
@@ -341,29 +348,28 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			thread_num_2_player = player;
 			recv_attackAnddefend_2 = attAdef;
 			thread_num_2_HP = player_hp;
+			second_double_check = double_check;
 
-			if (double_check.double_check == false) {
-				if (second_save_ani_num[0] == 0) {
-					second_save_ani_num[0] = attAdef.ani_num;
-					second_must_ani_play[0] = true;
-				}
-				else if (second_save_ani_num[1] == 0) {
-					second_save_ani_num[1] = attAdef.ani_num;
-					second_must_ani_play[1] = true;
-				}
 
-				if (first_must_ani_play[0] == true) {
-					recv_attackAnddefend_1.ani_num = first_save_ani_num[0];
-				}
-				else if (first_must_ani_play[1] == true) {
-					recv_attackAnddefend_1.ani_num = first_save_ani_num[1];
-				}
+			if (second_must_ani_play == false) {
+				second_save_ani_num = recv_attackAnddefend_2.ani_num;
+				second_must_ani_play = recv_attackAnddefend_2.checkAni;
+			}
+
+
+			if (first_must_ani_play == true && second_double_check.double_check == false) {
+				recv_attackAnddefend_1.ani_num = first_save_ani_num;
+				recv_attackAnddefend_1.checkAni = true;
+				cout << "Thread2 ani Num -  " << first_save_ani_num << " -checkAni - " << first_must_ani_play << endl;
 			}
 			else {
-				second_save_ani_num[0] = 0;
-				second_must_ani_play[0] = false;
-
+				first_must_ani_play = false;
+				first_save_ani_num = 0;
 			}
+			
+			//cout << "Thread2 ani Num -  " << first_save_ani_num << " -checkAni - " << first_must_ani_play << endl;
+
+
 
 			retval = send(thread_client_sock, (char*)&thread_num_1_player, sizeof(thread_num_1_player), 0);
 			

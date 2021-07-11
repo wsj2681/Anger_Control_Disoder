@@ -77,7 +77,7 @@ void Server::Server_send()
 
 		retval = send(sock, (char*)&double_check, sizeof(double_check), 0);
 
-		if(send_attackAnddefend.checkAni == true)
+		//if(send_attackAnddefend.checkAni == true)
 			attackAndGuard_idle();
 	}
 }
@@ -142,6 +142,8 @@ void Server::Server_recv()
 			
 
 		//cout << "ani_check - " << recv_attackAnddefend.checkAni << " " << endl;
+
+		cout << "ani Num - " << recv_attackAnddefend.ani_num << " - ani_check - " << recv_attackAnddefend.checkAni << endl;
 
 		if (recv_attackAnddefend.checkAni == true) {
 			if (recv_attackAnddefend.ani_num == ANIMATION_MOVE_FORWARD || recv_attackAnddefend.ani_num == ANIMATION_MOVE_BACKWARD ||

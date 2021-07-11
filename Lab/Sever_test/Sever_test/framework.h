@@ -133,7 +133,7 @@ struct collide {
 struct AttackAndDefend {
 
 
-	UINT ani_num;
+	UINT ani_num = 0;
 
 	bool checkAni = false;
 
