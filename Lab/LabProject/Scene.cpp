@@ -723,13 +723,14 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 5.f;
 			cout << "OtherPlayer HP = " << hierarchicalGameObjects.data()[OTHERPLAYER]->hp << endl;
 			break;
-			// 2F ~35 kick Animation
 		case '0':
 		case '1':
 		case '2':
 		case '3':
 		case '4':
 		case '5':
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, (DWORD)(wParam - ANIMATION_KNOCKDOWNED), ANIMATION_TYPE_ONCE, true); break;
+			// 2F ~35 kick Animation
 		case '6':
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 47, ANIMATION_TYPE_ONCE, true);
 #ifdef _WITH_SERVER_CONNECT
@@ -1082,7 +1083,7 @@ void Scene::CollidePVE()
 						{
 							effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
 						}
-						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 10.f;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
 					// 상대 몸통
@@ -1170,7 +1171,7 @@ void Scene::CollidePVE()
 						{
 							effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 3);
 						}
-						m_pPlayer->hp -= 10.f;
+						m_pPlayer->hp -= 20.f;
 						m_pPlayer->nowState = HIT;
 					}
 					// 플레이어 하체
