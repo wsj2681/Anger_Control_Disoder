@@ -310,16 +310,16 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 				case VK_F5:
 					onTempKey = !onTempKey;
 					break;
-				case 'Q':
+				case '1':
 				{
 					break;
 				}
-				case 'W':
+				case '2':
 				{
 					m_pCamera->SetCaptureWorld();
 					break;
 				}
-				case 'E':
+				case '3':
 				{
 					m_pCamera->SetFixed(!m_pCamera->IsFixed());
 					break;

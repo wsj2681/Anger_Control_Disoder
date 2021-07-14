@@ -693,118 +693,204 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
-		case VK_ESCAPE:
-			::PostQuitMessage(0);
-			break;
-		case VK_RETURN:
-			break;
-		case VK_F5:
-			break;
-		case VK_F6:
-			m_pPlayer->score -= 1.f;
-			hierarchicalGameObjects.data()[OTHERPLAYER]->score -= 1.f;
-			cout << m_pPlayer->score << hierarchicalGameObjects.data()[OTHERPLAYER]->score << endl;
-			m_pPlayer->hp = 100.f;
-			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
-			break;
-		case VK_F7:
-			for (auto& o : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
-			{
-				o.second->boundBoxRender = !o.second->boundBoxRender;
-			}
-			for (auto& o : m_pPlayer->boundBoxs)
-			{
-				o.second->boundBoxRender = !o.second->boundBoxRender;
-			}
-			break;
-		case VK_F8:
-			m_pPlayer->hp -= 5.f;
-			cout << "Player HP = " << m_pPlayer->hp << endl;
-			hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 5.f;
-			cout << "OtherPlayer HP = " << hierarchicalGameObjects.data()[OTHERPLAYER]->hp << endl;
-			break;
-		case '0':
-		case '1':
-		case '2':
-		case '3':
-		case '4':
-		case '5':
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, (DWORD)(wParam - ANIMATION_KNOCKDOWNED), ANIMATION_TYPE_ONCE, true); break;
-			// 2F ~35 kick Animation
-		case '6':
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 47, ANIMATION_TYPE_ONCE, true);
-#ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.ani_num = 47;
-			server->send_attackAnddefend.checkAni = true;
-#endif // _WITH_SERVER_CONNECT
-			break;
-		case '7':
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 49, ANIMATION_TYPE_ONCE, true);
-#ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.ani_num = 49;
-			server->send_attackAnddefend.checkAni = true;
-#endif // _WITH_SERVER_CONNECT
-			break;
-		case '8':
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 50, ANIMATION_TYPE_ONCE, true);
-#ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.ani_num = 50;
-			server->send_attackAnddefend.checkAni = true;
-#endif // _WITH_SERVER_CONNECT
-			break;
-		case '9':
-			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 52, ANIMATION_TYPE_ONCE, true);
-#ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.ani_num = 52;
-			server->send_attackAnddefend.checkAni = true;
-#endif // _WITH_SERVER_CONNECT
-			break;
+			//		case VK_ESCAPE:
+			//			::PostQuitMessage(0);
+			//			break;
+			//		case VK_RETURN:
+			//			break;
+			//		case VK_F5:
+			//			break;
+			//		case VK_F6:
+			//			m_pPlayer->score -= 1.f;
+			//			hierarchicalGameObjects.data()[OTHERPLAYER]->score -= 1.f;
+			//			cout << m_pPlayer->score << hierarchicalGameObjects.data()[OTHERPLAYER]->score << endl;
+			//			m_pPlayer->hp = 100.f;
+			//			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
+			//			break;
+			//		case VK_F7:
+			//			for (auto& o : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
+			//			{
+			//				o.second->boundBoxRender = !o.second->boundBoxRender;
+			//			}
+			//			for (auto& o : m_pPlayer->boundBoxs)
+			//			{
+			//				o.second->boundBoxRender = !o.second->boundBoxRender;
+			//			}
+			//			break;
+			//		case VK_F8:
+			//			m_pPlayer->hp -= 5.f;
+			//			cout << "Player HP = " << m_pPlayer->hp << endl;
+			//			hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 5.f;
+			//			cout << "OtherPlayer HP = " << hierarchicalGameObjects.data()[OTHERPLAYER]->hp << endl;
+			//			break;
+			//		case '0':
+			//		case '1':
+			//		case '2':
+			//		case '3':
+			//		case '4':
+			//		case '5':
+			//			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, (DWORD)(wParam - ANIMATION_KNOCKDOWNED), ANIMATION_TYPE_ONCE, true); break;
+			//			// 2F ~35 kick Animation
+			//		case '6'://ANIMATION_AXE_KICK_R
+			//			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 47, ANIMATION_TYPE_ONCE, true);
+			//#ifdef _WITH_SERVER_CONNECT
+			//			server->send_attackAnddefend.ani_num = 47;
+			//			server->send_attackAnddefend.checkAni = true;
+			//#endif // _WITH_SERVER_CONNECT
+			//			break;
+			//		case '7'://ANIMATION_KICK_HIGH_L
+			//			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 49, ANIMATION_TYPE_ONCE, true);
+			//#ifdef _WITH_SERVER_CONNECT
+			//			server->send_attackAnddefend.ani_num = 49;
+			//			server->send_attackAnddefend.checkAni = true;
+			//#endif // _WITH_SERVER_CONNECT
+			//			break;
+			//		case '8'://ANIMATION_KICK_MID_L
+			//			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 50, ANIMATION_TYPE_ONCE, true);
+			//#ifdef _WITH_SERVER_CONNECT
+			//			server->send_attackAnddefend.ani_num = 50;
+			//			server->send_attackAnddefend.checkAni = true;
+			//#endif // _WITH_SERVER_CONNECT
+			//			break;
+			//		case '9'://ANIMATION_LOW_KICK_R
+			//			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, 52, ANIMATION_TYPE_ONCE, true);
+			//#ifdef _WITH_SERVER_CONNECT
+			//			server->send_attackAnddefend.ani_num = 52;
+			//			server->send_attackAnddefend.checkAni = true;
+			//#endif // _WITH_SERVER_CONNECT
+			//			break;
+			//
+			//			break;
+			//		/*
+			//		case 'Q': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L, ANIMATION_TYPE_ONCE, true); break;
+			//		case 'W': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R, ANIMATION_TYPE_ONCE, true); break;
+			//		case 'E': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_JAB, ANIMATION_TYPE_ONCE, true); break;
+			//		case 'R': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CROSS, ANIMATION_TYPE_ONCE, true); break;
+			//		case 'T': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CROSS_BODY, ANIMATION_TYPE_ONCE, true); break;
+			//		case 'A': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO, ANIMATION_TYPE_ONCE, true); break;
+			//		case 'S': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK, ANIMATION_TYPE_ONCE, true); break;
+			//		case 'D': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK, ANIMATION_TYPE_ONCE, true); break;
+			//		case 'F': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_L, ANIMATION_TYPE_ONCE, true); break;
+			//		*/
+			//		case 'G': 
+			//		{
+			//			effectManager->EffectOn(XMFLOAT3(0.f, 20.f, 0.f));
+			//			break;
+			//		}
+			//		case 'P':
+			//		{
+			//			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, rand() % 9 + 27, ANIMATION_TYPE_ONCE, true);
+			//			break;
+			//		}
+			//		case 'Z': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true);
+			//#ifdef _WITH_SERVER_CONNECT
+			//			server->send_attackAnddefend.ani_num = ANIMATION_GUARD_BODY;
+			//			server->send_attackAnddefend.checkAni = true;
+			//#endif // _WITH_SERVER_CONNECT
+			//			break;
+			//		case 'X': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true);
+			//#ifdef _WITH_SERVER_CONNECT
+			//			server->send_attackAnddefend.ani_num = ANIMATION_GUARD_LEFT_HEAD;
+			//			server->send_attackAnddefend.checkAni = true;
+			//#endif // _WITH_SERVER_CONNECT
+			//			break;
+			//		case 'C': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); 
+			//#ifdef _WITH_SERVER_CONNECT
+			//			server->send_attackAnddefend.ani_num = ANIMATION_GUARD_RIGHT_HEAD;
+			//			server->send_attackAnddefend.checkAni = true;
+			//#endif // _WITH_SERVER_CONNECT
+			//			break;
+			//		case 'V': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true); break;
+			//		case 'B': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true); break;
+			//		case 'N': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); break;
+			//		default:
+			//			break;
+			//		}
 
-			break;
-		/*
-		case 'Q': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L, ANIMATION_TYPE_ONCE, true); break;
-		case 'W': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R, ANIMATION_TYPE_ONCE, true); break;
-		case 'E': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_JAB, ANIMATION_TYPE_ONCE, true); break;
-		case 'R': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CROSS, ANIMATION_TYPE_ONCE, true); break;
-		case 'T': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_CROSS_BODY, ANIMATION_TYPE_ONCE, true); break;
-		case 'A': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO, ANIMATION_TYPE_ONCE, true); break;
-		case 'S': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK, ANIMATION_TYPE_ONCE, true); break;
-		case 'D': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK, ANIMATION_TYPE_ONCE, true); break;
-		case 'F': hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_L, ANIMATION_TYPE_ONCE, true); break;
-		*/
-		case 'G': 
+		case 'Q':
+		case 'q': // 상단 주먹
 		{
-			effectManager->EffectOn(XMFLOAT3(0.f, 20.f, 0.f));
+			if (rand() % 2)
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L, ANIMATION_TYPE_ONCE, true);
+			}
+			else
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R, ANIMATION_TYPE_ONCE, true);
+			}
 			break;
 		}
-		case 'P':
+		case 'W':
+		case 'w': // 상단 킥
 		{
-			hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, rand() % 9 + 27, ANIMATION_TYPE_ONCE, true);
+			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_AXE_KICK_R, ANIMATION_TYPE_ONCE, true);
 			break;
 		}
-		case 'Z': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true);
-#ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.ani_num = ANIMATION_GUARD_BODY;
-			server->send_attackAnddefend.checkAni = true;
-#endif // _WITH_SERVER_CONNECT
+		case 'E': // 상단 가드
+		case 'e':
+		{
+			m_pPlayer->nowState = GUARD;
 			break;
-		case 'X': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true);
-#ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.ani_num = ANIMATION_GUARD_LEFT_HEAD;
-			server->send_attackAnddefend.checkAni = true;
-#endif // _WITH_SERVER_CONNECT
+		}
+		case 'A': // 추가공격
+		case 'a':
+		{
+			
 			break;
-		case 'C': m_pPlayer->nowState = GUARD; m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); 
-#ifdef _WITH_SERVER_CONNECT
-			server->send_attackAnddefend.ani_num = ANIMATION_GUARD_RIGHT_HEAD;
-			server->send_attackAnddefend.checkAni = true;
-#endif // _WITH_SERVER_CONNECT
+		}
+		case 'S':
+		case 's': // 중단 킥
+		{
+			if (rand() % 2)
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KICK_MID_L, ANIMATION_TYPE_ONCE, true);
+			}
+			else
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_SIDE_KICK_L, ANIMATION_TYPE_ONCE, true);
+			}
+			
 			break;
-		case 'V': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_BODY, ANIMATION_TYPE_ONCE, true); break;
-		case 'B': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LEFT_HEAD, ANIMATION_TYPE_ONCE, true); break;
-		case 'N': hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD; hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_RIGHT_HEAD, ANIMATION_TYPE_ONCE, true); break;
-		default:
+		}
+		case 'D':
+		case 'd': // 중단 가드
+		{
+			m_pPlayer->nowState = GUARD;
 			break;
+		}
+		case 'Z':
+		case 'z': // 중단 주먹
+		{
+			if (rand() % 2)
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK, ANIMATION_TYPE_ONCE, true);
+			}
+			else
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK, ANIMATION_TYPE_ONCE, true);
+			}
+			break;
+		}
+		case 'X':
+		case 'x': // 하단 킥
+		{
+			if (rand() % 2)
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LOW_KICK_R, ANIMATION_TYPE_ONCE, true);
+			}
+			else
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LOW_KICK_SL, ANIMATION_TYPE_ONCE, true);
+			}
+			break;
+		}
+		case 'C':
+		case 'c': // 하단 가드
+		{
+			m_pPlayer->nowState = GUARD;
+			break;
+		}
+
 		}
 	}
 	return(false);
@@ -1071,10 +1157,12 @@ void Scene::CollidePVE()
 				if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == IDLE && m_pPlayer->nowState == ATTACK)
 				{
 					// 상대 머리
-					if (otherPlayerBoundBox.first == "Head")
+					if (otherPlayerBoundBox.first == "Head" && 
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_L) ||
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_R) ||
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_AXE_KICK_R))
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
-						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						if (particle)
 						{
 							particle->PositionInit(PlayerBoundBox.second->GetPosition());
@@ -1087,10 +1175,13 @@ void Scene::CollidePVE()
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
 					// 상대 몸통
-					else if (otherPlayerBoundBox.first == "Spine")
+					else if (otherPlayerBoundBox.first == "Spine" &&
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LEFT_BODY_HOOK) ||
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_RIGHT_BODY_HOOK) ||
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_MID_L) ||
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_SIDE_KICK_L))
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
-						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						if (particle)
 						{
 							particle->PositionInit(PlayerBoundBox.second->GetPosition());
@@ -1103,10 +1194,11 @@ void Scene::CollidePVE()
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
 					// 상대 하체
-					else if (otherPlayerBoundBox.first == "lCalf" || otherPlayerBoundBox.first == "rCalf")
+					else if ((otherPlayerBoundBox.first == "lCalf" || otherPlayerBoundBox.first == "rCalf") &&
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_R) ||
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_SL))
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
-						cout << "Hit - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						if (particle)
 						{
 							particle->PositionInit(PlayerBoundBox.second->GetPosition());
@@ -1126,14 +1218,17 @@ void Scene::CollidePVE()
 					if (otherPlayerBoundBox.first == "Head")
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
-						cout << "Guard - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
 					}
 					// 몸통 가드
 					else if (otherPlayerBoundBox.first == "Spine")
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
-						cout << "Guard - " << otherPlayerBoundBox.first << " is collide" << collideCount++ << endl;
+						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
+					}
+					else if (otherPlayerBoundBox.first == "lCalf" || otherPlayerBoundBox.first == "rCalf")
+					{
+						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
 					}
 				}
@@ -1141,7 +1236,10 @@ void Scene::CollidePVE()
 				if (m_pPlayer->nowState == IDLE && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
 				{
 					// 플레이어 머리
-					if (PlayerBoundBox.first == "Head")
+					if (PlayerBoundBox.first == "Head" && 
+						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_L) ||
+						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_R) ||
+						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_AXE_KICK_R))
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
 						
@@ -1158,7 +1256,11 @@ void Scene::CollidePVE()
 						m_pPlayer->nowState = HIT;
 					}
 					// 플레이어 몸통
-					else if (PlayerBoundBox.first == "Spine")
+					else if (PlayerBoundBox.first == "Spine" &&
+						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LEFT_BODY_HOOK) ||
+						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_RIGHT_BODY_HOOK) ||
+						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_MID_L) ||
+						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_SIDE_KICK_L))
 					{
 						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
 						
@@ -1175,7 +1277,9 @@ void Scene::CollidePVE()
 						m_pPlayer->nowState = HIT;
 					}
 					// 플레이어 하체
-					else if (PlayerBoundBox.first == "lCalf" || PlayerBoundBox.first == "rCalf")
+					else if ((PlayerBoundBox.first == "lCalf" || PlayerBoundBox.first == "rCalf") &&
+						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_R) ||
+						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_SL))
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
 						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
