@@ -5,7 +5,7 @@
 constexpr UINT FIRST_PERSON_CAMERA = 1;
 constexpr UINT SPACESHIP_CAMERA = 2;
 constexpr UINT THIRD_PERSON_CAMERA = 3;
-constexpr UINT THIRD_PERSON_CAMERA2 = 4;
+constexpr UINT SPACESHIP_CAMERA2 = 4;
 
 struct VS_CB_CAMERA_INFO
 {
@@ -149,12 +149,9 @@ public:
 	virtual void SetLookAt(XMFLOAT3& vLookAt);
 };
 
-class CThirdPersonCamera2 : public Camera
+class CSpaceShipCamera2 : public CSpaceShipCamera
 {
 public:
-	CThirdPersonCamera2(Camera* pCamera);
-	virtual ~CThirdPersonCamera2() { }
-
-	virtual void Update(XMFLOAT3& xmf3LookAt, float fTimeElapsed);
-	virtual void SetLookAt(XMFLOAT3& vLookAt);
+	CSpaceShipCamera2(Camera* pCamera);
+	virtual ~CSpaceShipCamera2() {}
 };

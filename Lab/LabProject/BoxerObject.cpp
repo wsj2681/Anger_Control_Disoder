@@ -7,6 +7,9 @@
 #include "AnimationSet.h"
 #include "AnimationTrack.h"
 
+// TODO : 캐릭터를 마우스로 회전시킬 것인가 아니면 자동으로 다른 플레이어를 바라보게 할 것인가 확정하기
+// TODO : 혹시나 자동으로 바라보게 한다면 그 공식을 세워서 빨리 적용하기
+
 BoxerObject::BoxerObject(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, ModelInfo* pModel, int nAnimationTracks)
 {
 	ModelInfo* boxerModel = pModel;

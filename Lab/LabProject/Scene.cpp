@@ -807,6 +807,11 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			//			break;
 			//		}
 
+
+		// TODO : 가드에 대하여
+		// TODO : 방어 자세 애니메이션 확정하기
+		// TODO : A키를 이용한 연속기 확정하기
+		// TODO : 키 입력이 부자연스럽다면 다시 생각해보기
 		case 'Q':
 		case 'q': // 상단 주먹
 		{
@@ -1146,6 +1151,11 @@ void Scene::CollideCageSide()
 
 void Scene::CollidePVE()
 {
+
+	// TODO : 피격애니메이션 유니티에서 다시뽑던가 혹은 다른 것으로 확정하기, 피격 애니메이션은 정지상태를 유지할 수 있도록 해보기
+ 	// TODO : 이펙트 애니메이션 위치 조정하기, 현재 타격한 부위의 좌표이므로 이를 맞는 좌표로 설정하던가 테스트 필요
+	// TODO : 가드 했을 때의 이펙트를 설정 할것인가 확정하기
+	// TODO : 이펙트 다양화하기
 	static int collideCount;
 	for (auto& otherPlayerBoundBox : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
 	{

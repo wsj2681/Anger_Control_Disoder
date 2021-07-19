@@ -446,6 +446,11 @@ void Engine::ProcessInput()
 	if (GetKeyboardState(pKeysBuffer) && m_pScene) bProcessedByScene = m_pScene->ProcessInput(pKeysBuffer);
 	if (!bProcessedByScene && m_pPlayer->canMove)
 	{
+		// TODO : 3인칭 혹은 1인칭에서
+		// TODO : 캐릭터 이동 마우스 좌클릭:좌이동, 우클릭:우이동, 양쪽클릭:전방이동, 스페이스바:후방이동
+
+		// TODO : 2인칭
+		// TODO : 캐릭터 이동 키보드 왼쪽:전방이동, 오른쪽:후방이동, 위쪽:우측이동, 왼쪽:좌측이동
 		DWORD dwDirection = 0;
 		if (pKeysBuffer[VK_UP] & 0xF0)
 		{
@@ -508,6 +513,7 @@ void Engine::ProcessInput()
 		{
 			if (cxDelta || cyDelta)
 			{
+				// TODO 마우스 회전 좌우로 자유롭게 클릭하지 않고
 				if (pKeysBuffer[VK_RBUTTON] & 0xF0)
 				{
 					if (m_pCamera->GetMode() == SPACESHIP_CAMERA && !m_pCamera->IsFixed())
