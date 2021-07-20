@@ -452,7 +452,7 @@ void Engine::ProcessInput()
 		// TODO : 2인칭
 		// TODO : 캐릭터 이동 키보드 왼쪽:전방이동, 오른쪽:후방이동, 위쪽:우측이동, 왼쪽:좌측이동
 		DWORD dwDirection = 0;
-		if (pKeysBuffer[VK_UP] & 0xF0)
+		if (pKeysBuffer[VK_UP] & 0xF0) // ((pKeysBuffer[VK_RBUTTON] & 0xF0) && (pKeysBuffer[VK_LBUTTON] & 0xF0))
 		{
 			dwDirection |= DIR_FORWARD;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD, ANIMATION_TYPE_ONCE);
@@ -462,7 +462,7 @@ void Engine::ProcessInput()
 
 #endif // _WITH_SERVER_CONNECT
 		}
-		if (pKeysBuffer[VK_DOWN] & 0xF0)
+		if (pKeysBuffer[VK_DOWN] & 0xF0) // (pKeysBuffer[VK_SPACE] & 0xF0)
 		{
 			dwDirection |= DIR_BACKWARD;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD, ANIMATION_TYPE_ONCE);
@@ -471,7 +471,7 @@ void Engine::ProcessInput()
 			//server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
 		}
-		if (pKeysBuffer[VK_LEFT] & 0xF0)
+		if (pKeysBuffer[VK_LEFT] & 0xF0) // (pKeysBuffer[VK_LBUTTON] & 0xF0)
 		{
 			dwDirection |= DIR_LEFT;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT, ANIMATION_TYPE_ONCE);
@@ -480,7 +480,7 @@ void Engine::ProcessInput()
 			//server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
 		}
-		if (pKeysBuffer[VK_RIGHT] & 0xF0)
+		if (pKeysBuffer[VK_RIGHT] & 0xF0) // (pKeysBuffer[VK_RBUTTON] & 0xF0)
 		{
 			dwDirection |= DIR_RIGHT;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT, ANIMATION_TYPE_ONCE);
