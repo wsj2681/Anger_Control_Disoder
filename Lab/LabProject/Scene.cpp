@@ -210,6 +210,8 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 	for (int i = 0; i < boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_nAnimationSets; ++i)
 		boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[i]->isOtherPlayer = true;
+	
+	// position
 	boxer->SetPosition(-1.0f, 8.5f, 30.0f);
 	boxer->Rotate(0.0f, 180.0f, 0.0f);
 
@@ -809,8 +811,6 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 
 		// TODO : 가드에 대하여
 		// TODO : 방어 자세 애니메이션 확정하기
-		// TODO : S키를 이용한 연속기 확정하기
-		// TODO : 키 입력이 부자연스럽다면 다시 생각해보기
 		case 'Q':
 		case 'q': // 상단 주먹
 		{

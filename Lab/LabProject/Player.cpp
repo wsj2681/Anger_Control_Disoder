@@ -14,6 +14,8 @@
 #include "Scene.h"
 #include "CubeObject.h"
 
+extern Scene* gScene;
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Player
 
@@ -469,6 +471,28 @@ void BoxingPlayer::CameraRotate()
 void BoxingPlayer::Update(float fTimeElapsed)
 {
 	Player::Update(fTimeElapsed);
+	if (gScene)
+	{
+		if (gScene->hierarchicalGameObjects.data()[1])
+		{
+			gScene->hierarchicalGameObjects.data()[1]->GetPosition().x;
+			gScene->hierarchicalGameObjects.data()[1]->GetPosition().z;
+
+			this->GetPosition().x;
+			this->GetPosition().z;
+
+			float dirX = gScene->hierarchicalGameObjects.data()[1]->GetPosition().x - this->GetPosition().x;
+			float dirZ = gScene->hierarchicalGameObjects.data()[1]->GetPosition().z - this->GetPosition().z;
+
+			float length = sqrt((dirX * dirX) + (dirZ * dirZ));
+
+			float normalX = dirX / length;
+			float normalZ = dirZ / length;
+
+			//TODO : 플레이어 자동회전
+			//Rotate(0.0f, (atan2(normalZ, normalX) * 180 / 3.14159f), 0.0f);
+		}
+	}
 }
 
 void BoxingPlayer::MoveTo(XMFLOAT3 destination)
