@@ -71,6 +71,8 @@ void Server::Server_send()
 
 		retval = send(sock, (char*)&player, sizeof(player), 0);
 
+		// cplayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0);
+		
 		retval = send(sock, (char*)&send_attackAnddefend, sizeof(send_attackAnddefend), 0);
 
 		retval = send(sock, (char*)&myHP, sizeof(myHP), 0);
