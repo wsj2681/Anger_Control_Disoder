@@ -173,6 +173,13 @@ void Camera::CaptureWorld()
 	m_xmf3CapturedRight = this->m_xmf3Right;
 	m_xmf3CapturedUp = this->m_xmf3Up;
 	m_xmf3CapturedLook = this->m_xmf3Look;
+
+	{
+		cout << "position\t"<<m_xmf3CapturedPosition.x	<<" / "<< m_xmf3CapturedPosition.y << " / " << m_xmf3CapturedPosition.z << endl;
+		cout << "right\t"<<m_xmf3CapturedRight.x << " / " << m_xmf3CapturedRight.y << " / " << m_xmf3CapturedRight.z << endl;
+		cout << "up\t\t"<<m_xmf3CapturedUp.x << " / " << m_xmf3CapturedUp.y << " / " << m_xmf3CapturedUp.z << endl;
+		cout << "look\t"<<m_xmf3CapturedLook.x << " / " << m_xmf3CapturedLook.y << " / " << m_xmf3CapturedLook.z << endl;
+	}
 }
 
 void Camera::SetCaptureWorld()

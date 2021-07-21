@@ -8,7 +8,6 @@ SkinnedMesh::SkinnedMesh(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 SkinnedMesh::~SkinnedMesh()
 {
-	//TODO : Delete Scalar
 	SAFE_DELETEARR(m_pxmn4BoneIndices);
 	SAFE_DELETEARR(m_pxmf4BoneWeights);
 

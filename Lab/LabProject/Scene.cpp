@@ -225,7 +225,6 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	float angle = 0.0f;
 	float radius = 130.0f;
 
-	//TODO: 관중 각도 조절
 	for (int i = 0; i < nFloors; ++i)
 	{
 		angle = -30.0f;
@@ -810,7 +809,7 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 
 		// TODO : 가드에 대하여
 		// TODO : 방어 자세 애니메이션 확정하기
-		// TODO : A키를 이용한 연속기 확정하기
+		// TODO : S키를 이용한 연속기 확정하기
 		// TODO : 키 입력이 부자연스럽다면 다시 생각해보기
 		case 'Q':
 		case 'q': // 상단 주먹
@@ -837,14 +836,8 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			m_pPlayer->nowState = GUARD;
 			break;
 		}
-		case 'A': // 추가공격
-		case 'a':
-		{
-			
-			break;
-		}
-		case 'S':
-		case 's': // 중단 킥
+		case 'A':
+		case 'a': // 중단 킥
 		{
 			if (rand() % 2)
 			{
@@ -895,7 +888,19 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			m_pPlayer->nowState = GUARD;
 			break;
 		}
+		case VK_F7:
+		{
 
+			for (auto& o : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
+			{
+				o.second->boundBoxRender = !o.second->boundBoxRender;
+			}
+			for (auto& o : m_pPlayer->boundBoxs)
+			{
+				o.second->boundBoxRender = !o.second->boundBoxRender;
+			}
+			break;
+		}
 		}
 	}
 	return(false);
@@ -1164,13 +1169,20 @@ void Scene::CollidePVE()
 			if (otherPlayerBoundBox.second->m_pMesh->isIntersect(PlayerBoundBox.second->m_pMesh->obb))
 			{
 				// 상대 피격
-				if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == IDLE && m_pPlayer->nowState == ATTACK)
+				if ((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == IDLE || hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == HIT) 
+					&& m_pPlayer->nowState == ATTACK)
 				{
 					// 상대 머리
-					if (otherPlayerBoundBox.first == "Head" && 
+					if (otherPlayerBoundBox.first == "Head" &&
 						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_L) ||
 						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_R) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_AXE_KICK_R))
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_AXE_KICK_R)||
+						/*연속기*/
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_ONE_TWO) ||
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO_HEAD)||
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_1_2_KICK)|| 
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO)||
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_UPPER_CUT_L))
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
 						if (particle)
@@ -1189,7 +1201,9 @@ void Scene::CollidePVE()
 						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LEFT_BODY_HOOK) ||
 						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_RIGHT_BODY_HOOK) ||
 						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_MID_L) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_SIDE_KICK_L))
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_SIDE_KICK_L)||
+						/*연속기*/
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO))
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
 						if (particle)
@@ -1206,7 +1220,10 @@ void Scene::CollidePVE()
 					// 상대 하체
 					else if ((otherPlayerBoundBox.first == "lCalf" || otherPlayerBoundBox.first == "rCalf") &&
 						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_R) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_SL))
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_SL)|| 
+						/*연속기*/
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO_HEAD)||
+						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_1_2_KICK))
 					{
 						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
 						if (particle)
@@ -1243,7 +1260,7 @@ void Scene::CollidePVE()
 					}
 				}
 				// 플레이어 피격
-				if (m_pPlayer->nowState == IDLE && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
+				if ((m_pPlayer->nowState == IDLE || m_pPlayer->nowState == HIT) && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
 				{
 					// 플레이어 머리
 					if (PlayerBoundBox.first == "Head" && 
