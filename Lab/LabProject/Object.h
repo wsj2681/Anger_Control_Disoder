@@ -68,7 +68,7 @@ public:
 	map<string, CubeObject*> boundBoxs;
 	map<string, Object*> bones;
 	XMFLOAT3 oldSpinePosition;
-	UINT nowState = STATE_IDLE;
+	UINT nowState = IDLE;
 	UINT attackType = 0;
 
 	bool isActive = true;

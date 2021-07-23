@@ -7,7 +7,7 @@
 
 void Particle::Init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* rootSignatrue)
 {
-	uniform_real_distribution<> uid(-1.0, 1.0);
+	uniform_real_distribution<> uid(-1.f, 1.f);
 	default_random_engine dre;
 	if (objects.empty())
 	{

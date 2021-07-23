@@ -83,33 +83,16 @@ void AnimationSet::SetPosition(float fTrackPosition)
 	}
 	case ANIMATION_TYPE_ONCE:
 	{
-		//cout << "APosition(" << gScene->m_pPlayer->GetPosition().x << ", " << gScene->m_pPlayer->GetPosition().y << ", " << gScene->m_pPlayer->GetPosition().z << ")" << endl;
-		//cout << "Position(" << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().x << ", " << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().y << ", " << gScene->m_ppHierarchicalGameObjects[0]->GetPosition().z << ")" << endl;
-		//cout << "BPosition(" << gScene->m_pPlayer->bones["Head"]->GetPosition().x<< ", " << gScene->m_pPlayer->bones["Head"]->GetPosition().y << ", " << gScene->m_pPlayer->bones["Head"]->GetPosition().z << ")" << endl;
 		m_fPosition = fTrackPosition - int(fTrackPosition / m_pfKeyFrameTimes[m_nKeyFrames - 1]) * m_pfKeyFrameTimes[m_nKeyFrames - 1];
-		//if (isPlayer)
-		//	gScene->m_pPlayer->GetCamera()->SetPosition(gScene->m_pPlayer->GetPosition());
 
 		if (IsAnimate())
 		{
 			if (isPlayer) // 애니메이션이 끝났을 때
 			{
-				if (!Vector3::Compare(gScene->m_pPlayer->bones["Spine"]->GetPosition(), gScene->m_pPlayer->oldSpinePosition))
-				{
-					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) >= ANIMATION_JAB_KICK)
-					{
-						//gScene->m_pPlayer->SetPosition({ gScene->m_pPlayer->bones["Spine"]->GetPosition().x, 100.f, gScene->m_pPlayer->bones["Spine"]->GetPosition().z });
-					}
-				}
 				if ((gScene->m_pPlayer->isAlive) && (gScene->m_pPlayer->nowState != IDLE))
 				{
 					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 					gScene->m_pPlayer->nowState = IDLE;
-				}
-				else
-				{
-					gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-					gScene->m_pPlayer->nowState = DEAD;
 				}
 				gScene->m_pPlayer->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.0f;
 				m_fPosition = 0.0f;
@@ -121,11 +104,6 @@ void AnimationSet::SetPosition(float fTrackPosition)
 					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 					gScene->hierarchicalGameObjects.data()[1]->nowState = IDLE;
 				}
-				else
-				{
-					gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
-					gScene->hierarchicalGameObjects.data()[1]->nowState = DEAD;
-				}
 				gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->m_pAnimationTracks[0].m_fPosition = 0.0f;
 				m_fPosition = 0.0f;
 			}
@@ -136,23 +114,75 @@ void AnimationSet::SetPosition(float fTrackPosition)
 
 			if (isPlayer)
 			{
+				// 아무 입력도 없었을 때
 				if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_COMBAT_MODE_A)
 				{
-					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_BODY || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LEFT_HEAD || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_RIGHT_HEAD)
-						gScene->m_pPlayer->nowState = GUARD;
-					else
-					//gScene->m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0));
-					gScene->m_pPlayer->nowState = ATTACK;
+					// 움직이는 상태가 아닐때
+					if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_FORWARD &&
+						gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_BACKWARD &&
+						gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_LEFT &&
+						gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_RIGHT)
+					{
+						// 가드 동작을 취하면
+						if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_BODY ||
+							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LEFT_HEAD ||
+							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_RIGHT_HEAD ||
+							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LOW_LEFT ||
+							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LOW_RIGHT ||
+							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_SIDE_LEFT ||
+							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_SIDE_RIGHT ||
+							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_LEFT ||
+							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_RIGHT)
+						{
+							gScene->m_pPlayer->nowState = GUARD;
+						}
+						// 맞는 중이다 라는 애니메이션
+						else if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HIT_TORSO_STRIGHT_B ||
+							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HIT_HEAD_STRIGHT_B)
+						{
+							gScene->m_pPlayer->nowState = HIT;
+						}
+						else // 가드가 아니고 맞는상황의 애니메이션이 아니라면
+						{
+							gScene->m_pPlayer->nowState = ATTACK;
+						}
+					}
 				}
 			}
 			else if (isOtherPlayer)
 			{
 				if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_COMBAT_MODE_A)
 				{
-					if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_BODY || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LEFT_HEAD || gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_RIGHT_HEAD)
-						gScene->hierarchicalGameObjects.data()[1]->nowState = GUARD;
-					//gScene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, gScene->m_ppHierarchicalGameObjects[0]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0));
-					gScene->hierarchicalGameObjects.data()[1]->nowState = ATTACK;
+					// 움직이는 상태가 아닐때
+					if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_FORWARD &&
+						gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_BACKWARD &&
+						gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_LEFT &&
+						gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_RIGHT)
+					{
+						// 가드 동작을 취하면
+						if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_BODY ||
+							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LEFT_HEAD ||
+							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_RIGHT_HEAD ||
+							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LOW_LEFT ||
+							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LOW_RIGHT ||
+							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_SIDE_LEFT ||
+							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_SIDE_RIGHT ||
+							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_LEFT ||
+							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_RIGHT)
+						{
+							gScene->hierarchicalGameObjects.data()[1]->nowState = GUARD;
+						}
+						// 맞는 중이다 라는 애니메이션
+						else if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HIT_TORSO_STRIGHT_B ||
+							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HIT_HEAD_STRIGHT_B)
+						{
+							gScene->hierarchicalGameObjects.data()[1]->nowState = HIT;
+						}
+						else // 가드가 아닌 동작이라면, 공격중이다.
+						{
+							gScene->hierarchicalGameObjects.data()[1]->nowState = ATTACK;
+						}
+					}
 				}
 			}
 			break;

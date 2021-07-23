@@ -60,5 +60,5 @@ void WayPoint::SetAnimations(const UINT& animations)
 
 bool WayPoint::IsMove()
 {
-	return nowState == STATE_MOVE;
+	return nowState == IDLE;
 }

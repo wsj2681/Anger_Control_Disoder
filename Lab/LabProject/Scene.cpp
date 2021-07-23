@@ -205,7 +205,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
-	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/TEST.bin", nullptr);
+	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/TEST2.bin", nullptr);
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 	for (int i = 0; i < boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_nAnimationSets; ++i)
@@ -833,6 +833,16 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case 'E': // 상단 가드
 		case 'e':
 		{
+			// ANIMATION_GUARD_HOOK_LEFT
+			// ANIMATION_GUARD_HOOK_RIGHT
+			if (rand() % 2)
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_HOOK_LEFT, ANIMATION_TYPE_ONCE, true);
+			}
+			else
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_HOOK_RIGHT, ANIMATION_TYPE_ONCE, true);
+			}
 			m_pPlayer->nowState = GUARD;
 			break;
 		}
@@ -853,6 +863,16 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case 'D':
 		case 'd': // 중단 가드
 		{
+			// ANIMATION_GUARD_SIDE_LEFT
+			// ANIMATION_GUARD_SIDE_RIGHT
+			if (rand() % 2)
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_SIDE_LEFT, ANIMATION_TYPE_ONCE, true);
+			}
+			else
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_SIDE_RIGHT, ANIMATION_TYPE_ONCE, true);
+			}
 			m_pPlayer->nowState = GUARD;
 			break;
 		}
@@ -885,6 +905,16 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case 'C':
 		case 'c': // 하단 가드
 		{
+			// ANIMATION_GUARD_LOW_LEFT
+			// ANIMATION_GUARD_LOW_RIGHT
+			if (rand() % 2)
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LOW_LEFT, ANIMATION_TYPE_ONCE, true);
+			}
+			else
+			{
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LOW_RIGHT, ANIMATION_TYPE_ONCE, true);
+			}
 			m_pPlayer->nowState = GUARD;
 			break;
 		}

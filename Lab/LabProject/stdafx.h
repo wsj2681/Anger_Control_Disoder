@@ -80,20 +80,6 @@ extern BYTE ReadStringFromFile(FILE *pInFile, char *pstrToken);
 extern int ReadIntegerFromFile(FILE *pInFile);
 extern float ReadFloatFromFile(FILE *pInFile);
 
-constexpr UINT STATE_IDLE = 0x00;
-constexpr UINT STATE_MOVE = 0x01;
-constexpr UINT STATE_ATTACK_LEFT_HOOK = 0x02;
-constexpr UINT STATE_ATTACK_RIGHT_HOOK = 0x03;
-constexpr UINT STATE_ATTACK_JAB = 0x04;
-constexpr UINT STATE_GUARD_LEFT_HEAD = 0x05;
-constexpr UINT STATE_GUARD_RIGHT_HEAD = 0x06;
-constexpr UINT STATE_GUARD_BODY = 0x07;
-constexpr UINT STATE_HIT_TORSO_LEFT = 0x08;
-constexpr UINT STATE_HIT_TORSO_RIGHT = 0x09;
-constexpr UINT STATE_HIT_TORSO_STRIGHT = 0x0A;
-constexpr UINT STATE_CEREMONY = 0x0B;
-constexpr UINT STATE_KNOCKDOWN = 0x0C;
-
 //----------------기본 애니메이션-------------------
 constexpr UINT ANIMATION_IDLE_A = 0x00;             // Idle_A (서있는 IDLE)
 constexpr UINT ANIMATION_IDLE_B = 0x01;             // Idle_B (딴짓하는 IDLE)
@@ -122,6 +108,12 @@ constexpr UINT ANIMATION_KNOCKDOWNED = 0x17;        // Knockdowned
 constexpr UINT ANIMATION_GUARD_LEFT_HEAD = 0x18;	// Close_One_Block_L
 constexpr UINT ANIMATION_GUARD_RIGHT_HEAD = 0x19;	// Close_One_Block_R
 constexpr UINT ANIMATION_GUARD_BODY = 0x1A;			// Close_Both_Block
+constexpr UINT ANIMATION_GUARD_LOW_LEFT = 0x61;     // Low Block L
+constexpr UINT ANIMATION_GUARD_LOW_RIGHT = 0x62;    // Low Block R
+constexpr UINT ANIMATION_GUARD_SIDE_LEFT = 0x63;    // Side Block L
+constexpr UINT ANIMATION_GUARD_SIDE_RIGHT = 0x64;   // Side Block R
+constexpr UINT ANIMATION_GUARD_HOOK_LEFT = 0x65;    // Hook Block L
+constexpr UINT ANIMATION_GUARD_HOOK_RIGHT = 0x66;   // Hook Block R
 //----------------공격 애니메이션-------------------
 constexpr UINT ANIMATION_HOOK_L = 0x1B; 			// Hook_L 
 constexpr UINT ANIMATION_HOOK_R = 0x1C;				// Hook_R
@@ -194,7 +186,6 @@ constexpr UINT ANIMATION_FUL_LOW_KIK_L = 0x5D;		// Ful_Low_KIK_L
 constexpr UINT ANIMATION_FUL_MID_KIK_L = 0x5E;		// Ful_Mid_Kik_L
 constexpr UINT ANIMATION_HIGH_KICK_360_R = 0x5F;	// High_Kick_360_R
 constexpr UINT ANIMATION_MIDDLE_KICK_360_R = 0x60;	// Middle_Kick_360_R
-constexpr UINT ANIMATION_PUSH_KIK_HIGH_L = 0x61;	// Push_Kik_High_L
 //----------------------------------------------------------
 constexpr UINT DAMAGE_HOOK = 10;
 constexpr UINT DAMAGE_HOOK_L = 10;
@@ -206,7 +197,7 @@ constexpr UINT IDLE = 1;
 constexpr UINT ATTACK = 2;
 constexpr UINT HIT = 3;
 constexpr UINT GUARD = 4;
-constexpr UINT DEAD = 3;
+constexpr UINT DEAD = 5;
 
 //HR
 #if defined(DEBUG) | defined(_DEBUG)

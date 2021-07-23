@@ -319,7 +319,7 @@ void Player::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext)
 {
 
-	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/TEST.bin", nullptr);
+	ModelInfo *BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/TEST2.bin", nullptr);
 	SetChild(BoxerModel->m_pModelRootObject, true);
 
 	if (this->bones["Head"] = FindFrame("Bip01_Head"))
@@ -475,29 +475,34 @@ void BoxingPlayer::Update(float fTimeElapsed)
 	{
 		if (gScene->hierarchicalGameObjects.data()[1])
 		{
-			gScene->hierarchicalGameObjects.data()[1]->GetPosition().x;
-			gScene->hierarchicalGameObjects.data()[1]->GetPosition().z;
+			float targetX = gScene->hierarchicalGameObjects.data()[1]->GetPosition().x;
+			float targetZ = gScene->hierarchicalGameObjects.data()[1]->GetPosition().z;
 
-			this->GetPosition().x;
-			this->GetPosition().z;
+			//cout << "Target : " << targetX << "/ " << targetZ << endl;
+			//cout << "This : " << this->GetPosition().x << "/ " << this->GetPosition().z << endl << endl;
 
-			float dirX = gScene->hierarchicalGameObjects.data()[1]->GetPosition().x - this->GetPosition().x;
-			float dirZ = gScene->hierarchicalGameObjects.data()[1]->GetPosition().z - this->GetPosition().z;
+			float dirX = targetX - this->GetPosition().x;
+			float dirZ = targetZ - this->GetPosition().z;
 
 			float length = sqrt((dirX * dirX) + (dirZ * dirZ));
 
 			float normalX = dirX / length;
 			float normalZ = dirZ / length;
 
+			//XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians((atan2(normalZ, normalX) * 180 / 3.14159f)));
+			//m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
+			//m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
+
 			//TODO : 플레이어 자동회전
 			//Rotate(0.0f, (atan2(normalZ, normalX) * 180 / 3.14159f), 0.0f);
+			cout << this->nowState << " / " << gScene->hierarchicalGameObjects.data()[1]->nowState << endl;
 		}
 	}
 }
 
 void BoxingPlayer::MoveTo(XMFLOAT3 destination)
 {
-	wayPoint.SetNowState(STATE_MOVE);
+	wayPoint.SetNowState(IDLE);
 	UINT animation = wayPoint.GetAnimations();
 	m_pSkinnedAnimationController->SetTrackAnimationSet(0, animation);
 	XMFLOAT3 comparePosition = GetPosition();
@@ -528,7 +533,7 @@ void BoxingPlayer::MoveTo(XMFLOAT3 destination)
 	{
 		wayPoint.SetCurWayPoints(wayPoint.GetCurWayPoints() + 1);
 	}
-	wayPoint.SetNowState(STATE_MOVE);
+	wayPoint.SetNowState(IDLE);
 }
 
 void BoxingPlayer::UpdateWayPoints()

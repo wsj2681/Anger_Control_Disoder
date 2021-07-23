@@ -754,7 +754,7 @@ ModelInfo *Object::LoadGeometryAndAnimationFromFile(ID3D12Device *pd3dDevice, ID
 
 void Object::MoveTo(XMFLOAT3 destination)
 {
-	wayPoint.SetNowState(STATE_MOVE);
+	wayPoint.SetNowState(IDLE);
 	UINT animation = wayPoint.GetAnimations();
 	m_pSkinnedAnimationController->SetTrackAnimationSet(0, animation);
 	XMFLOAT3 comparePosition = GetPosition();
@@ -785,7 +785,7 @@ void Object::MoveTo(XMFLOAT3 destination)
 	{
 		wayPoint.SetCurWayPoints(wayPoint.GetCurWayPoints() + 1);
 	}
-	wayPoint.SetNowState(STATE_MOVE);
+	wayPoint.SetNowState(IDLE);
 }
 
 void Object::UpdateWayPoints()

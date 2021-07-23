@@ -8,7 +8,7 @@ public:
 	WayPoint& operator=(const WayPoint&) = delete;
 	~WayPoint() = default;
 private:
-	UINT nowState{ STATE_IDLE };
+	UINT nowState{ IDLE };
 	UINT nWayPoints{ 0 };
 	UINT curWayPoints{ 0 };
 	XMFLOAT3 wayPoints[20]{ XMFLOAT3(0.0f, 0.0f, 0.0f) };

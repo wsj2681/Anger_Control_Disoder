@@ -292,7 +292,7 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 	{
 		case WM_KEYUP:
 			// TODO: 코드 위치 생각해보기
-			this->m_pPlayer->nowState = STATE_IDLE;
+			this->m_pPlayer->nowState = IDLE;
 			switch (wParam)
 			{
 				case VK_ESCAPE:
