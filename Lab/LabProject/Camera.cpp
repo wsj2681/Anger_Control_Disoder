@@ -344,9 +344,6 @@ void CThirdPersonCamera::SetLookAt(XMFLOAT3& xmf3LookAt)
 	m_xmf3Look = XMFLOAT3(mtxLookAt._13, mtxLookAt._23, mtxLookAt._33);
 }
 
-// TODO : 카메라 위치 2인칭으로 조정하기
-// TODO : 1. 각 두 플레이어의 위치를 기준으로 가운데로 이동시키기 
-// TODO : 2. 한 플레이어에 대하여 각도를 설정하여 그 각도를 유지할 수 있도록 카메라 위치를 뒤로 가거나 앞으로 이동시키기
 CSpaceShipCamera2::CSpaceShipCamera2(Camera* pCamera)
 	:CSpaceShipCamera(pCamera)
 {

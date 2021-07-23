@@ -448,8 +448,6 @@ void Engine::ProcessInput()
 		// TODO : 3인칭 혹은 1인칭에서
 		// TODO : 캐릭터 이동 마우스 좌클릭:좌이동, 우클릭:우이동, 양쪽클릭:전방이동, 스페이스바:후방이동
 
-		// TODO : 2인칭
-		// TODO : 캐릭터 이동 키보드 왼쪽:전방이동, 오른쪽:후방이동, 위쪽:우측이동, 왼쪽:좌측이동
 		DWORD dwDirection = 0;
 		if (pKeysBuffer[VK_UP] & 0xF0) // ((pKeysBuffer[VK_RBUTTON] & 0xF0) && (pKeysBuffer[VK_LBUTTON] & 0xF0))
 		{
