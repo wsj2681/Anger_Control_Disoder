@@ -67,7 +67,7 @@ public:
     void AnimateObjects(float fTimeElapsed);
     void Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera=nullptr);
 	void CollideCageSide();
-	void CollidePVE();
+	void CollidePVE(const float& deltaTime);
 	void ReleaseUploadBuffers();
 
 	Player								*m_pPlayer = nullptr;

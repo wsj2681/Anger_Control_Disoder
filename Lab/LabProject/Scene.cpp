@@ -952,7 +952,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	//TODO : 여기 다시보기
 	CollideCageSide();
 
-	CollidePVE();
+	CollidePVE(fTimeElapsed);
 }
 
 void Scene::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
@@ -1065,9 +1065,16 @@ void Scene::CollideCageSide()
 	}
 }
 
-void Scene::CollidePVE()
+void Scene::CollidePVE(const float& deltaTime)
 {
-
+	static float CoolTime = 0.f;
+	static bool CoolDown = true;
+	CoolTime += deltaTime;
+	
+	if (CoolTime >= 0.3f)
+	{
+		CoolDown = true;
+	}
  	// TODO : 이펙트 애니메이션 위치 조정하기, 현재 타격한 부위의 좌표이므로 이를 맞는 좌표로 설정하던가 테스트 필요
 	// TODO : 가드 했을 때의 이펙트를 설정 할것인가 확정하기
 	// TODO : 이펙트 다양화하기
@@ -1076,7 +1083,7 @@ void Scene::CollidePVE()
 	{
 		for (auto& PlayerBoundBox : m_pPlayer->boundBoxs)
 		{
-			if (otherPlayerBoundBox.second->m_pMesh->isIntersect(PlayerBoundBox.second->m_pMesh->obb))
+			if (otherPlayerBoundBox.second->m_pMesh->isIntersect(PlayerBoundBox.second->m_pMesh->obb) && CoolDown)
 			{
 				// 상대 피격
 				if ((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == IDLE || hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == HIT) 
@@ -1147,6 +1154,9 @@ void Scene::CollidePVE()
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
+
+					CoolDown = false;
+					CoolTime = 0.f;
 				}
 				// 상대 가드
 				else if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == GUARD && m_pPlayer->nowState == ATTACK)
