@@ -181,6 +181,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	
 	m_pSkyBox = new SkyBox(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
+
 	ModelInfo* MapModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/Arena.bin", nullptr);
 	Object* Map = new CrowdObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, MapModel, 1);
 	cageSide = Map->FindFrame("octagon_floor");
@@ -205,7 +206,17 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	lights.push_back(Map->FindFrame("spot_light_1"));
 
 	BuildDefaultLightsAndMaterials();
-	ModelInfo* BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/TEST2.bin", nullptr);
+	ModelInfo* BoxerModel = nullptr;
+	server->thread_id.thread_num;
+	if (server->thread_id.thread_num == 1)
+	{
+		BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/OtherPlayer.bin", nullptr);
+	}
+	else
+	{
+		BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/TEST2.bin", nullptr);
+	}
+
 	Object* boxer = new BoxerObject(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, BoxerModel, 1);
 	boxer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COMBAT_MODE_A);
 	for (int i = 0; i < boxer->m_pSkinnedAnimationController->m_pAnimationSets->m_nAnimationSets; ++i)
@@ -246,10 +257,12 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	SAFE_DELETE(crowdModel);
 
 	gGameObject = hierarchicalGameObjects;
+	ui["1_BloodEffect"] = new UI_BloodEffect(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/bloodUI.dds");
+	ui["1_BloodEffect"]->SetActive(false);
 	
-	ui["PlayerHP"] = new UI_HP_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar_Other.dds");
-	ui["OtherPlayerHP"] = new UI_HP_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar.dds");
-	ui["OtherPlayerHP"]->SetActive(true);
+	ui["4_PlayerHP"] = new UI_HP_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar_Other.dds");
+	ui["4_OtherPlayerHP"] = new UI_HP_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar.dds");
+	ui["4_OtherPlayerHP"]->SetActive(true);
 
 	ui["3_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
 	ui["3_PlayerTotalScore"]->SetActive(true);
@@ -257,8 +270,6 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ui["3_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
 	ui["3_OtherPlayerTotalScore"]->SetActive(true);
 
-	ui["2_BloodEffect"] = new UI_BloodEffect(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/bloodUI.dds");
-	ui["2_BloodEffect"]->SetActive(false);
 	//particle = new Particle;
 	//particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -698,7 +709,7 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		{
 		case 'T':
 		{
-			ui["2_BloodEffect"]->SetActive(!ui["2_BloodEffect"]->isActive());
+			ui["1_BloodEffect"]->SetActive(!ui["1_BloodEffect"]->isActive());
 			break;
 		}
 		case 'Q':
@@ -806,6 +817,22 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LOW_RIGHT, ANIMATION_TYPE_ONCE, true);
 			}
 			m_pPlayer->nowState = GUARD;
+			break;
+		}
+		case 'B':
+		case 'b': // 하단 가드
+		{
+			// ANIMATION_GUARD_LOW_LEFT
+			// ANIMATION_GUARD_LOW_RIGHT
+			if (rand() % 2)
+			{
+				hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LOW_LEFT, ANIMATION_TYPE_ONCE, true);
+			}
+			else
+			{
+				hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LOW_RIGHT, ANIMATION_TYPE_ONCE, true);
+			}
+			hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = GUARD;
 			break;
 		}
 		case VK_F7:
@@ -1083,14 +1110,6 @@ void Scene::CollidePVE(const float& deltaTime)
 		CoolDown = true;
 	}
 
-	static float bloodEffectTime = 0.f;
-	bloodEffectTime += deltaTime;
-
-	if (bloodEffectTime >= 1.f)
-	{
-		ui["2_BloodEffect"]->SetActive(false);
-	}
-
  	// TODO : 이펙트 애니메이션 위치 조정하기, 현재 타격한 부위의 좌표이므로 이를 맞는 좌표로 설정하던가 테스트 필요
 	// TODO : 가드 했을 때의 이펙트를 설정 할것인가 확정하기
 	// TODO : 이펙트 다양화하기
@@ -1170,8 +1189,6 @@ void Scene::CollidePVE(const float& deltaTime)
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
-					//ui["2_BloodEffect"]->SetActive(true);
-					//bloodEffectTime = 0.f;
 					CoolDown = false;
 					CoolTime = 0.f;
 				}

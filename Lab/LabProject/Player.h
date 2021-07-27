@@ -99,7 +99,7 @@ public:
 class BoxingPlayer : public Player
 {
 public:
-	BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, void *pContext=nullptr);
+	BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, int id,void *pContext=nullptr);
 	virtual ~BoxingPlayer();
 public:
 	virtual Camera *ChangeCamera(DWORD nNewCameraMode, float fTimeElapsed);

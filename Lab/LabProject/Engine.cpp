@@ -406,7 +406,7 @@ void Engine::BuildObjects()
 	m_pScene = new Scene();
 	if (m_pScene) m_pScene->BuildObjects(device, commandList);
 
-	BoxingPlayer *pPlayer = new BoxingPlayer(device, commandList, m_pScene->GetGraphicsRootSignature());
+	BoxingPlayer *pPlayer = new BoxingPlayer(device, commandList, m_pScene->GetGraphicsRootSignature(), server->thread_id.thread_num);
 	pPlayer->SetPosition(XMFLOAT3(-1.0f, 8.5f, -30.0f));
 	
 	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
