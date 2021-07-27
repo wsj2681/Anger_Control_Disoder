@@ -196,8 +196,11 @@ constexpr UINT DAMAGE_STRAIGHT = 15;
 constexpr UINT IDLE = 1;
 constexpr UINT ATTACK = 2;
 constexpr UINT HIT = 3;
-constexpr UINT GUARD = 4;
-constexpr UINT DEAD = 5;
+constexpr UINT HIGH_GUARD = 4;
+constexpr UINT MIDDLE_GUARD = 5;
+constexpr UINT LOW_GUARD = 6;
+constexpr UINT OTHER = 7;
+
 
 //HR
 #if defined(DEBUG) | defined(_DEBUG)

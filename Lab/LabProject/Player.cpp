@@ -319,6 +319,8 @@ void Player::Render(ID3D12GraphicsCommandList *pd3dCommandList, Camera *pCamera)
 BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *pd3dCommandList, ID3D12RootSignature *pd3dGraphicsRootSignature, int id, void *pContext)
 {
 	ModelInfo* BoxerModel = nullptr;
+
+#ifdef _WITH_SERVER_CONNECT
 	cout << "이거 먼저 실행됨"<<id << endl;
 	if (id == 1)
 	{
@@ -328,6 +330,10 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	{
 		BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/OtherPlayer.bin", nullptr);
 	}
+#else
+	BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/TEST2.bin", nullptr);
+#endif
+
 	SetChild(BoxerModel->m_pModelRootObject, true);
 
 	if (this->bones["Head"] = FindFrame("Bip01_Head"))

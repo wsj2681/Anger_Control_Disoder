@@ -134,7 +134,21 @@ void AnimationSet::SetPosition(float fTrackPosition)
 							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_LEFT ||
 							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_RIGHT)
 						{
-							gScene->m_pPlayer->nowState = GUARD;
+							if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_LEFT ||
+								gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_RIGHT)
+							{
+								gScene->m_pPlayer->nowState = HIGH_GUARD;
+							}
+							else if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_SIDE_LEFT ||
+								gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_SIDE_RIGHT)
+							{
+								gScene->m_pPlayer->nowState = MIDDLE_GUARD;
+							}
+							else if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LOW_LEFT ||
+								gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LOW_RIGHT)
+							{
+								gScene->m_pPlayer->nowState = LOW_GUARD;
+							}
 						}
 						// 맞는 중이다 라는 애니메이션
 						else if (gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HIT_TORSO_STRIGHT_B ||
@@ -142,7 +156,12 @@ void AnimationSet::SetPosition(float fTrackPosition)
 						{
 							gScene->m_pPlayer->nowState = HIT;
 						}
-						else // 가드가 아니고 맞는상황의 애니메이션이 아니라면
+						else if(gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_COME_HERE_BRUCE_LI ||
+							gScene->m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_COME_HERE_1HAND) // 가드가 아니고 맞는상황의 애니메이션이 아니라면
+						{
+							gScene->m_pPlayer->nowState = OTHER;
+						}
+						else
 						{
 							gScene->m_pPlayer->nowState = ATTACK;
 						}
@@ -170,13 +189,32 @@ void AnimationSet::SetPosition(float fTrackPosition)
 							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_LEFT ||
 							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_RIGHT)
 						{
-							gScene->hierarchicalGameObjects.data()[1]->nowState = GUARD;
+							if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_LEFT ||
+								gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_HOOK_RIGHT)
+							{
+								gScene->hierarchicalGameObjects.data()[1]->nowState = HIGH_GUARD;
+							}
+							else if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_SIDE_LEFT ||
+								gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_SIDE_RIGHT)
+							{
+								gScene->hierarchicalGameObjects.data()[1]->nowState = MIDDLE_GUARD;
+							}
+							else if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LOW_LEFT ||
+								gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_GUARD_LOW_RIGHT)
+							{
+								gScene->hierarchicalGameObjects.data()[1]->nowState = LOW_GUARD;
+							}
 						}
 						// 맞는 중이다 라는 애니메이션
 						else if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HIT_TORSO_STRIGHT_B ||
 							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HIT_HEAD_STRIGHT_B)
 						{
 							gScene->hierarchicalGameObjects.data()[1]->nowState = HIT;
+						}
+						else if (gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_COME_HERE_BRUCE_LI ||
+							gScene->hierarchicalGameObjects.data()[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_COME_HERE_1HAND) // 가드가 아니고 맞는상황의 애니메이션이 아니라면
+						{
+							gScene->hierarchicalGameObjects.data()[1]->nowState = OTHER;
 						}
 						else // 가드가 아닌 동작이라면, 공격중이다.
 						{
