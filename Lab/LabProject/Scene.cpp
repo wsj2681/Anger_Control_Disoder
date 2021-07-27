@@ -257,6 +257,8 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ui["3_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
 	ui["3_OtherPlayerTotalScore"]->SetActive(true);
 
+	ui["2_BloodEffect"] = new UI_BloodEffect(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/bloodUI.dds");
+	ui["2_BloodEffect"]->SetActive(false);
 	//particle = new Particle;
 	//particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -694,6 +696,11 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
+		case 'T':
+		{
+			ui["2_BloodEffect"]->SetActive(!ui["2_BloodEffect"]->isActive());
+			break;
+		}
 		case 'Q':
 		case 'q': // 상단 주먹
 		{
@@ -1075,6 +1082,15 @@ void Scene::CollidePVE(const float& deltaTime)
 	{
 		CoolDown = true;
 	}
+
+	static float bloodEffectTime = 0.f;
+	bloodEffectTime += deltaTime;
+
+	if (bloodEffectTime >= 1.f)
+	{
+		ui["2_BloodEffect"]->SetActive(false);
+	}
+
  	// TODO : 이펙트 애니메이션 위치 조정하기, 현재 타격한 부위의 좌표이므로 이를 맞는 좌표로 설정하던가 테스트 필요
 	// TODO : 가드 했을 때의 이펙트를 설정 할것인가 확정하기
 	// TODO : 이펙트 다양화하기
@@ -1154,7 +1170,8 @@ void Scene::CollidePVE(const float& deltaTime)
 						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
-
+					//ui["2_BloodEffect"]->SetActive(true);
+					//bloodEffectTime = 0.f;
 					CoolDown = false;
 					CoolTime = 0.f;
 				}
