@@ -1144,12 +1144,22 @@ void Scene::CollidePVE(const float& deltaTime)
 		CoolDown = true;
 	}
 
+	static float effectTime = 0.f;
+
+	effectTime += deltaTime;
+
+	if (effectTime >= 1.f)
+	{
+		ui["1_BloodEffect"]->SetActive(false);
+	}
+	else
+	{
+		ui["1_BloodEffect"]->SetActive(true);
+	}
+
 	// TODO : 이펙트 애니메이션 위치 조정하기, 현재 타격한 부위의 좌표이므로 이를 맞는 좌표로 설정하던가 테스트 필요
 	// TODO : 가드 했을 때의 이펙트를 설정 할것인가 확정하기
 	// TODO : 이펙트 다양화하기
-
-	// TODO : 가드 구분하기
-	static int collideCount;
 
 	UINT playerAnimation = m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0);
 	UINT otherPlayerAnimation = hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0);
@@ -1165,7 +1175,7 @@ void Scene::CollidePVE(const float& deltaTime)
 					(PlayerBoundBox.first == "lHand" || PlayerBoundBox.first == "rHand" ||
 						PlayerBoundBox.first == "rFoot" || PlayerBoundBox.first == "lFoot"))
 				{
-					// TODO : 상단 공격은 머리만 맞도록 해야한다.
+					// 상단 공격은 머리만 맞도록 해야한다.
 					if (playerAnimation == ANIMATION_AXE_KICK_R || playerAnimation == ANIMATION_HOOK_L || playerAnimation == ANIMATION_HOOK_R ||
 						playerAnimation == ANIMATION_ONE_TWO || playerAnimation == ANIMATION_KICK_COMBO_HEAD || playerAnimation == ANIMATION_1_2_KICK ||
 						playerAnimation == ANIMATION_KICK_COMBO || playerAnimation == ANIMATION_UPPER_CUT_L)
@@ -1188,6 +1198,8 @@ void Scene::CollidePVE(const float& deltaTime)
 								effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
 							}
 							hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
+							CoolTime = 0.f;
+							CoolDown = false;
 						}
 					}
 				}
@@ -1195,7 +1207,7 @@ void Scene::CollidePVE(const float& deltaTime)
 					(PlayerBoundBox.first == "lHand" || PlayerBoundBox.first == "rHand" ||
 						PlayerBoundBox.first == "rFoot" || PlayerBoundBox.first == "lFoot"))
 				{
-					// TODO : 중단 공격은 몸통만 맞도록 해야한다.
+					// 중단 공격은 몸통만 맞도록 해야한다.
 					if (playerAnimation == ANIMATION_LEFT_BODY_HOOK || playerAnimation == ANIMATION_RIGHT_BODY_HOOK || playerAnimation == ANIMATION_KICK_MID_L ||
 						playerAnimation == ANIMATION_SIDE_KICK_L || playerAnimation == ANIMATION_KICK_COMBO)
 					{
@@ -1216,13 +1228,15 @@ void Scene::CollidePVE(const float& deltaTime)
 								effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
 							}
 							hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
+							CoolTime = 0.f;
+							CoolDown = false;
 						}
 					}
 				}
 				else if ((otherPlayerBoundBox.first == "lCalf" || otherPlayerBoundBox.first == "rCalf") &&
 					(PlayerBoundBox.first == "rFoot" || PlayerBoundBox.first == "lFoot"))
 				{
-					// TODO : 하단 공격은 다리만 맞게 해야한다.
+					// 하단 공격은 다리만 맞게 해야한다.
 					if (playerAnimation == ANIMATION_LOW_KICK_R || playerAnimation == ANIMATION_LOW_KICK_SL)
 					{
 						if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == LOW_GUARD && m_pPlayer->nowState == ATTACK)
@@ -1238,9 +1252,11 @@ void Scene::CollidePVE(const float& deltaTime)
 							hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
 							if (effectManager)
 							{
-								effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
+								effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), REDX);
 							}
 							hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
+							CoolTime = 0.f;
+							CoolDown = false;
 						}
 					}
 				}
@@ -1250,7 +1266,7 @@ void Scene::CollidePVE(const float& deltaTime)
 					(otherPlayerBoundBox.first == "lHand" || otherPlayerBoundBox.first == "rHand" ||
 						otherPlayerBoundBox.first == "rFoot" || otherPlayerBoundBox.first == "lFoot"))
 				{
-					// TODO : 상단 공격은 머리만 맞도록 해야한다.
+					// 상단 공격은 머리만 맞도록 해야한다.
 					if (otherPlayerAnimation == ANIMATION_AXE_KICK_R || otherPlayerAnimation == ANIMATION_HOOK_L || otherPlayerAnimation == ANIMATION_HOOK_R ||
 						otherPlayerAnimation == ANIMATION_ONE_TWO || otherPlayerAnimation == ANIMATION_KICK_COMBO_HEAD || otherPlayerAnimation == ANIMATION_1_2_KICK ||
 						otherPlayerAnimation == ANIMATION_KICK_COMBO || otherPlayerAnimation == ANIMATION_UPPER_CUT_L)
@@ -1273,6 +1289,9 @@ void Scene::CollidePVE(const float& deltaTime)
 								effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
 							}
 							m_pPlayer->hp -= 20.f;
+							CoolTime = 0.f;
+							CoolDown = false;
+							effectTime = 0.f;
 						}
 					}
 				}
@@ -1280,7 +1299,7 @@ void Scene::CollidePVE(const float& deltaTime)
 					(otherPlayerBoundBox.first == "lHand" || otherPlayerBoundBox.first == "rHand" ||
 						otherPlayerBoundBox.first == "rFoot" || otherPlayerBoundBox.first == "lFoot"))
 				{
-					// TODO : 중단 공격은 몸통만 맞도록 해야한다.
+					// 중단 공격은 몸통만 맞도록 해야한다.
 					if (otherPlayerAnimation == ANIMATION_LEFT_BODY_HOOK || otherPlayerAnimation == ANIMATION_RIGHT_BODY_HOOK || otherPlayerAnimation == ANIMATION_KICK_MID_L ||
 						otherPlayerAnimation == ANIMATION_SIDE_KICK_L || otherPlayerAnimation == ANIMATION_KICK_COMBO)
 					{
@@ -1301,13 +1320,16 @@ void Scene::CollidePVE(const float& deltaTime)
 								effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
 							}
 							m_pPlayer->hp -= 20.f;
+							CoolTime = 0.f;
+							CoolDown = false;
+							effectTime = 0.f;
 						}
 					}
 				}
 				else if ((PlayerBoundBox.first == "lCalf" || PlayerBoundBox.first == "rCalf") &&
 					(otherPlayerBoundBox.first == "rFoot" || otherPlayerBoundBox.first == "lFoot"))
 				{
-					// TODO : 하단 공격은 다리만 맞게 해야한다.
+					// 하단 공격은 다리만 맞게 해야한다.
 					if (otherPlayerAnimation == ANIMATION_LOW_KICK_R || otherPlayerAnimation == ANIMATION_LOW_KICK_SL)
 					{
 						if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK && m_pPlayer->nowState == LOW_GUARD)
@@ -1323,15 +1345,16 @@ void Scene::CollidePVE(const float& deltaTime)
 							m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
 							if (effectManager)
 							{
-								effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
+								effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), REDX);
 							}
 							m_pPlayer->hp -= 20.f;
+							CoolTime = 0.f;
+							CoolDown = false;
+							effectTime = 0.f;
 						}
 					}
 				}
 			}
-			CoolTime = 0.f;
-			CoolDown = false;
 		}
 	}
 }
