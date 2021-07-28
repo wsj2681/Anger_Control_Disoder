@@ -1160,245 +1160,178 @@ void Scene::CollidePVE(const float& deltaTime)
 		{
 			if (otherPlayerBoundBox.second->m_pMesh->isIntersect(PlayerBoundBox.second->m_pMesh->obb) && CoolDown)
 			{
-				// 상대 피격
-				if ((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState != OTHER)
-					&& m_pPlayer->nowState == ATTACK)
+				/*********************************************************상대 플레이어에 대한 충돌처리*****************************************************************/
+				if (otherPlayerBoundBox.first == "Head" &&
+					(PlayerBoundBox.first == "lHand" || PlayerBoundBox.first == "rHand" ||
+						PlayerBoundBox.first == "rFoot" || PlayerBoundBox.first == "lFoot"))
 				{
-					// 상대 머리
-					if (otherPlayerBoundBox.first == "Head" &&
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_L) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_R) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_AXE_KICK_R) ||
-						/*연속기*/
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_ONE_TWO) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO_HEAD) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_1_2_KICK) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_UPPER_CUT_L))
+					// TODO : 상단 공격은 머리만 맞도록 해야한다.
+					if (playerAnimation == ANIMATION_AXE_KICK_R || playerAnimation == ANIMATION_HOOK_L || playerAnimation == ANIMATION_HOOK_R ||
+						playerAnimation == ANIMATION_ONE_TWO || playerAnimation == ANIMATION_KICK_COMBO_HEAD || playerAnimation == ANIMATION_1_2_KICK ||
+						playerAnimation == ANIMATION_KICK_COMBO || playerAnimation == ANIMATION_UPPER_CUT_L)
 					{
-						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
-						if (particle)
+						// 상단 가드 성공
+						if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == HIGH_GUARD && m_pPlayer->nowState == ATTACK)
 						{
-							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+							hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
 						}
-						if (effectManager)
+						else if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == OTHER && m_pPlayer->nowState == ATTACK)
 						{
-							effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
+							continue;
 						}
-						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
-						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
-					}
-					// 상대 몸통
-					else if (otherPlayerBoundBox.first == "Spine" &&
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LEFT_BODY_HOOK) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_RIGHT_BODY_HOOK) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_MID_L) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_SIDE_KICK_L) ||
-						/*연속기*/
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO))
-					{
-						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
-						if (particle)
+						// 상단 가드 실패
+						else
 						{
-							particle->PositionInit(PlayerBoundBox.second->GetPosition());
+							hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
+							if (effectManager)
+							{
+								effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
+							}
+							hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 						}
-						if (effectManager)
-						{
-							effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 3);
-						}
-						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
-						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
-					}
-					// 상대 하체
-					else if ((otherPlayerBoundBox.first == "lCalf" || otherPlayerBoundBox.first == "rCalf") &&
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_R) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_SL) ||
-						/*연속기*/
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO_HEAD) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_1_2_KICK))
-					{
-						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
-						if (particle)
-						{
-							particle->PositionInit(PlayerBoundBox.second->GetPosition());
-						}
-						if (effectManager)
-						{
-							effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 1);
-						}
-						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
-						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
-					}
-					CoolDown = false;
-					CoolTime = 0.f;
-				}
-				// 상대 가드
-				else if (((hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == HIGH_GUARD) ||
-					(hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == MIDDLE_GUARD) ||
-					(hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == LOW_GUARD)) &&
-					m_pPlayer->nowState == ATTACK)
-				{
-					// 머리 가드
-					if (otherPlayerBoundBox.first == "Head" && 
-						((m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_L) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_R) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_AXE_KICK_R) ||
-						/*연속기*/
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_ONE_TWO) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO_HEAD) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_1_2_KICK) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_UPPER_CUT_L))&&
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == HIGH_GUARD))
-					{
-						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
-						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
-					}
-					// 몸통 가드
-					else if (otherPlayerBoundBox.first == "Spine" &&
-						((m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LEFT_BODY_HOOK) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_RIGHT_BODY_HOOK) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_MID_L) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_SIDE_KICK_L) ||
-						/*연속기*/
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO))&&
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == MIDDLE_GUARD))
-					{
-						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
-						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
-					}
-					else if ((otherPlayerBoundBox.first == "lCalf" || otherPlayerBoundBox.first == "rCalf") &&
-						((m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_R) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_SL) ||
-						/*연속기*/
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO_HEAD) ||
-						(m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_1_2_KICK))&&
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == LOW_GUARD))
-					{
-						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
-						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = IDLE;
 					}
 				}
-				// 플레이어 피격
-				if ((m_pPlayer->nowState != OTHER) && hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
+				else if (otherPlayerBoundBox.first == "Spine" &&
+					(PlayerBoundBox.first == "lHand" || PlayerBoundBox.first == "rHand" ||
+						PlayerBoundBox.first == "rFoot" || PlayerBoundBox.first == "lFoot"))
 				{
-					// 플레이어 머리
-					if (PlayerBoundBox.first == "Head" &&
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_L) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_R) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_AXE_KICK_R) ||
-						/*연속기*/
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_ONE_TWO) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO_HEAD) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_1_2_KICK) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_UPPER_CUT_L))
+					// TODO : 중단 공격은 몸통만 맞도록 해야한다.
+					if (playerAnimation == ANIMATION_LEFT_BODY_HOOK || playerAnimation == ANIMATION_RIGHT_BODY_HOOK || playerAnimation == ANIMATION_KICK_MID_L ||
+						playerAnimation == ANIMATION_SIDE_KICK_L || playerAnimation == ANIMATION_KICK_COMBO)
 					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
+						// 중단 가드 성공
+						if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == MIDDLE_GUARD && m_pPlayer->nowState == ATTACK)
+						{
+							hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
+						}
+						else if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == OTHER && m_pPlayer->nowState == ATTACK)
+						{
+							continue;
+						}
+						else
+						{
+							hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+							if (effectManager)
+							{
+								effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
+							}
+							hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
+						}
+					}
+				}
+				else if ((otherPlayerBoundBox.first == "lCalf" || otherPlayerBoundBox.first == "rCalf") &&
+					(PlayerBoundBox.first == "rFoot" || PlayerBoundBox.first == "lFoot"))
+				{
+					// TODO : 하단 공격은 다리만 맞게 해야한다.
+					if (playerAnimation == ANIMATION_LOW_KICK_R || playerAnimation == ANIMATION_LOW_KICK_SL)
+					{
+						if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == LOW_GUARD && m_pPlayer->nowState == ATTACK)
+						{
+							hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
+						}
+						else if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == OTHER && m_pPlayer->nowState == ATTACK)
+						{
+							continue;
+						}
+						else
+						{
+							hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+							if (effectManager)
+							{
+								effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
+							}
+							hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
+						}
+					}
+				}
+				/*********************************************************본인 플레이어에 대한 충돌처리*****************************************************************/
 
-						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
-						if (particle)
-						{
-							particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
-						}
-						if (effectManager)
-						{
-							effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
-						}
-						m_pPlayer->hp -= 20.f;
-						m_pPlayer->nowState = HIT;
-					}
-					// 플레이어 몸통
-					else if (PlayerBoundBox.first == "Spine" &&
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LEFT_BODY_HOOK) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_RIGHT_BODY_HOOK) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_MID_L) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_SIDE_KICK_L)||
-						/*연속기*/
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO))
+				if (PlayerBoundBox.first == "Head" &&
+					(otherPlayerBoundBox.first == "lHand" || otherPlayerBoundBox.first == "rHand" ||
+						otherPlayerBoundBox.first == "rFoot" || otherPlayerBoundBox.first == "lFoot"))
+				{
+					// TODO : 상단 공격은 머리만 맞도록 해야한다.
+					if (otherPlayerAnimation == ANIMATION_AXE_KICK_R || otherPlayerAnimation == ANIMATION_HOOK_L || otherPlayerAnimation == ANIMATION_HOOK_R ||
+						otherPlayerAnimation == ANIMATION_ONE_TWO || otherPlayerAnimation == ANIMATION_KICK_COMBO_HEAD || otherPlayerAnimation == ANIMATION_1_2_KICK ||
+						otherPlayerAnimation == ANIMATION_KICK_COMBO || otherPlayerAnimation == ANIMATION_UPPER_CUT_L)
 					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
-
-						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
-						if (particle)
+						// 상단 가드 성공
+						if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK && m_pPlayer->nowState == HIGH_GUARD)
 						{
-							particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+							m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
 						}
-						if (effectManager)
+						else if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK && m_pPlayer->nowState == OTHER)
 						{
-							effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 3);
+							continue;
 						}
-						m_pPlayer->hp -= 20.f;
-						m_pPlayer->nowState = HIT;
-					}
-					// 플레이어 하체
-					else if ((PlayerBoundBox.first == "lCalf" || PlayerBoundBox.first == "rCalf") &&
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_R) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_SL)||
-						/*연속기*/
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO_HEAD) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_1_2_KICK))
-					{
-						hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
-						cout << "Hit - " << PlayerBoundBox.first << " is collide" << collideCount++ << endl;
-						if (particle)
+						// 상단 가드 실패
+						else
 						{
-							particle->PositionInit(otherPlayerBoundBox.second->GetPosition());
+							m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_HEAD_STRIGHT_B);
+							if (effectManager)
+							{
+								effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
+							}
+							m_pPlayer->hp -= 20.f;
 						}
-						if (effectManager)
-						{
-							effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 1);
-						}
-						hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
-						hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIT;
 					}
 				}
-				// 플레이어 가드
-				else if (((m_pPlayer->nowState == HIGH_GUARD) ||
-					(m_pPlayer->nowState == MIDDLE_GUARD) ||
-					(m_pPlayer->nowState == LOW_GUARD))&&((m_pPlayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_L) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_HOOK_R) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_AXE_KICK_R) ||
-						/*연속기*/
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_ONE_TWO) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO_HEAD) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_1_2_KICK) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_UPPER_CUT_L))
-					&& hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK)
+				else if (PlayerBoundBox.first == "Spine" &&
+					(otherPlayerBoundBox.first == "lHand" || otherPlayerBoundBox.first == "rHand" ||
+						otherPlayerBoundBox.first == "rFoot" || otherPlayerBoundBox.first == "lFoot"))
 				{
-					if (PlayerBoundBox.first == "Head" &&
-						(m_pPlayer->nowState == HIGH_GUARD))
+					// TODO : 중단 공격은 몸통만 맞도록 해야한다.
+					if (otherPlayerAnimation == ANIMATION_LEFT_BODY_HOOK || otherPlayerAnimation == ANIMATION_RIGHT_BODY_HOOK || otherPlayerAnimation == ANIMATION_KICK_MID_L ||
+						otherPlayerAnimation == ANIMATION_SIDE_KICK_L || otherPlayerAnimation == ANIMATION_KICK_COMBO)
 					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_BRUCE_LI);
-						m_pPlayer->nowState = IDLE;
+						// 중단 가드 성공
+						if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK && m_pPlayer->nowState == MIDDLE_GUARD)
+						{
+							m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
+						}
+						else if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK && m_pPlayer->nowState == OTHER)
+						{
+							continue;
+						}
+						else
+						{
+							m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+							if (effectManager)
+							{
+								effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
+							}
+							m_pPlayer->hp -= 20.f;
+						}
 					}
-					// 몸통 가드
-					else if (PlayerBoundBox.first == "Spine" &&
-						((hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LEFT_BODY_HOOK) ||
-							(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_RIGHT_BODY_HOOK) ||
-							(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_MID_L) ||
-							(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_SIDE_KICK_L) ||
-							/*연속기*/
-							(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO))&&
-						(m_pPlayer->nowState == MIDDLE_GUARD))
+				}
+				else if ((PlayerBoundBox.first == "lCalf" || PlayerBoundBox.first == "rCalf") &&
+					(otherPlayerBoundBox.first == "rFoot" || otherPlayerBoundBox.first == "lFoot"))
+				{
+					// TODO : 하단 공격은 다리만 맞게 해야한다.
+					if (otherPlayerAnimation == ANIMATION_LOW_KICK_R || otherPlayerAnimation == ANIMATION_LOW_KICK_SL)
 					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
-						m_pPlayer->nowState = IDLE;
-					}
-					else if ((PlayerBoundBox.first == "lCalf" || PlayerBoundBox.first == "rCalf") && 
-						((hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_R) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_LOW_KICK_SL) ||
-						/*연속기*/
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_KICK_COMBO_HEAD) ||
-						(hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) == ANIMATION_1_2_KICK))&&
-						(m_pPlayer->nowState == LOW_GUARD))
-					{
-						m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
-						m_pPlayer->nowState = IDLE;
+						if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK && m_pPlayer->nowState == LOW_GUARD)
+						{
+							m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_COME_HERE_1HAND);
+						}
+						else if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK && m_pPlayer->nowState == OTHER)
+						{
+							continue;
+						}
+						else
+						{
+							m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_STRIGHT_B);
+							if (effectManager)
+							{
+								effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
+							}
+							m_pPlayer->hp -= 20.f;
+						}
 					}
 				}
 			}
+			CoolTime = 0.f;
+			CoolDown = false;
 		}
 	}
 }

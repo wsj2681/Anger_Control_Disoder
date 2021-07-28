@@ -509,7 +509,7 @@ void BoxingPlayer::Update(float fTimeElapsed)
 
 			//TODO : 플레이어 자동회전
 			//Rotate(0.0f, (atan2(normalZ, normalX) * 180 / 3.14159f), 0.0f);
-			cout << this->nowState << " / " << gScene->hierarchicalGameObjects.data()[1]->nowState << endl;
+			//cout << this->nowState << " / " << gScene->hierarchicalGameObjects.data()[1]->nowState << endl;
 		}
 	}
 }
