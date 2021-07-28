@@ -190,6 +190,16 @@ void Camera::SetCaptureWorld()
 	this->m_xmf3Look = m_xmf3CapturedLook;
 }
 
+void Camera::ZoomIn()
+{
+	MoveFromShift(DIR_FORWARD, 10.f, false);
+}
+
+void Camera::ZoomOut()
+{
+	MoveFromShift(DIR_BACKWARD, 5.f, false);
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CSpaceShipCamera
 

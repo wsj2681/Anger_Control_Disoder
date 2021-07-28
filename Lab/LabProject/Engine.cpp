@@ -13,7 +13,7 @@
 //////////Server///////////
 extern Server* server;
 ////////////////////////////
-
+Camera* gCamera = nullptr;
 Scene* gScene = nullptr;
 bool onTempKey{ true };
 
@@ -323,6 +323,16 @@ void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPar
 					m_pCamera->SetFixed(!m_pCamera->IsFixed());
 					break;
 				}
+				case '4':
+				{
+					m_pCamera->ZoomIn();
+					break;
+				}
+				case '5':
+				{
+					m_pCamera->ZoomOut();
+					break;
+				}
 				case VK_F9:
 					ChangeSwapChainState();
 					break;
@@ -424,6 +434,8 @@ void Engine::BuildObjects()
 	server->cscene = m_pScene;
 	server->cobject = m_pScene->hierarchicalGameObjects[1];
 #endif // _WITH_SERVER_CONNECT
+
+	gCamera = m_pCamera;
 
 	commandList->Close();
 	ID3D12CommandList *ppd3dCommandLists[] = { commandList };

@@ -18,11 +18,13 @@
 #include "UIShader.h"
 #include "CubeObject.h"
 #include "PlaneObject.h"
+#include "Camera.h"
 
 //////////Server///////////
 #include "Server.h"
 extern Server* server;
 ////////////////////////////
+extern Camera* gCamera;
 
 ID3D12DescriptorHeap *Scene::m_pd3dCbvSrvDescriptorHeap = nullptr;
 
@@ -210,14 +212,14 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 
 #ifdef _WITH_SERVER_CONNECT
-	cout << "이거 먼저 실행됨" << id << endl;
+
 	if (server->thread_id.thread_num == 1)
 	{
-		BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/OtherPlayer.bin", nullptr);
+		BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/TEST2.bin", nullptr);
 	}
 	else
 	{
-		BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, "Model/TEST2.bin", nullptr);
+		BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/OtherPlayer.bin", nullptr);
 	}
 #else
 	BoxerModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/OtherPlayer.bin", nullptr);
@@ -1200,6 +1202,7 @@ void Scene::CollidePVE(const float& deltaTime)
 							hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 							CoolTime = 0.f;
 							CoolDown = false;
+							gCamera->ZoomIn();
 						}
 					}
 				}
@@ -1230,6 +1233,7 @@ void Scene::CollidePVE(const float& deltaTime)
 							hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 							CoolTime = 0.f;
 							CoolDown = false;
+							gCamera->ZoomIn();
 						}
 					}
 				}
@@ -1257,6 +1261,7 @@ void Scene::CollidePVE(const float& deltaTime)
 							hierarchicalGameObjects.data()[OTHERPLAYER]->hp -= 20.f;
 							CoolTime = 0.f;
 							CoolDown = false;
+							gCamera->ZoomIn();
 						}
 					}
 				}

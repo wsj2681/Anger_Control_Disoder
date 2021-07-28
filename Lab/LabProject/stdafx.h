@@ -200,7 +200,7 @@ constexpr UINT HIGH_GUARD = 4;
 constexpr UINT MIDDLE_GUARD = 5;
 constexpr UINT LOW_GUARD = 6;
 constexpr UINT OTHER = 7;
-
+constexpr UINT MOVE = 8;
 
 //HR
 #if defined(DEBUG) | defined(_DEBUG)

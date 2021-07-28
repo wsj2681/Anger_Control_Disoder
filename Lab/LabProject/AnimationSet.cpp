@@ -166,6 +166,10 @@ void AnimationSet::SetPosition(float fTrackPosition)
 							gScene->m_pPlayer->nowState = ATTACK;
 						}
 					}
+					else
+					{
+						gScene->m_pPlayer->nowState = MOVE;
+					}
 				}
 			}
 			else if (isOtherPlayer)
@@ -220,6 +224,10 @@ void AnimationSet::SetPosition(float fTrackPosition)
 						{
 							gScene->hierarchicalGameObjects.data()[1]->nowState = ATTACK;
 						}
+					}
+					else
+					{
+						gScene->hierarchicalGameObjects.data()[1]->nowState = MOVE;
 					}
 				}
 			}

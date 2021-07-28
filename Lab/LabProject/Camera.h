@@ -117,6 +117,9 @@ public:
 	void CaptureWorld();
 	void SetCaptureWorld();
 
+	void ZoomIn();
+	void ZoomOut();
+
 public:
 
 	XMFLOAT3 headLook;
