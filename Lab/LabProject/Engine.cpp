@@ -461,7 +461,7 @@ void Engine::ProcessInput()
 	static UCHAR pKeysBuffer[256];
 	bool bProcessedByScene = false;
 	if (GetKeyboardState(pKeysBuffer) && m_pScene) bProcessedByScene = m_pScene->ProcessInput(pKeysBuffer);
-	if (!bProcessedByScene && m_pPlayer->canMove)
+	if (!bProcessedByScene && m_pPlayer->canMove && m_pPlayer->nowState == IDLE || m_pPlayer->nowState == MOVE)
 	{
 		// TODO : 3인칭 혹은 1인칭에서
 		// TODO : 캐릭터 이동 마우스 좌클릭:좌이동, 우클릭:우이동, 양쪽클릭:전방이동, 스페이스바:후방이동
@@ -528,7 +528,7 @@ void Engine::ProcessInput()
 			}
 			else if (pKeysBuffer['X'] & 0xF0)
 			{
-				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KICK_COMBO, ANIMATION_TYPE_ONCE);
+				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_1_2_3_KICK, ANIMATION_TYPE_ONCE);
 			}
 		}
 

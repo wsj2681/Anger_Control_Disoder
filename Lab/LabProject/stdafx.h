@@ -60,8 +60,8 @@ using Microsoft::WRL::ComPtr;
 extern HINSTANCE						ghAppInstance;
 
 
-#define FRAME_BUFFER_WIDTH		800
-#define FRAME_BUFFER_HEIGHT	    600
+#define FRAME_BUFFER_WIDTH		1024
+#define FRAME_BUFFER_HEIGHT	    768
 #define _WITH_CB_WORLD_MATRIX_DESCRIPTOR_TABLE
 
 #pragma comment(lib, "d3dcompiler.lib")

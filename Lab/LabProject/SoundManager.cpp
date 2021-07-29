@@ -62,7 +62,7 @@ void SoundManager::VolumeDown(const float& volume)
 
 void SoundManager::Update()
 {
-	if (FMOD_Channel_IsPlaying(channel, &isPlaying) != FMOD_OK) cout << "Failed to Check IsPlaying" << endl;
+	//if (FMOD_Channel_IsPlaying(channel, &isPlaying) != FMOD_OK) cout << "Failed to Check IsPlaying" << endl;
 	if (isPlaying)
 	{
 		if (FMOD_System_Update(system) != FMOD_OK) cout << "Failed to Update" << endl;

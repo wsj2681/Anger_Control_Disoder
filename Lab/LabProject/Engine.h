@@ -1,7 +1,7 @@
 #pragma once
 
-constexpr UINT FRAME_WIDTH = 800;
-constexpr UINT FRAME_HEIGHT = 600;
+constexpr UINT FRAME_WIDTH = 1024;
+constexpr UINT FRAME_HEIGHT = 768;
 
 struct CB_ENGINE_INFO
 {
