@@ -248,40 +248,6 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			break;
 
 
-		
-
-
-		//충돌박스 만들기
-		/*setPosition(player_position, player.player_world);
-
-		SetOBB(player_obb, thread_id, player_position, XMFLOAT3(2.2f, 11.f, 2.2f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
-
-		setPosition(player_Head, player.player_Head);
-		SetOBB(Head_obb, thread_id, player_Head, XMFLOAT3(0.8f, 1.5f, 0.8f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
-
-		setPosition(player_rHand, player.player_rHand);
-		SetOBB(rHand_obb, thread_id, player_rHand, XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
-
-		setPosition(player_lHand, player.player_lHand);
-		SetOBB(lHand_obb, thread_id, player_lHand, XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
-
-		setPosition(player_rFoot, player.player_rFoot);
-		SetOBB(rFoot_obb, thread_id, player_rFoot, XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
-
-		setPosition(player_lFoot, player.player_lFoot);
-		SetOBB(lFoot_obb, thread_id, player_lFoot, XMFLOAT3(0.5f, 0.5f, 0.5f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));
-
-		setPosition(player_Spine, player.player_Spine);
-		SetOBB(Spine_obb, thread_id, player_Spine, XMFLOAT3(1.f, 9.f, 1.f), XMFLOAT4(0.f, 0.f, 0.f, 1.f));*/
-
-
-		//cout << thread_id.thread_num << "     " << player_position.x << endl;
-		//cout << thread_id.thread_num << "    " << player_obb[thread_id.thread_num].Center.x << endl;
-		/*if(cou % 4 == 0)
-		cout << "SETOBB SUCCESS!" << endl;*/
-
-		// 충돌된 주먹 값 저장.
-		//saveColPostion[thread_id.thread_num] = player_rHand;
 
 		EnterCriticalSection(&cs);
 

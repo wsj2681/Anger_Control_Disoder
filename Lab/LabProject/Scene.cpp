@@ -711,6 +711,7 @@ bool Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, 
 
 bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
+	
 	switch (nMessageID)
 	{
 	case WM_KEYDOWN:
@@ -727,10 +728,18 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			if (rand() % 2)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_L, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_HOOK_L;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			else
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HOOK_R, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_HOOK_R;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			break;
 		}
@@ -738,6 +747,10 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case 'w': // 상단 킥
 		{
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_AXE_KICK_R, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+			server->send_attackAnddefend.ani_num = ANIMATION_AXE_KICK_R;
+			server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			break;
 		}
 		case 'E': // 상단 가드
@@ -748,10 +761,18 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			if (rand() % 2)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_HOOK_LEFT, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_GUARD_HOOK_LEFT;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			else
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_HOOK_RIGHT, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_GUARD_HOOK_RIGHT;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			m_pPlayer->nowState = HIGH_GUARD;
 			break;
@@ -762,10 +783,18 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			if (rand() % 2)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KICK_MID_L, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_KICK_MID_L;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			else
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_SIDE_KICK_L, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_SIDE_KICK_L;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			
 			break;
@@ -778,10 +807,18 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			if (rand() % 2)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_SIDE_LEFT, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_GUARD_SIDE_LEFT;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			else
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_SIDE_RIGHT, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_GUARD_SIDE_RIGHT;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			m_pPlayer->nowState = MIDDLE_GUARD;
 			break;
@@ -792,10 +829,18 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			if (rand() % 2)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LEFT_BODY_HOOK, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_LEFT_BODY_HOOK;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			else
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_RIGHT_BODY_HOOK, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_RIGHT_BODY_HOOK;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			break;
 		}
@@ -805,10 +850,18 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			if (rand() % 2)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LOW_KICK_R, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_LOW_KICK_R;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			else
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LOW_KICK_SL, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_LOW_KICK_SL;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			break;
 		}
@@ -820,10 +873,18 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			if (rand() % 2)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LOW_LEFT, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_GUARD_LOW_LEFT;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			else
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LOW_RIGHT, ANIMATION_TYPE_ONCE, true);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_GUARD_LOW_RIGHT;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			m_pPlayer->nowState = LOW_GUARD;
 			break;
@@ -834,10 +895,12 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			if (rand() % 2)
 			{
 				hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_HOOK_LEFT, ANIMATION_TYPE_ONCE, true);
+				
 			}
 			else
 			{
 				hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_HOOK_RIGHT, ANIMATION_TYPE_ONCE, true);
+				
 			}
 			hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = HIGH_GUARD;
 			break;
@@ -848,10 +911,12 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			if (rand() % 2)
 			{
 				hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_SIDE_LEFT, ANIMATION_TYPE_ONCE, true);
+				
 			}
 			else
 			{
 				hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_SIDE_RIGHT, ANIMATION_TYPE_ONCE, true);
+				
 			}
 			hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = MIDDLE_GUARD;
 			break;
@@ -864,10 +929,14 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			if (rand() % 2)
 			{
 				hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LOW_LEFT, ANIMATION_TYPE_ONCE, true);
+				
+
 			}
 			else
 			{
 				hierarchicalGameObjects.data()[OTHERPLAYER]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_GUARD_LOW_RIGHT, ANIMATION_TYPE_ONCE, true);
+				
+
 			}
 			hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = LOW_GUARD;
 			break;
@@ -887,6 +956,8 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		}
 		}
 	}
+
+			
 	return(false);
 }
 

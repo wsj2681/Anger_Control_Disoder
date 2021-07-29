@@ -167,79 +167,12 @@ void Server::Server_recv()
 		
 		}
 
-		//충돌처리확인
-		/*if (col.check_collide) {
-			cout << "COLLIDE! " << endl;
-			cobject->isCollide = true;
-
-		}
-		else {
-			cout << "NOT COLLIDE! " << endl;
-			cobject->isCollide = false;
-
-		}*/
-		/*if (col.rHand2Head) {
-			cplayer->rHand->isCollide = true;
-			cout << "RIGHT HAND - HEAD COLLIDE! " << endl;
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-
-		}
-		else
-			cplayer->rHand->isCollide = false;
-
-		if (col.lHand2Head) {
-			cplayer->lHand->isCollide = true;
-			cout << "LEFT HAND - HEAD COLLIDE! " << endl;
-			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
-
-		}
-		else
-			cplayer->lHand->isCollide = false;
-
-		if (col.rHand2rHand || col.rHand2lHand) {
-			cplayer->rHand->isCollide = true;
-			cout << "RIGHT HAND - Guard " << endl;
-		}
-		else
-			cplayer->rHand->isCollide = false;
-
-		if (col.lHand2rHand || col.lHand2lHand) {
-			cplayer->lHand->isCollide = true;
-			cout << "LEFT HAND - Guard! " << endl;
-		}
-
-
-		cplayer->isHit = false;
-
-		if (headHitted.leftHeadHitted) {
-			cplayer->isHit = true;
-			cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_LEFT_A);
-			send_attackAnddefend.hitTorsoLeft = true;
-
-
-			cplayer->head->isCollide = true;
-		}
-		else if (headHitted.rightHeadHitted) {
-			cplayer->isHit = true;
-			cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_HIT_TORSO_RIGHT_A);
-			send_attackAnddefend.hitTorsoRight = true;
-
-
-			cplayer->head->isCollide = false;
-		}
-		else if (headHitted.straightHtitted)
-		{
-
+		/*if (recv_attackAnddefend.checkAni == true) {
+			cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, recv_attackAnddefend.ani_num, ANIMATION_TYPE_ONCE, true);
+			
+			double_check.double_check = true;
 		}*/
 
-		/*if (col.rHand2Spine)
-			cout << "SPINE COLLIDE! " << endl;*/
-			//cout << "collide _ position - " << col.collidePosition.x << " " << col.collidePosition.y << " " << col.collidePosition.z << endl;
-		//if (cplayer->hp <= 0.0f) {
-		//	//cplayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KNOCKDOWN);
-		//	cplayer->isAlive = false;
-		//	send_attackAnddefend.nuckDown = true;
-		//}
 
 	}
 
