@@ -435,6 +435,8 @@ VS_TEXTURE_UI_OUTOUT VSTextureUI_PlayerTotalScore(uint nVertexID : SV_VertexID)
 	float y1 = +0.9f;
 	float y2 = +0.8f;
 
+	float newScore = score;
+
 	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
 	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
 	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
@@ -442,14 +444,14 @@ VS_TEXTURE_UI_OUTOUT VSTextureUI_PlayerTotalScore(uint nVertexID : SV_VertexID)
 	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
 	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
 
-	x1 += (abs(x2 - x1)) * ((score) / 3);
+	x1 += (abs(x2 - x1)) * ((newScore) / 3);
 
-	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2((score / 3.f), 0.f); }
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2((newScore / 3.f), 0.f); }
 	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
 	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
-	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2((score / 3.f), 0.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2((newScore / 3.f), 0.f); }
 	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
-	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2((score / 3.f), 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2((newScore / 3.f), 1.f); }
 
 
 	return output;

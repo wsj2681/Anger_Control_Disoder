@@ -385,6 +385,8 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	SetPlayerUpdatedContext(pContext);
 	SetCameraUpdatedContext(pContext);
 
+	score = 3;
+
 	playerCollision = new BoundingOrientedBox();
 	playerCollision->Center = bones["Spine"]->GetPosition();
 	playerCollision->Extents = XMFLOAT3(2.f, 7.f, 2.f);

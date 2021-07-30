@@ -265,6 +265,8 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	
 	SAFE_DELETE(crowdModel);
 
+
+
 	gGameObject = hierarchicalGameObjects;
 	ui["1_BloodEffect"] = new UI_BloodEffect(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/bloodUI.dds");
 	ui["1_BloodEffect"]->SetActive(false);
@@ -720,6 +722,10 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case 'Y':
 		{
 			m_pPlayer->hp += 0.04f;
+			break;
+		}
+		case 'U':
+		{
 			hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.04f;
 			break;
 		}
@@ -1087,7 +1093,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp >= 0.8f)
 	{
-		m_pPlayer->score += 1;
+		m_pPlayer->score -= 1;
 
 		m_pPlayer->hp = 0.f;
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
