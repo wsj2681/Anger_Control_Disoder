@@ -160,7 +160,7 @@ void UI_HP_OtherPlayer::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12Gr
 void UI_HP_OtherPlayer::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	// other player hp info
-	::memcpy(&m_pcbMappedHPInfo->hp, &gScene->hierarchicalGameObjects.data()[0]->hp, sizeof(float));
+	::memcpy(&m_pcbMappedHPInfo->hp, &gScene->hierarchicalGameObjects.data()[1]->hp, sizeof(float));
 
 	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbHPInfo->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(18, d3dGpuVirtualAddress);
@@ -378,7 +378,7 @@ void UI_PlayerTotalScore::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12
 void UI_PlayerTotalScore::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
 {
 	// other player score info
-	::memcpy(&m_pcbMappedScoreInfo->score, &gScene->hierarchicalGameObjects.data()[1]->score, sizeof(float));
+	::memcpy(&m_pcbMappedScoreInfo->score, &gScene->m_pPlayer->score, sizeof(float));
 
 	D3D12_GPU_VIRTUAL_ADDRESS d3dGpuVirtualAddress = m_pd3dcbScoreInfo->GetGPUVirtualAddress();
 	pd3dCommandList->SetGraphicsRootConstantBufferView(20, d3dGpuVirtualAddress);

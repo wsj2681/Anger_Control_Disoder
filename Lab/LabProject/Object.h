@@ -62,7 +62,7 @@ public:
 	XMFLOAT3 particleDir{ 0.f, 0.f, 0.f };
 	XMFLOAT3 scale{ 1.f, 1.f,1.f };
 
-	float hp{ 100.f };
+	float hp{ 0.f };
 
 	bool boundBoxRender = true;
 	map<string, CubeObject*> boundBoxs;
@@ -78,7 +78,7 @@ public:
 	bool isCollide{ false };
 	bool canMove[4]{ true };
 	WayPoint wayPoint{};
-	float score = 3.f;
+	float score = 0.f;
 
 	BoundingOrientedBox* objectCollision = nullptr;
 

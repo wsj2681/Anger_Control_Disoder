@@ -318,7 +318,7 @@ VS_TEXTURE_UI_OUTOUT VSTextureUI_HP(uint nVertexID : SV_VertexID)
 {
 	VS_TEXTURE_UI_OUTOUT output;
 	float x1 = -1.0f;
-	float x2 = -0.2f / (hp / 100.f);
+	float x2 = -0.2f - hp;
 	float y1 = +1.0f;
 	float y2 = +0.9f;
 	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
@@ -339,7 +339,7 @@ float4 PSTextureUI_HP(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
 VS_TEXTURE_UI_OUTOUT VSTextureUI_HP2(uint nVertexID : SV_VertexID)
 {
 	VS_TEXTURE_UI_OUTOUT output;
-	float x1 = +0.2f / (hp / 100.f);
+	float x1 = +0.2f + hp;
 	float x2 = +1.0f;
 	float y1 = +1.0f;
 	float y2 = +0.9f;
@@ -425,6 +425,7 @@ float4 PSTextureUI_KeySpace(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
 }
 
 
+float gScore = 3.f;
 
 VS_TEXTURE_UI_OUTOUT VSTextureUI_PlayerTotalScore(uint nVertexID : SV_VertexID)
 {
@@ -441,6 +442,16 @@ VS_TEXTURE_UI_OUTOUT VSTextureUI_PlayerTotalScore(uint nVertexID : SV_VertexID)
 	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
 	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
 
+	x1 += (abs(x2 - x1)) * ((score) / 3);
+
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2((score / 3.f), 0.f); }
+	if (nVertexID == 1) { output.position = float4(x2, y1, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
+	if (nVertexID == 2) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2((score / 3.f), 0.f); }
+	if (nVertexID == 4) { output.position = float4(x2, y2, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2((score / 3.f), 1.f); }
+
+
 	return output;
 }
 
@@ -456,12 +467,12 @@ VS_TEXTURE_UI_OUTOUT VSTextureUI_OtherPlayerTotalScore(uint nVertexID : SV_Verte
 	float x2 = +0.4f;
 	float y1 = +0.9f;
 	float y2 = +0.8f;
-	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
-	if (nVertexID == 1) { output.position = float4(/*x2*/x1 + x1 * (score/3.f), y1, 0.0f, 1.0f); output.uv = float2(1.f * (score / 3.f), 0.f); }//
-	if (nVertexID == 2) { output.position = float4(/*x2*/x1 + x1 * (score / 3.f), y2, 0.0f, 1.0f); output.uv = float2(1.f * (score / 3.f), 1.f); }//
-	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
-	if (nVertexID == 4) { output.position = float4(/*x2*/x1 + x1 * (score / 3.f), y2, 0.0f, 1.0f); output.uv = float2(1.f * (score / 3.f), 1.f); }//
-	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f); output.uv = float2(0.f, 1.f); }
+	if (nVertexID == 0) { output.position = float4(x1, y1, 0.0f, 1.0f);									output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 1) { output.position = float4(/*x2*/x1 + x1 * (score / 3.f), y1, 0.0f, 1.0f);		output.uv = float2(1.f * (score / 3.f), 0.f); }//
+	if (nVertexID == 2) { output.position = float4(/*x2*/x1 + x1 * (score / 3.f), y2, 0.0f, 1.0f);		output.uv = float2(1.f * (score / 3.f), 1.f); }//
+	if (nVertexID == 3) { output.position = float4(x1, y1, 0.0f, 1.0f);									output.uv = float2(0.f, 0.f); }
+	if (nVertexID == 4) { output.position = float4(/*x2*/x1 + x1 * (score / 3.f), y2, 0.0f, 1.0f);		output.uv = float2(1.f * (score / 3.f), 1.f); }//
+	if (nVertexID == 5) { output.position = float4(x1, y2, 0.0f, 1.0f);									output.uv = float2(0.f, 1.f); }
 
 	return output;
 }

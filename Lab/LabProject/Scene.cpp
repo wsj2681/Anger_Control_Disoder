@@ -717,6 +717,12 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
+		case 'Y':
+		{
+			m_pPlayer->hp += 0.04f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.04f;
+			break;
+		}
 		case 'T':
 		{
 			ui["1_BloodEffect"]->SetActive(!ui["1_BloodEffect"]->isActive());
@@ -1077,18 +1083,23 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		effectManager->Update(fTimeElapsed, XMFLOAT3(0.f, 20.f, 20.f));
 	}
 
-	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp <= 0.f)
+	// UI : 왼쪽이 플레이어, 오른쪽이 다른플레이어
+
+	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp >= 0.8f)
 	{
-		m_pPlayer->score -= 1;
-		m_pPlayer->hp = 100.f;
-		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
+		m_pPlayer->score += 1;
+
+		m_pPlayer->hp = 0.f;
+		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
 	}
 
-	if (m_pPlayer->hp <= 0.f)
+	// 킵
+	if (m_pPlayer->hp >= 0.8f)
 	{
-		hierarchicalGameObjects.data()[OTHERPLAYER]->score -= 1;
-		m_pPlayer->hp = 100.f;
-		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 100.f;
+		hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
+		
+		m_pPlayer->hp = 0.f;
+		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
 	}
 
 	//TODO : 여기 다시보기

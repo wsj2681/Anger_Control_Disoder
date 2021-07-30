@@ -131,6 +131,7 @@ public:
 struct VS_CB_SCORE_INFO
 {
 	int score = 0;
+	int otherScore = 0;
 };
 
 class UI_PlayerTotalScore : public UserInterfaceShader
