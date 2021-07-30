@@ -178,7 +178,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	m_pd3dGraphicsRootSignature = CreateGraphicsRootSignature(pd3dDevice);
 
 
-	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 32, 128); //SuperCobra(17), Gunship(2), Player:Mi24(1), Angrybot()
+	CreateCbvSrvDescriptorHeaps(pd3dDevice, pd3dCommandList, 64, 256); //SuperCobra(17), Gunship(2), Player:Mi24(1), Angrybot()
 
 	Material::PrepareShaders(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 	
@@ -284,6 +284,11 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ui["title"] = new UI_BloodEffect(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/title.dds");
 	ui["title"]->SetActive(true);
 
+	ui["ready"] = new UI_ReadyFight(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/ready.dds");
+	ui["fight"] = new UI_ReadyFight(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/fight.dds");
+	ui["ready"]->SetActive(false);
+	ui["fight"]->SetActive(false);
+	
 	//particle = new Particle;
 	//particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -746,6 +751,12 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			ui["3_OtherPlayerTotalScore"]->SetActive(true);
 			break;
 		}
+		case 'O':
+		{
+			ui["ready"]->SetActive(true);
+			break;
+		}
+
 		case 'Q':
 		case 'q': // 상단 주먹
 		{
@@ -1118,6 +1129,32 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		
 		m_pPlayer->hp = 0.f;
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
+	}
+
+
+	static float readyTime = 0.f;
+	static float fightTime = 0.f;
+	
+
+	if (ui["ready"]->isActive())
+	{
+		readyTime += fTimeElapsed;
+		if (readyTime >= 1.5f)
+		{
+			ui["ready"]->SetActive(false);
+			ui["fight"]->SetActive(true);
+			readyTime = 0.f;
+		}
+	}
+
+	if (ui["fight"]->isActive())
+	{
+		fightTime += fTimeElapsed;
+		if (fightTime >= 1.f)
+		{
+			ui["fight"]->SetActive(false);
+			fightTime = 0.f;
+		}
 	}
 
 	//TODO : 여기 다시보기
