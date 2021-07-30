@@ -392,6 +392,11 @@ BoxingPlayer::BoxingPlayer(ID3D12Device *pd3dDevice, ID3D12GraphicsCommandList *
 	playerCollision->Extents = XMFLOAT3(2.f, 7.f, 2.f);
 	playerCollision->Orientation = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 
+	for (auto& o : boundBoxs)
+	{
+		o.second->boundBoxRender = !o.second->boundBoxRender;
+	}
+
 	SAFE_DELETE(BoxerModel);
 }
 

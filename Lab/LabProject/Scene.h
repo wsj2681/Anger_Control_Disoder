@@ -143,4 +143,7 @@ public:
 
 	//¿Ã∆Â∆Æ
 	EffectManager* effectManager = nullptr;
+
+
+	float GameTimeElapsed = 60.f;
 };

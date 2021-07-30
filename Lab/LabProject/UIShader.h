@@ -83,6 +83,36 @@ public:
 	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
 };
 
+struct VS_CB_TIME_INFO
+{
+	float elapsedTime = 0.f;
+};
+
+class UI_TimerBar : public UserInterfaceShader
+{
+public:
+	UI_TimerBar();
+	UI_TimerBar(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
+	virtual ~UI_TimerBar();
+
+private:
+
+	ID3D12Resource* m_pd3dcbTimeInfo = NULL;
+	VS_CB_TIME_INFO* m_pcbMappedTimeInfo = NULL;
+
+public:
+
+	virtual void CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList);
+	virtual void ReleaseShaderVariables();
+
+	virtual D3D12_INPUT_LAYOUT_DESC CreateInputLayout();
+
+	virtual D3D12_SHADER_BYTECODE CreateVertexShader();
+	virtual D3D12_SHADER_BYTECODE CreatePixelShader();
+	virtual void BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath);
+};
+
 class UI_KeyInput_Right_Shift : public UserInterfaceShader
 {
 public:

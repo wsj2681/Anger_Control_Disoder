@@ -238,6 +238,12 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	hierarchicalGameObjects.push_back(boxer);
 	SAFE_DELETE(BoxerModel);
 
+
+	for (auto& o : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
+	{
+		o.second->boundBoxRender = !o.second->boundBoxRender;
+	}
+
 	ModelInfo* crowdModel = Object::LoadGeometryAndAnimationFromFile(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, "Model/BoxingComplete.bin", nullptr);
 
 	int nFloors = 4;
@@ -280,6 +286,8 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ui["3_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
 	ui["3_PlayerTotalScore"]->SetActive(false);
 	ui["3_OtherPlayerTotalScore"]->SetActive(false);
+
+	ui["timerBar"] = new UI_TimerBar(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/Timer.dds");
 
 	ui["title"] = new UI_BloodEffect(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/title.dds");
 	ui["title"]->SetActive(true);
@@ -419,7 +427,7 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dDescriptorRanges[12].RegisterSpace = 0;
 	pd3dDescriptorRanges[12].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-	D3D12_ROOT_PARAMETER pd3dRootParameters[21];
+	D3D12_ROOT_PARAMETER pd3dRootParameters[22];
 
 	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[0].Descriptor.ShaderRegister = 1; //Camera
@@ -526,6 +534,11 @@ ID3D12RootSignature *Scene::CreateGraphicsRootSignature(ID3D12Device *pd3dDevice
 	pd3dRootParameters[20].Descriptor.ShaderRegister = 6; //HP Info
 	pd3dRootParameters[20].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[20].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	pd3dRootParameters[21].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[21].Descriptor.ShaderRegister = 9; //Timer Info
+	pd3dRootParameters[21].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[21].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
 	D3D12_STATIC_SAMPLER_DESC pd3dSamplerDescs[3];
 
@@ -976,19 +989,6 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = LOW_GUARD;
 			break;
 		}
-		case VK_F7:
-		{
-
-			for (auto& o : hierarchicalGameObjects.data()[OTHERPLAYER]->boundBoxs)
-			{
-				o.second->boundBoxRender = !o.second->boundBoxRender;
-			}
-			for (auto& o : m_pPlayer->boundBoxs)
-			{
-				o.second->boundBoxRender = !o.second->boundBoxRender;
-			}
-			break;
-		}
 		}
 	}
 
@@ -1046,6 +1046,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime = fTimeElapsed;
 	g_time += fTimeElapsed;
+	GameTimeElapsed -= fTimeElapsed;
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
@@ -1116,15 +1117,15 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp >= 0.8f)
 	{
+		ui["ready"]->SetActive(true);
 		m_pPlayer->score -= 1;
 
 		m_pPlayer->hp = 0.f;
 		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
 	}
-
-	// ŵ
-	if (m_pPlayer->hp >= 0.8f)
+	else if (m_pPlayer->hp >= 0.8f)
 	{
+		ui["ready"]->SetActive(true);
 		hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
 		
 		m_pPlayer->hp = 0.f;
@@ -1138,6 +1139,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	if (ui["ready"]->isActive())
 	{
+		GameTimeElapsed = 60.f;
 		readyTime += fTimeElapsed;
 		if (readyTime >= 1.5f)
 		{
