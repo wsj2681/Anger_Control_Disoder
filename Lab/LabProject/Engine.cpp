@@ -287,7 +287,7 @@ void Engine::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 
 void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+	if (m_pScene && !gScene->EndGame) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
 	if (m_pScene && m_pScene->EndGame)
 	{
 		m_pCamera = m_pPlayer->ChangeCamera(SPACESHIP_CAMERA, m_GameTimer.GetTimeElapsed());
@@ -465,7 +465,7 @@ void Engine::ProcessInput()
 	static UCHAR pKeysBuffer[256];
 	bool bProcessedByScene = false;
 	if (GetKeyboardState(pKeysBuffer) && m_pScene) bProcessedByScene = m_pScene->ProcessInput(pKeysBuffer);
-	if (!bProcessedByScene && m_pPlayer->canMove && m_pPlayer->nowState == IDLE || m_pPlayer->nowState == MOVE)
+	if (!bProcessedByScene && m_pPlayer->canMove && (m_pPlayer->nowState == IDLE || m_pPlayer->nowState == MOVE)&& !gScene->EndGame)
 	{
 		// TODO : 3인칭 혹은 1인칭에서
 		// TODO : 캐릭터 이동 마우스 좌클릭:좌이동, 우클릭:우이동, 양쪽클릭:전방이동, 스페이스바:후방이동

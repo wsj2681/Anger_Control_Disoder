@@ -738,7 +738,7 @@ bool Scene::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, 
 
 bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
-	
+
 	switch (nMessageID)
 	{
 	case WM_KEYDOWN:
