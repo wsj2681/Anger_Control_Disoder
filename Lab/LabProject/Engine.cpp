@@ -288,6 +288,10 @@ void Engine::OnProcessingMouseMessage(HWND hWnd, UINT nMessageID, WPARAM wParam,
 void Engine::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wParam, LPARAM lParam)
 {
 	if (m_pScene) m_pScene->OnProcessingKeyboardMessage(hWnd, nMessageID, wParam, lParam);
+	if (m_pScene && m_pScene->EndGame)
+	{
+		m_pCamera = m_pPlayer->ChangeCamera(SPACESHIP_CAMERA, m_GameTimer.GetTimeElapsed());
+	}
 	switch (nMessageID)
 	{
 		case WM_KEYUP:
@@ -584,7 +588,6 @@ void Engine::AnimateObjects()
 
 	m_pPlayer->Animate(fTimeElapsed);
 	if (m_pScene) m_pScene->AnimateObjects(fTimeElapsed);
-
 }
 
 void Engine::WaitForGpuComplete()

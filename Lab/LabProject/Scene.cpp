@@ -297,6 +297,10 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ui["ready"]->SetActive(false);
 	ui["fight"]->SetActive(false);
 	
+	ui["youWin"] = new UI_LOSEWIN(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/youwin.dds");
+	ui["youLose"] = new UI_LOSEWIN(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/youlose.dds");
+	ui["youWin"]->SetActive(false);
+	ui["youLose"]->SetActive(false);
 	//particle = new Particle;
 	//particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -752,7 +756,10 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		}
 		case 'T':
 		{
-			ui["1_BloodEffect"]->SetActive(!ui["1_BloodEffect"]->isActive());
+			//m_pPlayer->SetLook(gCamera->GetPosition());
+			m_pPlayer->Rotate(0.0f, Vector3::Angle(m_pPlayer->GetPosition(), gCamera->GetPosition()), 0.0f);
+			//hierarchicalGameObjects.data()[OTHERPLAYER]->SetLook(gCamera->GetPosition());
+			hierarchicalGameObjects.data()[OTHERPLAYER]->Rotate(0.0f, Vector3::Angle(hierarchicalGameObjects.data()[OTHERPLAYER]->GetPosition(), gCamera->GetPosition()), 0.0f);
 			break;
 		}
 		case 'I':
@@ -1065,13 +1072,13 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		hierarchicalGameObjects[1]->UpdateWayPoints();
 		if (m_pPlayer) m_pPlayer->UpdateWayPoints();
 	}
-	
+
 	int swit = 0;
 	// rgb 그라데이션 해야함
 	for (int i = 38; i < 40; ++i)
 	{
 		m_pLights[i].m_xmf3Direction = XMFLOAT3(Vector3::Normalize(Vector3::Subtract(m_pPlayer->GetPosition(), m_pLights[i].m_xmf3Position)));
-		
+
 
 		if (m_pLights[i].m_xmf4Diffuse.x < 1.f)
 		{
@@ -1115,72 +1122,116 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	// UI : 왼쪽이 플레이어, 오른쪽이 다른플레이어
 
-	// 체력이 다 되었을 때
-	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp >= 0.8f)
+	if (m_pPlayer->score == 0 || hierarchicalGameObjects.data()[OTHERPLAYER]->score == 3)
 	{
-		ui["ready"]->SetActive(true);
-		m_pPlayer->score -= 1;
+		for (auto& i : ui)
+		{
+			i.second->SetActive(false);
+		}
 
-		m_pPlayer->hp = 0.f;
-		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
-	}
-	else if (m_pPlayer->hp >= 0.8f)
-	{
-		ui["ready"]->SetActive(true);
-		hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
+		if (m_pPlayer->score == 0)
+		{
+			winPlayer = m_pPlayer;
+			losePlayer = hierarchicalGameObjects.data()[OTHERPLAYER];
+			ui["youWin"]->SetActive(true);
+			
+		}
+		else if(hierarchicalGameObjects.data()[OTHERPLAYER]->score == 3)
+		{
+			losePlayer = m_pPlayer;
+			winPlayer = hierarchicalGameObjects.data()[OTHERPLAYER];
+			ui["youLose"]->SetActive(true);
+		}
 		
-		m_pPlayer->hp = 0.f;
-		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
+
+		EndGame = true;
 	}
 
-
-	// 타임 아웃일때
-	if (GameTimeElapsed >= 60.f)
+	if (EndGame == false)
 	{
-		// 체력이 더 많은 사람의 승리 조건
-		if (m_pPlayer->hp < hierarchicalGameObjects.data()[OTHERPLAYER]->hp)
-		{
-			hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
-		}
-		else if (m_pPlayer->hp - hierarchicalGameObjects.data()[OTHERPLAYER]->hp == EPSILON)
-		{
-			hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
-			m_pPlayer->score -= 1;
-		}
-		else if(m_pPlayer->hp > hierarchicalGameObjects.data()[OTHERPLAYER]->hp)
-		{
-			m_pPlayer->score -= 1;
-		}
-		m_pPlayer->hp = 0.f;
-		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
-		ui["ready"]->SetActive(true);
-	}
-
-
-	static float readyTime = 0.f;
-	static float fightTime = 0.f;
 	
 
-	if (ui["ready"]->isActive())
-	{
-		GameTimeElapsed = 0.f;
-		readyTime += fTimeElapsed;
-		if (readyTime >= 1.5f)
+		// 체력이 다 되었을 때
+		if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp >= 0.8f)
 		{
-			ui["ready"]->SetActive(false);
-			ui["fight"]->SetActive(true);
-			readyTime = 0.f;
-		}
-	}
+			ui["ready"]->SetActive(true);
+			m_pPlayer->score -= 1;
 
-	if (ui["fight"]->isActive())
-	{
-		fightTime += fTimeElapsed;
-		if (fightTime >= 1.f)
-		{
-			ui["fight"]->SetActive(false);
-			fightTime = 0.f;
+			m_pPlayer->hp = 0.f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
 		}
+		else if (m_pPlayer->hp >= 0.8f)
+		{
+			ui["ready"]->SetActive(true);
+			hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
+
+			m_pPlayer->hp = 0.f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
+		}
+
+
+		// 타임 아웃일때
+		if (GameTimeElapsed >= 60.f)
+		{
+			// 체력이 더 많은 사람의 승리 조건
+			if (m_pPlayer->hp < hierarchicalGameObjects.data()[OTHERPLAYER]->hp)
+			{
+				hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
+			}
+			else if (m_pPlayer->hp - hierarchicalGameObjects.data()[OTHERPLAYER]->hp == EPSILON)
+			{
+				hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
+				m_pPlayer->score -= 1;
+			}
+			else if (m_pPlayer->hp > hierarchicalGameObjects.data()[OTHERPLAYER]->hp)
+			{
+				m_pPlayer->score -= 1;
+			}
+			m_pPlayer->hp = 0.f;
+			hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
+			ui["ready"]->SetActive(true);
+		}
+
+
+		static float readyTime = 0.f;
+		static float fightTime = 0.f;
+
+
+		if (ui["ready"]->isActive())
+		{
+			GameTimeElapsed = 0.f;
+			readyTime += fTimeElapsed;
+			if (readyTime >= 1.5f)
+			{
+				ui["ready"]->SetActive(false);
+				ui["fight"]->SetActive(true);
+				readyTime = 0.f;
+			}
+		}
+
+		if (ui["fight"]->isActive())
+		{
+			fightTime += fTimeElapsed;
+			if (fightTime >= 1.f)
+			{
+				ui["fight"]->SetActive(false);
+				fightTime = 0.f;
+			}
+		}
+
+	}
+	else
+	{
+		// 게임이 끝났을 때의 연출
+		winPlayer->SetPosition(5.f, 8.5f, 0.f);
+		
+		//hierarchicalGameObjects.data()[OTHERPLAYER]->Rotate(0.f, 180.f, 0.f);
+		// 세레모니
+		winPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_WINN_BATTLE, ANIMATION_TYPE_LOOP);
+
+		losePlayer->SetPosition(0.f, 8.5f, 0.f);
+
+		losePlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LOSTING_BATTLE, ANIMATION_TYPE_LOOP);
 	}
 
 	//TODO : 여기 다시보기

@@ -146,4 +146,8 @@ public:
 
 
 	float GameTimeElapsed = 0.f;
+
+	bool EndGame = false;
+	Object* winPlayer = nullptr;
+	Object* losePlayer = nullptr;
 };
