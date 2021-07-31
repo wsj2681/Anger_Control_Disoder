@@ -237,6 +237,9 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	boxer->SetPosition(-1.0f, 8.5f, 30.0f);
 	boxer->Rotate(0.0f, 180.0f, 0.0f);
 
+
+
+
 	hierarchicalGameObjects.push_back(boxer);
 	SAFE_DELETE(BoxerModel);
 
@@ -758,19 +761,6 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		}
 		case 'T':
 		{
-			//m_pPlayer->SetLook(gCamera->GetPosition());
-			//m_pPlayer->Rotate(0.0f, Vector3::Angle(m_pPlayer->GetPosition(), gCamera->GetPosition()), 0.0f);
-			//hierarchicalGameObjects.data()[OTHERPLAYER]->SetLook(gCamera->GetPosition());
-			//hierarchicalGameObjects.data()[OTHERPLAYER]->Rotate(0.0f, Vector3::Angle(hierarchicalGameObjects.data()[OTHERPLAYER]->GetPosition(), gCamera->GetPosition()), 0.0f);
-			
-			cout << "m_pPlayer's World\n";
-			m_pPlayer->PrintWorld();
-			
-			cout << "hierarchicalGameObjects.data()[OTHERPLAYER]'s World\n";
-			hierarchicalGameObjects.data()[OTHERPLAYER]->PrintWorld();
-
-			cout << "Camera's Info\n";
-			m_pPlayer->GetCamera()->CaptureWorld();
 			break;
 		}
 		case 'I':
@@ -1234,6 +1224,45 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	else
 	{
 		// 게임이 끝났을 때의 연출
+
+#ifdef _WITH_SERVER_CONNECT
+
+		if (server->thread_id.thread_num == 1)
+		{
+			if (m_pPlayer == winPlayer)
+			{
+				m_pPlayer->SetRight(-1.f, 0.f, 0.f);
+				m_pPlayer->SetUp(0.f, 1.f, 0.f);
+				m_pPlayer->SetLook(0.f, 0.f, -1.f);
+				m_pPlayer->SetPosition({ -5.f, 8.5f, 0.f });
+			}
+			else
+			{
+				m_pPlayer->SetRight(-1.f, 0.f, 0.f);
+				m_pPlayer->SetUp(0.f, 1.f, 0.f);
+				m_pPlayer->SetLook(0.f, 0.f, -1.f);
+				m_pPlayer->SetPosition({ -5.f, 8.5f, 0.f });
+			}
+		}
+		else
+		{
+			if (m_pPlayer == losePlayer)
+			{
+
+				m_pPlayer->SetRight(-1.f, 0.f, 0.f);
+				m_pPlayer->SetUp(0.f, 1.f, 0.f);
+				m_pPlayer->SetLook(0.f, 0.f, -1.f);
+				m_pPlayer->SetPosition({ 5.f, 8.5f, 0.f });
+			}
+			else
+			{
+				m_pPlayer->SetRight(-1.f, 0.f, 0.f);
+				m_pPlayer->SetUp(0.f, 1.f, 0.f);
+				m_pPlayer->SetLook(0.f, 0.f, -1.f);
+				m_pPlayer->SetPosition({ 5.f, 8.5f, 0.f });
+			}
+		}
+#else
 		winPlayer->SetRight(-1.f, 0.f, 0.f);
 		winPlayer->SetUp(0.f, 1.f, 0.f);
 		winPlayer->SetLook(0.f, 0.f, -1.f);
@@ -1243,6 +1272,8 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		losePlayer->SetUp(0.f, 1.f, 0.f);
 		losePlayer->SetLook(0.f, 0.f, -1.f);
 		losePlayer->SetPosition(-5.f, 8.5f, 0.f);
+#endif
+
 
 		m_pPlayer->GetCamera()->SetLook({ -0.0223675, -0.275638, 0.961001 });
 		m_pPlayer->GetCamera()->SetRight({ 0.999729, -4.51691e-08, 0.0232689 });

@@ -440,7 +440,21 @@ void Engine::BuildObjects()
 #else
 	pPlayer = new BoxingPlayer(device, commandList, m_pScene->GetGraphicsRootSignature(), 1);
 #endif
+#ifdef _WITH_SERVER_CONNECT
+
+	if (server->thread_id.thread_num == 1)
+	{
+		pPlayer->SetPosition(XMFLOAT3(-1.0f, 8.5f, -30.0f));
+	}
+	else
+	{
+		pPlayer->SetPosition(XMFLOAT3(-1.0f, 8.5f, 30.0f));
+		pPlayer->Rotate(0.0f, 180.0f, 0.0f);
+	}
+#else
 	pPlayer->SetPosition(XMFLOAT3(-1.0f, 8.5f, -30.0f));
+#endif
+	//pPlayer->SetPosition(XMFLOAT3(-1.0f, 8.5f, -30.0f));
 	
 	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
 	m_pCamera = gCamera = m_pPlayer->GetCamera();
