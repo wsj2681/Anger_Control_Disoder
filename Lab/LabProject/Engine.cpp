@@ -513,22 +513,42 @@ void Engine::ProcessInput()
 			if (pKeysBuffer['Q'] & 0xF0)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO, ANIMATION_TYPE_ONCE);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			else if (pKeysBuffer['W'] & 0xF0)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KICK_COMBO_HEAD, ANIMATION_TYPE_ONCE);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			else if (pKeysBuffer['A'] & 0xF0)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_1_2_KICK, ANIMATION_TYPE_ONCE);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			else if (pKeysBuffer['Z'] & 0xF0)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_L, ANIMATION_TYPE_ONCE);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 			else if (pKeysBuffer['X'] & 0xF0)
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_1_2_3_KICK, ANIMATION_TYPE_ONCE);
+#ifdef _WITH_SERVER_CONNECT
+				server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+				server->send_attackAnddefend.checkAni = true;
+#endif // _WITH_SERVER_CONNECT
 			}
 		}
 
