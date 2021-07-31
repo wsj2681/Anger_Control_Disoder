@@ -275,32 +275,27 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 
 	gGameObject = hierarchicalGameObjects;
 	ui["1_BloodEffect"] = new UI_BloodEffect(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/bloodUI.dds");
-	ui["1_BloodEffect"]->SetActive(false);
 	
 	ui["2_PlayerHP"] = new UI_HP_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar_Other.dds");
 	ui["2_OtherPlayerHP"] = new UI_HP_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar.dds");
-	ui["2_PlayerHP"]->SetActive(false);
-	ui["2_OtherPlayerHP"]->SetActive(false);
-
 	ui["3_PlayerTotalScore"] = new UI_PlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
 	ui["3_OtherPlayerTotalScore"] = new UI_OtherPlayerTotalScore(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/Points_Full.dds");
-	ui["3_PlayerTotalScore"]->SetActive(false);
-	ui["3_OtherPlayerTotalScore"]->SetActive(false);
-
 	ui["timerBar"] = new UI_TimerBar(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/Timer.dds");
 
 	ui["title"] = new UI_BloodEffect(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/title.dds");
-	ui["title"]->SetActive(true);
-
 	ui["ready"] = new UI_ReadyFight(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/ready.dds");
 	ui["fight"] = new UI_ReadyFight(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/fight.dds");
-	ui["ready"]->SetActive(false);
-	ui["fight"]->SetActive(false);
-	
 	ui["youWin"] = new UI_LOSEWIN(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/youwin.dds");
 	ui["youLose"] = new UI_LOSEWIN(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/youlose.dds");
-	ui["youWin"]->SetActive(false);
-	ui["youLose"]->SetActive(false);
+
+
+
+	for (auto& i : ui)
+	{
+		i.second->SetActive(false);
+	}
+	ui["title"]->SetActive(true);
+
 	//particle = new Particle;
 	//particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -773,11 +768,14 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		}
 		case 'I':
 		{
+			
+			for (auto& i : ui)
+			{
+				i.second->SetActive(true);
+			}
+
 			ui["title"]->SetActive(false);
-			ui["2_PlayerHP"]->SetActive(true);
-			ui["2_OtherPlayerHP"]->SetActive(true);
-			ui["3_PlayerTotalScore"]->SetActive(true);
-			ui["3_OtherPlayerTotalScore"]->SetActive(true);
+
 			break;
 		}
 		case 'O':
