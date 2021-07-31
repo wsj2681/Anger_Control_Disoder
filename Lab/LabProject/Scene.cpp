@@ -757,9 +757,18 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		case 'T':
 		{
 			//m_pPlayer->SetLook(gCamera->GetPosition());
-			m_pPlayer->Rotate(0.0f, Vector3::Angle(m_pPlayer->GetPosition(), gCamera->GetPosition()), 0.0f);
+			//m_pPlayer->Rotate(0.0f, Vector3::Angle(m_pPlayer->GetPosition(), gCamera->GetPosition()), 0.0f);
 			//hierarchicalGameObjects.data()[OTHERPLAYER]->SetLook(gCamera->GetPosition());
-			hierarchicalGameObjects.data()[OTHERPLAYER]->Rotate(0.0f, Vector3::Angle(hierarchicalGameObjects.data()[OTHERPLAYER]->GetPosition(), gCamera->GetPosition()), 0.0f);
+			//hierarchicalGameObjects.data()[OTHERPLAYER]->Rotate(0.0f, Vector3::Angle(hierarchicalGameObjects.data()[OTHERPLAYER]->GetPosition(), gCamera->GetPosition()), 0.0f);
+			
+			cout << "m_pPlayer's World\n";
+			m_pPlayer->PrintWorld();
+			
+			cout << "hierarchicalGameObjects.data()[OTHERPLAYER]'s World\n";
+			hierarchicalGameObjects.data()[OTHERPLAYER]->PrintWorld();
+
+			cout << "Camera's Info\n";
+			m_pPlayer->GetCamera()->CaptureWorld();
 			break;
 		}
 		case 'I':
@@ -773,7 +782,7 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		}
 		case 'O':
 		{
-			ui["ready"]->SetActive(true);
+			
 			break;
 		}
 
@@ -1223,14 +1232,27 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	else
 	{
 		// 게임이 끝났을 때의 연출
+		winPlayer->SetRight(-1.f, 0.f, 0.f);
+		winPlayer->SetUp(0.f, 1.f, 0.f);
+		winPlayer->SetLook(0.f, 0.f, -1.f);
 		winPlayer->SetPosition(5.f, 8.5f, 0.f);
-		
+
+		losePlayer->SetRight(-1.f, 0.f, 0.f);
+		losePlayer->SetUp(0.f, 1.f, 0.f);
+		losePlayer->SetLook(0.f, 0.f, -1.f);
+		losePlayer->SetPosition(-5.f, 8.5f, 0.f);
+
+		m_pPlayer->GetCamera()->SetLook({ -0.0223675, -0.275638, 0.961001 });
+		m_pPlayer->GetCamera()->SetRight({ 0.999729, -4.51691e-08, 0.0232689 });
+		m_pPlayer->GetCamera()->SetUp({ -0.00641375, 0.961262, 0.275563 });
+		m_pPlayer->GetCamera()->SetPosition({ 0.367214, 27.3884, -26.9444 });
+
+		// TODO : 카메라 월드 좌표를 여기서 Set하기
+		// TODO : 플레이어 카메라로 SetLookAt 해주거나 월드좌표 받아서 Set하기
+
 		//hierarchicalGameObjects.data()[OTHERPLAYER]->Rotate(0.f, 180.f, 0.f);
 		// 세레모니
 		winPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_WINN_BATTLE, ANIMATION_TYPE_LOOP);
-
-		losePlayer->SetPosition(0.f, 8.5f, 0.f);
-
 		losePlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LOSTING_BATTLE, ANIMATION_TYPE_LOOP);
 	}
 

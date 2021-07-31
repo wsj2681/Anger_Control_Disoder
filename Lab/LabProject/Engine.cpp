@@ -430,7 +430,7 @@ void Engine::BuildObjects()
 	pPlayer->SetPosition(XMFLOAT3(-1.0f, 8.5f, -30.0f));
 	
 	m_pScene->m_pPlayer = m_pPlayer = pPlayer;
-	m_pCamera = m_pPlayer->GetCamera();
+	m_pCamera = gCamera = m_pPlayer->GetCamera();
 	gScene = m_pScene;
 
 #ifdef _WITH_SERVER_CONNECT

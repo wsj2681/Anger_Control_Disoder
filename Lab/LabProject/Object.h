@@ -111,6 +111,8 @@ public:
 	XMFLOAT3 GetUp();
 	XMFLOAT3 GetRight();
 
+	void PrintWorld();
+
 	void SetPosition(float x, float y, float z);
 	void SetLook(float x, float y, float z);
 	void SetRight(float x, float y, float z);

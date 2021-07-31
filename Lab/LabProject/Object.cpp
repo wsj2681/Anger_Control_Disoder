@@ -321,6 +321,14 @@ XMFLOAT3 Object::GetRight()
 	return(Vector3::Normalize(XMFLOAT3(m_xmf4x4World._11, m_xmf4x4World._12, m_xmf4x4World._13)));
 }
 
+void Object::PrintWorld()
+{
+	cout << "(" << m_xmf4x4World._11 << ", " << m_xmf4x4World._12 << ", " << m_xmf4x4World._13 << ", " << m_xmf4x4World._14 << ")\n";
+	cout << "(" << m_xmf4x4World._21 << ", " << m_xmf4x4World._22 << ", " << m_xmf4x4World._23 << ", " << m_xmf4x4World._24 << ")\n";
+	cout << "(" << m_xmf4x4World._31 << ", " << m_xmf4x4World._32 << ", " << m_xmf4x4World._33 << ", " << m_xmf4x4World._34 << ")\n";
+	cout << "(" << m_xmf4x4World._41 << ", " << m_xmf4x4World._42 << ", " << m_xmf4x4World._43 << ", " << m_xmf4x4World._44 << ")\n";
+}
+
 void Object::MoveStrafe(float fDistance)
 {
 	XMFLOAT3 xmf3Position = GetPosition();

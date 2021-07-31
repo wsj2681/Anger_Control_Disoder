@@ -86,8 +86,13 @@ public:
 	void SetLookAtPosition(XMFLOAT3 xmf3LookAtWorld) { m_xmf3LookAtWorld = xmf3LookAtWorld; }
 	XMFLOAT3& GetLookAtPosition() { return(m_xmf3LookAtWorld); }
 
+	void SetRight(XMFLOAT3 right) { m_xmf3Right = right; }
 	XMFLOAT3& GetRightVector() { return(m_xmf3Right); }
+
+	void SetUp(XMFLOAT3 up) { m_xmf3Up = up; }
 	XMFLOAT3& GetUpVector() { return(m_xmf3Up); }
+	
+	void SetLook(XMFLOAT3 look) { m_xmf3Look = look; }
 	XMFLOAT3& GetLookVector() { return(m_xmf3Look); }
 
 	float& GetPitch() { return(m_fPitch); }
