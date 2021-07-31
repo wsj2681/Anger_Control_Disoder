@@ -259,7 +259,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			first_double_check = double_check;
 
 			if (idIndex <= 2)
-				thread_num_2_HP.playerHp = 100.0f;
+				thread_num_2_HP.playerHp = 0.0f;
 
 
 			if (first_must_ani_play == false) {

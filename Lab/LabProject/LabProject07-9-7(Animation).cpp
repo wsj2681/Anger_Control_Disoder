@@ -50,6 +50,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 #ifdef _WITH_SERVER_CONNECT
 	server = new Server(0);
 
+	if (Servercount == 0) {
+		gThread = CreateThread(nullptr, 0, serverThread, (LPVOID)0, 0, NULL);
+		Servercount++;
+	}
+
 
 #endif // _WITH_SERVER_CONNECT
 
@@ -67,12 +72,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPTSTR lpCm
 				::TranslateMessage(&msg);
 				::DispatchMessage(&msg);
 			}
-#ifdef _WITH_SERVER_CONNECT
-			if (Servercount == 0) {
-				gThread = CreateThread(nullptr, 0, serverThread, (LPVOID)0, 0, NULL);
-				Servercount++;
-			}
-#endif // _WITH_SERVER_CONNECT
+
 		}
 		else
 		{

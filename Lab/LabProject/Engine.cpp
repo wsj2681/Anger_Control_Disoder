@@ -417,6 +417,19 @@ void Engine::BuildObjects()
 
 	commandList->Reset(commandAllocator, nullptr);
 
+#ifdef _WITH_SERVER_CONNECT
+	////if (i == 0) {
+	//server->Server_send();
+	//server->Server_recv();
+	////++i;
+	////}
+	////공격과 방어 초기화
+	//server->attackAndGuard_idle();
+	////server->Server_send();
+
+	server->checkSR = true;
+#endif // _WITH_SERVER_CONNECT
+
 	m_pScene = new Scene();
 	if (m_pScene) m_pScene->BuildObjects(device, commandList);
 
@@ -518,7 +531,7 @@ void Engine::ProcessInput()
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_ONE_TWO, ANIMATION_TYPE_ONCE);
 #ifdef _WITH_SERVER_CONNECT
-				server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+				server->send_attackAnddefend.ani_num = ANIMATION_ONE_TWO;
 				server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
 			}
@@ -526,7 +539,7 @@ void Engine::ProcessInput()
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_KICK_COMBO_HEAD, ANIMATION_TYPE_ONCE);
 #ifdef _WITH_SERVER_CONNECT
-				server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+				server->send_attackAnddefend.ani_num = ANIMATION_KICK_COMBO_HEAD;
 				server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
 			}
@@ -534,7 +547,7 @@ void Engine::ProcessInput()
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_1_2_KICK, ANIMATION_TYPE_ONCE);
 #ifdef _WITH_SERVER_CONNECT
-				server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+				server->send_attackAnddefend.ani_num = ANIMATION_1_2_KICK;
 				server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
 			}
@@ -542,7 +555,7 @@ void Engine::ProcessInput()
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_UPPER_CUT_L, ANIMATION_TYPE_ONCE);
 #ifdef _WITH_SERVER_CONNECT
-				server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+				server->send_attackAnddefend.ani_num = ANIMATION_UPPER_CUT_L;
 				server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
 			}
@@ -550,7 +563,7 @@ void Engine::ProcessInput()
 			{
 				m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_1_2_3_KICK, ANIMATION_TYPE_ONCE);
 #ifdef _WITH_SERVER_CONNECT
-				server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
+				server->send_attackAnddefend.ani_num = ANIMATION_1_2_3_KICK;
 				server->send_attackAnddefend.checkAni = true;
 #endif // _WITH_SERVER_CONNECT
 			}
