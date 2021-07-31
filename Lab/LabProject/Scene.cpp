@@ -1046,7 +1046,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 {
 	m_fElapsedTime = fTimeElapsed;
 	g_time += fTimeElapsed;
-	GameTimeElapsed -= fTimeElapsed;
+	GameTimeElapsed += fTimeElapsed;
 
 	for (int i = 0; i < m_nGameObjects; i++) if (m_ppGameObjects[i]) m_ppGameObjects[i]->Animate(fTimeElapsed);
 	for (int i = 0; i < m_nShaders; i++) if (m_ppShaders[i]) m_ppShaders[i]->AnimateObjects(fTimeElapsed);
@@ -1115,6 +1115,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 	// UI : 왼쪽이 플레이어, 오른쪽이 다른플레이어
 
+	// 체력이 다 되었을 때
 	if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp >= 0.8f)
 	{
 		ui["ready"]->SetActive(true);
@@ -1133,13 +1134,36 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	}
 
 
+	// 타임 아웃일때
+	if (GameTimeElapsed >= 60.f)
+	{
+		// 체력이 더 많은 사람의 승리 조건
+		if (m_pPlayer->hp < hierarchicalGameObjects.data()[OTHERPLAYER]->hp)
+		{
+			hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
+		}
+		else if (m_pPlayer->hp - hierarchicalGameObjects.data()[OTHERPLAYER]->hp == EPSILON)
+		{
+			hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
+			m_pPlayer->score -= 1;
+		}
+		else if(m_pPlayer->hp > hierarchicalGameObjects.data()[OTHERPLAYER]->hp)
+		{
+			m_pPlayer->score -= 1;
+		}
+		m_pPlayer->hp = 0.f;
+		hierarchicalGameObjects.data()[OTHERPLAYER]->hp = 0.f;
+		ui["ready"]->SetActive(true);
+	}
+
+
 	static float readyTime = 0.f;
 	static float fightTime = 0.f;
 	
 
 	if (ui["ready"]->isActive())
 	{
-		GameTimeElapsed = 60.f;
+		GameTimeElapsed = 0.f;
 		readyTime += fTimeElapsed;
 		if (readyTime >= 1.5f)
 		{

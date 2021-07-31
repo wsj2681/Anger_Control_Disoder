@@ -145,5 +145,5 @@ public:
 	EffectManager* effectManager = nullptr;
 
 
-	float GameTimeElapsed = 60.f;
+	float GameTimeElapsed = 0.f;
 };
