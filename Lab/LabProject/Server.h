@@ -10,7 +10,7 @@ using namespace std;
 
 
 //범호 집
-//#define SERVERIP   "192.168.0.13"
+#define SERVERIP   "192.168.0.13"
 
 //로컬
 #define SERVERIP "127.0.0.1"
@@ -115,6 +115,22 @@ struct ani_double_check {
 
 };
 #pragma pack(pop)
+
+#pragma pack(push,1)
+struct Moving {
+
+	bool Left = false;
+	bool Right = false;
+	bool Front = false;
+	bool back = false;
+	
+	bool Ready = false;
+	bool Start = false;
+};
+#pragma pack(pop)
+
+
+
 class Player;
 
 class Scene;
@@ -161,6 +177,10 @@ public:
 
 	PlayerHP myHP;
 	PlayerHP otherHP;
+
+	Moving SendPlayerMove;
+	Moving RecvOtherPlayerMove;
+
 
 	bool checkSR = false;
 	int co = 0;
