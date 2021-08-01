@@ -40,6 +40,10 @@ bool first_must_ani_play = false;
 UINT second_save_ani_num = { 0 };
 bool second_must_ani_play = false;
 
+Moving thread_num1_moving;
+Moving thread_num2_moving;
+
+
 
 //충돌처리
 BoundingOrientedBox player_obb[3];
@@ -168,7 +172,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 	AttackAndDefend attAdef;
 	PlayerHP player_hp;
 	ani_double_check double_check;
-
+	Moving playerMoving;
+	
 
 
 	getpeername(thread_client_sock, (SOCKADDR*)&client_addr, &thread_client_addr_len);
@@ -247,6 +252,21 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 		else if (retval == 0)
 			break;
 
+		retval = recv(thread_client_sock, (char*)&playerMoving, sizeof(playerMoving), 0);
+		if (retval == SOCKET_ERROR) {
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
+		else if (retval == 0)
+			break;
+
+		/*retval = recv(thread_client_sock, (char*)&readyAndstart, sizeof(readyAndstart), 0);
+		if (retval == SOCKET_ERROR) {
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
+		else if (retval == 0)
+			break;*/
 
 
 		EnterCriticalSection(&cs);
@@ -257,6 +277,15 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			recv_attackAnddefend_1 = attAdef;
 			thread_num_1_HP = player_hp;
 			first_double_check = double_check;
+			thread_num1_moving = playerMoving;
+			//thread_num1_readyAndstart = readyAndstart;
+
+			if ((thread_num1_moving.Ready == true) && (thread_num2_moving.Ready == true)) {
+				thread_num1_moving.Start = true;
+				thread_num2_moving.Start = true;
+			}
+			
+
 
 			if (idIndex <= 2)
 				thread_num_2_HP.playerHp = 0.0f;
@@ -282,8 +311,11 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			//cout << "Thread 1 ani Num -  " << second_save_ani_num << " -checkAni - " << second_must_ani_play << endl;
 			
 
-			
-		
+			/*cout << thread_num1_readyAndstart.Ready << " ///////" << thread_num2_readyAndstart.Ready << endl;
+			if ((thread_num1_readyAndstart.Ready == true) && (thread_num2_readyAndstart.Ready == true)) {
+				thread_num1_readyAndstart.Start = true;
+				thread_num2_readyAndstart.Start = true;
+			}*/
 
 
 
@@ -300,6 +332,10 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			
 			retval = send(thread_client_sock, (char*)&thread_num_2_HP, sizeof(thread_num_2_HP), 0);
 
+			retval = send(thread_client_sock, (char*)&thread_num2_moving, sizeof(thread_num2_moving), 0);
+
+			//retval = send(thread_client_sock, (char*)&thread_num2_readyAndstart, sizeof(thread_num2_readyAndstart), 0);
+
 			//충돌좌표 초기화
 			col1.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
@@ -315,6 +351,12 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			recv_attackAnddefend_2 = attAdef;
 			thread_num_2_HP = player_hp;
 			second_double_check = double_check;
+			thread_num2_moving = playerMoving;
+			//thread_num2_readyAndstart = readyAndstart;
+
+			/*if (thread_num2_readyAndstart.Ready == true)
+				save_2_ready = true;
+			cout << "넘버2 - " << save_2_ready << endl;*/
 
 
 			if (second_must_ani_play == false) {
@@ -349,6 +391,10 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			//retval = send(thread_client_sock, (char*)&thread_1_headHitted, sizeof(thread_1_headHitted), 0);
 			
 			retval = send(thread_client_sock, (char*)&thread_num_1_HP, sizeof(thread_num_1_HP), 0);
+
+			retval = send(thread_client_sock, (char*)&thread_num1_moving, sizeof(thread_num1_moving), 0);
+
+			//retval = send(thread_client_sock, (char*)&thread_num1_readyAndstart, sizeof(thread_num1_readyAndstart), 0);
 
 			//충돌좌표 초기화
 			col2.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);

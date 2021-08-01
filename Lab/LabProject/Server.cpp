@@ -67,17 +67,37 @@ void Server::Server_send()
 		retVal = cplayer->m_pSkinnedAnimationController->m_pAnimationSets->m_pAnimationSets[cplayer->m_pSkinnedAnimationController->m_pAnimationTracks->m_nAnimationSet]->IsAnimate();
 
 		send_attackAnddefend.ani_playing = retVal;*/
+		UINT movingAniNum = 0;
+
+		movingAniNum =  cplayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0);		
+	
+
+		if (movingAniNum == ANIMATION_MOVE_BACKWARD) {
+			SendPlayerMove.back = true;
+		}
+		else if (movingAniNum == ANIMATION_MOVE_FORWARD) {
+			SendPlayerMove.Front = true;
+		}
+		else if (movingAniNum == ANIMATION_MOVE_LEFT) {
+			SendPlayerMove.Left = true;
+		}
+		else if (movingAniNum == ANIMATION_MOVE_RIGHT) {
+			SendPlayerMove.Right = true;
+		}
 
 
 		retval = send(sock, (char*)&player, sizeof(player), 0);
 
-		// cplayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0);
-		
 		retval = send(sock, (char*)&send_attackAnddefend, sizeof(send_attackAnddefend), 0);
 
 		retval = send(sock, (char*)&myHP, sizeof(myHP), 0);
 
 		retval = send(sock, (char*)&double_check, sizeof(double_check), 0);
+		
+		retval = send(sock, (char*)&SendPlayerMove, sizeof(SendPlayerMove), 0);
+
+		//retval = send(sock, (char*)&readyAndstrat, sizeof(readyAndstrat), 0);
+		
 
 		//if(send_attackAnddefend.checkAni == true)
 			attackAndGuard_idle();
@@ -104,6 +124,15 @@ void Server::Server_recv()
 		//retval = recv(sock, (char*)&headHitted, sizeof(headHitted), 0);
 		retval = recv(sock, (char*)&otherHP, sizeof(otherHP), 0);
 
+		retval = recv(sock, (char*)&RecvOtherPlayerMove, sizeof(RecvOtherPlayerMove), 0);
+
+		//retval = recv(sock, (char*)&readyAndstrat, sizeof(readyAndstrat), 0);
+
+		if (RecvOtherPlayerMove.Start == true) {
+			cout << "게임시작" << endl;
+			SendPlayerMove.Ready = false;
+			SendPlayerMove.Start = false;
+		}
 
 		//cout << "other Player HP : "<<otherHP.playerHp << " " << endl;
 		//HP설정
@@ -119,6 +148,37 @@ void Server::Server_recv()
 
 
 		//cout << player_position.x << " / " << player_position.y << " / " << player_position.z << endl;
+		
+		//cplayer->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0);
+
+		if (RecvOtherPlayerMove.back == true) {
+			if (cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_BACKWARD) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD, ANIMATION_TYPE_ONCE, true);
+				cout << "백이동 실행" << endl;
+			}
+			
+		}
+		else if (RecvOtherPlayerMove.Front == true) {
+			if (cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_FORWARD) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD, ANIMATION_TYPE_ONCE, true);
+				cout << "전진이동 실행" << endl;
+			}
+			
+		}
+		else if (RecvOtherPlayerMove.Left == true) {
+			if (cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_LEFT) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT, ANIMATION_TYPE_ONCE, true);
+				cout << "왼쪽이동 실행" << endl;
+			}
+			
+		}
+		else if (RecvOtherPlayerMove.Right == true) {
+			if (cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->GetNowTrackAnimationSet(0) != ANIMATION_MOVE_RIGHT) {
+				cscene->hierarchicalGameObjects[1]->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT, ANIMATION_TYPE_ONCE, true);
+				cout << "오른쪽이동 실행" << endl;
+			}
+			
+		}
 
 		//상대 클라 위치설정
 		cscene->hierarchicalGameObjects[1]->SetPosition(player_position.x, player_position.y, player_position.z);
@@ -145,7 +205,7 @@ void Server::Server_recv()
 
 		//cout << "ani_check - " << recv_attackAnddefend.checkAni << " " << endl;
 
-		cout << "ani Num - " << recv_attackAnddefend.ani_num << " - ani_check - " << recv_attackAnddefend.checkAni << endl;
+		//cout << "ani Num - " << recv_attackAnddefend.ani_num << " - ani_check - " << recv_attackAnddefend.checkAni << endl;
 
 		if (recv_attackAnddefend.checkAni == true) {
 			if (recv_attackAnddefend.ani_num == ANIMATION_MOVE_FORWARD || recv_attackAnddefend.ani_num == ANIMATION_MOVE_BACKWARD ||
@@ -208,6 +268,11 @@ void Server::attackAndGuard_idle() {
 	//send_attackAnddefend.ani_num = ANIMATION_IDLE_COMBAT;
 	send_attackAnddefend.checkAni = false;
 	double_check.double_check = false;
+	SendPlayerMove.back = false;
+	SendPlayerMove.Front = false;
+	SendPlayerMove.Left = false;
+	SendPlayerMove.Right = false;
+	//readyAndstrat.Ready = false;
 }
 
 void Server::otherPlayerPositionSet()

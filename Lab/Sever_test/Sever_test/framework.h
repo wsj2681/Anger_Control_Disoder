@@ -165,6 +165,20 @@ struct ani_double_check {
 };
 #pragma pack(pop)
 
+#pragma pack(push,1)
+struct Moving {
+
+	bool Left = false;
+	bool Right = false;
+	bool Front = false;
+	bool back = false;
+	
+	bool Ready = false;
+	bool Start = false;
+};
+#pragma pack(pop)
+
+
 void display_error(const char* msg, int err_no);
 
 
