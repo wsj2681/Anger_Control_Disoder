@@ -1080,6 +1080,8 @@ void Scene::AnimateObjects(float fTimeElapsed)
 			ui["3_PlayerTotalScore"]->SetActive(true);
 			ui["3_OtherPlayerTotalScore"]->SetActive(true);
 
+			m_pPlayer->Rotate(0.0f, 90.0f, 0.0f);
+
 			gameStart = false;
 		}
 	}
@@ -1184,6 +1186,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	if (EndGame == false)
 	{
 	
+		// TODO : ANIMATION_KNOCKDOWN 
 
 		// 체력이 다 되었을 때
 		if (hierarchicalGameObjects.data()[OTHERPLAYER]->hp >= 0.8f)
@@ -1230,9 +1233,27 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		static float readyTime = 0.f;
 		static float fightTime = 0.f;
 
+		static bool rotate = true;
 
 		if (ui["ready"]->isActive())
 		{
+#ifdef _WITH_SERVER_CONNECT
+			if (server->thread_id.thread_num == 1)
+			{
+				m_pPlayer->SetPosition(XMFLOAT3(-1.0f, 8.5f, -30.0f));
+			}
+			else
+			{
+				m_pPlayer->SetPosition(XMFLOAT3(-1.0f, 8.5f, 30.0f));
+				if (rotate == true)
+				{
+					m_pPlayer->Rotate(0.0f, 180.0f, 0.0f);
+					rotate = false;
+				}
+			}
+#else
+			m_pPlayer->SetPosition(XMFLOAT3(-1.0f, 8.5f, -30.0f));
+#endif
 			GameTimeElapsed = 0.f;
 			readyTime += fTimeElapsed;
 			if (readyTime >= 1.5f)
