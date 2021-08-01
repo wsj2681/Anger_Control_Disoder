@@ -62,7 +62,7 @@ Scene::Scene()
 	hitSound = new SoundManager("Sound/Hit01.mp3");
 	attackSound = new SoundManager("Sound/Punch01.mp3");
 
-	soundManager->Play();
+	
 	
 }
 
@@ -293,6 +293,7 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ui["3_OtherPlayerTotalScore"]->SetActive(false);
 
 	ui["timerBar"] = new UI_TimerBar(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/Timer.dds");
+	ui["timerBar"]->SetActive(false);
 
 	ui["title"] = new UI_BloodEffect(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/title.dds");
 	ui["title"]->SetActive(true);
@@ -1072,6 +1073,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 
 		if (gameStartDelay >= 2.f)
 		{
+			soundManager->Play();
 			GameTimeElapsed = 0.f;
 			ui["ready"]->SetActive(true);
 			ui["title"]->SetActive(false);
@@ -1079,7 +1081,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 			ui["2_OtherPlayerHP"]->SetActive(true);
 			ui["3_PlayerTotalScore"]->SetActive(true);
 			ui["3_OtherPlayerTotalScore"]->SetActive(true);
-
+			ui["timerBar"]->SetActive(true);
 			m_pPlayer->Rotate(0.0f, 90.0f, 0.0f);
 
 			gameStart = false;
