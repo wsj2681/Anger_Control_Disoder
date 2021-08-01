@@ -756,7 +756,8 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		}
 		case 'U':
 		{
-			hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.04f;
+			m_pPlayer->PrintWorld();
+			hierarchicalGameObjects.data()[OTHERPLAYER]->PrintWorld();
 			break;
 		}
 		case 'T':
@@ -1055,6 +1056,35 @@ float g_time = 0.f;
 
 void Scene::AnimateObjects(float fTimeElapsed)
 {
+	static float gameStartDelay = 0.f;
+	static bool gameStart = false;
+
+
+
+	if (server->RecvOtherPlayerMove.Start)
+	{
+		gameStart = server->RecvOtherPlayerMove.Start;
+	}
+
+	if (gameStart)
+	{
+		gameStartDelay += fTimeElapsed;
+
+		if (gameStartDelay >= 2.f)
+		{
+			GameTimeElapsed = 0.f;
+			ui["ready"]->SetActive(true);
+			ui["title"]->SetActive(false);
+			ui["2_PlayerHP"]->SetActive(true);
+			ui["2_OtherPlayerHP"]->SetActive(true);
+			ui["3_PlayerTotalScore"]->SetActive(true);
+			ui["3_OtherPlayerTotalScore"]->SetActive(true);
+
+			gameStart = false;
+		}
+	}
+
+
 	m_fElapsedTime = fTimeElapsed;
 	g_time += fTimeElapsed;
 	GameTimeElapsed += fTimeElapsed;
@@ -1178,7 +1208,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		if (GameTimeElapsed >= 60.f)
 		{
 			// 체력이 더 많은 사람의 승리 조건
-			if (m_pPlayer->hp < hierarchicalGameObjects.data()[OTHERPLAYER]->hp)
+			if (m_pPlayer->hp > hierarchicalGameObjects.data()[OTHERPLAYER]->hp)
 			{
 				hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
 			}
@@ -1187,7 +1217,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 				hierarchicalGameObjects.data()[OTHERPLAYER]->score += 1;
 				m_pPlayer->score -= 1;
 			}
-			else if (m_pPlayer->hp > hierarchicalGameObjects.data()[OTHERPLAYER]->hp)
+			else if (m_pPlayer->hp < hierarchicalGameObjects.data()[OTHERPLAYER]->hp)
 			{
 				m_pPlayer->score -= 1;
 			}
