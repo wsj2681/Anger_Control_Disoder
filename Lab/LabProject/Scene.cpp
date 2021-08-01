@@ -774,7 +774,6 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		}
 		case 'O':
 		{
-			
 			break;
 		}
 

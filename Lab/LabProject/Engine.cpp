@@ -594,6 +594,40 @@ void Engine::ProcessInput()
 			SetCursorPos(m_ptOldCursorPos.x, m_ptOldCursorPos.y);
 		}
 
+
+		static float oldAngle = 0.f;
+		static float nowAngle = 0.f;
+		float angleDelta = 0.f;
+
+		if (gScene)
+		{
+			if (gScene->hierarchicalGameObjects.data()[1])
+			{
+				float targetX = gScene->hierarchicalGameObjects.data()[1]->GetPosition().x;
+				float targetZ = gScene->hierarchicalGameObjects.data()[1]->GetPosition().z;
+
+				float dirX = targetX - m_pPlayer->GetPosition().x;
+				float dirZ = targetZ - m_pPlayer->GetPosition().z;
+
+				float length = sqrt((dirX * dirX) + (dirZ * dirZ));
+
+				float normalX = dirX / length;
+				float normalZ = dirZ / length;
+
+
+				nowAngle = (atan2(normalZ, normalX) * 180 / 3.14159f);
+				angleDelta = oldAngle - nowAngle;
+				oldAngle = nowAngle;
+			}
+		}
+
+
+
+		if (dwDirection != 0 || angleDelta != 0)
+		{
+			m_pPlayer->Rotate(0, angleDelta, 0.0f);
+		}
+
 		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
 		{
 			if (cxDelta || cyDelta)
@@ -610,7 +644,7 @@ void Engine::ProcessInput()
 				{
 					if (m_pCamera->GetMode() == SPACESHIP_CAMERA && !m_pCamera->IsFixed())
 						m_pCamera->Rotate(cyDelta, cxDelta, 0.0f);
-					else
+					else // 이 부분에서 플레이어 돌리기
 						m_pPlayer->Rotate(0, cxDelta, 0.0f);
 				}
 			}

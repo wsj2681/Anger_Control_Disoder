@@ -513,10 +513,13 @@ void BoxingPlayer::Update(float fTimeElapsed)
 			//XMMATRIX xmmtxRotate = XMMatrixRotationAxis(XMLoadFloat3(&m_xmf3Up), XMConvertToRadians((atan2(normalZ, normalX) * 180 / 3.14159f)));
 			//m_xmf3Look = Vector3::TransformNormal(m_xmf3Look, xmmtxRotate);
 			//m_xmf3Right = Vector3::TransformNormal(m_xmf3Right, xmmtxRotate);
-
+			//SetLook({ (atan2(normalZ, normalX) * 180 / 3.14159f) , 0.f, 0.f });
 			//TODO : 플레이어 자동회전
 			//Rotate(0.0f, (atan2(normalZ, normalX) * 180 / 3.14159f), 0.0f);
 			//cout << this->nowState << " / " << gScene->hierarchicalGameObjects.data()[1]->nowState << endl;
+
+			cout << (atan2(normalZ, normalX) * 180 / 3.14159f) << endl;
+
 		}
 	}
 }
