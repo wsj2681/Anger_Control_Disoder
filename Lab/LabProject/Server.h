@@ -2,7 +2,7 @@
 
 #define _WINSOCK_DEPRECATED_NO_WARNINGS
 
-//#define _WITH_SERVER_CONNECT
+#define _WITH_SERVER_CONNECT
 
 
 
@@ -10,7 +10,7 @@ using namespace std;
 
 
 //범호 집
-#define SERVERIP   "192.168.0.13"
+//#define SERVERIP   "192.168.0.13"
 
 //로컬
 #define SERVERIP "127.0.0.1"

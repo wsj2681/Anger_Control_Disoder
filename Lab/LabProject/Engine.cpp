@@ -614,6 +614,7 @@ void Engine::ProcessInput()
 				nowAngle = (atan2(normalZ, normalX) * 180 / 3.14159f);
 				angleDelta = oldAngle - nowAngle;
 				oldAngle = nowAngle;
+				//cout << angleDelta << endl;
 			}
 		}
 
@@ -621,7 +622,7 @@ void Engine::ProcessInput()
 
 		if (dwDirection != 0 || angleDelta != 0)
 		{
-			m_pPlayer->Rotate(0, angleDelta, 0.0f);
+			//m_pPlayer->Rotate(0, angleDelta, 0.0f);
 		}
 
 		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
