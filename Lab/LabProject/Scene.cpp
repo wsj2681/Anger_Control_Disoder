@@ -761,6 +761,10 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 		}
 		case 'T':
 		{
+#ifdef _WITH_SERVER_CONNECT
+			server->SendPlayerMove.Ready = true;
+			cout << "시작입력 " << endl;
+#endif // _WITH_SERVER_CONNECT
 			break;
 		}
 		case 'I':

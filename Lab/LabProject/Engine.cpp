@@ -503,8 +503,7 @@ void Engine::ProcessInput()
 			dwDirection |= DIR_FORWARD;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_FORWARD, ANIMATION_TYPE_ONCE);
 #ifdef _WITH_SERVER_CONNECT
-			//server->send_attackAnddefend.ani_num = ANIMATION_MOVE_FORWARD;
-			//server->send_attackAnddefend.checkAni = true;
+			server->SendPlayerMove.Front = true;
 
 #endif // _WITH_SERVER_CONNECT
 		}
@@ -513,8 +512,7 @@ void Engine::ProcessInput()
 			dwDirection |= DIR_BACKWARD;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_BACKWARD, ANIMATION_TYPE_ONCE);
 #ifdef _WITH_SERVER_CONNECT
-			//server->send_attackAnddefend.ani_num = ANIMATION_MOVE_BACKWARD;
-			//server->send_attackAnddefend.checkAni = true;
+			server->SendPlayerMove.back = true;
 #endif // _WITH_SERVER_CONNECT
 		}
 		if (pKeysBuffer[VK_LEFT] & 0xF0) // (pKeysBuffer[VK_LBUTTON] & 0xF0)
@@ -522,8 +520,7 @@ void Engine::ProcessInput()
 			dwDirection |= DIR_LEFT;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_LEFT, ANIMATION_TYPE_ONCE);
 #ifdef _WITH_SERVER_CONNECT
-			//server->send_attackAnddefend.ani_num = ANIMATION_MOVE_LEFT;
-			//server->send_attackAnddefend.checkAni = true;
+			server->SendPlayerMove.Left = true;
 #endif // _WITH_SERVER_CONNECT
 		}
 		if (pKeysBuffer[VK_RIGHT] & 0xF0) // (pKeysBuffer[VK_RBUTTON] & 0xF0)
@@ -531,8 +528,7 @@ void Engine::ProcessInput()
 			dwDirection |= DIR_RIGHT;
 			m_pPlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_MOVE_RIGHT, ANIMATION_TYPE_ONCE);
 #ifdef _WITH_SERVER_CONNECT
-			//server->send_attackAnddefend.ani_num = ANIMATION_MOVE_RIGHT;
-			//server->send_attackAnddefend.checkAni = true;
+			server->SendPlayerMove.Right = true;
 #endif // _WITH_SERVER_CONNECT
 		}
 		if (pKeysBuffer[VK_PRIOR] & 0xF0) dwDirection |= DIR_UP;
