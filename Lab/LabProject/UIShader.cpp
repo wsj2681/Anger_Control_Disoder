@@ -732,7 +732,7 @@ void UI_ReadyFight::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommand
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);
 
 	m_pTexture = new Texture(1, RESOURCE_TEXTURE2D, 0);
-	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0, false);
 	Scene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 17, false);
 }
 

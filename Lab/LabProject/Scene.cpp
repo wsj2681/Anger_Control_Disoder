@@ -298,8 +298,8 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ui["title"] = new UI_BloodEffect(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/title.dds");
 	ui["title"]->SetActive(true);
 
-	ui["ready"] = new UI_ReadyFight(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/ready.dds");
-	ui["fight"] = new UI_ReadyFight(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/fight.dds");
+	ui["ready"] = new UI_ReadyFight(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/ready.png");
+	ui["fight"] = new UI_ReadyFight(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/fight.png");
 	ui["ready"]->SetActive(false);
 	ui["fight"]->SetActive(false);
 	

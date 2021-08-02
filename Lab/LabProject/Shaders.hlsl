@@ -534,7 +534,7 @@ float4 PSTextureUI_BloodEffect(VS_TEXTURE_UI_OUTOUT input) : SV_TARGET
 VS_TEXTURE_UI_OUTOUT VSTextureUI_ReadyFight(uint nVertexID : SV_VertexID)
 {
 	VS_TEXTURE_UI_OUTOUT output;
-	float pos = .3f;
+	float pos = .8f;
 	if (nVertexID == 0) { output.position = float4(-pos, +pos, 0.0f, 1.0f); output.uv = float2(0.f, 0.f); }
 	if (nVertexID == 1) { output.position = float4(+pos, +pos, 0.0f, 1.0f); output.uv = float2(1.f, 0.f); }
 	if (nVertexID == 2) { output.position = float4(+pos, -pos, 0.0f, 1.0f); output.uv = float2(1.f, 1.f); }
