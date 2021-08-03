@@ -625,12 +625,12 @@ void Engine::ProcessInput()
 		}
 
 
-
+#ifdef _WITH_SERVER_CONNECT
 		if (dwDirection != 0 || angleDelta != 0)
 		{
 			m_pPlayer->Rotate(0, angleDelta, 0.0f);
 		}
-
+#endif
 		if ((dwDirection != 0) || (cxDelta != 0.0f) || (cyDelta != 0.0f))
 		{
 			if (cxDelta || cyDelta)

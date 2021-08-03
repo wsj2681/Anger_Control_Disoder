@@ -23,7 +23,7 @@ private:
 public:
 
 	void Init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* rootSignatrue);
-	void PositionInit(XMFLOAT3 position);
+	void PositionInit(XMFLOAT3 position, XMFLOAT3 direction);
 	void ParticleON();
 	void ParticleOFF();
 	void Destroy();

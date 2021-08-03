@@ -136,6 +136,70 @@ void UI_HP_Player::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandL
 	Scene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 17, false);
 }
 
+
+UI_HPBackGround_Player::UI_HPBackGround_Player()
+{
+}
+
+UI_HPBackGround_Player::UI_HPBackGround_Player(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	BuildObjects(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, filePath);
+}
+
+UI_HPBackGround_Player::~UI_HPBackGround_Player()
+{
+}
+
+void UI_HPBackGround_Player::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+
+}
+
+void UI_HPBackGround_Player::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+
+}
+
+void UI_HPBackGround_Player::ReleaseShaderVariables()
+{
+
+}
+
+D3D12_INPUT_LAYOUT_DESC UI_HPBackGround_Player::CreateInputLayout()
+{
+	UINT nInputElementDescs = 2;
+	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0 };
+
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+
+	return(d3dInputLayoutDesc);
+}
+
+D3D12_SHADER_BYTECODE UI_HPBackGround_Player::CreateVertexShader()
+{
+	return(Shader::CompileShaderFromFile(L"Shaders.hlsl", "VSTextureUI_HPBackGround", "vs_5_1", &m_pd3dVertexShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE UI_HPBackGround_Player::CreatePixelShader()
+{
+	return(Shader::CompileShaderFromFile(L"Shaders.hlsl", "PSTextureUI_HPBackGround", "ps_5_1", &m_pd3dPixelShaderBlob));
+}
+
+void UI_HPBackGround_Player::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	m_pTexture = new Texture(1, RESOURCE_TEXTURE2D, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
+	Scene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 17, false);
+}
+
 UI_HP_OtherPlayer::UI_HP_OtherPlayer()
 {
 }
@@ -201,6 +265,69 @@ D3D12_SHADER_BYTECODE UI_HP_OtherPlayer::CreatePixelShader()
 }
 
 void UI_HP_OtherPlayer::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
+	CreateShaderVariables(pd3dDevice, pd3dCommandList);
+
+	m_pTexture = new Texture(1, RESOURCE_TEXTURE2D, 0);
+	m_pTexture->LoadTextureFromFile(pd3dDevice, pd3dCommandList, filePath, 0);
+	Scene::CreateShaderResourceViews(pd3dDevice, m_pTexture, 17, false);
+}
+
+UI_HPBackGround_OtherPlayer::UI_HPBackGround_OtherPlayer()
+{
+}
+
+UI_HPBackGround_OtherPlayer::UI_HPBackGround_OtherPlayer(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
+{
+	BuildObjects(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature, filePath);
+}
+
+UI_HPBackGround_OtherPlayer::~UI_HPBackGround_OtherPlayer()
+{
+}
+
+void UI_HPBackGround_OtherPlayer::CreateShaderVariables(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
+{
+
+}
+
+void UI_HPBackGround_OtherPlayer::UpdateShaderVariables(ID3D12GraphicsCommandList* pd3dCommandList)
+{
+
+}
+
+void UI_HPBackGround_OtherPlayer::ReleaseShaderVariables()
+{
+
+}
+
+D3D12_INPUT_LAYOUT_DESC UI_HPBackGround_OtherPlayer::CreateInputLayout()
+{
+	UINT nInputElementDescs = 2;
+	D3D12_INPUT_ELEMENT_DESC* pd3dInputElementDescs = new D3D12_INPUT_ELEMENT_DESC[nInputElementDescs];
+
+	pd3dInputElementDescs[0] = { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 };
+	pd3dInputElementDescs[1] = { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA,0 };
+
+	D3D12_INPUT_LAYOUT_DESC d3dInputLayoutDesc;
+	d3dInputLayoutDesc.pInputElementDescs = pd3dInputElementDescs;
+	d3dInputLayoutDesc.NumElements = nInputElementDescs;
+
+	return(d3dInputLayoutDesc);
+}
+
+D3D12_SHADER_BYTECODE UI_HPBackGround_OtherPlayer::CreateVertexShader()
+{
+	return(Shader::CompileShaderFromFile(L"Shaders.hlsl", "VSTextureUI_HPBackGround2", "vs_5_1", &m_pd3dVertexShaderBlob));
+}
+
+D3D12_SHADER_BYTECODE UI_HPBackGround_OtherPlayer::CreatePixelShader()
+{
+	return(Shader::CompileShaderFromFile(L"Shaders.hlsl", "PSTextureUI_HPBackGround2", "ps_5_1", &m_pd3dPixelShaderBlob));
+}
+
+void UI_HPBackGround_OtherPlayer::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* pd3dGraphicsRootSignature, wchar_t* filePath)
 {
 	CreateShader(pd3dDevice, pd3dCommandList, pd3dGraphicsRootSignature);
 	CreateShaderVariables(pd3dDevice, pd3dCommandList);

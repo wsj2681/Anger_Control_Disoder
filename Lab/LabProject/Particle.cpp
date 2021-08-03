@@ -23,12 +23,16 @@ void Particle::Init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCom
 	}
 }
 
-void Particle::PositionInit(XMFLOAT3 position)
+void Particle::PositionInit(XMFLOAT3 position, XMFLOAT3 direction)
 {
+	uniform_real_distribution<> uid(-1.f, 1.f);
+	default_random_engine dre;
 	ParticleON();
 	for (auto& i : objects)
 	{
 		i->SetPosition(position);
+
+		i->particleDir = direction;
 	}
 }
 

@@ -284,6 +284,10 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	
 	ui["2_PlayerHP"] = new UI_HP_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar_Other.dds");
 	ui["2_OtherPlayerHP"] = new UI_HP_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar.dds");
+	ui["2_PlayerHPBack"] = new UI_HPBackGround_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/hpBack.dds");
+	ui["2_OtherPlayerHPBack"] = new UI_HPBackGround_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/hpBack.dds");
+	ui["2_OtherPlayerHPBack"]->SetActive(true);
+	ui["2_PlayerHPBack"]->SetActive(true);
 	ui["2_PlayerHP"]->SetActive(false);
 	ui["2_OtherPlayerHP"]->SetActive(false);
 
@@ -307,8 +311,8 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ui["youLose"] = new UI_LOSEWIN(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/youlose.dds");
 	ui["youWin"]->SetActive(false);
 	ui["youLose"]->SetActive(false);
-	//particle = new Particle;
-	//particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
+	particle = new Particle;
+	particle->Init(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
 	effectManager = new EffectManager(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature);
 
@@ -1058,15 +1062,15 @@ float g_time = 0.f;
 void Scene::AnimateObjects(float fTimeElapsed)
 {
 	static float gameStartDelay = 0.f;
-	static bool gameStart = false;
+	static bool gameStart = true;
 
 
-
+#ifdef _WITH_SERVER_CONNECT
 	if (server->RecvOtherPlayerMove.Start)
 	{
 		gameStart = server->RecvOtherPlayerMove.Start;
 	}
-
+#endif
 	if (gameStart)
 	{
 		gameStartDelay += fTimeElapsed;
@@ -1529,7 +1533,10 @@ void Scene::CollidePVE(const float& deltaTime)
 								CoolDown = false;
 								gCamera->ZoomIn();
 								attackSound->Play();
-
+								if (particle)
+								{
+									particle->PositionInit(PlayerBoundBox.second->GetPosition(), PlayerBoundBox.second->GetLook());
+								}
 							}
 						}
 					}
