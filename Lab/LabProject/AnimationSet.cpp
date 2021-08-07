@@ -250,7 +250,7 @@ XMFLOAT4X4 AnimationSet::GetSRT(int nBone)
 	XMFLOAT4X4 xmf4x4Transform = Matrix4x4::Identity();
 #ifdef _WITH_ANIMATION_SRT
 	XMVECTOR S, R, T;
-	for (int i = 0; i < (m_nKeyFrameTranslations - 1); i++)
+	for (auto i = 0; i < (m_nKeyFrameTranslations - 1); i++)
 	{
 		if ((m_pfKeyFrameTranslationTimes[i] <= m_fPosition) && (m_fPosition <= m_pfKeyFrameTranslationTimes[i + 1]))
 		{
@@ -259,7 +259,7 @@ XMFLOAT4X4 AnimationSet::GetSRT(int nBone)
 			break;
 		}
 	}
-	for (UINT i = 0; i < (m_nKeyFrameScales - 1); i++)
+	for (auto i = 0; i < (m_nKeyFrameScales - 1); i++)
 	{
 		if ((m_pfKeyFrameScaleTimes[i] <= m_fPosition) && (m_fPosition <= m_pfKeyFrameScaleTimes[i + 1]))
 		{
@@ -268,7 +268,7 @@ XMFLOAT4X4 AnimationSet::GetSRT(int nBone)
 			break;
 		}
 	}
-	for (UINT i = 0; i < (m_nKeyFrameRotations - 1); i++)
+	for (auto i = 0; i < (m_nKeyFrameRotations - 1); i++)
 	{
 		if ((m_pfKeyFrameRotationTimes[i] <= m_fPosition) && (m_fPosition <= m_pfKeyFrameRotationTimes[i + 1]))
 		{

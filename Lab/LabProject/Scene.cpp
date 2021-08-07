@@ -1335,10 +1335,10 @@ void Scene::AnimateObjects(float fTimeElapsed)
 #endif
 
 
-		m_pPlayer->GetCamera()->SetLook({ -0.0223675, -0.275638, 0.961001 });
-		m_pPlayer->GetCamera()->SetRight({ 0.999729, -4.51691e-08, 0.0232689 });
-		m_pPlayer->GetCamera()->SetUp({ -0.00641375, 0.961262, 0.275563 });
-		m_pPlayer->GetCamera()->SetPosition({ 0.367214, 27.3884, -26.9444 });
+		m_pPlayer->GetCamera()->SetLook({ -0.0223675f, -0.275638f, 0.961001f });
+		m_pPlayer->GetCamera()->SetRight({ 0.999729f, -4.51691e-08f, 0.0232689f });
+		m_pPlayer->GetCamera()->SetUp({ -0.00641375f, 0.961262f, 0.275563f });
+		m_pPlayer->GetCamera()->SetPosition({ 0.367214f, 27.3884f, -26.9444f });
 
 		// TODO : 카메라 월드 좌표를 여기서 Set하기
 		// TODO : 플레이어 카메라로 SetLookAt 해주거나 월드좌표 받아서 Set하기
@@ -1535,7 +1535,7 @@ void Scene::CollidePVE(const float& deltaTime)
 								attackSound->Play();
 								if (particle)
 								{
-									particle->PositionInit(PlayerBoundBox.second->GetPosition(), PlayerBoundBox.second->GetLook());
+									particle->PositionInit(PlayerBoundBox.second->GetPosition(), PlayerBoundBox.second->GetLook(), BLUECOLOR);
 								}
 							}
 						}
@@ -1566,7 +1566,10 @@ void Scene::CollidePVE(const float& deltaTime)
 								CoolDown = false;
 								gCamera->ZoomIn();
 								attackSound->Play();
-
+								if (particle)
+								{
+									particle->PositionInit(PlayerBoundBox.second->GetPosition(), PlayerBoundBox.second->GetLook(), BLUECOLOR);
+								}
 							}
 						}
 					}
@@ -1599,6 +1602,10 @@ void Scene::CollidePVE(const float& deltaTime)
 								CoolDown = false;
 								gCamera->ZoomIn();
 								attackSound->Play();
+								if (particle)
+								{
+									particle->PositionInit(PlayerBoundBox.second->GetPosition(), PlayerBoundBox.second->GetLook(), REDCOLOR);
+								}
 							}
 						}
 					}
@@ -1626,6 +1633,10 @@ void Scene::CollidePVE(const float& deltaTime)
 								CoolDown = false;
 								gCamera->ZoomIn();
 								attackSound->Play();
+								if (particle)
+								{
+									particle->PositionInit(PlayerBoundBox.second->GetPosition(), PlayerBoundBox.second->GetLook(), REDCOLOR);
+								}
 							}
 						}
 					}
@@ -1657,6 +1668,10 @@ void Scene::CollidePVE(const float& deltaTime)
 							CoolDown = false;
 							gCamera->ZoomIn();
 							attackSound->Play();
+							if (particle)
+							{
+								particle->PositionInit(PlayerBoundBox.second->GetPosition(), PlayerBoundBox.second->GetLook(), GREENCOLOR);
+							}
 						}
 					}
 				}
@@ -1691,6 +1706,10 @@ void Scene::CollidePVE(const float& deltaTime)
 								CoolTime = 0.f;
 								CoolDown = false;
 								effectTime = 0.f;
+								if (particle)
+								{
+									particle->PositionInit(PlayerBoundBox.second->GetPosition(), otherPlayerBoundBox.second->GetLook(), BLUECOLOR);
+								}
 							}
 						}
 					}
@@ -1719,6 +1738,10 @@ void Scene::CollidePVE(const float& deltaTime)
 								CoolTime = 0.f;
 								CoolDown = false;
 								effectTime = 0.f;
+								if (particle)
+								{
+									particle->PositionInit(PlayerBoundBox.second->GetPosition(), otherPlayerBoundBox.second->GetLook(), BLUECOLOR);
+								}
 							}
 						}
 					}
@@ -1750,6 +1773,10 @@ void Scene::CollidePVE(const float& deltaTime)
 								CoolTime = 0.f;
 								CoolDown = false;
 								effectTime = 0.f;
+								if (particle)
+								{
+									particle->PositionInit(PlayerBoundBox.second->GetPosition(), otherPlayerBoundBox.second->GetLook(),REDCOLOR);
+								}
 							}
 						}
 					}
@@ -1776,6 +1803,10 @@ void Scene::CollidePVE(const float& deltaTime)
 								CoolTime = 0.f;
 								CoolDown = false;
 								effectTime = 0.f;
+								if (particle)
+								{
+									particle->PositionInit(PlayerBoundBox.second->GetPosition(), otherPlayerBoundBox.second->GetLook(), REDCOLOR);
+								}
 							}
 						}
 					}
@@ -1806,6 +1837,10 @@ void Scene::CollidePVE(const float& deltaTime)
 							CoolTime = 0.f;
 							CoolDown = false;
 							effectTime = 0.f;
+							if (particle)
+							{
+								particle->PositionInit(PlayerBoundBox.second->GetPosition(), otherPlayerBoundBox.second->GetLook(), GREENCOLOR);
+							}
 						}
 					}
 				}

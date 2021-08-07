@@ -1,6 +1,12 @@
 #pragma once
 #include "Object.h"
 
+enum objectColor
+{
+	REDCOLOR,
+	GREENCOLOR,
+	BLUECOLOR
+};
 
 class Particle
 {
@@ -18,12 +24,17 @@ private:
 
 	float lifeTime = 10.f;
 	float m_fElapsedTime = 0.f;
-	vector<Object*> objects;
+	
+	vector<Object*> objectsBlue;
+	vector<Object*> objectsGreen;
+	vector<Object*> objectsRed;
+
+	int objectColor = REDCOLOR;
 
 public:
 
 	void Init(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, ID3D12RootSignature* rootSignatrue);
-	void PositionInit(XMFLOAT3 position, XMFLOAT3 direction);
+	void PositionInit(XMFLOAT3 position, XMFLOAT3 direction, int particleColor = REDCOLOR);
 	void ParticleON();
 	void ParticleOFF();
 	void Destroy();

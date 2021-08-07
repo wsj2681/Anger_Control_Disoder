@@ -533,7 +533,7 @@ void BoxingPlayer::MoveTo(XMFLOAT3 destination)
 
 void BoxingPlayer::UpdateWayPoints()
 {
-	int curWayPoint = wayPoint.GetCurWayPoints();
+	auto curWayPoint = wayPoint.GetCurWayPoints();
 	if (curWayPoint < wayPoint.GetNWayPoints())
 		MoveTo(wayPoint.GetWayPoints()[curWayPoint]);
 	else
