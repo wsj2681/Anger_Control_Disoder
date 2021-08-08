@@ -1528,7 +1528,7 @@ void Scene::CollidePVE(const float& deltaTime)
 								{
 									effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
 								}
-								hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.04f;
+								hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.05f;
 								CoolTime = 0.f;
 								CoolDown = false;
 								gCamera->ZoomIn();
@@ -1561,7 +1561,7 @@ void Scene::CollidePVE(const float& deltaTime)
 								{
 									effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
 								}
-								hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.04f;
+								hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.08f;
 								CoolTime = 0.f;
 								CoolDown = false;
 								gCamera->ZoomIn();
@@ -1597,7 +1597,7 @@ void Scene::CollidePVE(const float& deltaTime)
 								{
 									effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
 								}
-								hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.04f;
+								hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.05f;
 								CoolTime = 0.f;
 								CoolDown = false;
 								gCamera->ZoomIn();
@@ -1628,7 +1628,7 @@ void Scene::CollidePVE(const float& deltaTime)
 								{
 									effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), 2);
 								}
-								hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.04f;
+								hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.08f;
 								CoolTime = 0.f;
 								CoolDown = false;
 								gCamera->ZoomIn();
@@ -1663,7 +1663,7 @@ void Scene::CollidePVE(const float& deltaTime)
 							{
 								effectManager->EffectOn(PlayerBoundBox.second->GetPosition(), REDX);
 							}
-							hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.04f;
+							hierarchicalGameObjects.data()[OTHERPLAYER]->hp += 0.05f;
 							CoolTime = 0.f;
 							CoolDown = false;
 							gCamera->ZoomIn();
@@ -1702,7 +1702,7 @@ void Scene::CollidePVE(const float& deltaTime)
 								{
 									effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
 								}
-								m_pPlayer->hp += 0.04f;
+								m_pPlayer->hp += 0.05f;
 								CoolTime = 0.f;
 								CoolDown = false;
 								effectTime = 0.f;
@@ -1734,7 +1734,7 @@ void Scene::CollidePVE(const float& deltaTime)
 								{
 									effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
 								}
-								m_pPlayer->hp += 0.04f;
+								m_pPlayer->hp += 0.08f;
 								CoolTime = 0.f;
 								CoolDown = false;
 								effectTime = 0.f;
@@ -1769,7 +1769,7 @@ void Scene::CollidePVE(const float& deltaTime)
 								{
 									effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
 								}
-								m_pPlayer->hp += 0.04f;
+								m_pPlayer->hp += 0.05f;
 								CoolTime = 0.f;
 								CoolDown = false;
 								effectTime = 0.f;
@@ -1799,7 +1799,7 @@ void Scene::CollidePVE(const float& deltaTime)
 								{
 									effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), 2);
 								}
-								m_pPlayer->hp += 0.04f;
+								m_pPlayer->hp += 0.08f;
 								CoolTime = 0.f;
 								CoolDown = false;
 								effectTime = 0.f;
@@ -1833,7 +1833,7 @@ void Scene::CollidePVE(const float& deltaTime)
 							{
 								effectManager->EffectOn(otherPlayerBoundBox.second->GetPosition(), REDX);
 							}
-							m_pPlayer->hp += 0.04f;
+							m_pPlayer->hp += 0.05f;
 							CoolTime = 0.f;
 							CoolDown = false;
 							effectTime = 0.f;
