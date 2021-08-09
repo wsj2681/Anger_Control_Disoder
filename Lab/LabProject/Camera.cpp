@@ -192,12 +192,12 @@ void Camera::SetCaptureWorld()
 
 void Camera::ZoomIn()
 {
-	MoveFromShift(DIR_FORWARD, 10.f, false);
+	MoveFromShift(DIR_FORWARD, 15.f, true);
 }
 
 void Camera::ZoomOut()
 {
-	MoveFromShift(DIR_BACKWARD, 5.f, false);
+	MoveFromShift(DIR_BACKWARD, 15.f, true);
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
