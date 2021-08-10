@@ -1484,11 +1484,11 @@ void Scene::CollidePVE(const float& deltaTime)
 
 	if (effectTime >= 1.f)
 	{
-		//ui["1_BloodEffect"]->SetActive(false);
+		ui["1_BloodEffect"]->SetActive(false);
 	}
 	else
 	{
-		//ui["1_BloodEffect"]->SetActive(true);
+		ui["1_BloodEffect"]->SetActive(true);
 	}
 
 	// TODO : 이펙트 애니메이션 위치 조정하기, 현재 타격한 부위의 좌표이므로 이를 맞는 좌표로 설정하던가 테스트 필요
