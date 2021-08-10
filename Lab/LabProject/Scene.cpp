@@ -286,8 +286,8 @@ void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd
 	ui["2_OtherPlayerHP"] = new UI_HP_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/DDSfile/HPBar.dds");
 	ui["2_PlayerHPBack"] = new UI_HPBackGround_Player(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/hpBack.dds");
 	ui["2_OtherPlayerHPBack"] = new UI_HPBackGround_OtherPlayer(pd3dDevice, pd3dCommandList, m_pd3dGraphicsRootSignature, L"UI/hpBack.dds");
-	ui["2_OtherPlayerHPBack"]->SetActive(true);
-	ui["2_PlayerHPBack"]->SetActive(true);
+	ui["2_OtherPlayerHPBack"]->SetActive(false);
+	ui["2_PlayerHPBack"]->SetActive(false);
 	ui["2_PlayerHP"]->SetActive(false);
 	ui["2_OtherPlayerHP"]->SetActive(false);
 
@@ -1062,7 +1062,7 @@ float g_time = 0.f;
 void Scene::AnimateObjects(float fTimeElapsed)
 {
 	static float gameStartDelay = 0.f;
-	static bool gameStart = true;
+	static bool gameStart = false;
 
 
 #ifdef _WITH_SERVER_CONNECT
@@ -1082,6 +1082,8 @@ void Scene::AnimateObjects(float fTimeElapsed)
 			ui["ready"]->SetActive(true);
 			ui["title"]->SetActive(false);
 			ui["2_PlayerHP"]->SetActive(true);
+			ui["2_OtherPlayerHPBack"]->SetActive(true);
+			ui["2_PlayerHPBack"]->SetActive(true);
 			ui["2_OtherPlayerHP"]->SetActive(true);
 			ui["3_PlayerTotalScore"]->SetActive(true);
 			ui["3_OtherPlayerTotalScore"]->SetActive(true);
