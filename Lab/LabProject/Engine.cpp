@@ -17,6 +17,8 @@ Camera* gCamera = nullptr;
 Scene* gScene = nullptr;
 bool onTempKey{ true };
 
+int clientFrameCount = 0;
+
 bool Engine::OnCreate(HINSTANCE hInstance, HWND hMainWnd)
 {
 	this->hInstance = hInstance;
@@ -776,4 +778,6 @@ void Engine::FrameAdvance()
 	XMFLOAT3 xmf3Position = m_pPlayer->GetPosition();
 	_stprintf_s(frameRate + nLength, 70 - nLength, _T("(%4f, %4f, %4f)"), xmf3Position.x, xmf3Position.y, xmf3Position.z);
 	::SetWindowText(this->hWnd, frameRate);
+	clientFrameCount++;
+
 }

@@ -8,7 +8,7 @@
 #include "SoundManager.h"
 #include "EffectManager.h"
 #include "Particle.h"
-constexpr UINT MAX_LIGHTS = 50;
+constexpr UINT MAX_LIGHTS = 40;
 constexpr UINT POINT_LIGHT = 1;
 constexpr UINT SPOT_LIGHT = 2;
 constexpr UINT DIRECTIONAL_LIGHT = 3;

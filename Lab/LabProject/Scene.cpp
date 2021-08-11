@@ -53,6 +53,8 @@ UINT aniNum{ ANIMATION_HOOK_L };
 
 GameTimer countTimer{};
 
+bool gStart = false;
+
 Scene::Scene()
 {
 	SoundManager::Init();
@@ -76,8 +78,6 @@ void Scene::BuildDefaultLightsAndMaterials()
 	/*
 	0 ~ 37 = Roof Light
 	38~39 = RedSpotLight
-	40~42 = HallWayLight
-	43 = CollideLight
 	*/
 	m_nLights = lightsCount;
 	m_nLights += 4;
@@ -119,58 +119,7 @@ void Scene::BuildDefaultLightsAndMaterials()
 		m_pLights[i].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
 		m_pLights[i].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 	}
-	m_pLights[40].m_bEnable = false;
-	m_pLights[40].m_nType = SPOT_LIGHT;
-	m_pLights[40].m_fRange = 400.0f;
-	m_pLights[40].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
-	m_pLights[40].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.f, 1.0f);
-	m_pLights[40].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.f, 0.0f);
-	m_pLights[40].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -750.f);
-	m_pLights[40].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
-	m_pLights[40].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights[40].m_fFalloff = 100.0f;
-	m_pLights[40].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
-	m_pLights[40].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
 
-	m_pLights[41].m_bEnable = false;
-	m_pLights[41].m_nType = SPOT_LIGHT;
-	m_pLights[41].m_fRange = 400.0f;
-	m_pLights[41].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
-	m_pLights[41].m_xmf4Diffuse = XMFLOAT4(0.4f, 0.4f, 0.f, 1.0f);
-	m_pLights[41].m_xmf4Specular = XMFLOAT4(0.3f, 0.3f, 0.f, 0.0f);
-	m_pLights[41].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -675.f);
-	m_pLights[41].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
-	m_pLights[41].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights[41].m_fFalloff = 50.0f;
-	m_pLights[41].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
-	m_pLights[41].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
-
-	m_pLights[42].m_bEnable = false;
-	m_pLights[42].m_nType = SPOT_LIGHT;
-	m_pLights[42].m_fRange = 400.0f;
-	m_pLights[42].m_xmf4Ambient = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
-	m_pLights[42].m_xmf4Diffuse = XMFLOAT4(0.1f, 0.1f, 0.f, 1.0f);
-	m_pLights[42].m_xmf4Specular = XMFLOAT4(0.1f, 0.1f, 0.f, 0.0f);
-	m_pLights[42].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -550.f);
-	m_pLights[42].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
-	m_pLights[42].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights[42].m_fFalloff = 50.0f;
-	m_pLights[42].m_fPhi = (float)cos(XMConvertToRadians(60.0f));
-	m_pLights[42].m_fTheta = (float)cos(XMConvertToRadians(20.0f));
-
-	// Collide Light
-	m_pLights[43].m_bEnable = false;
-	m_pLights[43].m_nType = SPOT_LIGHT;
-	m_pLights[43].m_fRange = 100.0f;
-	m_pLights[43].m_xmf4Ambient = XMFLOAT4(0.1f, 0.0f, 0.0f, .3f);
-	m_pLights[43].m_xmf4Diffuse = XMFLOAT4(0.8f, 0.0f, 0.0f, .3f);
-	m_pLights[43].m_xmf4Specular = XMFLOAT4(0.5f, 0.5f, 0.5f, 0.0f);
-	m_pLights[43].m_xmf3Position = XMFLOAT3(0.f, 100.7337f, -550.f);
-	m_pLights[43].m_xmf3Direction = XMFLOAT3(0.f, -1.f, 0.f);
-	m_pLights[43].m_xmf3Attenuation = XMFLOAT3(1.0f, 0.01f, 0.0001f);
-	m_pLights[43].m_fFalloff = 8.0f;
-	m_pLights[43].m_fPhi = (float)cos(XMConvertToRadians(90.0f));
-	m_pLights[42].m_fTheta = (float)cos(XMConvertToRadians(30.0f));
 }
 
 void Scene::BuildObjects(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList)
@@ -1006,6 +955,11 @@ bool Scene::OnProcessingKeyboardMessage(HWND hWnd, UINT nMessageID, WPARAM wPara
 			hierarchicalGameObjects.data()[OTHERPLAYER]->nowState = LOW_GUARD;
 			break;
 		}
+		case '6':
+		{
+			gStart = true;
+			break;
+		}
 		}
 	}
 
@@ -1062,7 +1016,7 @@ float g_time = 0.f;
 void Scene::AnimateObjects(float fTimeElapsed)
 {
 	static float gameStartDelay = 0.f;
-	static bool gameStart = false;
+	static bool gameStart = true;
 
 
 #ifdef _WITH_SERVER_CONNECT
@@ -1070,6 +1024,8 @@ void Scene::AnimateObjects(float fTimeElapsed)
 	{
 		gameStart = server->RecvOtherPlayerMove.Start;
 	}
+#else 
+
 #endif
 	if (gameStart)
 	{
@@ -1088,7 +1044,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 			ui["3_PlayerTotalScore"]->SetActive(true);
 			ui["3_OtherPlayerTotalScore"]->SetActive(true);
 			ui["timerBar"]->SetActive(true);
-			m_pPlayer->Rotate(0.0f, 90.0f, 0.0f);
+			//m_pPlayer->Rotate(0.0f, 90.0f, 0.0f);
 
 			gameStart = false;
 		}
@@ -1351,6 +1307,27 @@ void Scene::AnimateObjects(float fTimeElapsed)
 		losePlayer->m_pSkinnedAnimationController->SetTrackAnimationSet(0, ANIMATION_LOSTING_BATTLE, ANIMATION_TYPE_LOOP);
 	}
 
+	if (server && server->positionRecv)
+	{
+
+		// target
+		XMVECTOR target = { server->other_player.player_world._41 , server->other_player.player_world._42, server->other_player.player_world._43 };
+
+		// nowposition
+		XMVECTOR nowposition = { server->oldPlayerPosition._41 , server->oldPlayerPosition._42, server->oldPlayerPosition._43 };
+
+		nowposition = XMVectorLerp(nowposition, target, 0.5);
+
+
+		XMFLOAT3 position;
+
+		XMStoreFloat3(&position, nowposition);
+		hierarchicalGameObjects[1]->SetPosition(position);
+		hierarchicalGameObjects[1]->SetRight(server->player_right.x, server->player_right.y, server->player_right.z);
+		hierarchicalGameObjects[1]->SetUp(server->player_up.x, server->player_up.y, server->player_up.z);
+		hierarchicalGameObjects[1]->SetLook(server->player_look.x, server->player_look.y, server->player_look.z);
+	}
+
 	//TODO : 여기 다시보기
 	CollideCageSide();
 
@@ -1478,7 +1455,7 @@ void Scene::CollidePVE(const float& deltaTime)
 		CoolDown = true;
 	}
 
-	static float effectTime = 0.f;
+	static float effectTime = 3.f;
 
 	effectTime += deltaTime;
 

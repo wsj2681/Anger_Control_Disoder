@@ -161,6 +161,8 @@ public:
 
 	Player_world player;
 	Player_world other_player;
+	XMFLOAT4X4 oldPlayerPosition;
+	bool positionRecv = false;
 	Player_world save_world;
 
 	XMFLOAT3 player_position;

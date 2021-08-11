@@ -119,6 +119,8 @@ void Server::Server_recv()
 	}
 	else {
 		retval = recv(sock, (char*)&other_player, sizeof(other_player), 0);
+		oldPlayerPosition = other_player.player_world;
+		positionRecv = true;
 		//retval = recv(sock, (char*)&col, sizeof(col), 0);
 		retval = recv(sock, (char*)&recv_attackAnddefend, sizeof(recv_attackAnddefend), 0);
 		//retval = recv(sock, (char*)&headHitted, sizeof(headHitted), 0);
