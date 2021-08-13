@@ -952,7 +952,7 @@ float g_time = 0.f;
 void Scene::AnimateObjects(float fTimeElapsed)
 {
 	static float gameStartDelay = 0.f;
-	static bool gameStart = true;
+	static bool gameStart = false;
 
 
 #ifdef _WITH_SERVER_CONNECT
@@ -980,7 +980,7 @@ void Scene::AnimateObjects(float fTimeElapsed)
 			ui["3_PlayerTotalScore"]->SetActive(true);
 			ui["3_OtherPlayerTotalScore"]->SetActive(true);
 			ui["timerBar"]->SetActive(true);
-
+			m_pPlayer->Rotate(0.f, 90.f, 0.f);
 			gameStart = false;
 		}
 	}

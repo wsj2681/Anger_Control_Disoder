@@ -312,7 +312,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 				recv_attackAnddefend_2.ani_num = second_save_ani_num;
 				recv_attackAnddefend_2.checkAni = true;
 
-				cout << "Thread 1 ani Num -  " << second_save_ani_num << " -checkAni - " << second_must_ani_play << endl;
+				//cout << "Thread 1 ani Num -  " << second_save_ani_num << " -checkAni - " << second_must_ani_play << endl;
 			}
 			else
 			{
@@ -383,7 +383,7 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 			{
 				recv_attackAnddefend_1.ani_num = first_save_ani_num;
 				recv_attackAnddefend_1.checkAni = true;
-				cout << "Thread2 ani Num -  " << first_save_ani_num << " -checkAni - " << first_must_ani_play << endl;
+				//cout << "Thread2 ani Num -  " << first_save_ani_num << " -checkAni - " << first_must_ani_play << endl;
 			}
 			else
 			{
