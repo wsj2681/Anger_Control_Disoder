@@ -1,0 +1,470 @@
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
+#include "framework.h"
+
+#define MAXTHREAD 5
+
+
+//임계영역설정
+CRITICAL_SECTION cs;
+// ThreadFunction
+DWORD WINAPI PlayerThread(LPVOID arg);
+
+// Thread ID
+DWORD dwThreadID[MAXTHREAD];
+
+//스레드 갯수
+static int idIndex = 1;
+
+//HANDLE hThread[MAXTHREAD];
+HANDLE hThread;
+int threadCount = 0;
+
+Player_world thread_num_1_player;
+Player_world thread_num_2_player;
+
+
+int thread_empty[MAXTHREAD] = { 0, };
+
+void setPosition(XMFLOAT3& fl3x3, XMFLOAT4X4& fl4x4);
+
+//애니메이션
+AttackAndDefend recv_attackAnddefend_1;
+AttackAndDefend recv_attackAnddefend_2;
+bool checkAnimation(AttackAndDefend attAdef);
+ani_double_check first_double_check;
+ani_double_check second_double_check;
+
+UINT first_save_ani_num = { 0 };
+bool first_must_ani_play = false;
+
+UINT second_save_ani_num = { 0 };
+bool second_must_ani_play = false;
+
+Moving thread_num1_moving;
+Moving thread_num2_moving;
+
+
+
+//충돌처리
+BoundingOrientedBox player_obb[3];
+collide col1;
+collide col2;
+void SetOBB(BoundingOrientedBox* obb, Thread_id id, const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation);
+bool checkcollition(BoundingOrientedBox& first_obb, BoundingOrientedBox& second_obb, int i);
+
+HeadHitted thread_1_headHitted;
+HeadHitted thread_2_headHitted;
+
+BoundingOrientedBox lHand_obb[3];
+BoundingOrientedBox rHand_obb[3];
+BoundingOrientedBox rFoot_obb[3];
+BoundingOrientedBox lFoot_obb[3];
+BoundingOrientedBox Head_obb[3];
+BoundingOrientedBox Spine_obb[3];
+
+XMFLOAT3 saveColPostion[3];
+
+//HP
+PlayerHP thread_num_1_HP;
+PlayerHP thread_num_2_HP;
+
+
+int cou = 0;
+
+int main()
+{
+	int retval = 0;
+
+	wcout.imbue(locale("korean"));
+	WSADATA wsa;
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+		return 1;
+
+	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
+	/*if (listen_sock == INVALID_SOCKET)
+		err_quit("socket()");*/
+
+	SOCKADDR_IN serveraddr;
+	ZeroMemory(&serveraddr, sizeof(serveraddr));
+	serveraddr.sin_family = AF_INET;
+	serveraddr.sin_addr.s_addr = htonl(INADDR_ANY);
+	serveraddr.sin_port = htons(SERVERPORT);
+	retval = bind(listen_sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
+	/*if (retval == SOCKET_ERROR)
+		err_quit("bind()");*/
+
+	retval = listen(listen_sock, SOMAXCONN);
+	/*if (retval == SOCKET_ERROR)
+		err_quit("listen()");*/
+
+	SOCKET client_sock;
+	SOCKADDR_IN client_addr;
+	int client_addr_len;
+	char buf[BUFFERSIZE + 1];
+
+
+
+	cout << "**** 서버 시작 ****" << endl;
+
+	InitializeCriticalSection(&cs);
+
+	while (true)
+	{
+		client_addr_len = sizeof(client_addr);
+		client_sock = accept(listen_sock, (SOCKADDR*)&client_addr, &client_addr_len);
+
+
+
+		cout <<
+			"\n[TCP 서버] 클라이언트 접속: IP 주소= " << inet_ntoa(client_addr.sin_addr) <<
+			", 포트 번호=" << ntohs(client_addr.sin_port) << endl;
+
+
+
+		hThread = CreateThread(nullptr, 0, PlayerThread, (LPVOID)client_sock, 0, NULL);
+
+
+
+		if (hThread == NULL)
+			closesocket(client_sock);
+		else { CloseHandle(hThread); }
+	}
+
+
+
+
+	DeleteCriticalSection(&cs);
+	closesocket(listen_sock);
+
+	WSACleanup();
+
+	return 0;
+}
+
+DWORD WINAPI PlayerThread(LPVOID arg)
+{
+	int retval;
+	Thread_id thread_id;
+	thread_id.thread_num = idIndex;
+	idIndex++;
+
+
+
+	SOCKET thread_client_sock = (SOCKET)arg;
+	SOCKADDR_IN client_addr;
+	int thread_client_addr_len;
+	char buf[2];
+	char GameReady[6];
+
+	XMFLOAT3 player_position = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_rHand = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_lHand = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_rFoot = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_lFoot = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_Head = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMFLOAT3 player_Spine = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+	bool colledFrist = false;
+
+	ZeroMemory(&buf, sizeof(buf));
+
+	Player_world player;
+	AttackAndDefend attAdef;
+	PlayerHP player_hp;
+	ani_double_check double_check;
+	Moving playerMoving;
+
+
+
+	getpeername(thread_client_sock, (SOCKADDR*)&client_addr, &thread_client_addr_len);
+
+
+	////송수신/////////////////////////////////////
+	retval = recv(thread_client_sock, (char*)GameReady, sizeof(GameReady), 0);
+	cout << GameReady << "받기 완료" << endl;
+
+	char GameOk[7] = "GameOk";
+	retval = send(thread_client_sock, (char*)GameOk, sizeof(GameOk), 0);
+	cout << GameOk << "전송 완료" << endl;
+
+
+
+
+	cout << "lll thread_id = " << thread_id.thread_num << endl;
+	retval = send(thread_client_sock, (char*)&thread_id, sizeof(thread_id), 0);
+	cout << "llll  thread_id = " << thread_id.thread_num << endl;
+	///////////////////////////
+
+	////월드좌표계 초기화
+	//XMStoreFloat4x4(&other_player.player_world, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_world, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_Head, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_lFoot, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_lHand, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_rFoot, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_rHand, XMMatrixIdentity());
+	XMStoreFloat4x4(&player.player_Spine, XMMatrixIdentity());
+
+	XMStoreFloat4x4(&thread_num_1_player.player_world, XMMatrixIdentity());
+	XMStoreFloat4x4(&thread_num_2_player.player_world, XMMatrixIdentity());
+
+
+
+
+	while (true)
+	{
+
+		//스레드 아이디 초기화
+		thread_id.thread_num = 0;
+
+
+		retval = recv(thread_client_sock, (char*)&thread_id, sizeof(thread_id), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
+		else if (retval == 0)
+			break;
+		retval = recv(thread_client_sock, (char*)&player, sizeof(player), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
+		else if (retval == 0)
+			break;
+
+		retval = recv(thread_client_sock, (char*)&attAdef, sizeof(attAdef), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
+		else if (retval == 0)
+			break;
+		retval = recv(thread_client_sock, (char*)&player_hp, sizeof(player_hp), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
+		retval = recv(thread_client_sock, (char*)&double_check, sizeof(double_check), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
+		else if (retval == 0)
+			break;
+
+		retval = recv(thread_client_sock, (char*)&playerMoving, sizeof(playerMoving), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
+		else if (retval == 0)
+			break;
+
+		/*retval = recv(thread_client_sock, (char*)&readyAndstart, sizeof(readyAndstart), 0);
+		if (retval == SOCKET_ERROR) {
+			display_error("recv : ", WSAGetLastError());
+			break;
+		}
+		else if (retval == 0)
+			break;*/
+
+
+		EnterCriticalSection(&cs);
+
+		if (thread_id.thread_num == 1 || thread_id.thread_num == 3)
+		{
+
+			thread_num_1_player = player;
+			recv_attackAnddefend_1 = attAdef;
+			thread_num_1_HP = player_hp;
+			first_double_check = double_check;
+			thread_num1_moving = playerMoving;
+			//thread_num1_readyAndstart = readyAndstart;
+
+			if ((thread_num1_moving.Ready == true) && (thread_num2_moving.Ready == true))
+			{
+				thread_num1_moving.Start = true;
+				thread_num2_moving.Start = true;
+			}
+
+
+
+			if (idIndex <= 2)
+				thread_num_2_HP.playerHp = 0.0f;
+
+
+			if (first_must_ani_play == false)
+			{
+				first_save_ani_num = recv_attackAnddefend_1.ani_num;
+				first_must_ani_play = recv_attackAnddefend_1.checkAni;
+			}
+
+
+			if (second_must_ani_play == true && first_double_check.double_check == false)
+			{
+				recv_attackAnddefend_2.ani_num = second_save_ani_num;
+				recv_attackAnddefend_2.checkAni = true;
+
+				cout << "Thread 1 ani Num -  " << second_save_ani_num << " -checkAni - " << second_must_ani_play << endl;
+			}
+			else
+			{
+				second_must_ani_play = false;
+				second_save_ani_num = 0;
+			}
+
+			//cout << "Thread 1 ani Num -  " << second_save_ani_num << " -checkAni - " << second_must_ani_play << endl;
+
+
+			/*cout << thread_num1_readyAndstart.Ready << " ///////" << thread_num2_readyAndstart.Ready << endl;
+			if ((thread_num1_readyAndstart.Ready == true) && (thread_num2_readyAndstart.Ready == true)) {
+				thread_num1_readyAndstart.Start = true;
+				thread_num2_readyAndstart.Start = true;
+			}*/
+
+
+
+			retval = send(thread_client_sock, (char*)&thread_num_2_player, sizeof(thread_num_2_player), 0);
+			//retval = send(thread_client_sock, (char*)&col2, sizeof(col2), 0);
+			/*cout << "thread_1 of thread_2 value = " << thread_id.thread_num << " / " << thread_num_2_player.player_world._41 <<
+				" ," << thread_num_2_player.player_world._42 << ", " << thread_num_2_player.player_world._43 << endl;
+		*/
+		//cout << "collide _ position - " << col1.collidePosition.x << " " << col1.collidePosition.y << " " << col1.collidePosition.z << endl;
+
+			retval = send(thread_client_sock, (char*)&recv_attackAnddefend_2, sizeof(recv_attackAnddefend_2), 0);
+
+			//retval = send(thread_client_sock, (char*)&thread_2_headHitted, sizeof(thread_2_headHitted), 0);
+
+			retval = send(thread_client_sock, (char*)&thread_num_2_HP, sizeof(thread_num_2_HP), 0);
+
+			retval = send(thread_client_sock, (char*)&thread_num2_moving, sizeof(thread_num2_moving), 0);
+
+			//retval = send(thread_client_sock, (char*)&thread_num2_readyAndstart, sizeof(thread_num2_readyAndstart), 0);
+
+			//충돌좌표 초기화
+			col1.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+
+			thread_2_headHitted.leftHeadHitted = false;
+			thread_2_headHitted.rightHeadHitted = false;
+			thread_2_headHitted.straightHtitted = false;
+
+		}
+		else if (thread_id.thread_num == 2 || thread_id.thread_num == 4)
+		{
+
+
+			thread_num_2_player = player;
+			recv_attackAnddefend_2 = attAdef;
+			thread_num_2_HP = player_hp;
+			second_double_check = double_check;
+			thread_num2_moving = playerMoving;
+			//thread_num2_readyAndstart = readyAndstart;
+
+			/*if (thread_num2_readyAndstart.Ready == true)
+				save_2_ready = true;
+			cout << "넘버2 - " << save_2_ready << endl;*/
+
+
+			if (second_must_ani_play == false)
+			{
+				second_save_ani_num = recv_attackAnddefend_2.ani_num;
+				second_must_ani_play = recv_attackAnddefend_2.checkAni;
+			}
+
+
+			if (first_must_ani_play == true && second_double_check.double_check == false)
+			{
+				recv_attackAnddefend_1.ani_num = first_save_ani_num;
+				recv_attackAnddefend_1.checkAni = true;
+				cout << "Thread2 ani Num -  " << first_save_ani_num << " -checkAni - " << first_must_ani_play << endl;
+			}
+			else
+			{
+				first_must_ani_play = false;
+				first_save_ani_num = 0;
+			}
+
+			//cout << "Thread2 ani Num -  " << first_save_ani_num << " -checkAni - " << first_must_ani_play << endl;
+
+
+
+			retval = send(thread_client_sock, (char*)&thread_num_1_player, sizeof(thread_num_1_player), 0);
+
+			//retval = send(thread_client_sock, (char*)&col1, sizeof(col1), 0);
+			//cout << "collide _ position - " << col2.collidePosition.x << " " << col2.collidePosition.y << " " << col2.collidePosition.z << endl;
+			/*cout << "thread_2 of thread_1 value = " << thread_id.thread_num << " / " << thread_num_1_player.player_world._41 <<
+				" ," << thread_num_1_player.player_world._42 << ", " << thread_num_1_player.player_world._43 << endl;*/
+
+			retval = send(thread_client_sock, (char*)&recv_attackAnddefend_1, sizeof(recv_attackAnddefend_1), 0);
+
+			//retval = send(thread_client_sock, (char*)&thread_1_headHitted, sizeof(thread_1_headHitted), 0);
+
+			retval = send(thread_client_sock, (char*)&thread_num_1_HP, sizeof(thread_num_1_HP), 0);
+
+			retval = send(thread_client_sock, (char*)&thread_num1_moving, sizeof(thread_num1_moving), 0);
+
+			//retval = send(thread_client_sock, (char*)&thread_num1_readyAndstart, sizeof(thread_num1_readyAndstart), 0);
+
+			//충돌좌표 초기화
+			col2.collidePosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			thread_1_headHitted.leftHeadHitted = false;
+			thread_1_headHitted.rightHeadHitted = false;
+			thread_1_headHitted.straightHtitted = false;
+
+		}
+
+		LeaveCriticalSection(&cs);
+
+
+	}
+	closesocket(thread_client_sock);
+
+	return 0;
+}
+
+
+void display_error(const char* msg, int err_no)
+{
+	WCHAR* lpMsgBuf;
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, err_no, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR)&lpMsgBuf, 0, NULL);
+	cout << msg;
+	wcout << lpMsgBuf << endl;
+	LocalFree(lpMsgBuf);
+}
+
+void SetOBB(BoundingOrientedBox* obb, Thread_id id, const XMFLOAT3& center, const XMFLOAT3& extents, const XMFLOAT4& orientation)
+{
+	obb[id.thread_num - 1].Center = center;
+	obb[id.thread_num - 1].Extents = extents;
+	obb[id.thread_num - 1].Orientation = orientation;
+}
+bool checkcollition(BoundingOrientedBox& first_obb, BoundingOrientedBox& second_obb, int i)
+{
+	if (first_obb.Intersects(second_obb))
+	{
+		//cout << i << " - COLLIDE! " << endl;
+		//충돌됨
+		return true;
+	}
+	else
+	{
+		//cout << "NOT  COLLIDE! " << endl;
+		return false;
+	}
+}
+
+
+void setPosition(XMFLOAT3& fl3x3, XMFLOAT4X4& fl4x4)
+{
+	fl3x3.x = fl4x4._41;
+	fl3x3.y = fl4x4._42;
+	fl3x3.z = fl4x4._43;
+
+}

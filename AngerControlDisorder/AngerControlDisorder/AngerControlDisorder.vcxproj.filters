@@ -1,0 +1,505 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="소스 파일\00.Main">
+      <UniqueIdentifier>{1090bbf4-62b9-474c-adea-f30ab7be6aea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Engine">
+      <UniqueIdentifier>{82b478b3-cc07-4014-80bf-7ddd1dd24049}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\03.Server">
+      <UniqueIdentifier>{3f1ad713-bdbb-4848-bece-a520906ca79a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object">
+      <UniqueIdentifier>{123cc794-179c-4e39-a82f-ebb061af7d2d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\02.Scene">
+      <UniqueIdentifier>{37103c5d-16f3-4def-8ec9-031780110dec}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99.Common">
+      <UniqueIdentifier>{324d59de-2fa9-42c6-9401-5f1ceda79795}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99.Common\01.TextureLoader">
+      <UniqueIdentifier>{32205cf7-b114-4749-aafa-4836be64236d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99.Common\02.Resource">
+      <UniqueIdentifier>{c26e19c3-9766-431f-947d-42fa5bc72c79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\00.Object">
+      <UniqueIdentifier>{abfa23ac-445b-4d5b-92dd-cfc924079fa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader">
+      <UniqueIdentifier>{abb07c9e-46eb-4723-8763-6f3540297d20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\03.Animation">
+      <UniqueIdentifier>{2dc74f2c-5520-494d-a683-a96428c962c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\98.HLSL">
+      <UniqueIdentifier>{e31c0287-24b5-49ef-95e3-22e037715a77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\06.Manager">
+      <UniqueIdentifier>{c0c98dea-e9be-4077-a096-7bf60eaaeac6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Engine\00.Engine">
+      <UniqueIdentifier>{03bfc699-f88e-4e19-8f9f-207d60dee427}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Engine\01.CallBack">
+      <UniqueIdentifier>{6c77be4e-30cd-410f-bea5-c91f73314491}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\01.Engine\02.Timer">
+      <UniqueIdentifier>{fe84076e-0cea-4773-9ebc-5c0a1afd46c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\01.Graphics">
+      <UniqueIdentifier>{2a4c1604-eba3-4228-ba2a-1dcd99d89393}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\01.Graphics\00.Material">
+      <UniqueIdentifier>{4ad39c91-b355-470e-b53a-15ddf135ae90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\01.Graphics\01.Model">
+      <UniqueIdentifier>{7e609cf1-4daf-4854-bfe0-ff2827e0a749}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\01.Graphics\02.Texture">
+      <UniqueIdentifier>{4bcc7056-0aad-44e2-be8b-f5788aef2015}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Mesh">
+      <UniqueIdentifier>{0d31bf30-0ac9-42ef-b676-520c2a9431ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Mesh\00.Mesh">
+      <UniqueIdentifier>{c0636c01-840a-4d9e-b2dd-792b66af3eeb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Mesh\01.CubeMesh">
+      <UniqueIdentifier>{9d04b43e-f1ff-4ae6-b92f-85e6f5557e72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Mesh\01.CubeMesh\00.CubeMesh">
+      <UniqueIdentifier>{7858373e-9f26-4481-aab1-095196eab366}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Mesh\01.CubeMesh\01.CollideCubeMesh">
+      <UniqueIdentifier>{5c5aba73-f5e7-46fe-b29d-dcbb5ad6f41a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Mesh\02.StandardMesh">
+      <UniqueIdentifier>{9c283d4d-6a83-4bb0-b2c9-4173e7b41179}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Mesh\03.SkinnedMesh">
+      <UniqueIdentifier>{7cc2a131-ef54-4ccc-947e-272adb47a4f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Mesh\04.TexturedRectMesh">
+      <UniqueIdentifier>{33e8e4c9-09f0-43ef-9927-adac1f4e0146}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Mesh\05.SkyBoxMesh">
+      <UniqueIdentifier>{44f44c42-b84f-44a1-955c-a31a350156f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader\00.Shader">
+      <UniqueIdentifier>{87ce6d56-904a-4cb3-b042-158e1370deb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader\01.DiffusedShdaer">
+      <UniqueIdentifier>{3951787c-4af1-414b-8785-acb911a75cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader\02.ObjectsShader">
+      <UniqueIdentifier>{9ead184e-0589-480e-bbd3-9c7379da40a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader\03.StandardShader">
+      <UniqueIdentifier>{50d31f23-15e5-4e9f-b0a9-588a0851d108}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader\04.TexturedShader">
+      <UniqueIdentifier>{2c86ce68-5e2c-4c77-af20-604a0648f7ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader\05.SkyBoxShader">
+      <UniqueIdentifier>{2c0b79f1-2f35-4c6c-a643-5c9ddcd5905e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader\06.UIShader">
+      <UniqueIdentifier>{01bd6e8b-46c0-421f-9090-f65b85da74ce}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\03.Animation\00.AnimationController">
+      <UniqueIdentifier>{b5f8763b-061f-471c-9a45-3ec8c5a80355}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\03.Animation\01.AnimationSet">
+      <UniqueIdentifier>{ac89786f-02d2-45df-9fa9-f9dd676797b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\03.Animation\03.AnimationTrack">
+      <UniqueIdentifier>{8ba30a19-4f66-4772-a4ca-a3b64dc0f52e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader\02.ObjectsShader\01.BoxerObjectsShader">
+      <UniqueIdentifier>{13ab799c-8ade-48d1-b20e-e4369bc18d39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader\02.ObjectsShader\02.EthanObjectsShader">
+      <UniqueIdentifier>{0f426892-b27a-4eb2-a9f2-99687160fc3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader\02.ObjectsShader\03.SkinnedAnimationObjectsShader">
+      <UniqueIdentifier>{8e6751b6-5224-463f-99f0-5aa4ba6aa8eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\02.Shader\02.ObjectsShader\04.StandardObjectsShader">
+      <UniqueIdentifier>{138588bd-4828-4451-8549-e118674fe93c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\00.Object\00.Object">
+      <UniqueIdentifier>{b68301e0-7cdd-4d70-a957-bdf5e42d8036}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\00.Object\01.Player">
+      <UniqueIdentifier>{cf0fbd4a-0a30-48e7-8706-4a0d9328d775}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\00.Object\02.CubeObject">
+      <UniqueIdentifier>{a9fbaab9-2a73-4de0-9ae2-056cf4546720}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\00.Object\03.CollideCubeObject">
+      <UniqueIdentifier>{d1a299e5-49a5-4e37-af84-fc1f8760cce5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\00.Object\04.PlaneObject">
+      <UniqueIdentifier>{c76b8941-a7bf-480f-96e2-d4722987fbf2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\00.Object\05.BoxerObject">
+      <UniqueIdentifier>{611f084c-4615-47e1-9967-030ebc9c9f62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\00.Object\06.CrowdObject">
+      <UniqueIdentifier>{d2379c2b-ef0a-4c35-a560-70365984a735}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\04.Object\00.Object\07.SkyBox">
+      <UniqueIdentifier>{fcad7a88-05bc-4578-87ca-30b7b454075d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\06.Manager\Effect">
+      <UniqueIdentifier>{71cb47c8-7a7d-4c1a-a65f-44a2118f7f0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\06.Manager\Particle">
+      <UniqueIdentifier>{69123e70-71b4-4636-b9a2-ba1b1cd15e0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\06.Manager\Sound">
+      <UniqueIdentifier>{d86a2c4f-f719-43e7-b2f8-72ef1189c5ba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99.Common\UnUsed">
+      <UniqueIdentifier>{9ab90b01-cd80-4c49-94b1-0d8f9b714f97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\05.Camera">
+      <UniqueIdentifier>{8ea7ee59-572a-4af4-9437-6653dce3a3b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\99.Common\03.Stdafx">
+      <UniqueIdentifier>{5e6acfec-aba8-42ce-8591-e9bbb60bf446}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AngerControlDisorder.h">
+      <Filter>소스 파일\00.Main</Filter>
+    </ClInclude>
+    <ClInclude Include="DDSTextureLoader12.h">
+      <Filter>소스 파일\99.Common\01.TextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="WICTextureLoader12.h">
+      <Filter>소스 파일\99.Common\01.TextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="d3dx12.h">
+      <Filter>소스 파일\99.Common\01.TextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>소스 파일\99.Common\02.Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>소스 파일\99.Common\02.Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>소스 파일\02.Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Server.h">
+      <Filter>소스 파일\03.Server</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>소스 파일\05.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>소스 파일\01.Engine\00.Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="CallBack.h">
+      <Filter>소스 파일\01.Engine\01.CallBack</Filter>
+    </ClInclude>
+    <ClInclude Include="Timer.h">
+      <Filter>소스 파일\01.Engine\02.Timer</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>소스 파일\04.Object\01.Graphics\00.Material</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelInfo.h">
+      <Filter>소스 파일\04.Object\01.Graphics\01.Model</Filter>
+    </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>소스 파일\04.Object\01.Graphics\02.Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>소스 파일\04.Object\02.Mesh\00.Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeMesh.h">
+      <Filter>소스 파일\04.Object\02.Mesh\01.CubeMesh\00.CubeMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="CollideCubeMesh.h">
+      <Filter>소스 파일\04.Object\02.Mesh\01.CubeMesh\01.CollideCubeMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardMesh.h">
+      <Filter>소스 파일\04.Object\02.Mesh\02.StandardMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedMesh.h">
+      <Filter>소스 파일\04.Object\02.Mesh\03.SkinnedMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedRectMesh.h">
+      <Filter>소스 파일\04.Object\02.Mesh\04.TexturedRectMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxMesh.h">
+      <Filter>소스 파일\04.Object\02.Mesh\05.SkyBoxMesh</Filter>
+    </ClInclude>
+    <ClInclude Include="Shader.h">
+      <Filter>소스 파일\04.Object\02.Shader\00.Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="DiffusedShader.h">
+      <Filter>소스 파일\04.Object\02.Shader\01.DiffusedShdaer</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardShader.h">
+      <Filter>소스 파일\04.Object\02.Shader\03.StandardShader</Filter>
+    </ClInclude>
+    <ClInclude Include="TexturedShader.h">
+      <Filter>소스 파일\04.Object\02.Shader\04.TexturedShader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBoxShader.h">
+      <Filter>소스 파일\04.Object\02.Shader\05.SkyBoxShader</Filter>
+    </ClInclude>
+    <ClInclude Include="UIShader.h">
+      <Filter>소스 파일\04.Object\02.Shader\06.UIShader</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationController.h">
+      <Filter>소스 파일\04.Object\03.Animation\00.AnimationController</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationSet.h">
+      <Filter>소스 파일\04.Object\03.Animation\01.AnimationSet</Filter>
+    </ClInclude>
+    <ClInclude Include="AnimationTrack.h">
+      <Filter>소스 파일\04.Object\03.Animation\03.AnimationTrack</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxerObjectsShader.h">
+      <Filter>소스 파일\04.Object\02.Shader\02.ObjectsShader\01.BoxerObjectsShader</Filter>
+    </ClInclude>
+    <ClInclude Include="EthanObjectsShader.h">
+      <Filter>소스 파일\04.Object\02.Shader\02.ObjectsShader\02.EthanObjectsShader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedAnimationObjectsShader.h">
+      <Filter>소스 파일\04.Object\02.Shader\02.ObjectsShader\03.SkinnedAnimationObjectsShader</Filter>
+    </ClInclude>
+    <ClInclude Include="SkinnedAnimationStandardShader.h">
+      <Filter>소스 파일\04.Object\02.Shader\02.ObjectsShader\03.SkinnedAnimationObjectsShader</Filter>
+    </ClInclude>
+    <ClInclude Include="StandardObjectsShader.h">
+      <Filter>소스 파일\04.Object\02.Shader\02.ObjectsShader\04.StandardObjectsShader</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>소스 파일\04.Object\00.Object\00.Object</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>소스 파일\04.Object\00.Object\01.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeObject.h">
+      <Filter>소스 파일\04.Object\00.Object\02.CubeObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CollideCubeObject.h">
+      <Filter>소스 파일\04.Object\00.Object\03.CollideCubeObject</Filter>
+    </ClInclude>
+    <ClInclude Include="PlaneObject.h">
+      <Filter>소스 파일\04.Object\00.Object\04.PlaneObject</Filter>
+    </ClInclude>
+    <ClInclude Include="BoxerObject.h">
+      <Filter>소스 파일\04.Object\00.Object\05.BoxerObject</Filter>
+    </ClInclude>
+    <ClInclude Include="CrowdObject.h">
+      <Filter>소스 파일\04.Object\00.Object\06.CrowdObject</Filter>
+    </ClInclude>
+    <ClInclude Include="SkyBox.h">
+      <Filter>소스 파일\04.Object\00.Object\07.SkyBox</Filter>
+    </ClInclude>
+    <ClInclude Include="EffectManager.h">
+      <Filter>소스 파일\06.Manager\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>소스 파일\06.Manager\Particle</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundManager.h">
+      <Filter>소스 파일\06.Manager\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="WayPoint.h">
+      <Filter>소스 파일\99.Common\UnUsed</Filter>
+    </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>소스 파일\99.Common\UnUsed</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>소스 파일\99.Common\03.Stdafx</Filter>
+    </ClInclude>
+    <ClInclude Include="Math.h">
+      <Filter>소스 파일\99.Common\02.Resource</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AngerControlDisorder.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="small.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="AngerControlDisorder.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AngerControlDisorder.cpp">
+      <Filter>소스 파일\00.Main</Filter>
+    </ClCompile>
+    <ClCompile Include="DDSTextureLoader12.cpp">
+      <Filter>소스 파일\99.Common\01.TextureLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="WICTextureLoader12.cpp">
+      <Filter>소스 파일\99.Common\01.TextureLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>소스 파일\02.Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Server.cpp">
+      <Filter>소스 파일\03.Server</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>소스 파일\05.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine.cpp">
+      <Filter>소스 파일\01.Engine\00.Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="CallBack.cpp">
+      <Filter>소스 파일\01.Engine\01.CallBack</Filter>
+    </ClCompile>
+    <ClCompile Include="Timer.cpp">
+      <Filter>소스 파일\01.Engine\02.Timer</Filter>
+    </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>소스 파일\04.Object\01.Graphics\00.Material</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelInfo.cpp">
+      <Filter>소스 파일\04.Object\01.Graphics\01.Model</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>소스 파일\04.Object\01.Graphics\02.Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>소스 파일\04.Object\02.Mesh\00.Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeMesh.cpp">
+      <Filter>소스 파일\04.Object\02.Mesh\01.CubeMesh\00.CubeMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="CollideCubeMesh.cpp">
+      <Filter>소스 파일\04.Object\02.Mesh\01.CubeMesh\01.CollideCubeMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardMesh.cpp">
+      <Filter>소스 파일\04.Object\02.Mesh\02.StandardMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedMesh.cpp">
+      <Filter>소스 파일\04.Object\02.Mesh\03.SkinnedMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedRectMesh.cpp">
+      <Filter>소스 파일\04.Object\02.Mesh\04.TexturedRectMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxMesh.cpp">
+      <Filter>소스 파일\04.Object\02.Mesh\05.SkyBoxMesh</Filter>
+    </ClCompile>
+    <ClCompile Include="Shader.cpp">
+      <Filter>소스 파일\04.Object\02.Shader\00.Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="DiffusedShader.cpp">
+      <Filter>소스 파일\04.Object\02.Shader\01.DiffusedShdaer</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardShader.cpp">
+      <Filter>소스 파일\04.Object\02.Shader\03.StandardShader</Filter>
+    </ClCompile>
+    <ClCompile Include="TexturedShader.cpp">
+      <Filter>소스 파일\04.Object\02.Shader\04.TexturedShader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBoxShader.cpp">
+      <Filter>소스 파일\04.Object\02.Shader\05.SkyBoxShader</Filter>
+    </ClCompile>
+    <ClCompile Include="UIShader.cpp">
+      <Filter>소스 파일\04.Object\02.Shader\06.UIShader</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationController.cpp">
+      <Filter>소스 파일\04.Object\03.Animation\00.AnimationController</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationSet.cpp">
+      <Filter>소스 파일\04.Object\03.Animation\01.AnimationSet</Filter>
+    </ClCompile>
+    <ClCompile Include="AnimationTrack.cpp">
+      <Filter>소스 파일\04.Object\03.Animation\03.AnimationTrack</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxerObjectsShader.cpp">
+      <Filter>소스 파일\04.Object\02.Shader\02.ObjectsShader\01.BoxerObjectsShader</Filter>
+    </ClCompile>
+    <ClCompile Include="EthanObjectsShader.cpp">
+      <Filter>소스 파일\04.Object\02.Shader\02.ObjectsShader\02.EthanObjectsShader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedAnimationObjectsShader.cpp">
+      <Filter>소스 파일\04.Object\02.Shader\02.ObjectsShader\03.SkinnedAnimationObjectsShader</Filter>
+    </ClCompile>
+    <ClCompile Include="SkinnedAnimationStandardShader.cpp">
+      <Filter>소스 파일\04.Object\02.Shader\02.ObjectsShader\03.SkinnedAnimationObjectsShader</Filter>
+    </ClCompile>
+    <ClCompile Include="StandardObjectsShader.cpp">
+      <Filter>소스 파일\04.Object\02.Shader\02.ObjectsShader\04.StandardObjectsShader</Filter>
+    </ClCompile>
+    <ClCompile Include="Object.cpp">
+      <Filter>소스 파일\04.Object\00.Object\00.Object</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>소스 파일\04.Object\00.Object\01.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeObject.cpp">
+      <Filter>소스 파일\04.Object\00.Object\02.CubeObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CollideCubeObject.cpp">
+      <Filter>소스 파일\04.Object\00.Object\03.CollideCubeObject</Filter>
+    </ClCompile>
+    <ClCompile Include="PlaneObject.cpp">
+      <Filter>소스 파일\04.Object\00.Object\04.PlaneObject</Filter>
+    </ClCompile>
+    <ClCompile Include="BoxerObject.cpp">
+      <Filter>소스 파일\04.Object\00.Object\05.BoxerObject</Filter>
+    </ClCompile>
+    <ClCompile Include="CrowdObject.cpp">
+      <Filter>소스 파일\04.Object\00.Object\06.CrowdObject</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyBox.cpp">
+      <Filter>소스 파일\04.Object\00.Object\07.SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="EffectManager.cpp">
+      <Filter>소스 파일\06.Manager\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>소스 파일\06.Manager\Particle</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundManager.cpp">
+      <Filter>소스 파일\06.Manager\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="WayPoint.cpp">
+      <Filter>소스 파일\99.Common\UnUsed</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일\99.Common\03.Stdafx</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Light.hlsl">
+      <Filter>소스 파일\98.HLSL</Filter>
+    </FxCompile>
+    <FxCompile Include="Shaders.hlsl">
+      <Filter>소스 파일\98.HLSL</Filter>
+    </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="fmod.dll">
+      <Filter>소스 파일\99.Common\UnUsed</Filter>
+    </None>
+  </ItemGroup>
+</Project>
