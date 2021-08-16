@@ -1407,7 +1407,7 @@ void Scene::CollidePVE(const float& deltaTime)
 					if (PlayerBoundBox.first == "lHand" || PlayerBoundBox.first == "rHand")
 					{
 						if (playerAnimation == ANIMATION_HOOK_L || playerAnimation == ANIMATION_HOOK_R || playerAnimation == ANIMATION_ONE_TWO ||
-							playerAnimation == ANIMATION_1_2_KICK || playerAnimation == ANIMATION_UPPER_CUT_L || playerAnimation == ANIMATION_1_2_3_KICK)
+							playerAnimation == ANIMATION_1_2_KICK || playerAnimation == ANIMATION_STEP_HOOK_L || playerAnimation == ANIMATION_CROSS_KICK)
 						{
 							if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == HIGH_GUARD && m_pPlayer->nowState == ATTACK)
 							{
@@ -1438,9 +1438,8 @@ void Scene::CollidePVE(const float& deltaTime)
 						}
 					}
 					else if (PlayerBoundBox.first == "rFoot" || PlayerBoundBox.first == "lFoot")
-					{
-						if (playerAnimation == ANIMATION_AXE_KICK_R || playerAnimation == ANIMATION_KICK_COMBO_HEAD || playerAnimation == ANIMATION_ONE_TWO ||
-							playerAnimation == ANIMATION_1_2_3_KICK)
+					{//
+						if (playerAnimation == ANIMATION_AXE_KICK_R || playerAnimation == ANIMATION_KICK_COMBO_HEAD)
 						{
 							if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == HIGH_GUARD && m_pPlayer->nowState == ATTACK)
 							{
@@ -1508,7 +1507,7 @@ void Scene::CollidePVE(const float& deltaTime)
 					}
 					else if (PlayerBoundBox.first == "rFoot" || PlayerBoundBox.first == "lFoot")
 					{
-						if (playerAnimation == ANIMATION_SIDE_KICK_L || playerAnimation == ANIMATION_1_2_3_KICK || playerAnimation == ANIMATION_KICK_MID_L)
+						if (playerAnimation == ANIMATION_SIDE_KICK_L || playerAnimation == ANIMATION_KICK_MID_L)
 						{
 							if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == MIDDLE_GUARD && m_pPlayer->nowState == ATTACK)
 							{
@@ -1542,8 +1541,8 @@ void Scene::CollidePVE(const float& deltaTime)
 					(PlayerBoundBox.first == "rFoot" || PlayerBoundBox.first == "lFoot"))
 				{
 					// 하단 공격은 다리만 맞게 해야한다.
-					if (playerAnimation == ANIMATION_LOW_KICK_R || playerAnimation == ANIMATION_LOW_KICK_SL || playerAnimation == ANIMATION_1_2_KICK 
-						|| playerAnimation == ANIMATION_KICK_COMBO_HEAD)
+					if (playerAnimation == ANIMATION_LOW_KICK_R || playerAnimation == ANIMATION_LOW_KICK_SL || playerAnimation == ANIMATION_1_2_KICK
+						|| playerAnimation == ANIMATION_KICK_COMBO_HEAD || playerAnimation == ANIMATION_CROSS_KICK)
 					{
 						if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == LOW_GUARD && m_pPlayer->nowState == ATTACK)
 						{
@@ -1581,7 +1580,7 @@ void Scene::CollidePVE(const float& deltaTime)
 					if (otherPlayerBoundBox.first == "lHand" || otherPlayerBoundBox.first == "rHand")
 					{
 						if (otherPlayerAnimation == ANIMATION_HOOK_L || otherPlayerAnimation == ANIMATION_HOOK_R || otherPlayerAnimation == ANIMATION_ONE_TWO ||
-							otherPlayerAnimation == ANIMATION_1_2_KICK || otherPlayerAnimation == ANIMATION_UPPER_CUT_L || otherPlayerAnimation == ANIMATION_1_2_3_KICK)
+							otherPlayerAnimation == ANIMATION_1_2_KICK || otherPlayerAnimation == ANIMATION_STEP_HOOK_L || otherPlayerAnimation == ANIMATION_CROSS_KICK)
 						{
 							if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK && m_pPlayer->nowState == HIGH_GUARD)
 							{
@@ -1612,8 +1611,7 @@ void Scene::CollidePVE(const float& deltaTime)
 					}
 					else if (otherPlayerBoundBox.first == "rFoot" || otherPlayerBoundBox.first == "lFoot")
 					{
-						if (otherPlayerAnimation == ANIMATION_AXE_KICK_R || otherPlayerAnimation == ANIMATION_KICK_COMBO_HEAD || otherPlayerAnimation == ANIMATION_ONE_TWO ||
-							otherPlayerAnimation == ANIMATION_KICK_COMBO_HEAD)
+						if (otherPlayerAnimation == ANIMATION_AXE_KICK_R || otherPlayerAnimation == ANIMATION_KICK_COMBO_HEAD || otherPlayerAnimation == ANIMATION_KICK_COMBO_HEAD)
 						{
 							if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK && m_pPlayer->nowState == HIGH_GUARD)
 							{
@@ -1679,7 +1677,7 @@ void Scene::CollidePVE(const float& deltaTime)
 					}
 					else if (otherPlayerBoundBox.first == "rFoot" || otherPlayerBoundBox.first == "lFoot")
 					{
-						if (otherPlayerAnimation == ANIMATION_SIDE_KICK_L || otherPlayerAnimation == ANIMATION_1_2_3_KICK || otherPlayerAnimation == ANIMATION_KICK_MID_L)
+						if (otherPlayerAnimation == ANIMATION_SIDE_KICK_L || otherPlayerAnimation == ANIMATION_KICK_MID_L)
 						{
 							if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK && m_pPlayer->nowState == MIDDLE_GUARD)
 							{
@@ -1713,7 +1711,7 @@ void Scene::CollidePVE(const float& deltaTime)
 				{
 					// 하단 공격은 다리만 맞게 해야한다.
 					if (otherPlayerAnimation == ANIMATION_LOW_KICK_R || otherPlayerAnimation == ANIMATION_LOW_KICK_SL || otherPlayerAnimation == ANIMATION_1_2_KICK||
-						otherPlayerAnimation == ANIMATION_KICK_COMBO_HEAD)
+						otherPlayerAnimation == ANIMATION_KICK_COMBO_HEAD || playerAnimation == ANIMATION_CROSS_KICK)
 					{
 						if (hierarchicalGameObjects.data()[OTHERPLAYER]->nowState == ATTACK && m_pPlayer->nowState == LOW_GUARD)
 						{

@@ -82,6 +82,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         }
         else
         {
+            //cout << "client\n";
             gEngine.FrameAdvance();
         }
     }
@@ -235,6 +236,7 @@ DWORD WINAPI serverThread(LPVOID arg)
 
         if (server->checkSR == true)
         {
+           // cout << "server\n";
             server->Server_send();
             server->Server_recv();
 
