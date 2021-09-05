@@ -127,8 +127,10 @@ void Server::Server_recv()
 		//retval = recv(sock, (char*)&col, sizeof(col), 0);
 		retval = recv(sock, (char*)&recv_attackAnddefend, sizeof(recv_attackAnddefend), 0);
 		//retval = recv(sock, (char*)&headHitted, sizeof(headHitted), 0);
-		retval = recv(sock, (char*)&otherHP, sizeof(otherHP), 0);
 
+		if (thread_id.thread_num == 1) {
+			retval = recv(sock, (char*)&otherHP, sizeof(otherHP), 0);
+		}
 		retval = recv(sock, (char*)&RecvOtherPlayerMove, sizeof(RecvOtherPlayerMove), 0);
 
 		//retval = recv(sock, (char*)&readyAndstrat, sizeof(readyAndstrat), 0);

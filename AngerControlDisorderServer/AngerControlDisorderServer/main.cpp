@@ -342,7 +342,8 @@ DWORD WINAPI PlayerThread(LPVOID arg)
 
 			//retval = send(thread_client_sock, (char*)&thread_2_headHitted, sizeof(thread_2_headHitted), 0);
 
-			retval = send(thread_client_sock, (char*)&thread_num_2_HP, sizeof(thread_num_2_HP), 0);
+			//HP º¸³»±â
+			//retval = send(thread_client_sock, (char*)&thread_num_2_HP, sizeof(thread_num_2_HP), 0);
 
 			retval = send(thread_client_sock, (char*)&thread_num2_moving, sizeof(thread_num2_moving), 0);
 
