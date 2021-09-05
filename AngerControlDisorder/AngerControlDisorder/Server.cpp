@@ -149,7 +149,7 @@ void Server::Server_recv()
 
 		//save_world.player_world =  cscene->m_ppHierarchicalGameObjects[0]->m_xmf4x4World;
 
-		otherPlayerPositionSet();
+		
 
 
 		//cout << player_position.x << " / " << player_position.y << " / " << player_position.z << endl;
@@ -185,11 +185,13 @@ void Server::Server_recv()
 			
 		}
 
+		otherPlayerPositionSet();
+
 		//상대 클라 위치설정
-		cscene->hierarchicalGameObjects[1]->SetPosition(player_position.x, player_position.y, player_position.z);
+		/*cscene->hierarchicalGameObjects[1]->SetPosition(player_position.x, player_position.y, player_position.z);
 		cscene->hierarchicalGameObjects[1]->SetRight(player_right.x, player_right.y, player_right.z);
 		cscene->hierarchicalGameObjects[1]->SetUp(player_up.x, player_up.y, player_up.z);
-		cscene->hierarchicalGameObjects[1]->SetLook(player_look.x, player_look.y, player_look.z);
+		cscene->hierarchicalGameObjects[1]->SetLook(player_look.x, player_look.y, player_look.z);*/
 
 		//cscene->m_ppHierarchicalGameObjects[0]->nowState = other_player.nowState;
 
