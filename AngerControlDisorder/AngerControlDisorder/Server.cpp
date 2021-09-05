@@ -25,6 +25,9 @@ Server::Server(int i) {
 		cout << "WSAStartup Error" << endl;
 
 	sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+	bool optval = true;
+
+	setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&optval, sizeof(optval));
 
 	SOCKADDR_IN sever_sock_addr;
 
